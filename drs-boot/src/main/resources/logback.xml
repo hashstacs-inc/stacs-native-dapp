@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration scan="true" scanPeriod="60 seconds" debug="false">
+
+    <conversionRule conversionWord="clr" converterClass="org.springframework.boot.logging.logback.ColorConverter"/>
+    <!-- 每一类日志的所有归档文件达到totalSizeCap后会异步删除最老的归档文件，比如common-error.log为一类，xxx-biz.log为一类 -->
+    <property name="TOTAL_SIZE_CAP" value="10GB"/>
+    <conversionRule conversionWord="wex"
+                    converterClass="org.springframework.boot.logging.logback.WhitespaceThrowableProxyConverter"/>
+    <conversionRule conversionWord="wEx"
+                    converterClass="org.springframework.boot.logging.logback.ExtendedWhitespaceThrowableProxyConverter"/>
+
+    <property name="COMMON_LOG_PATTERN"
+              value="%d [%t] %-5p %c{0} - %m [%X{X-B3-TraceId:-},%X{X-B3-SpanId:-},%X{X-Span-Export:-}]%n%xThrowable{500, FULL, bar}"/>
+
+    <!-- 项目名称 -->
+    <property name="APP_NAME" value="drs-boot"/>​
+    <!-- 日志文件目录 -->
+    <property name="LOG_PATH" value="${logging.path:-/logs/drs-boot/}"/>​
+    <!-- 归档文件保留的时间，即只保留几天前的归档文件，单位与fileNamePattern中配置的最小时间单位相同 -->
+    <property name="MAX_HISTORY" value="7"/>
+
+    <appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
+        <!--        <filter class="ch.qos.logback.classic.filter.ThresholdFilter">
+                    &lt;!&ndash; Minimum logging level to be presented in the console logs&ndash;&gt;
+                    <level>DEBUG</level>
+                </filter>-->
+        <encoder>
+            <pattern>%d [%thread] %highlight(%-5level) %cyan(%logger{15}) - %highlight(%msg) %n%xThrowable{500, FULL,
+                bar}
+            </pattern>
+        </encoder>
+    </appender>
+
+    <appender name="DEFAULT-APPENDER" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <encoder>
+            <pattern>${COMMON_LOG_PATTERN}</pattern>
+        </encoder>
+        <file>${LOG_PATH}/${APP_NAME}.log</file>
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <fileNamePattern>${LOG_PATH}/${APP_NAME}.log.%d{yyyy-MM-dd}.gz</fileNamePattern>
+            <maxHistory>${MAX_HISTORY}</maxHistory>
+            <!--<totalSizeCap>${TOTAL_SIZE_CAP}</totalSizeCap>-->
+        </rollingPolicy>
+    </appender>
+
+    <appender name="ERROR-APPENDER" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <filter class="ch.qos.logback.classic.filter.ThresholdFilter">
+            <level>ERROR</level>
+        </filter>
+        <encoder>
+            <pattern>${COMMON_LOG_PATTERN}</pattern>
+        </encoder>
+        <file>${LOG_PATH}/${APP_NAME}-error.log</file>
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <fileNamePattern>${LOG_PATH}/${APP_NAME}-error.log.%d{yyyy-MM-dd}.gz</fileNamePattern>
+            <maxHistory>${MAX_HISTORY}</maxHistory>
+            <!--<totalSizeCap>${TOTAL_SIZE_CAP}</totalSizeCap>-->
+        </rollingPolicy>
+    </appender>
+   
+    <root level="INFO">
+        <appender-ref ref="DEFAULT-APPENDER"/>
+        <appender-ref ref="ERROR-APPENDER"/>
+        <appender-ref ref="CONSOLE"/>
+    </root>
+
+</configuration>

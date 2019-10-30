@@ -1,0 +1,9 @@
+${AnsiColor.WHITE}
+_       ___        ______  _______    ___       __
+ )  ____) (__    __)    /  \     /  __)  )  ____)
+(  (___      |  |      /    \   |  /    (  (___
+ \___  \     |  |     /  ()  \  | |      \___  \
+ ____)  )    |  |    |   __   | |  \__   ____)  )
+(      (_____|  |____|  (__)  |__\    )_(      (__
+
+${AnsiColor.BRIGHT_GREEN} Version: ${AnsiColor.BRIGHT_WHITE} ${application.version}${application.formatted-version}

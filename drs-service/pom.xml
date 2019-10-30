@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <parent>
+        <artifactId>stacs-native-dapp</artifactId>
+        <groupId>com.higgschain.trust</groupId>
+        <version>1.0.0-SNAPSHOT</version>
+    </parent>
+    <modelVersion>4.0.0</modelVersion>
+
+    <artifactId>drs-service</artifactId>
+
+    <dependencies>
+        <dependency>
+            <groupId>com.higgschain.trust</groupId>
+            <artifactId>drs-api</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-web</artifactId>
+        </dependency>
+        <!--用于多 web 合并部署-->
+        <dependency>
+            <groupId>com.alipay.sofa</groupId>
+            <artifactId>web-ark-plugin</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.alipay.sofa</groupId>
+            <artifactId>sofa-ark-springboot-starter</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.alipay.sofa</groupId>
+            <artifactId>sofa-ark-api</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.projectlombok</groupId>
+            <artifactId>lombok</artifactId>
+        </dependency>
+    </dependencies>
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>com.alipay.sofa</groupId>
+                <artifactId>sofa-ark-plugin-maven-plugin</artifactId>
+                <version>${sofa.ark.version}</version>
+                <executions>
+                    <execution>
+                        <id>default-cli</id>
+                        <goals>
+                            <goal>ark-plugin</goal>
+                        </goals>
+
+                        <configuration>
+
+                            <!--can only configure no more than one activator-->
+                            <activator>com.higgschain.trust.drs.service.ServiceActivator</activator>
+                            <!-- 配置优先级，数字越小，优先级越高，优先启动，优先导出类，默认1000 -->
+                            <priority>20000</priority>
+                            <pluginName>drs-service</pluginName>
+                            <!-- configure exported class -->
+                            <exported>
+                                <!-- configure package-level exported class-->
+                                <packages>
+                                    <package>com.higgschain.trust.drs.service</package>
+                                </packages>
+                            </exported>
+
+                            <!--specify destination where ark-plugin will be saved, default saved to ${project.build.directory}-->
+                            <outputDirectory>../target</outputDirectory>
+                        </configuration>
+                    </execution>
+
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <configuration>
+                    <source>1.8</source>
+                    <target>1.8</target>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
+
+</project>
