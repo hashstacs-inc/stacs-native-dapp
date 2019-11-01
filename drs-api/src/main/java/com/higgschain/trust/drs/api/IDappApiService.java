@@ -7,7 +7,7 @@ import com.higgschain.trust.drs.model.SampleResult;
  * @author suimi
  * @date 2019/10/30
  */
-public interface IDappService {
+public interface IDappApiService {
 
     SampleResult service(SampleRequest request);
 }

@@ -16,9 +16,10 @@
     <!-- 项目名称 -->
     <property name="APP_NAME" value="dapp-sample"/>​
     <!-- 日志文件目录 -->
-    <property name="LOG_PATH" value="${logging.path:-/logs/dapp/}"/>​
+    <property name="LOG_PATH" value="${LOG_PATH:-/logs/${APP_NAME}/}"/>​
     <!-- 归档文件保留的时间，即只保留几天前的归档文件，单位与fileNamePattern中配置的最小时间单位相同 -->
     <property name="MAX_HISTORY" value="7"/>
+    <property name="TOTAL_SIZE_CAP" value="10GB"/>
 
     <appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
         <encoder>
@@ -37,7 +38,7 @@
         <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
             <fileNamePattern>${LOG_PATH}/${APP_NAME}.log.%d{yyyy-MM-dd}.gz</fileNamePattern>
             <maxHistory>${MAX_HISTORY}</maxHistory>
-            <!--<totalSizeCap>${TOTAL_SIZE_CAP}</totalSizeCap>-->
+            <totalSizeCap>${TOTAL_SIZE_CAP}</totalSizeCap>
         </rollingPolicy>
     </appender>
 
@@ -52,7 +53,7 @@
         <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
             <fileNamePattern>${LOG_PATH}/${APP_NAME}-error.log.%d{yyyy-MM-dd}.gz</fileNamePattern>
             <maxHistory>${MAX_HISTORY}</maxHistory>
-            <!--<totalSizeCap>${TOTAL_SIZE_CAP}</totalSizeCap>-->
+            <totalSizeCap>${TOTAL_SIZE_CAP}</totalSizeCap>
         </rollingPolicy>
     </appender>
 

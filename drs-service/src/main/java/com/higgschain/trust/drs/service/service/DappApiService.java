@@ -4,7 +4,7 @@ import com.alipay.sofa.ark.container.registry.PluginServiceProvider;
 import com.alipay.sofa.ark.spi.service.ArkInject;
 import com.alipay.sofa.ark.spi.service.plugin.PluginManagerService;
 import com.alipay.sofa.ark.spi.service.registry.RegistryService;
-import com.higgschain.trust.drs.api.IDappService;
+import com.higgschain.trust.drs.api.IDappApiService;
 import com.higgschain.trust.drs.model.SampleRequest;
 import com.higgschain.trust.drs.model.SampleResult;
 import com.higgschain.trust.drs.service.constant.Constants;
@@ -17,7 +17,7 @@ import org.springframework.stereotype.Service;
  * @author suimi
  * @date 2019/10/30
  */
-@Slf4j @Service public class DappService implements IDappService, InitializingBean {
+@Slf4j @Service public class DappApiService implements IDappApiService, InitializingBean {
 
     @ArkInject RegistryService registryService;
 
@@ -32,8 +32,8 @@ import org.springframework.stereotype.Service;
     }
 
     @Override public void afterPropertiesSet() {
-        registryService.publishService(IDappService.class, this,
+        registryService.publishService(IDappApiService.class, this,
             new PluginServiceProvider(pluginManagerService.getPluginByName(Constants.SERVICE_NAME)));
-        log.info("published service:{}", IDappService.class);
+        log.info("published service:{}", IDappApiService.class);
     }
 }

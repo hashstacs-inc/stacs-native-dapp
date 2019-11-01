@@ -27,7 +27,7 @@ import org.springframework.context.annotation.EnableAspectJAutoProxy;
  * @author suimi
  * @since 1.0.0
  */
-@SpringBootApplication(scanBasePackages = "com.higgschain.trust.drs")@Slf4j public class DRSBootApplication {
+@SpringBootApplication(scanBasePackages = "com.higgschain.trust.drs") @Slf4j public class DRSBootApplication {
 
     public static void main(String[] args) {
         SpringApplication.run(DRSBootApplication.class, args);
