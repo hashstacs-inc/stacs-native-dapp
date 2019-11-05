@@ -5,26 +5,33 @@ import com.alipay.sofa.ark.api.ClientResponse;
 import com.alipay.sofa.ark.api.ResponseCode;
 import com.alipay.sofa.ark.loader.JarBizArchive;
 import com.alipay.sofa.ark.loader.archive.JarFileArchive;
+import com.alipay.sofa.ark.loader.jar.JarEntry;
 import com.alipay.sofa.ark.loader.jar.JarFile;
+import com.higgschain.trust.drs.boot.bo.Dapp;
 import com.higgschain.trust.drs.boot.config.DrsConfig;
-import com.higgschain.trust.drs.boot.service.dapp.Dapp;
-import com.higgschain.trust.drs.boot.service.dapp.DappStatus;
+import com.higgschain.trust.drs.boot.enums.DappStatus;
+import com.higgschain.trust.drs.boot.exception.DappError;
+import com.higgschain.trust.drs.boot.exception.DappException;
 import com.higgschain.trust.drs.boot.service.dapp.IDappService;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.FilenameUtils;
+import org.apache.commons.io.IOUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.context.event.ApplicationReadyEvent;
+import org.springframework.context.ApplicationListener;
 import org.springframework.stereotype.Service;
+import org.springframework.util.CollectionUtils;
 
 import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.net.URL;
-import java.util.ArrayList;
-import java.util.Arrays;
+import java.util.Enumeration;
 import java.util.List;
 import java.util.Map;
 import java.util.jar.Attributes;
-import java.util.stream.Collectors;
 
 import static com.alipay.sofa.ark.spi.constant.Constants.*;
 
@@ -32,84 +39,232 @@ import static com.alipay.sofa.ark.spi.constant.Constants.*;
  * @author suimi
  * @date 2019/10/31
  */
-@Slf4j @Service public class DappLifecycleManage implements IDappLifecycleManage {
+@Slf4j @Service public class DappLifecycleManage
+    implements IDappLifecycleManage, ApplicationListener<ApplicationReadyEvent> {
+    /**
+     * app config file name
+     */
+    private static final String DAPP_CONFIG_FILE_NAME = "application.properties";
 
     @Autowired DrsConfig drsConfig;
 
     @Autowired IDappService dappService;
 
+    @Override public void onApplicationEvent(ApplicationReadyEvent applicationReadyEvent) {
+        init();
+    }
+
+    /**
+     * init
+     */
+    private void init() {
+        List<Dapp> dappList = list();
+        if (CollectionUtils.isEmpty(dappList)) {
+            return;
+        }
+        //auto install
+        dappList.forEach(v -> {
+            if (v.getStatus() == DappStatus.RUNNING) {
+                v.setStatus(DappStatus.STOPPED);
+                install(v);
+            }
+        });
+    }
+
     @Override public Dapp download(String urlPath) throws IOException {
-        URL url = new URL(urlPath);
         String fileName = FilenameUtils.getName(urlPath);
+        log.info("[download]the app file name:{}", fileName);
         File destination = new File(drsConfig.getDownloadPath(), fileName);
-        Dapp info = dappService.findByFileName(fileName);
-        if (!destination.exists()) {
-            FileUtils.copyURLToFile(url, destination);
+        try {
+            URL url = new URL(urlPath);
+            if (!destination.exists()) {
+                FileUtils.copyURLToFile(url, destination);
+            }
+        } catch (Throwable e) {
+            File source = new File(urlPath);
+            if (!source.exists()) {
+                log.warn("download is fail,source file is not exists");
+                throw new DappException(DappError.DAPP_SOURCE_FILE_NOT_EXISTS_ERROR);
+            }
+            if (!destination.exists()) {
+                FileUtils.copyFile(source, destination);
+            }
         }
-        if (info == null) {
-            info = getInfo(destination);
+        log.info("[download]the app file are saved to destination:{}", destination);
+        //make jar file
+        JarFile bizFile = new JarFile(destination);
+        //get info from app file
+        Dapp app = getInfo(bizFile);
+        //check from database
+        if (dappService.isExists(app.getName())) {
+            log.warn("[download]the app is already download,url:{}", urlPath);
+            throw new DappException(DappError.DAPP_ALREADY_EXISTS);
         }
-        info.setStatus(DappStatus.Download);
-        return dappService.save(info);
+        app.setFileName(fileName);
+        //generator config file from Jar file
+        genAppConfig(bizFile, app.getName());
+        //set DOWNLOADED status
+        app.setStatus(DappStatus.DOWNLOADED);
+        return dappService.save(app);
 
     }
 
-    private Dapp getInfo(File file) throws IOException {
-        JarFile bizFile = new JarFile(file);
+    /**
+     * parse app info from Jar file
+     *
+     * @param bizFile
+     * @return
+     * @throws IOException
+     */
+    private Dapp getInfo(JarFile bizFile) throws IOException {
         JarFileArchive jarFileArchive = new JarFileArchive(bizFile);
         JarBizArchive bizArchive = new JarBizArchive(jarFileArchive);
         Dapp dapp = new Dapp();
         Attributes manifestMainAttributes = bizArchive.getManifest().getMainAttributes();
-        dapp.setFileName(file.getName());
         dapp.setName(manifestMainAttributes.getValue(ARK_BIZ_NAME));
         dapp.setVersion(manifestMainAttributes.getValue(ARK_BIZ_VERSION));
         dapp.setContextPath(manifestMainAttributes.getValue(WEB_CONTEXT_PATH));
         return dapp;
     }
 
-    @Override public void config(Long dappId, Map<String, String> config) {
-        dappService.configDapp(dappId, config);
+    /**
+     * generator config file
+     *
+     * @param bizFile
+     * @param appName
+     */
+    private void genAppConfig(JarFile bizFile, String appName) throws IOException {
+        Enumeration myEnum = bizFile.entries();
+        while (myEnum.hasMoreElements()) {
+            JarEntry myJarEntry = (JarEntry)myEnum.nextElement();
+            if (DAPP_CONFIG_FILE_NAME.equals(myJarEntry.getName())) {
+                InputStream in = null;
+                FileOutputStream out = null;
+                try {
+                    in = bizFile.getInputStream(myJarEntry);
+                    out = new FileOutputStream(getConfigPath(appName));
+                    byte[] data = IOUtils.toByteArray(in);
+                    IOUtils.write(data, out);
+                    log.info("generator config file is success,appName:{}", appName);
+                } finally {
+                    IOUtils.closeQuietly(in);
+                    IOUtils.closeQuietly(out);
+                }
+                break;
+            }
+        }
     }
 
-    @Override public boolean install(String fileName) {
+    /**
+     * config path for app
+     *
+     * @param appName
+     * @return
+     */
+    private String getConfigPath(String appName) {
+        String configPath = drsConfig.getConfigPath() + File.separator + appName;
+        File file = new File(configPath);
+        if (!file.exists()) {
+            file.mkdirs();
+        }
+        return configPath + File.separator + DAPP_CONFIG_FILE_NAME;
+    }
+
+    /**
+     * install by app name
+     *
+     * @param appName
+     * @return
+     */
+    @Override public boolean install(String appName) {
+        Dapp dapp = dappService.findByAppName(appName);
+        if (dapp == null) {
+            log.warn("[install] app is not exists,appName:{}", appName);
+            throw new DappException(DappError.DAPP_NOT_EXISTS);
+        }
+        this.install(dapp);
+        return true;
+    }
+
+    /**
+     * install by dapp info
+     *
+     * @param dapp
+     */
+    public void install(Dapp dapp) {
+        if (dapp == null) {
+            return;
+        }
+        DappStatus fromStatus = dapp.getStatus();
+        String appName = dapp.getName();
+        if (fromStatus == DappStatus.DOWNLOADED) {
+            log.warn("[install] app status is not INITIALIZED,appName:{},status:{}", appName, fromStatus);
+            throw new DappException(DappError.DAPP_NOT_INITIALIZED);
+        }
+        if (fromStatus == DappStatus.RUNNING) {
+            log.warn("[install] app status is already RUNNING,appName:{},status:{}", appName, fromStatus);
+            throw new DappException(DappError.DAPP_ALREADY_RUNNING);
+        }
+        DappStatus toStatus;
+        String runError = null;
         try {
-            Dapp dapp = dappService.findByFileName(fileName);
-            if (dapp == null) {
-                throw new RuntimeException("dapp not download");
-            }
             File dappFile = new File(drsConfig.getDownloadPath(), dapp.getFileName());
-            Dapp info = getInfo(dappFile);
-            Map<String, String> config = dappService.getConfig(info.getId());
-            log.info("install dapp:{}, with config:{}", info, config);
-            List<String> params = new ArrayList<>();
-            config.entrySet().forEach(e -> params.add(e.getKey() + "=" + e.getValue()));
-            ClientResponse response = ArkClient.installBiz(dappFile, params.toArray(new String[0]));
-            dapp.setStatus(DappStatus.Installed);
-            dappService.update(dapp);
-            return ResponseCode.SUCCESS.equals(response.getCode());
+            String configPath = getConfigPath(dapp.getName());
+            log.info("install dapp:{}, with configPath:{}", dapp, configPath);
+            ClientResponse response =
+                ArkClient.installBiz(dappFile, new String[] {"--spring.config.location=" + configPath});
+            if (ResponseCode.SUCCESS.equals(response.getCode())) {
+                toStatus = DappStatus.RUNNING;
+            } else {
+                toStatus = DappStatus.STOPPED;
+                runError = response.getMessage();
+            }
         } catch (Throwable e) {
             log.error("dapp install is failed", e);
-            return false;
+            runError = "install fail,unknown error";
+            toStatus = DappStatus.STOPPED;
+        }
+        //update status
+        dappService.updateStatus(appName, toStatus, runError);
+        if (runError != null) {
+            log.warn("dapp install is failed,{}", runError);
+            throw new DappException(runError);
         }
     }
 
-    @Override public boolean unInstall(String dappName, String version) {
+    @Override public boolean unInstall(String appName) {
+        Dapp dapp = dappService.findByAppName(appName);
+        if (dapp == null) {
+            log.warn("[unInstall] app is not exists,appName:{}", appName);
+            throw new DappException(DappError.DAPP_NOT_EXISTS);
+        }
+        DappStatus toStatus = dapp.getStatus();
+        String runError = null;
         try {
-            Dapp dapp = dappService.findByName(dappName, version);
-            ClientResponse response = ArkClient.uninstallBiz(dappName, version);
-            if (dapp != null) {
-                dapp.setStatus(DappStatus.Uninstalled);
-                dappService.update(dapp);
+            ClientResponse response = ArkClient.uninstallBiz(appName, dapp.getVersion());
+            if (ResponseCode.SUCCESS.equals(response.getCode())) {
+                toStatus = DappStatus.STOPPED;
+            } else {
+                runError = response.getMessage();
             }
-            return ResponseCode.SUCCESS.equals(response.getCode());
         } catch (Throwable e) {
             log.error("dapp uninstall is failed", e);
-            return false;
+            runError = "install fail,unknown error";
         }
+        //update status
+        dappService.updateStatus(appName, toStatus, runError);
+        if (runError != null) {
+            log.warn("dapp uninstall is failed,{}", runError);
+            throw new DappException(runError);
+        }
+        return true;
     }
 
     @Override public List<Dapp> list() {
         return dappService.findAll();
+    }
+
+    @Override public void config(Long dappId, Map<String, String> config) {
     }
 
 }

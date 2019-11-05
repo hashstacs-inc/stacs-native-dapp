@@ -19,7 +19,6 @@ package com.higgschain.trust.drs.boot;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.context.annotation.EnableAspectJAutoProxy;
 
 /**
  * A sample spring boot web project repackage as ark fat jar.
@@ -28,7 +27,6 @@ import org.springframework.context.annotation.EnableAspectJAutoProxy;
  * @since 1.0.0
  */
 @SpringBootApplication(scanBasePackages = "com.higgschain.trust.drs") @Slf4j public class DRSBootApplication {
-
     public static void main(String[] args) {
         SpringApplication.run(DRSBootApplication.class, args);
     }

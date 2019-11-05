@@ -1,26 +1,52 @@
 package com.higgschain.trust.drs.boot.service.dapp;
 
+import com.higgschain.trust.drs.boot.bo.Dapp;
+import com.higgschain.trust.drs.boot.enums.DappStatus;
+
 import java.util.List;
-import java.util.Map;
 
 /**
  * @author suimi
  * @date 2019/10/31
  */
 public interface IDappService {
-    Dapp save(Dapp info);
+    /**
+     * save app info
+     *
+     * @param app
+     * @return
+     */
+    Dapp save(Dapp app);
 
-    Dapp findByFileName(String fileName);
+    /**
+     * find app info by app name
+     *
+     * @param appName
+     * @return
+     */
+    Dapp findByAppName(String appName);
 
+    /**
+     * dapp is exists
+     *
+     * @param appName
+     * @return
+     */
+    boolean isExists(String appName);
+
+    /**
+     * query all dapp
+     *
+     * @return
+     */
     List<Dapp> findAll();
 
-    Dapp findById(long id);
-
-    void update(Dapp dapp);
-
-    Dapp findByName(String dappName, String version);
-
-    void configDapp(Long dappId, Map<String,String> config);
-
-    Map<String,String> getConfig(Long dappId);
+    /**
+     * update status and run error
+     *
+     * @param appName
+     * @param toStatus
+     * @param runError
+     */
+    void updateStatus(String appName, DappStatus toStatus, String runError);
 }

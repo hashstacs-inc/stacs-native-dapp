@@ -4,13 +4,15 @@ import com.alipay.sofa.ark.spi.model.Biz;
 import com.alipay.sofa.ark.spi.model.BizState;
 import com.alipay.sofa.ark.spi.service.ArkInject;
 import com.alipay.sofa.ark.spi.service.biz.BizManagerService;
-import com.higgschain.trust.drs.boot.service.dapp.Dapp;
-import com.higgschain.trust.drs.boot.service.dapp.IDappService;
+import com.higgschain.trust.drs.boot.bo.Dapp;
+import com.higgschain.trust.drs.boot.enums.DappStatus;
+import com.higgschain.trust.drs.boot.exception.DappError;
+import com.higgschain.trust.drs.boot.exception.DappException;
 import com.higgschain.trust.drs.boot.service.IDappLifecycleManage;
-import com.higgschain.trust.drs.boot.service.dapp.DappStatus;
+import com.higgschain.trust.drs.boot.service.dapp.IDappService;
+import com.higgschain.trust.drs.model.RespData;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.util.MultiValueMap;
 import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
@@ -34,13 +36,56 @@ import java.util.stream.Collectors;
      *
      * @return
      */
-    @GetMapping("/download") public Dapp download(@RequestParam String filePath) throws IOException {
+    @GetMapping("/download") public RespData download(@RequestParam String filePath) throws IOException {
         log.info("start download dapp by filePath:{}", filePath);
-        return dappLifecycleManage.download(filePath);
+        try {
+            return RespData.success(dappLifecycleManage.download(filePath));
+        } catch (DappException e) {
+            log.error("has dapp error", e);
+            return RespData.fail(e.getCode(), e.getMsg());
+        } catch (Throwable e) {
+            log.error("has unknown error", e);
+            return RespData.fail(DappError.DAPP_COMMON_ERROR.getCode(), e.getMessage());
+        }
     }
 
     /**
      * install dapp
+     *
+     * @return
+     */
+    @GetMapping("/install/{appName}") public RespData install(@PathVariable String appName) {
+        log.info("start install dapp by appName:{}", appName);
+        try {
+            return RespData.success(dappLifecycleManage.install(appName));
+        } catch (DappException e) {
+            log.error("has dapp error", e);
+            return RespData.fail(e.getCode(), e.getMsg());
+        } catch (Throwable e) {
+            log.error("has unknown error", e);
+            return RespData.fail(DappError.DAPP_COMMON_ERROR.getCode(), e.getMessage());
+        }
+    }
+
+    /**
+     * uninstall dapp
+     *
+     * @return
+     */
+    @GetMapping("/uninstall/{appName}") public RespData uninstall(@PathVariable("appName") String appName) {
+        try {
+            return RespData.success(dappLifecycleManage.unInstall(appName));
+        } catch (DappException e) {
+            log.error("has dapp error", e);
+            return RespData.fail(e.getCode(), e.getMsg());
+        } catch (Throwable e) {
+            log.error("has unknown error", e);
+            return RespData.fail(DappError.DAPP_COMMON_ERROR.getCode(), e.getMessage());
+        }
+    }
+
+    /**
+     * config dapp
      *
      * @return
      */
@@ -53,17 +98,7 @@ import java.util.stream.Collectors;
     }
 
     /**
-     * install dapp
-     *
-     * @return
-     */
-    @GetMapping("/install/{fileName}") public boolean install(@PathVariable String fileName) {
-        log.info("start install dapp by filePath:{}", fileName);
-        return dappLifecycleManage.install(fileName);
-    }
-
-    /**
-     * install dapp
+     * show all dapp
      *
      * @return
      */
@@ -96,19 +131,9 @@ import java.util.stream.Collectors;
 
     private DappStatus map(BizState bizState) {
         if (BizState.ACTIVATED == bizState) {
-            return DappStatus.Installed;
+            return DappStatus.RUNNING;
         }
         return null;
-    }
-
-    /**
-     * uninstall dapp
-     *
-     * @return
-     */
-    @GetMapping("/uninstall/{serviceName}/{version}") public boolean uninstall(
-        @PathVariable("serviceName") String dappName, @PathVariable("version") String version) {
-        return dappLifecycleManage.unInstall(dappName, version);
     }
 
 }
