@@ -16,7 +16,9 @@ import lombok.Getter;
     DAPP_UPDATE_STATUS_ERROR("100005", "udpate Dapp status is error"),
     DAPP_SOURCE_FILE_NOT_EXISTS_ERROR("100006", "source file is not exists"),
     DB_ERROR("100007", "has data base error" ),
-    IDEMPOTENT_ERROR("100008", "has idempotent error" )
+    IDEMPOTENT_ERROR("100008", "has idempotent error" ),
+    DAPP_ALREADY_INITIALIZED("100009", "Dapp is already initialized"),
+    DAPP_CONFIG_NOT_FOUND("100010", "Dapp config file is not found"),
 
     ;
 

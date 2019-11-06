@@ -41,10 +41,27 @@ import java.util.stream.Collectors;
         try {
             return RespData.success(dappLifecycleManage.download(filePath));
         } catch (DappException e) {
-            log.error("has dapp error", e);
+            log.error("[download]has dapp error", e);
             return RespData.fail(e.getCode(), e.getMsg());
         } catch (Throwable e) {
-            log.error("has unknown error", e);
+            log.error("[download]has unknown error", e);
+            return RespData.fail(DappError.DAPP_COMMON_ERROR.getCode(), e.getMessage());
+        }
+    }
+
+    /**
+     * initialized dapp
+     *
+     * @return
+     */
+    @GetMapping("/init/{appName}") public RespData initialized(@PathVariable String appName) {
+        try {
+            return RespData.success(dappLifecycleManage.initialized(appName));
+        } catch (DappException e) {
+            log.error("[initialized]has dapp error", e);
+            return RespData.fail(e.getCode(), e.getMsg());
+        } catch (Throwable e) {
+            log.error("[initialized]has unknown error", e);
             return RespData.fail(DappError.DAPP_COMMON_ERROR.getCode(), e.getMessage());
         }
     }
@@ -59,10 +76,10 @@ import java.util.stream.Collectors;
         try {
             return RespData.success(dappLifecycleManage.install(appName));
         } catch (DappException e) {
-            log.error("has dapp error", e);
+            log.error("[install]has dapp error", e);
             return RespData.fail(e.getCode(), e.getMsg());
         } catch (Throwable e) {
-            log.error("has unknown error", e);
+            log.error("[install]has unknown error", e);
             return RespData.fail(DappError.DAPP_COMMON_ERROR.getCode(), e.getMessage());
         }
     }
@@ -76,10 +93,37 @@ import java.util.stream.Collectors;
         try {
             return RespData.success(dappLifecycleManage.unInstall(appName));
         } catch (DappException e) {
-            log.error("has dapp error", e);
+            log.error("[uninstall]has dapp error", e);
             return RespData.fail(e.getCode(), e.getMsg());
         } catch (Throwable e) {
-            log.error("has unknown error", e);
+            log.error("[uninstall]has unknown error", e);
+            return RespData.fail(DappError.DAPP_COMMON_ERROR.getCode(), e.getMessage());
+        }
+    }
+
+    /**
+     * show all dapp
+     *
+     * @return
+     */
+    @GetMapping("/installList") public RespData installList() {
+        return RespData.success(dappLifecycleManage.list());
+    }
+
+    /**
+     * query dapp config
+     *
+     * @return
+     */
+    @GetMapping("/config/query/{appName}") public RespData queryConfig(@PathVariable(name = "appName") String appName) {
+        log.info("queryConfig appName :{} ", appName);
+        try {
+            return RespData.success(dappLifecycleManage.queryConfig(appName));
+        } catch (DappException e) {
+            log.error("[queryConfig]has dapp error", e);
+            return RespData.fail(e.getCode(), e.getMsg());
+        } catch (Throwable e) {
+            log.error("[queryConfig]has unknown error", e);
             return RespData.fail(DappError.DAPP_COMMON_ERROR.getCode(), e.getMessage());
         }
     }
@@ -89,21 +133,21 @@ import java.util.stream.Collectors;
      *
      * @return
      */
-    @GetMapping("/config/{dappId}") public void config(@PathVariable(name = "dappId") Long dappId,
-        @RequestParam Map<String, String> params) {
-        log.info("config dapp :{} with params:{}", dappId, params);
+    @PostMapping("/config/{appName}") public RespData config(@PathVariable(name = "appName") String appName,
+        @RequestBody Map<String, String> params) {
+        log.info("config dapp :{} with params:{}", appName, params);
         Map<String, String> map = new HashMap<>();
         map.putAll(params);
-        dappLifecycleManage.config(dappId, map);
-    }
-
-    /**
-     * show all dapp
-     *
-     * @return
-     */
-    @GetMapping("/installList") public List<Dapp> installList() {
-        return dappLifecycleManage.list();
+        try {
+            dappLifecycleManage.config(appName, map);
+            return RespData.success();
+        } catch (DappException e) {
+            log.error("[config]has dapp error", e);
+            return RespData.fail(e.getCode(), e.getMsg());
+        } catch (Throwable e) {
+            log.error("[config]has unknown error", e);
+            return RespData.fail(DappError.DAPP_COMMON_ERROR.getCode(), e.getMessage());
+        }
     }
 
     /**
@@ -133,7 +177,7 @@ import java.util.stream.Collectors;
         if (BizState.ACTIVATED == bizState) {
             return DappStatus.RUNNING;
         }
-        return null;
+        return DappStatus.STOPPED;
     }
 
 }

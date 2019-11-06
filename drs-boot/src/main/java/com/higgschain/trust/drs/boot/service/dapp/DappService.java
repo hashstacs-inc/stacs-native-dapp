@@ -43,7 +43,6 @@ import java.util.List;
     @Override public Dapp findByAppName(String appName) {
         AppInfoPO po = appInfoDao.queryByAppName(appName);
         if (po == null) {
-            log.info("[findByAppName]the app is not exist,app name:{}", appName);
             return null;
         }
         Dapp dapp = new Dapp();
@@ -59,7 +58,6 @@ import java.util.List;
     @Override public List<Dapp> findAll() {
         List<AppInfoPO> list = appInfoDao.queryAll();
         if (CollectionUtils.isEmpty(list)) {
-            log.warn("[findAll] result is empty from data base");
             return null;
         }
         List<Dapp> dappList = Lists.newArrayList();

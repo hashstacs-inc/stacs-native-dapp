@@ -5,6 +5,7 @@ import com.higgschain.trust.drs.boot.bo.Dapp;
 import java.io.IOException;
 import java.util.List;
 import java.util.Map;
+import java.util.Properties;
 
 /**
  * @author suimi
@@ -20,6 +21,13 @@ public interface IDappLifecycleManage {
      */
     Dapp download(String url) throws IOException;
 
+    /**
+     * init
+     *
+     * @param appName
+     * @return
+     */
+    boolean initialized(String appName);
     /**
      * install
      *
@@ -43,5 +51,19 @@ public interface IDappLifecycleManage {
      */
     List<Dapp> list();
 
-    void config(Long dappId, Map<String, String> config);
+    /**
+     * query config by appName
+     *
+     * @param appName
+     * @return
+     */
+    Properties queryConfig(String appName);
+
+    /**
+     * config app
+     *
+     * @param appName
+     * @param config
+     */
+    void config(String appName, Map<String, String> config);
 }

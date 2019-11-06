@@ -23,14 +23,12 @@ import org.springframework.context.ApplicationListener;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
+import java.io.*;
 import java.net.URL;
 import java.util.Enumeration;
 import java.util.List;
 import java.util.Map;
+import java.util.Properties;
 import java.util.jar.Attributes;
 
 import static com.alipay.sofa.ark.spi.constant.Constants.*;
@@ -109,6 +107,21 @@ import static com.alipay.sofa.ark.spi.constant.Constants.*;
 
     }
 
+    @Override public boolean initialized(String appName) {
+        Dapp dapp = dappService.findByAppName(appName);
+        if (dapp == null) {
+            log.warn("[initialized] app is not exists,appName:{}", appName);
+            throw new DappException(DappError.DAPP_NOT_EXISTS);
+        }
+        if (dapp.getStatus() == DappStatus.INITIALIZED) {
+            log.warn("[initialized] app status is already INITIALIZED,appName:{},status:{}", appName, dapp.getStatus());
+            throw new DappException(DappError.DAPP_ALREADY_INITIALIZED);
+        }
+        //update status
+        dappService.updateStatus(appName, DappStatus.INITIALIZED, null);
+        return true;
+    }
+
     /**
      * parse app info from Jar file
      *
@@ -134,6 +147,7 @@ import static com.alipay.sofa.ark.spi.constant.Constants.*;
      * @param appName
      */
     private void genAppConfig(JarFile bizFile, String appName) throws IOException {
+        boolean isGened = false;
         Enumeration myEnum = bizFile.entries();
         while (myEnum.hasMoreElements()) {
             JarEntry myJarEntry = (JarEntry)myEnum.nextElement();
@@ -145,13 +159,18 @@ import static com.alipay.sofa.ark.spi.constant.Constants.*;
                     out = new FileOutputStream(getConfigPath(appName));
                     byte[] data = IOUtils.toByteArray(in);
                     IOUtils.write(data, out);
-                    log.info("generator config file is success,appName:{}", appName);
                 } finally {
                     IOUtils.closeQuietly(in);
                     IOUtils.closeQuietly(out);
                 }
+                isGened = true;
                 break;
             }
+        }
+        if (isGened) {
+            log.info("generator config file is success,appName:{}", appName);
+        } else {
+            log.warn("generator config file is fail,appName:{}", appName);
         }
     }
 
@@ -264,7 +283,55 @@ import static com.alipay.sofa.ark.spi.constant.Constants.*;
         return dappService.findAll();
     }
 
-    @Override public void config(Long dappId, Map<String, String> config) {
+    @Override public Properties queryConfig(String appName) {
+        if (!dappService.isExists(appName)) {
+            log.warn("[queryConfig] app is not exists,appName:{}", appName);
+            throw new DappException(DappError.DAPP_NOT_EXISTS);
+        }
+        String filePath = getConfigPath(appName);
+        Properties p = new Properties();
+        FileInputStream is = null;
+        try {
+            is = new FileInputStream(new File(filePath));
+            p.load(is);
+            //filter
+            p.remove("server.port");
+        } catch (IOException e) {
+            log.warn("[queryConfig] has IO error,appName:{}", appName, e);
+            throw new DappException(DappError.DAPP_CONFIG_NOT_FOUND);
+        } finally {
+            IOUtils.closeQuietly(is);
+        }
+        return p;
     }
 
+    @Override public void config(String appName, Map<String, String> config) {
+        if (!dappService.isExists(appName)) {
+            log.warn("[config] app is not exists,appName:{}", appName);
+            throw new DappException(DappError.DAPP_NOT_EXISTS);
+        }
+        String filePath = getConfigPath(appName);
+        Properties p = new Properties();
+        if (!config.isEmpty()) {
+            p.putAll(config);
+        }
+        String springAppNameKey = "spring.application.name";
+        if (!p.containsKey(springAppNameKey)) {
+            p.put(springAppNameKey, appName);
+        }
+        String serverPortKey = "server.port";
+        if(!p.containsKey(serverPortKey)){
+            p.put(serverPortKey, "8080");
+        }
+        FileOutputStream os = null;
+        try {
+            os = new FileOutputStream(new File(filePath));
+            p.store(os, null);
+        } catch (IOException e) {
+            log.warn("[config] has IO error,appName:{}", appName, e);
+            throw new DappException(DappError.DAPP_CONFIG_NOT_FOUND);
+        } finally {
+            IOUtils.closeQuietly(os);
+        }
+    }
 }
