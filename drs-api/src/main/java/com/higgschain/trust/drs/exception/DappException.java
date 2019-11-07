@@ -1,4 +1,4 @@
-package com.higgschain.trust.drs.boot.exception;
+package com.higgschain.trust.drs.exception;
 
 import lombok.Getter;
 

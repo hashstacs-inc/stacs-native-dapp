@@ -17,8 +17,10 @@
 package com.higgschain.trust.drs.boot;
 
 import lombok.extern.slf4j.Slf4j;
+import org.mybatis.spring.annotation.MapperScan;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.transaction.annotation.EnableTransactionManagement;
 
 /**
  * A sample spring boot web project repackage as ark fat jar.
@@ -26,7 +28,10 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
  * @author suimi
  * @since 1.0.0
  */
-@SpringBootApplication(scanBasePackages = "com.higgschain.trust.drs") @Slf4j public class DRSBootApplication {
+@SpringBootApplication(scanBasePackages = "com.higgschain.trust.drs") @Slf4j
+@EnableTransactionManagement
+@MapperScan({ "com.higgschain.trust.drs.*.dao"})
+public class DRSBootApplication {
     public static void main(String[] args) {
         SpringApplication.run(DRSBootApplication.class, args);
     }
