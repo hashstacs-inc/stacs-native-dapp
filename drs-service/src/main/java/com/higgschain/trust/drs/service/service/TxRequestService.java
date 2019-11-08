@@ -15,6 +15,7 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DuplicateKeyException;
 import org.springframework.stereotype.Service;
+import org.springframework.validation.annotation.Validated;
 
 import javax.validation.Valid;
 
@@ -23,7 +24,7 @@ import javax.validation.Valid;
  * @description
  * @date 2019-11-07
  */
-@Service @Slf4j public class TxRequestService {
+@Service @Slf4j @Validated public class TxRequestService {
     @Autowired TxRequestDao txRequestDao;
     @Autowired InitTxDisruptor initTxDisruptor;
     @Autowired BlockChainFacade blockChainFacade;
@@ -71,8 +72,9 @@ import javax.validation.Valid;
             //send to block chain
             CasDecryptReponse response = blockChainFacade.send(bo.getTxApi(), bo.getTxData());
             //update to END status
-            r = txRequestDao.updateStatusAndReceipt(bo.getTxId(), RequestStatus.PROCESSING.name(), RequestStatus.END.name(),
-                response != null ? JSON.toJSONString(response) : null);
+            r = txRequestDao
+                .updateStatusAndReceipt(bo.getTxId(), RequestStatus.PROCESSING.name(), RequestStatus.END.name(),
+                    response != null ? JSON.toJSONString(response) : null);
             if (r != 1) {
                 log.error("[processInit] update status and receipt is error,txId:{}", bo.getTxId());
                 throw new DappException(DappError.DAPP_UPDATE_STATUS_ERROR);
