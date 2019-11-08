@@ -3,6 +3,7 @@ package com.higgschain.trust.drs.service.event;
 import com.alipay.sofa.ark.spi.service.ArkInject;
 import com.alipay.sofa.ark.spi.service.event.EventAdminService;
 import com.higgschain.trust.drs.event.DappEvent;
+import com.higgschain.trust.drs.model.callback.TransactionReceipt;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
@@ -14,7 +15,7 @@ import org.springframework.stereotype.Component;
 
     @ArkInject private EventAdminService eventAdminService;
 
-    public void publish(long height, String txId, String value) {
+    public void publish(long height, String txId, TransactionReceipt value) {
         DappEvent event = new DappEvent();
         event.setHeight(height);
         event.setTxId(txId);

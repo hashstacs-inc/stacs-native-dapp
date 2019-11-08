@@ -23,6 +23,6 @@ import org.springframework.web.bind.annotation.RestController;
      */
     @GetMapping("/publish/{height}/{txId}/{value}") public void publish(@PathVariable("height") long height,
         @PathVariable("txId") String txId, @PathVariable("value") String value) {
-        eventPublisher.publish(height, txId, value);
+        eventPublisher.publish(height, txId, null);
     }
 }

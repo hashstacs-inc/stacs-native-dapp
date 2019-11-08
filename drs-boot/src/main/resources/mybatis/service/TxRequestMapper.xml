@@ -97,4 +97,14 @@
         WHERE
         `tx_id` = #{txId} and status=#{from}
     </update>
+
+    <!-- update receipt-->
+    <update id="updateReceipt">
+        UPDATE `tx_request`
+        SET
+        `tx_receipt` = #{receipt},
+        `update_time`= now()
+        WHERE
+        `tx_id` = #{txId}
+    </update>
 </mapper>

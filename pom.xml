@@ -188,6 +188,11 @@
                 <artifactId>hibernate-validator</artifactId>
                 <version>5.4.1.Final</version>
             </dependency>
+            <dependency>
+                <groupId>com.alibaba</groupId>
+                <artifactId>fastjson</artifactId>
+                <version>1.2.46</version>
+            </dependency>
         </dependencies>
     </dependencyManagement>
 

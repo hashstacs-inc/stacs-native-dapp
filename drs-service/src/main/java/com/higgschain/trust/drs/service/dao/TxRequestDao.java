@@ -44,10 +44,20 @@ import java.util.List;
      * @param txId
      * @param from
      * @param to
+     * @param receipt
      * @return
      */
     int updateStatusAndReceipt(@Param("txId") String txId, @Param("from") String from, @Param("to") String to,
         @Param("receipt") String receipt);
+
+    /**
+     * update receipt
+     *
+     * @param txId
+     * @param receipt
+     * @return
+     */
+    int updateReceipt(@Param("txId") String txId,@Param("receipt") String receipt);
 
     /**
      * query by status

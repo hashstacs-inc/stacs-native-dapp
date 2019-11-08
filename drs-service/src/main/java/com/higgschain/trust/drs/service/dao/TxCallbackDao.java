@@ -19,8 +19,26 @@ import org.apache.ibatis.annotations.Param;
     int save(TxCallbackPO po);
 
     /**
+     * get max height
+     *
+     * @return
+     */
+    Long maxHeight();
+
+    /**
      * @param height
      * @return
      */
     TxCallbackPO queryByBlockHeight(@Param("height") Long height);
+
+    /**
+     * update status
+     *
+     * @param height
+     * @param from
+     * @param to
+     * @return
+     */
+    int updateStatus(@Param("height") Long height, @Param("from") String from, @Param("to") String to);
+
 }

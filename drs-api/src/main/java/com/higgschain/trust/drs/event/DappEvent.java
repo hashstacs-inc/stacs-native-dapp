@@ -1,6 +1,7 @@
 package com.higgschain.trust.drs.event;
 
 import com.alipay.sofa.ark.spi.event.ArkEvent;
+import com.higgschain.trust.drs.model.callback.TransactionReceipt;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -13,9 +14,9 @@ import lombok.ToString;
 @Getter @Setter @NoArgsConstructor @ToString public class DappEvent implements ArkEvent {
     private long height;
     private String txId;
-    private String value;
+    private TransactionReceipt value;
 
     @Override public String getTopic() {
-        return value;
+        return "CALL_BACK";
     }
 }
