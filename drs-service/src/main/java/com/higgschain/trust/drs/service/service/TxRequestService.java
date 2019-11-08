@@ -47,6 +47,7 @@ import javax.validation.Valid;
             log.error("save request info has other error", e);
             throw new DappException(DappError.DB_ERROR);
         }
+        bo.setStatus(RequestStatus.INIT);
         initTxDisruptor.publish(bo.getTxId(), bo);
     }
 
@@ -57,7 +58,7 @@ import javax.validation.Valid;
      */
     public void processTxRequest(TxRequestBO bo) {
         if (bo.getStatus() != RequestStatus.INIT) {
-            log.warn("[processInit] ,status is not INIT,txId:{}", bo.getTxId());
+            log.warn("[processInit]status is not INIT,txId:{}", bo.getTxId());
             return;
         }
         //update status from INIT to PROCESSING
@@ -66,10 +67,16 @@ import javax.validation.Valid;
             log.error("[processInit] update status is error,txId:{}", bo.getTxId());
             throw new DappException(DappError.DAPP_UPDATE_STATUS_ERROR);
         }
-        //send to block chain
-        CasDecryptReponse response = null;
         try {
-            response = blockChainFacade.send(bo.getTxApi(), bo.getTxData());
+            //send to block chain
+            CasDecryptReponse response = blockChainFacade.send(bo.getTxApi(), bo.getTxData());
+            //update to END status
+            r = txRequestDao.updateStatusAndReceipt(bo.getTxId(), RequestStatus.PROCESSING.name(), RequestStatus.END.name(),
+                response != null ? JSON.toJSONString(response) : null);
+            if (r != 1) {
+                log.error("[processInit] update status and receipt is error,txId:{}", bo.getTxId());
+                throw new DappException(DappError.DAPP_UPDATE_STATUS_ERROR);
+            }
         } catch (Throwable e) {
             log.error("[processInit]send to block chain has error", e);
             //update status to INIT
@@ -78,13 +85,6 @@ import javax.validation.Valid;
                 log.error("[processInit] update status is error,txId:{}", bo.getTxId());
                 throw new DappException(DappError.DAPP_UPDATE_STATUS_ERROR);
             }
-        }
-        //update to END status
-        r = txRequestDao.updateStatusAndReceipt(bo.getTxId(), RequestStatus.PROCESSING.name(), RequestStatus.END.name(),
-            response != null ? JSON.toJSONString(response) : null);
-        if (r != 1) {
-            log.error("[processInit] update status and receipt is error,txId:{}", bo.getTxId());
-            throw new DappException(DappError.DAPP_UPDATE_STATUS_ERROR);
         }
     }
 }

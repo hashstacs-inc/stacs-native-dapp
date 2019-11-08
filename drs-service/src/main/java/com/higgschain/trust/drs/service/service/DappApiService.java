@@ -1,6 +1,7 @@
 package com.higgschain.trust.drs.service.service;
 
 import com.alipay.sofa.ark.container.registry.PluginServiceProvider;
+import com.alipay.sofa.ark.spi.model.Plugin;
 import com.alipay.sofa.ark.spi.service.ArkInject;
 import com.alipay.sofa.ark.spi.service.plugin.PluginManagerService;
 import com.alipay.sofa.ark.spi.service.registry.RegistryService;
@@ -32,8 +33,13 @@ import org.springframework.stereotype.Service;
     }
 
     @Override public void afterPropertiesSet() {
+        Plugin plugin = pluginManagerService.getPluginByName(Constants.SERVICE_NAME);
+        if(plugin == null){
+            log.warn("init plugin is fail,get plugin is null,name:{}",Constants.SERVICE_NAME);
+            return;
+        }
         registryService.publishService(IDappApiService.class, this,
-            new PluginServiceProvider(pluginManagerService.getPluginByName(Constants.SERVICE_NAME)));
+            new PluginServiceProvider(plugin));
         log.info("published service:{}", IDappApiService.class);
     }
 }
