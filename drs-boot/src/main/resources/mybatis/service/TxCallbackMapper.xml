@@ -45,15 +45,15 @@
 		values(#{id},#{blockHeight},#{txReceipts},#{status},now(),now())
 	</insert>
 
-    <!-- 根据 height 查询 -->
-    <select id="queryByBlockHeight" resultMap="baseResultMap" parameterType="Object">
+    <!-- queryByHeightAndStatus -->
+    <select id="queryByHeightAndStatus" resultMap="baseResultMap" parameterType="Object">
         select
         <include refid="baseColumnList"/>
-        from tx_callback where block_height=#{height}
+        from tx_callback where block_height=#{height} and status=#{status}
     </select>
     <!-- maxHeight -->
     <select id="maxHeight" resultType="java.lang.Long" parameterType="Object">
-		select block_height from tx_callback order by block_height desc limit 1
+		select block_height from tx_callback where status='PROCESSED' order by block_height desc limit 1
 	</select>
 
     <!-- update status-->

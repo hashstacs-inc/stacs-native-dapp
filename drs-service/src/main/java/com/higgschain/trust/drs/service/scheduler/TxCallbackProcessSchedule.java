@@ -22,31 +22,32 @@ import org.springframework.stereotype.Service;
     @Autowired TxCallbackDao txCallbackDao;
     @Autowired TxCallbackService txCallbackService;
     /**
-     * block height
+     * next height
      */
-    private Long currentHeight = 1L;
+    private Long nextHeight;
 
     @Override public void afterPropertiesSet() throws Exception {
-        currentHeight = txCallbackDao.maxHeight();
-        log.info("currentHeight：{}", currentHeight);
+        nextHeight = txCallbackDao.maxHeight();
+        if (nextHeight == null) {
+            nextHeight = 1L;
+        }else{
+            nextHeight += 1L;
+        }
+        log.info("init nextHeight：{}", nextHeight);
     }
 
     /**
      * Exe.
      */
     @Scheduled(fixedDelayString = "${drs.schedule.processCallback:1000}") public void exe() {
-        TxCallbackPO po = txCallbackDao.queryByBlockHeight(currentHeight);
+        TxCallbackPO po = txCallbackDao.queryByHeightAndStatus(nextHeight, CallbackStatus.INIT.name());
         if (po == null) {
-            return;
-        }
-        CallbackStatus status = CallbackStatus.fromCode(po.getStatus());
-        if (status != CallbackStatus.INIT) {
             return;
         }
         TxCallbackBO bo = new TxCallbackBO();
         BeanUtils.copyProperties(po, bo);
-        bo.setStatus(status);
+        bo.setStatus(CallbackStatus.INIT);
         txCallbackService.processCallbackTx(bo);
-        currentHeight++;
+        nextHeight++;
     }
 }

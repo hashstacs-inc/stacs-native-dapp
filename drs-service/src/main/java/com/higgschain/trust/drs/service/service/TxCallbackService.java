@@ -88,5 +88,6 @@ import java.util.List;
             log.error("[processCallbackTx]update status is error");
             throw new DappException(DappError.DB_ERROR);
         }
+        log.info("[processCallbackTx]process callback is success,blockHeight:{}", bo.getBlockHeight());
     }
 }

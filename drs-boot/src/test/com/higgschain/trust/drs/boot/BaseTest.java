@@ -1,13 +1,22 @@
 package com.higgschain.trust.drs.boot;
 
+import com.alibaba.fastjson.JSON;
 import com.alipay.sofa.ark.springboot.runner.ArkBootRunner;
-import com.higgschain.trust.drs.boot.service.IDappLifecycleManage;
+import com.higgschain.trust.drs.model.callback.TransactionReceipt;
+import com.higgschain.trust.drs.model.callback.TxReceiptData;
+import com.higgschain.trust.drs.service.model.TxCallbackBO;
 import com.higgschain.trust.drs.service.model.TxRequestBO;
+import com.higgschain.trust.drs.service.model.block.BlockHeader;
+import com.higgschain.trust.drs.service.service.TxCallbackService;
 import com.higgschain.trust.drs.service.service.TxRequestService;
+import com.higgschain.trust.drs.service.vo.CallbackVO;
+import org.assertj.core.util.Lists;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+
+import java.util.List;
 
 /**
  * @author liuyu
@@ -18,17 +27,35 @@ import org.springframework.boot.test.context.SpringBootTest;
 @SpringBootTest(classes = DRSBootApplication.class)
 public class BaseTest {
     @Autowired private TxRequestService txRequestService;
-    @Autowired private IDappLifecycleManage dappLifecycleManage;
+    @Autowired private TxCallbackService callbackService;
 
     @Test
-    public void testSubmitTx() throws InterruptedException {
-        dappLifecycleManage.list();
+    public void testSubmitTx()  {
         TxRequestBO bo = new TxRequestBO();
         bo.setTxId("tx_id_test_" + System.currentTimeMillis());
         bo.setTxApi("/test/api");
         bo.setPolicyId("ISSUE");
         bo.setTxData(new Object());
         txRequestService.submitTx(bo);
-        Thread.sleep(1000000);
+    }
+
+    @Test
+    public void testReceiveCallbackTx(){
+        TxCallbackBO bo = new TxCallbackBO();
+        bo.setBlockHeight(2L);
+        CallbackVO vo = new CallbackVO();
+        BlockHeader header = new BlockHeader();
+        header.setHeight(2L);
+        vo.setBlockHeader(header);
+        List<TransactionReceipt> receipts = Lists.newArrayList();
+        TransactionReceipt tr = new TransactionReceipt();
+        tr.setResult(true);
+        tr.setTxId("tx_id_test_1573176949319");
+        tr.setReceiptData(new TxReceiptData());
+        receipts.add(tr);
+
+        vo.setReceipts(receipts);
+        bo.setTxReceipts(JSON.toJSONString(vo));
+        callbackService.receivedTxs(bo);
     }
 }
