@@ -24,6 +24,7 @@ import org.springframework.dao.DuplicateKeyException;
 import org.springframework.stereotype.Service;
 import org.springframework.validation.annotation.Validated;
 
+import java.util.Comparator;
 import java.util.List;
 
 /**
@@ -72,13 +73,16 @@ import java.util.List;
                 receipts);
             return;
         }
+        //order by txid
+        list.sort(Comparator.comparing(TransactionReceipt::getTxId));
+        //
         list.forEach(v -> {
-            //callback dapp
-            eventPublisher.publish(bo.getBlockHeight(), v.getTxId(), v);
             TxRequestPO po = txRequestDao.queryByTxId(v.getTxId());
             if (po != null) {
                 //set receipt for request
                 txRequestDao.updateReceipt(v.getTxId(), JSON.toJSONString(v));
+                //callback dapp
+                eventPublisher.publish(bo.getBlockHeight(), v.getTxId(), v);
             }
         });
         //update status

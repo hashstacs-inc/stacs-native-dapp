@@ -29,7 +29,7 @@ import org.apache.ibatis.annotations.Param;
      * @param height
      * @return
      */
-    TxCallbackPO queryByBlockHeight(@Param("height") Long height);
+    TxCallbackPO queryByHeightAndStatus(@Param("height") Long height,@Param("status")String status);
 
     /**
      * update status
