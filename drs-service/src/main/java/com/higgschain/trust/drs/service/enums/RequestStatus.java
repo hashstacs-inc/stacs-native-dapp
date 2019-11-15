@@ -6,7 +6,7 @@ package com.higgschain.trust.drs.service.enums;
  * @date 2019-11-07
  */
 public enum RequestStatus {
-    INIT,PROCESSING,END;
+    INIT,SUBMITTING,PROCESSING,END;
 
     /**
      * get by code

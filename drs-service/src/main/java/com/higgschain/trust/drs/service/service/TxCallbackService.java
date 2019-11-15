@@ -22,6 +22,9 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DuplicateKeyException;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.TransactionStatus;
+import org.springframework.transaction.support.TransactionCallback;
+import org.springframework.transaction.support.TransactionTemplate;
 import org.springframework.validation.annotation.Validated;
 
 import java.util.Comparator;
@@ -36,7 +39,7 @@ import java.util.List;
     @Autowired TxRequestDao txRequestDao;
     @Autowired TxCallbackDao txCallbackDao;
     @Autowired EventPublisher eventPublisher;
-
+    @Autowired private TransactionTemplate txRequired;
     /**
      * receive transaction from block chain
      *
@@ -75,23 +78,26 @@ import java.util.List;
         }
         //order by txid
         list.sort(Comparator.comparing(TransactionReceipt::getTxId));
-        //
-        list.forEach(v -> {
-            TxRequestPO po = txRequestDao.queryByTxId(v.getTxId());
-            if (po != null) {
-                //set receipt for request
-                txRequestDao.updateReceipt(v.getTxId(), JSON.toJSONString(v));
-                //callback dapp
-                eventPublisher.publish(bo.getBlockHeight(), v.getTxId(), v);
+        txRequired.execute(transactionStatus -> {
+            list.forEach(v -> {
+                TxRequestPO po = txRequestDao.queryByTxId(v.getTxId());
+                if (po != null) {
+                    //set status and receipt for request
+                    txRequestDao.updateStatusAndReceipt(v.getTxId(), po.getStatus(), RequestStatus.END.name(),
+                        JSON.toJSONString(v));
+                    //callback dapp
+                    eventPublisher.publish(bo.getBlockHeight(), v.getTxId(), v);
+                }
+            });
+            //update status
+            int r = txCallbackDao
+                .updateStatus(bo.getBlockHeight(), CallbackStatus.INIT.name(), CallbackStatus.PROCESSED.name());
+            if (r != 1) {
+                log.error("[processCallbackTx]update status is error");
+                throw new DappException(DappError.DB_ERROR);
             }
+            return null;
         });
-        //update status
-        int r = txCallbackDao
-            .updateStatus(bo.getBlockHeight(), CallbackStatus.INIT.name(), CallbackStatus.PROCESSED.name());
-        if (r != 1) {
-            log.error("[processCallbackTx]update status is error");
-            throw new DappException(DappError.DB_ERROR);
-        }
         log.info("[processCallbackTx]process callback is success,blockHeight:{}", bo.getBlockHeight());
     }
 }

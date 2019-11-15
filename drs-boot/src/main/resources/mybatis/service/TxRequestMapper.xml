@@ -7,6 +7,9 @@
         <result column="tx_id" property="txId"/>
         <result column="policy_id" property="policyId"/>
         <result column="tx_api" property="txApi"/>
+        <result column="submitter" property="submitter"/>
+        <result column="bd_code" property="bdCode"/>
+        <result column="func_name" property="funcName"/>
         <result column="tx_data" property="txData"/>
         <result column="block_height" property="blockHeight"/>
         <result column="tx_receipt" property="txReceipt"/>
@@ -16,7 +19,7 @@
     </resultMap>
     <!-- tx_request table all fields -->
     <sql id="baseColumnList">
-		id,tx_id,policy_id,tx_api,tx_data,block_height,tx_receipt,status,create_time,update_time
+		id,tx_id,policy_id,submitter,bd_code,func_name,tx_data,block_height,tx_receipt,status,create_time,update_time
 	</sql>
     <!-- 查询条件 -->
     <sql id="baseWhereClause">
@@ -30,12 +33,6 @@
             </if>
             <if test="txId != null and txId != ''">
                 and tx_id=#{txId}
-            </if>
-            <if test="txApi != null and txApi != ''">
-                and tx_api=#{txApi}
-            </if>
-            <if test="txData != null">
-                and tx_data=#{txData}
             </if>
             <if test="blockHeight != null">
                 and block_height=#{blockHeight}
@@ -57,8 +54,8 @@
     <!-- 插入记录 -->
     <insert id="save" parameterType="Object">
 		insert into
-		tx_request(id,tx_id,policy_id,tx_api,tx_data,block_height,tx_receipt,status,create_time,update_time)
-		values(#{id},#{txId},#{policyId},#{txApi},#{txData},#{blockHeight},#{txReceipt},#{status},now(),now())
+		tx_request(id,tx_id,policy_id,submitter,bd_code,func_name,tx_data,block_height,tx_receipt,status,create_time,update_time)
+		values(#{id},#{txId},#{policyId},#{submitter},#{bdCode},#{funcName},#{txData},#{blockHeight},#{txReceipt},#{status},now(),now())
 	</insert>
     <!-- 根据tx_id查询 -->
     <select id="queryByTxId" resultMap="baseResultMap" parameterType="Object">

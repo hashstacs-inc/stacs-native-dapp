@@ -17,15 +17,23 @@ import javax.validation.constraints.NotNull;
      */
     @NotBlank @Length(max = 32) private String policyId;
     /**
-     * tx request api
+     * tx submitter
      */
-    @NotBlank private String txApi;
+    @NotBlank @Length(max = 40) private String submitter;
+    /**
+     * business code
+     */
+    @NotBlank @Length(max = 32) private String bdCode;
+    /**
+     * function name
+     */
+    @NotBlank @Length(max = 128) private String funcName;
     /**
      * the request data
      */
     @NotNull private Object txData;
     /**
-     * status,INIT、PROCESSING、END
+     * status,INIT、SUBMITTING、PROCESSING、END
      */
     private RequestStatus status;
 }

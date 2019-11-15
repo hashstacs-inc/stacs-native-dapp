@@ -63,17 +63,18 @@ import javax.validation.Valid;
             return;
         }
         //update status from INIT to PROCESSING
-        int r = txRequestDao.updateStatus(bo.getTxId(), RequestStatus.INIT.name(), RequestStatus.PROCESSING.name());
+        int r = txRequestDao.updateStatus(bo.getTxId(), RequestStatus.INIT.name(), RequestStatus.SUBMITTING.name());
         if (r != 1) {
             log.error("[processInit] update status is error,txId:{}", bo.getTxId());
             throw new DappException(DappError.DAPP_UPDATE_STATUS_ERROR);
         }
         try {
+            //TODO:API
             //send to block chain
-            CasDecryptReponse response = blockChainFacade.send(bo.getTxApi(), bo.getTxData());
+            CasDecryptReponse response = blockChainFacade.send(bo.getFuncName(), bo.getTxData());
             //update to END status
             r = txRequestDao
-                .updateStatusAndReceipt(bo.getTxId(), RequestStatus.PROCESSING.name(), RequestStatus.END.name(),
+                .updateStatusAndReceipt(bo.getTxId(), RequestStatus.SUBMITTING.name(), RequestStatus.PROCESSING.name(),
                     response != null ? JSON.toJSONString(response) : null);
             if (r != 1) {
                 log.error("[processInit] update status and receipt is error,txId:{}", bo.getTxId());
@@ -82,7 +83,7 @@ import javax.validation.Valid;
         } catch (Throwable e) {
             log.error("[processInit]send to block chain has error", e);
             //update status to INIT
-            r = txRequestDao.updateStatus(bo.getTxId(), RequestStatus.PROCESSING.name(), RequestStatus.INIT.name());
+            r = txRequestDao.updateStatus(bo.getTxId(), RequestStatus.SUBMITTING.name(), RequestStatus.INIT.name());
             if (r != 1) {
                 log.error("[processInit] update status is error,txId:{}", bo.getTxId());
                 throw new DappException(DappError.DAPP_UPDATE_STATUS_ERROR);
