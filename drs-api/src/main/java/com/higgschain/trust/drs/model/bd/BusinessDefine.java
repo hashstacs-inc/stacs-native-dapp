@@ -1,18 +1,17 @@
 package com.higgschain.trust.drs.model.bd;
 
+import com.higgschain.trust.drs.enums.FunctionDefineEnum;
+import com.higgschain.trust.drs.model.BaseTxVO;
 import lombok.Getter;
 import lombok.Setter;
 
-import java.util.Date;
 import java.util.List;
 
 /**
  * @author dekuofa <br>
  * @date 2019-11-04 <br>
  */
-@Getter @Setter public class BusinessDefine {
-
-    private Long id;
+@Getter @Setter public class BusinessDefine extends BaseTxVO {
 
     private String code;
 
@@ -28,9 +27,9 @@ import java.util.List;
 
     private List<FunctionDefine> functions;
 
-    private String version;
+    private String bdVersion;
 
-    private Date createTime;
-
-    private Date updateTime;
+    @Override public String getFunctionName() {
+        return FunctionDefineEnum.BD_PUBLISH.getFunctionName();
+    }
 }

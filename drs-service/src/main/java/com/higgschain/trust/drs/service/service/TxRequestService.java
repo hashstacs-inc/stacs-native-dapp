@@ -3,6 +3,7 @@ package com.higgschain.trust.drs.service.service;
 import com.alibaba.fastjson.JSON;
 import com.google.common.collect.Lists;
 import com.hashstacs.sdk.wallet.dock.bo.CasDecryptReponse;
+import com.higgschain.trust.drs.enums.FunctionDefineEnum;
 import com.higgschain.trust.drs.exception.DappError;
 import com.higgschain.trust.drs.exception.DappException;
 import com.higgschain.trust.drs.model.PermissionInfo;
@@ -137,7 +138,7 @@ import java.util.stream.Collectors;
         try {
             //TODO:API
             //send to block chain
-            CasDecryptReponse response = blockChainFacade.send(bo.getFuncName(), bo.getTxData());
+            CasDecryptReponse response = blockChainFacade.send(FunctionDefineEnum.fromFuncName(bo.getFuncName()).getApi(), bo.getTxData());
             //update to END status
             r = txRequestDao
                 .updateStatusAndReceipt(bo.getTxId(), RequestStatus.SUBMITTING.name(), RequestStatus.PROCESSING.name(),
