@@ -20,6 +20,9 @@ import lombok.Getter;
     DAPP_ALREADY_INITIALIZED("100009", "Dapp is already initialized"),
     DAPP_CONFIG_NOT_FOUND("100010", "Dapp config file is not found"),
     PARAM_VILIDATE_ERROR("100011", "param validate error"),
+    BD_NOT_FIND_ERROR("100012", "bd is not find error"),
+    NO_PERMISSION_ERROR("100013", "no permission error"),
+    FUNCTION_NOT_FIND_ERROR("100014", "function not find error"),
 
     ;
 
