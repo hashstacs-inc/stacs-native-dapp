@@ -29,5 +29,7 @@ import org.hibernate.validator.constraints.NotBlank;
 
     @Length(max = 18) private String feeMaxAmount;
 
+    @NotBlank @Length(max = 32) private String bdCode = "SystemBD";
+
     public abstract String getFunctionName();
 }

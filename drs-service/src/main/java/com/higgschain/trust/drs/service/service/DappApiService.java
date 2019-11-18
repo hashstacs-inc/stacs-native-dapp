@@ -6,9 +6,11 @@ import com.alipay.sofa.ark.spi.service.ArkInject;
 import com.alipay.sofa.ark.spi.service.plugin.PluginManagerService;
 import com.alipay.sofa.ark.spi.service.registry.RegistryService;
 import com.higgschain.trust.drs.api.IDappApiService;
+import com.higgschain.trust.drs.model.BaseTxVO;
 import com.higgschain.trust.drs.model.SampleRequest;
 import com.higgschain.trust.drs.model.SampleResult;
 import com.higgschain.trust.drs.service.constant.Constants;
+import com.higgschain.trust.drs.service.model.TxRequestBO;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,6 +27,7 @@ import org.springframework.stereotype.Service;
     @ArkInject PluginManagerService pluginManagerService;
 
     @Autowired TestService testService;
+    @Autowired TxRequestService requestService;
 
     @Override public SampleResult service(SampleRequest request) {
         log.info("request:{}", request);
@@ -32,14 +35,24 @@ import org.springframework.stereotype.Service;
         return new SampleResult(true);
     }
 
+    @Override public void submit(BaseTxVO vo) {
+        TxRequestBO bo = new TxRequestBO();
+        bo.setTxId(vo.getTxId());
+        bo.setPolicyId(vo.getExecPolicyId());
+        bo.setBdCode(vo.getBdCode());
+        bo.setSubmitter(vo.getSubmitter());
+        bo.setFuncName(vo.getFunctionName());
+        bo.setTxData(vo);
+        requestService.submitTx(bo);
+    }
+
     @Override public void afterPropertiesSet() {
         Plugin plugin = pluginManagerService.getPluginByName(Constants.SERVICE_NAME);
-        if(plugin == null){
-            log.warn("init plugin is fail,get plugin is null,name:{}",Constants.SERVICE_NAME);
+        if (plugin == null) {
+            log.warn("init plugin is fail,get plugin is null,name:{}", Constants.SERVICE_NAME);
             return;
         }
-        registryService.publishService(IDappApiService.class, this,
-            new PluginServiceProvider(plugin));
+        registryService.publishService(IDappApiService.class, this, new PluginServiceProvider(plugin));
         log.info("published service:{}", IDappApiService.class);
     }
 }

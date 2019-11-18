@@ -1,5 +1,6 @@
 package com.higgschain.trust.drs.api;
 
+import com.higgschain.trust.drs.model.BaseTxVO;
 import com.higgschain.trust.drs.model.SampleRequest;
 import com.higgschain.trust.drs.model.SampleResult;
 
@@ -10,4 +11,10 @@ import com.higgschain.trust.drs.model.SampleResult;
 public interface IDappApiService {
 
     SampleResult service(SampleRequest request);
+
+    /**
+     * submit transaction to block chain
+     * @param vo
+     */
+    void submit(BaseTxVO vo);
 }
