@@ -79,14 +79,12 @@ import java.util.stream.Collectors;
         }
         BusinessDefine bd = bdList.get(0);
         List<FunctionDefine> functions = bd.getFunctions();
-        Optional<FunctionDefine> define =
-            functions.stream().filter(a -> a.getName().equals(bo.getFuncName())).findFirst();
+        FunctionDefine fd =
+            functions.stream().filter(a -> a.getName().equals(bo.getFuncName())).findFirst().orElseThrow(() -> {
+                log.warn("function define is not find,functionName:{},txId:{}", bo.getFuncName(), bo.getTxId());
+                return new DappException(DappError.FUNCTION_NOT_FIND_ERROR);
+            });
         //check function
-        define.orElseThrow(() -> {
-            log.warn("function define is not find,functionName:{},txId:{}", bo.getFuncName(), bo.getTxId());
-            return new DappException(DappError.FUNCTION_NOT_FIND_ERROR);
-        });
-        FunctionDefine fd = define.get();
         String permission = fd.getExecPermission();
 
         // todo replace use permission check api
