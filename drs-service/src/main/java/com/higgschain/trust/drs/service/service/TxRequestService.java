@@ -6,6 +6,7 @@ import com.higgschain.trust.drs.enums.FunctionDefineEnum;
 import com.higgschain.trust.drs.exception.DappError;
 import com.higgschain.trust.drs.exception.DappException;
 import com.higgschain.trust.drs.model.BaseTxVO;
+import com.higgschain.trust.drs.model.RespData;
 import com.higgschain.trust.drs.model.bd.BusinessDefine;
 import com.higgschain.trust.drs.model.bd.FunctionDefine;
 import com.higgschain.trust.drs.service.dao.TxRequestDao;
@@ -14,7 +15,6 @@ import com.higgschain.trust.drs.service.enums.RequestStatus;
 import com.higgschain.trust.drs.service.model.TxRequestBO;
 import com.higgschain.trust.drs.service.network.BlockChainFacade;
 import com.higgschain.trust.drs.service.scheduler.InitTxDisruptor;
-import com.higgschain.trust.drs.service.utils.CasDecryptResponse;
 import com.higgschain.trust.drs.service.vo.PermissionCheckVO;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections4.CollectionUtils;
@@ -153,7 +153,7 @@ import java.util.Optional;
         }
         try {
             //send to block chain
-            CasDecryptResponse response =
+            RespData response =
                 blockChainFacade.send(FunctionDefineEnum.fromFuncName(bo.getFuncName()).getApi(), bo.getTxData());
             //update to END status
             r = txRequestDao
