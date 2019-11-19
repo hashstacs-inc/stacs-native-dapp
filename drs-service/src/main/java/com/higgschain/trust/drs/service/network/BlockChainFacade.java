@@ -34,6 +34,12 @@ import java.util.function.Predicate;
         return client.post(txData, baseUrl + api, converter());
     }
 
+    public RespData<?> send(String api, Object txData, Function<CasDecryptResponse, RespData<?>> converter)
+        throws IOException {
+        // return client.encryptPost(txData, baseUrl + api);
+        return client.post(txData, baseUrl + api, converter);
+    }
+
     @Override public <T> void updateNotify(T config) {
         this.baseUrl = ((DomainConfig)config).getBaseUrl();
     }
