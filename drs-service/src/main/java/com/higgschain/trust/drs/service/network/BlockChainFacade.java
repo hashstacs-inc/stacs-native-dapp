@@ -34,9 +34,8 @@ import java.util.function.Predicate;
         return client.post(txData, baseUrl + api, converter());
     }
 
-    public RespData<?> send(String api, Object txData, Function<CasDecryptResponse, RespData<?>> converter)
+    public <T> T send(String api, Object txData, Function<CasDecryptResponse, T> converter)
         throws IOException {
-        // return client.encryptPost(txData, baseUrl + api);
         return client.post(txData, baseUrl + api, converter);
     }
 
