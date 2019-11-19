@@ -21,7 +21,9 @@ public enum FunctionDefineEnum {
      KYC_SETTING("KYC_SETTING",""),
      SET_FEE_RULE("SET_FEE_RULE",""),
      SAVE_ATTESTATION("SAVE_ATTESTATION",""),
-     BUILD_SNAPSHOT("BUILD_SNAPSHOT","")
+     BUILD_SNAPSHOT("BUILD_SNAPSHOT",""),
+     CREATE_CONTRACT("CREATE_CONTRACT","/contract/open/deploy"),
+     CONTRACT_INVOKER("CONTRACT_INVOER","/contract/open/invoke")
      ;
 
     private String functionName;

@@ -1,9 +1,9 @@
 package com.higgschain.trust.drs.api;
 
 import com.higgschain.trust.drs.exception.DappException;
-import com.higgschain.trust.drs.model.BaseTxVO;
 import com.higgschain.trust.drs.model.SampleRequest;
 import com.higgschain.trust.drs.model.SampleResult;
+import com.higgschain.trust.drs.model.bd.BusinessDefine;
 
 /**
  * @author suimi
@@ -14,8 +14,10 @@ public interface IDappApiService {
     SampleResult service(SampleRequest request);
 
     /**
-     * submit transaction to block chain
-     * @param vo
+     * publish business define
+     *
+     * @param bd
+     * @throws DappException
      */
-    void submit(BaseTxVO vo) throws DappException;
+    void publishBD(BusinessDefine bd) throws DappException;
 }
