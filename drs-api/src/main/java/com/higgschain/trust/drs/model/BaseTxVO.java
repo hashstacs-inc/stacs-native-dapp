@@ -2,6 +2,9 @@ package com.higgschain.trust.drs.model;
 
 import lombok.Getter;
 import lombok.Setter;
+import org.hibernate.validator.constraints.Length;
+
+import javax.validation.constraints.NotBlank;
 
 /**
  * 基本交易类型VO 包含交易VO的公共字段
@@ -11,23 +14,23 @@ import lombok.Setter;
  */
 @Getter @Setter public abstract class BaseTxVO {
 
-    private String txId;
+    @NotBlank @Length(max = 64) private String txId;
+
+    @NotBlank @Length(max = 32) private String bdCode;
     /**
      * tx submitter address
      */
-    private String submitter;
-
-    private String execPolicyId;
+    @NotBlank @Length(max = 40) private String submitter;
 
     private String submitterSign;
+
+    private String execPolicyId;
     /**
      * Currency for handling fees
      */
     private String feeCurrency;
 
     private String feeMaxAmount;
-
-   private String bdCode;
 
     public abstract String getFunctionName();
 }

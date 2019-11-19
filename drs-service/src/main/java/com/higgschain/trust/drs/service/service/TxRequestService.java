@@ -5,7 +5,7 @@ import com.google.common.collect.Lists;
 import com.higgschain.trust.drs.enums.FunctionDefineEnum;
 import com.higgschain.trust.drs.exception.DappError;
 import com.higgschain.trust.drs.exception.DappException;
-import com.higgschain.trust.drs.model.PermissionInfo;
+import com.higgschain.trust.drs.model.BaseTxVO;
 import com.higgschain.trust.drs.model.bd.BusinessDefine;
 import com.higgschain.trust.drs.model.bd.FunctionDefine;
 import com.higgschain.trust.drs.service.dao.TxRequestDao;
@@ -15,6 +15,7 @@ import com.higgschain.trust.drs.service.model.TxRequestBO;
 import com.higgschain.trust.drs.service.network.BlockChainFacade;
 import com.higgschain.trust.drs.service.scheduler.InitTxDisruptor;
 import com.higgschain.trust.drs.service.utils.CasDecryptResponse;
+import com.higgschain.trust.drs.service.vo.PermissionCheckVO;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections4.CollectionUtils;
 import org.springframework.beans.BeanUtils;
@@ -24,10 +25,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.validation.annotation.Validated;
 
 import javax.validation.Valid;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 /**
  * @author liuyu
@@ -35,6 +34,11 @@ import java.util.stream.Collectors;
  * @date 2019-11-07
  */
 @Service @Slf4j @Validated public class TxRequestService {
+    /**
+     * contract type of BD
+     */
+    private final static String BD_TYPE_CONTRACT = "contract";
+
     @Autowired TxRequestDao txRequestDao;
     @Autowired InitTxDisruptor initTxDisruptor;
     @Autowired BlockChainFacade blockChainFacade;
@@ -42,11 +46,65 @@ import java.util.stream.Collectors;
     /**
      * receive transaction and request to chain
      *
+     * @param vo
+     */
+    public void submitTx(@Valid BaseTxVO vo) throws DappException {
+        //query business define by bdCode
+        List<BusinessDefine> bdList = Lists.newArrayList();//TODO:/bd/query
+        if (CollectionUtils.isEmpty(bdList)) {
+            log.warn("business define is not find, txId:{}", vo.getTxId());
+            throw new DappException(DappError.BD_NOT_FIND_ERROR);
+        }
+        BusinessDefine bd = bdList.get(0);
+        String execPolicyId;
+        String execFuncName;
+        String execPermission;
+        if (FunctionDefineEnum.CREATE_CONTRACT.getFunctionName().equals(vo.getFunctionName())) {
+            execPolicyId = bd.getInitPolicy();
+            execFuncName = FunctionDefineEnum.CREATE_CONTRACT.getFunctionName();
+            execPermission = bd.getInitPermission();
+        } else {
+            List<FunctionDefine> functions = bd.getFunctions();
+            Optional<FunctionDefine> define =
+                functions.stream().filter(a -> a.getName().equals(vo.getFunctionName())).findFirst();
+            //check function
+            define.orElseThrow(() -> {
+                log.warn("function define is not find,functionName:{},txId:{}", vo.getFunctionName(), vo.getTxId());
+                return new DappException(DappError.FUNCTION_NOT_FIND_ERROR);
+            });
+            FunctionDefine fd = define.get();
+            execPolicyId = fd.getExecPolicy();
+            execPermission = fd.getExecPermission();
+            //contract type
+            if (BD_TYPE_CONTRACT.equalsIgnoreCase(fd.getType())) {
+                execFuncName = FunctionDefineEnum.CONTRACT_INVOKER.getFunctionName();
+            } else {
+                execFuncName = fd.getName();
+            }
+        }
+        //check permission
+        checkPermission(vo.getSubmitter(), execPermission);
+        //set policy id
+        vo.setExecPolicyId(execPolicyId);
+        //make request
+        TxRequestBO bo = new TxRequestBO();
+        bo.setTxId(vo.getTxId());
+        bo.setPolicyId(vo.getExecPolicyId());
+        bo.setBdCode(vo.getBdCode());
+        bo.setSubmitter(vo.getSubmitter());
+        bo.setFuncName(execFuncName);
+        bo.setTxData(vo);
+        bo.setStatus(RequestStatus.INIT);
+        //save and send
+        saveAndSend(bo);
+    }
+
+    /**
+     * save and send request
+     *
      * @param bo
      */
-    public void submitTx(@Valid TxRequestBO bo) throws DappException {
-        //check
-        checkRequest(bo);
+    private void saveAndSend(TxRequestBO bo) {
         //make po
         TxRequestPO po = new TxRequestPO();
         BeanUtils.copyProperties(bo, po);
@@ -61,62 +119,20 @@ import java.util.stream.Collectors;
             log.error("save request info has other error", e);
             throw new DappException(DappError.DB_ERROR);
         }
-        bo.setStatus(RequestStatus.INIT);
         initTxDisruptor.publish(bo.getTxId(), bo);
     }
 
     /**
-     * check request data
+     * check permission
      *
-     * @param bo
+     * @param address
+     * @param permission
      */
-    private void checkRequest(TxRequestBO bo) {
-        //query business define by bdCode
-        List<BusinessDefine> bdList = Lists.newArrayList();//TODO:/bd/query
-        if (CollectionUtils.isEmpty(bdList)) {
-            log.warn("business define is not find, txId:{}", bo.getTxId());
-            throw new DappException(DappError.BD_NOT_FIND_ERROR);
-        }
-        BusinessDefine bd = bdList.get(0);
-        List<FunctionDefine> functions = bd.getFunctions();
-        FunctionDefine fd =
-            functions.stream().filter(a -> a.getName().equals(bo.getFuncName())).findFirst().orElseThrow(() -> {
-                log.warn("function define is not find,functionName:{},txId:{}", bo.getFuncName(), bo.getTxId());
-                return new DappException(DappError.FUNCTION_NOT_FIND_ERROR);
-            });
-        //check function
-        String permission = fd.getExecPermission();
-
+    private void checkPermission(String address, String permission) {
+        PermissionCheckVO vo = new PermissionCheckVO();
+        vo.setAddress(address);
+        vo.setPermissionNames(Lists.newArrayList(permission));
         // todo replace use permission check api
-        //get user permission by address/identity
-        List<PermissionInfo> permissions = Lists.newArrayList();//TODO:/identity/permission/query
-        if (CollectionUtils.isEmpty(permissions)) {
-            log.warn("get permission is null,address:{},txId:{}", bo.getSubmitter(), bo.getTxId());
-            throw new DappException(DappError.NO_PERMISSION_ERROR);
-        }
-        //check permission
-        permissions.stream().filter(a -> a.getPermissionName().equals(permission)).findFirst().orElseThrow(() -> {
-            log.warn("address:{} do not have permission:{},funcName:{},txId:{}", bo.getSubmitter(), permission,
-                bo.getFuncName(), bo.getTxId());
-            return new DappException(DappError.NO_PERMISSION_ERROR);
-        });
-    }
-
-    public static void main(String[] args) {
-        List<PermissionInfo> list = new ArrayList<>();
-        for (int i = 0; i < 10; i++) {
-            PermissionInfo pi = new PermissionInfo();
-            pi.setPermissionName("name_" + i);
-            list.add(pi);
-        }
-        String permission = "name_1";
-        List<PermissionInfo> st =
-            list.stream().filter(a -> a.getPermissionName().equals(permission)).collect(Collectors.toList());
-        System.out.println(st.size());
-
-        Optional<PermissionInfo> pf = list.stream().filter(a -> a.getPermissionName().equals(permission)).findFirst();
-        pf.orElseThrow(() -> new RuntimeException("x"));
-        System.out.println(pf.get());
     }
 
     /**

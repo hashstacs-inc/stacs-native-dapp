@@ -1,10 +1,9 @@
-package com.higgschain.trust.drs.model;
+package com.higgschain.trust.drs.model.contract;
 
 import com.higgschain.trust.drs.enums.FunctionDefineEnum;
+import com.higgschain.trust.drs.model.BaseTxVO;
 import lombok.Getter;
 import lombok.Setter;
-import org.hibernate.validator.constraints.Length;
-import org.hibernate.validator.constraints.NotBlank;
 
 /**
  * The type Contract create request.
@@ -14,37 +13,24 @@ import org.hibernate.validator.constraints.NotBlank;
  */
 @Getter @Setter public class ContractCreateVO extends BaseTxVO {
 
-    @NotBlank @Length(max = 40)
     private String fromAddr;
     /**
      * 合约地址
      */
-    @NotBlank @Length(max = 40)
     private String contractAddress;
 
-    @NotBlank
-    @Length(max =64)
     private String name;
 
-    @Length(max =1024)
     private String extension;
     /**
      * 合约构造器
      */
-    @NotBlank
     private String contractor;
 
     /**
      * 合约代码
      */
-    @NotBlank
     private String sourceCode;
-
-    /**
-     * bdCode
-     */
-    @NotBlank @Length(max = 64)
-    private String bdCode;
     /**
      * 合约构造入参
      */
