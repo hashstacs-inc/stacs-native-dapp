@@ -2,11 +2,10 @@ package com.higgschain.trust.drs.boot;
 
 import com.alibaba.fastjson.JSON;
 import com.alipay.sofa.ark.springboot.runner.ArkBootRunner;
-import com.higgschain.trust.crypto.StacsECKey;
+import com.higgschain.trust.drs.model.bd.BusinessDefine;
 import com.higgschain.trust.drs.model.callback.TransactionReceipt;
 import com.higgschain.trust.drs.model.callback.TxReceiptData;
 import com.higgschain.trust.drs.service.model.TxCallbackBO;
-import com.higgschain.trust.drs.service.model.TxRequestBO;
 import com.higgschain.trust.drs.service.model.block.BlockHeader;
 import com.higgschain.trust.drs.service.service.TxCallbackService;
 import com.higgschain.trust.drs.service.service.TxRequestService;
@@ -31,15 +30,9 @@ public class BaseTest {
 
     @Test
     public void testSubmitTx()  {
-        TxRequestBO bo = new TxRequestBO();
-        bo.setTxId("tx_id_test_" + System.currentTimeMillis());
-        bo.setPolicyId("ISSUE");
-        StacsECKey ecKey = new StacsECKey();
-        bo.setSubmitter(ecKey.getHexAddress());
-        bo.setBdCode("REGIST_POLICY");
-        bo.setFuncName("test()");
-        bo.setTxData(new Object());
-        txRequestService.submitTx(bo);
+        BusinessDefine bd = new BusinessDefine();
+        bd.setTxId("tx_id_" + System.currentTimeMillis());
+        txRequestService.submitTx(bd);
     }
 
     @Test

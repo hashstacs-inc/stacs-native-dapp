@@ -152,7 +152,6 @@ import java.util.Optional;
             throw new DappException(DappError.DAPP_UPDATE_STATUS_ERROR);
         }
         try {
-            //TODO:API
             //send to block chain
             CasDecryptResponse response =
                 blockChainFacade.send(FunctionDefineEnum.fromFuncName(bo.getFuncName()).getApi(), bo.getTxData());
