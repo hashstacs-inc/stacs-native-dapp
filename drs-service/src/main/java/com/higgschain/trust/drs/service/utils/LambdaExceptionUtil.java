@@ -1,10 +1,7 @@
 package com.higgschain.trust.drs.service.utils;
 
 import java.util.Objects;
-import java.util.function.BiConsumer;
-import java.util.function.Consumer;
-import java.util.function.Function;
-import java.util.function.Supplier;
+import java.util.function.*;
 
 /**
  * @author dekuofa <br>
@@ -44,6 +41,18 @@ public class LambdaExceptionUtil {
         return t -> {
             try {
                 return function.apply(t);
+            } catch (Exception exception) {
+                throwAsUnchecked(exception);
+                return null;
+            }
+        };
+    }
+
+    public static <T, U, R, E extends Exception> BiFunction<T, U, R> rethrowFunction(
+        BiFunctionWithExceptions<T, U, R, E> function) throws E {
+        return (t, u) -> {
+            try {
+                return function.apply(t, u);
             } catch (Exception exception) {
                 throwAsUnchecked(exception);
                 return null;
@@ -124,6 +133,21 @@ public class LambdaExceptionUtil {
         default ConsumerWithExceptions<T, E> consumer(Consumer<R> after) throws E {
             Objects.requireNonNull(after);
             return (T t) -> after.accept(rethrowFunction(this).apply(t));
+        }
+    }
+
+    @FunctionalInterface public interface BiFunctionWithExceptions<T, U, R, E extends Exception> {
+
+        R apply(T t, U u) throws E;
+
+        default <V> BiFunctionWithExceptions<T, U, V, E> andThen(Function<R, V> after) throws E {
+            Objects.requireNonNull(after);
+            return (T t, U u) -> after.apply(rethrowFunction(this).apply(t, u));
+        }
+
+        default BiConsumerWithExceptions<T, U, E> consumer(Consumer<R> after) throws E {
+            Objects.requireNonNull(after);
+            return (T t, U u) -> after.accept(rethrowFunction(this).apply(t, u));
         }
     }
 

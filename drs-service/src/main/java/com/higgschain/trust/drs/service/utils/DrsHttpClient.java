@@ -6,12 +6,16 @@ package com.higgschain.trust.drs.service.utils;
 import com.alibaba.fastjson.JSON;
 import com.higgschain.trust.drs.service.config.ConfigListener;
 import com.higgschain.trust.drs.service.config.DomainConfig;
+import com.higgschain.trust.drs.service.utils.LambdaExceptionUtil.BiFunctionWithExceptions;
 import lombok.extern.slf4j.Slf4j;
 import okhttp3.*;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
+import org.springframework.web.server.ResponseStatusException;
 
 import javax.annotation.Nonnull;
 import java.io.IOException;
+import java.util.function.Function;
 import java.util.function.Predicate;
 
 /**
@@ -51,11 +55,37 @@ import java.util.function.Predicate;
         return new Request.Builder().url(url).build();
     }
 
-    /**
-     * @param requestParam 请求数据 - 如果请求没有参数，new Object();如果是Json数据，输入应该时JSONObject,不可以为Json字符串
-     * @param url          请求地址
-     */
-    public CasDecryptResponse post(Object requestParam, String url) throws IOException, RuntimeException {
+    @Nonnull public BiFunctionWithExceptions<Object, String, CasDecryptResponse, IOException> post() {
+        return (requestParam, url) -> {
+            if (requestParam == null) {
+                throw new IllegalArgumentException("post request body can't be null");
+            }
+            final DomainConfig config = this.config; // 先获取&保存当前配置内存地址到栈中，避免并发错误
+            String merchantId = config.getMerchantId();
+            String aesKey = config.getAesKey();
+            String priKey = config.getMerchantPriKey();
+            String pubKey = config.getChainPubKey();
+            if (merchantId == null) {
+                throw new IllegalArgumentException("post request body can't be null");
+            }
+            // 先使用发起方的私钥签名   再使用AES加密requestParam
+            CasEncryptRequest encryptBody = CasCryptoUtil.encrypt(requestParam, priKey, aesKey);
+            Request request = newPostRequest(url, merchantId, encryptBody);
+            Response response = client.newCall(request).execute();
+            ResponseBody responseBody = response.body();
+            assert responseBody != null;
+            if (!response.isSuccessful()) {
+                log.error("request error, response: {}", responseBody.string());
+                throw new ResponseStatusException(HttpStatus.valueOf(response.code()));
+            }
+            String responseStr = responseBody.string();
+            log.debug("response body:{}", responseStr);
+            return CasCryptoUtil.decrypt(responseStr, pubKey, aesKey);
+        };
+    }
+
+    @Nonnull public CasDecryptResponse postWithoutCrypto(Object requestParam, String url)
+        throws IOException, ResponseStatusException {
 
         if (requestParam == null) {
             throw new IllegalArgumentException("post request body can't be null");
@@ -76,11 +106,16 @@ import java.util.function.Predicate;
         assert responseBody != null;
         if (!response.isSuccessful()) {
             log.error("request error, response: {}", responseBody.string());
-            throw new RuntimeException("response error: " + response.code() + "-" + response.message());
+            throw new ResponseStatusException(HttpStatus.valueOf(response.code()));
         }
         String responseStr = responseBody.string();
         log.debug("response body:{}", responseStr);
         return CasCryptoUtil.decrypt(responseStr, pubKey, aesKey);
+    }
+
+    public <T> T post(Object requestParam, String url, Function<CasDecryptResponse, T> respConverter)
+        throws IOException, ResponseStatusException {
+        return respConverter.apply(post().apply(requestParam, url));
     }
 
     @Override public void updateNotify(Object config) {

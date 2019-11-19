@@ -1,5 +1,7 @@
 package com.higgschain.trust.drs.service.network;
 
+import com.alibaba.fastjson.JSONObject;
+import com.higgschain.trust.drs.model.RespData;
 import com.higgschain.trust.drs.service.config.ConfigListener;
 import com.higgschain.trust.drs.service.config.DomainConfig;
 import com.higgschain.trust.drs.service.utils.CasDecryptResponse;
@@ -10,6 +12,7 @@ import org.springframework.stereotype.Component;
 
 import javax.annotation.Nonnull;
 import java.io.IOException;
+import java.util.function.Function;
 import java.util.function.Predicate;
 
 /**
@@ -21,15 +24,14 @@ import java.util.function.Predicate;
     @Autowired private DrsHttpClient client;
 
     private String baseUrl;
-    /**
-     * send request to chain
-     *
-     * @param api
-     * @param txData
-     */
-    public CasDecryptResponse send(String api, Object txData) throws IOException {
+
+    private static Function<CasDecryptResponse, RespData<?>> converter() {
+        return decryptResp -> JSONObject.parseObject(decryptResp.getData().toString(), RespData.class);
+    }
+
+    public RespData<?> send(String api, Object txData) throws IOException {
         // return client.encryptPost(txData, baseUrl + api);
-        return client.post(txData, baseUrl + api);
+        return client.post(txData, baseUrl + api, converter());
     }
 
     @Override public <T> void updateNotify(T config) {
