@@ -1,47 +1,42 @@
 package com.higgschain.trust.drs.service.network;
 
-import com.hashstacs.sdk.http.HttpFacade;
-import com.hashstacs.sdk.wallet.dock.bo.CasDecryptReponse;
+import com.higgschain.trust.drs.service.config.ConfigListener;
+import com.higgschain.trust.drs.service.config.DomainConfig;
+import com.higgschain.trust.drs.service.utils.CasDecryptResponse;
+import com.higgschain.trust.drs.service.utils.DrsHttpClient;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Value;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import javax.annotation.Nonnull;
 import java.io.IOException;
+import java.util.function.Predicate;
 
 /**
  * @author liuyu
- * @description
  * @date 2019-11-07
  */
-@Component @Slf4j public class BlockChainFacade {
-    @Value("${drs.domain.baseUrl}") private String baseUrl = null;
-    /**
-     * the public key of stacs chain
-     */
-    @Value("${drs.domain.chainPubKey}") protected String chainPubKey;
+@Component @Slf4j public class BlockChainFacade implements ConfigListener {
 
-    /**
-     * the private key of access party
-     */
-    @Value("${drs.domain.merchantPriKey}") protected String merchantPriKey;
+    @Autowired private DrsHttpClient client;
 
-    /**
-     * aes key, used for communication data encryption, assigned by stacs chain
-     */
-    @Value("${drs.domain.aesKey}") protected String aesKey;
-
-    /**
-     * the merchatId of access party, assigned by stacs chain
-     */
-    @Value("${drs.domain.merchantId:default}") protected String merchantId;
-
+    private String baseUrl;
     /**
      * send request to chain
      *
      * @param api
      * @param txData
      */
-    public CasDecryptReponse send(String api, Object txData) throws IOException {
-        return HttpFacade.post(merchantId, txData, merchantPriKey, chainPubKey, aesKey, baseUrl + api);
+    public CasDecryptResponse send(String api, Object txData) throws IOException {
+        // return client.encryptPost(txData, baseUrl + api);
+        return client.post(txData, baseUrl + api);
+    }
+
+    @Override public <T> void updateNotify(T config) {
+        this.baseUrl = ((DomainConfig)config).getBaseUrl();
+    }
+
+    @Nonnull @Override public Predicate<Object> filter() {
+        return obj -> obj instanceof DomainConfig;
     }
 }
