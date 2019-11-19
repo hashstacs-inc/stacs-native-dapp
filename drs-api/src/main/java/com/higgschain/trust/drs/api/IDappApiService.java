@@ -4,6 +4,16 @@ import com.higgschain.trust.drs.exception.DappException;
 import com.higgschain.trust.drs.model.SampleRequest;
 import com.higgschain.trust.drs.model.SampleResult;
 import com.higgschain.trust.drs.model.bd.BusinessDefine;
+import com.higgschain.trust.drs.model.contract.ContractCreateVO;
+import com.higgschain.trust.drs.model.contract.ContractInvokeVO;
+import com.higgschain.trust.drs.model.identity.IdentityBDManageVO;
+import com.higgschain.trust.drs.model.identity.IdentitySettingVO;
+import com.higgschain.trust.drs.model.identity.KYCSettingVO;
+import com.higgschain.trust.drs.model.permission.AuthPermissionVO;
+import com.higgschain.trust.drs.model.permission.CancelPermissionVO;
+import com.higgschain.trust.drs.model.permission.RegisterPermissionVO;
+import com.higgschain.trust.drs.model.policy.ModifyPolicyVO;
+import com.higgschain.trust.drs.model.policy.RegisterPolicyVO;
 
 /**
  * @author suimi
@@ -15,9 +25,56 @@ public interface IDappApiService {
 
     /**
      * publish business define
-     *
-     * @param bd
-     * @throws DappException
      */
     void publishBD(BusinessDefine bd) throws DappException;
+
+    /**
+     * contract creation
+     */
+    void contractPublish(ContractCreateVO vo) throws DappException;
+
+    /**
+     * contract invoke
+     */
+    void contractInvoke(ContractInvokeVO vo) throws DappException;
+
+    /**
+     * register policy
+     */
+    void registPolicy(RegisterPolicyVO vo) throws DappException;
+
+    /**
+     * modify policy
+     */
+    void modifyPolicy(ModifyPolicyVO vo) throws DappException;
+
+    /**
+     * register permission
+     */
+    void registerPermission(RegisterPermissionVO vo) throws DappException;
+
+    /**
+     * authorize permission
+     */
+    void authPermission(AuthPermissionVO vo) throws DappException;
+
+    /**
+     * cancel permission
+     */
+    void cancelPermission(CancelPermissionVO vo) throws DappException;
+
+    /**
+     * set identity
+     */
+    void identitySetting(IdentitySettingVO vo) throws DappException;
+
+    /**
+     * identity bd manage
+     */
+    void identityManager(IdentityBDManageVO vo) throws DappException;
+
+    /**
+     * setting KYC
+     */
+    void settingKYC(KYCSettingVO vo) throws DappException;
 }

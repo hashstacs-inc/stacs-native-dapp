@@ -10,6 +10,16 @@ import com.higgschain.trust.drs.exception.DappException;
 import com.higgschain.trust.drs.model.SampleRequest;
 import com.higgschain.trust.drs.model.SampleResult;
 import com.higgschain.trust.drs.model.bd.BusinessDefine;
+import com.higgschain.trust.drs.model.contract.ContractCreateVO;
+import com.higgschain.trust.drs.model.contract.ContractInvokeVO;
+import com.higgschain.trust.drs.model.identity.IdentityBDManageVO;
+import com.higgschain.trust.drs.model.identity.IdentitySettingVO;
+import com.higgschain.trust.drs.model.identity.KYCSettingVO;
+import com.higgschain.trust.drs.model.permission.AuthPermissionVO;
+import com.higgschain.trust.drs.model.permission.CancelPermissionVO;
+import com.higgschain.trust.drs.model.permission.RegisterPermissionVO;
+import com.higgschain.trust.drs.model.policy.ModifyPolicyVO;
+import com.higgschain.trust.drs.model.policy.RegisterPolicyVO;
 import com.higgschain.trust.drs.service.constant.Constants;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.InitializingBean;
@@ -37,6 +47,46 @@ import org.springframework.stereotype.Service;
 
     @Override public void publishBD(BusinessDefine bd) throws DappException {
         requestService.submitTx(bd);
+    }
+
+    @Override public void contractPublish(ContractCreateVO vo) throws DappException {
+        requestService.submitTx(vo);
+    }
+
+    @Override public void contractInvoke(ContractInvokeVO vo) throws DappException {
+        requestService.submitTx(vo);
+    }
+
+    @Override public void registPolicy(RegisterPolicyVO vo) throws DappException {
+        requestService.submitTx(vo);
+    }
+
+    @Override public void modifyPolicy(ModifyPolicyVO vo) throws DappException {
+        requestService.submitTx(vo);
+    }
+
+    @Override public void registerPermission(RegisterPermissionVO vo) throws DappException {
+        requestService.submitTx(vo);
+    }
+
+    @Override public void authPermission(AuthPermissionVO vo) throws DappException {
+        requestService.submitTx(vo);
+    }
+
+    @Override public void cancelPermission(CancelPermissionVO vo) throws DappException {
+        requestService.submitTx(vo);
+    }
+
+    @Override public void identitySetting(IdentitySettingVO vo) throws DappException {
+        requestService.submitTx(vo);
+    }
+
+    @Override public void identityManager(IdentityBDManageVO vo) throws DappException {
+        requestService.submitTx(vo);
+    }
+
+    @Override public void settingKYC(KYCSettingVO vo) throws DappException {
+        requestService.submitTx(vo);
     }
 
     @Override public void afterPropertiesSet() {
