@@ -27,7 +27,7 @@ import lombok.Setter;
 
     private String feeMaxAmount;
 
-    private String bdCode = "SystemBD";
+   private String bdCode;
 
     public abstract String getFunctionName();
 }
