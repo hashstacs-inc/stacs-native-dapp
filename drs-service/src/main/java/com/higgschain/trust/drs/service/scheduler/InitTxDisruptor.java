@@ -34,7 +34,7 @@ import java.util.concurrent.TimeUnit;
 
     @PostConstruct public void init() {
         this.initDisruptor = DisruptorBuilder.<InitTxEvent>newInstance().setRingBufferSize(64 * 1024)
-            .setEventFactory(() -> new InitTxEvent())
+            .setEventFactory(InitTxEvent::new)
             .setThreadFactory(new ThreadFactoryBuilder().setNameFormat("Init-TX-Disruptor-%d").build())
             .setProducerType(ProducerType.MULTI).setWaitStrategy(new BlockingWaitStrategy()).build();
         this.initDisruptor.setDefaultExceptionHandler(new LogExceptionHandler<>(getClass().getSimpleName()));

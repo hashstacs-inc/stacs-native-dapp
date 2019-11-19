@@ -6,6 +6,7 @@ import com.alipay.sofa.ark.spi.service.ArkInject;
 import com.alipay.sofa.ark.spi.service.plugin.PluginManagerService;
 import com.alipay.sofa.ark.spi.service.registry.RegistryService;
 import com.higgschain.trust.drs.api.IDappApiService;
+import com.higgschain.trust.drs.exception.DappException;
 import com.higgschain.trust.drs.model.BaseTxVO;
 import com.higgschain.trust.drs.model.SampleRequest;
 import com.higgschain.trust.drs.model.SampleResult;
@@ -35,7 +36,7 @@ import org.springframework.stereotype.Service;
         return new SampleResult(true);
     }
 
-    @Override public void submit(BaseTxVO vo) {
+    @Override public void submit(BaseTxVO vo) throws DappException {
         TxRequestBO bo = new TxRequestBO();
         bo.setTxId(vo.getTxId());
         bo.setPolicyId(vo.getExecPolicyId());

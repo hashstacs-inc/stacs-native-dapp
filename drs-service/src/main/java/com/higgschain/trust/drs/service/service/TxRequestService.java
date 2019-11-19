@@ -44,7 +44,7 @@ import java.util.stream.Collectors;
      *
      * @param bo
      */
-    public void submitTx(@Valid TxRequestBO bo) {
+    public void submitTx(@Valid TxRequestBO bo) throws DappException {
         //check
         checkRequest(bo);
         //make po
@@ -88,6 +88,8 @@ import java.util.stream.Collectors;
         });
         FunctionDefine fd = define.get();
         String permission = fd.getExecPermission();
+
+        // todo replace use permission check api
         //get user permission by address/identity
         List<PermissionInfo> permissions = Lists.newArrayList();//TODO:/identity/permission/query
         if (CollectionUtils.isEmpty(permissions)) {

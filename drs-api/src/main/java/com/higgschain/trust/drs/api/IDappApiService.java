@@ -1,5 +1,6 @@
 package com.higgschain.trust.drs.api;
 
+import com.higgschain.trust.drs.exception.DappException;
 import com.higgschain.trust.drs.model.BaseTxVO;
 import com.higgschain.trust.drs.model.SampleRequest;
 import com.higgschain.trust.drs.model.SampleResult;
@@ -16,5 +17,5 @@ public interface IDappApiService {
      * submit transaction to block chain
      * @param vo
      */
-    void submit(BaseTxVO vo);
+    void submit(BaseTxVO vo) throws DappException;
 }
