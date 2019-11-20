@@ -27,7 +27,11 @@ dist/
 nbdist/
 **/*.log
 **/*.gz
+
+### project ###
 /copycat
 /data
 .nb-gradle/
 /slave/scripts/1.0.0/slave_1.0.0_full.sql
+drs/config/*
+drs/download/*
