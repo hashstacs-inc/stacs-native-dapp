@@ -14,6 +14,7 @@ import javax.annotation.Nonnull;
 import java.io.IOException;
 import java.util.function.Function;
 import java.util.function.Predicate;
+import java.util.regex.Pattern;
 
 /**
  * @author liuyu
@@ -22,6 +23,7 @@ import java.util.function.Predicate;
 @Component @Slf4j public class BlockChainFacade implements ConfigListener {
 
     @Autowired private DrsHttpClient client;
+    private static Predicate<String> encryptFilter = Pattern.compile("[Qq]uery").asPredicate();
 
     private String baseUrl;
 
@@ -30,13 +32,15 @@ import java.util.function.Predicate;
     }
 
     public RespData<?> send(String api, Object txData) throws IOException {
-        // return client.encryptPost(txData, baseUrl + api);
-        return client.post(txData, baseUrl + api, converter());
+        return send(api, txData, converter());
     }
 
     public <T> T send(String api, Object txData, Function<CasDecryptResponse, T> converter)
         throws IOException {
-        return client.post(txData, baseUrl + api, converter);
+        if (encryptFilter.test(api)) {
+            return client.post(txData, baseUrl + api, converter);
+        }
+        return client.postWithEncrypt(txData, baseUrl + api, converter);
     }
 
     @Override public <T> void updateNotify(T config) {
