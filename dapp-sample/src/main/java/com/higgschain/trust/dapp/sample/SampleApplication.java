@@ -7,7 +7,7 @@ import org.springframework.context.annotation.EnableAspectJAutoProxy;
 
 import java.util.Arrays;
 
-@SpringBootApplication(scanBasePackages = {"com.higgschain.trust.drs", "com.higgschain.trust.dapp"}) @Slf4j
+@SpringBootApplication(scanBasePackages = {"com.higgschain.trust.dapp"}) @Slf4j
 @EnableAspectJAutoProxy public class SampleApplication {
 
     public static void main(String[] args) {
