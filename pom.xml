@@ -123,6 +123,17 @@
                 <version>1.16.18</version>
                 <scope>compile</scope>
             </dependency>
+            <!--web template-->
+            <dependency>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-starter-web</artifactId>
+                <version>${spring-boot.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-starter-thymeleaf</artifactId>
+                <version>${spring-boot.version}</version>
+            </dependency>
             <!--data base-->
             <dependency>
                 <groupId>com.alibaba</groupId>

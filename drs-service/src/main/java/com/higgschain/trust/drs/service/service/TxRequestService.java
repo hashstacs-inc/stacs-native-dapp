@@ -17,7 +17,6 @@ import com.higgschain.trust.drs.service.network.BlockChainFacade;
 import com.higgschain.trust.drs.service.scheduler.InitTxDisruptor;
 import com.higgschain.trust.drs.service.vo.PermissionCheckVO;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.collections4.CollectionUtils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DuplicateKeyException;
@@ -50,12 +49,11 @@ import java.util.Optional;
      */
     public void submitTx(@Valid BaseTxVO vo) throws DappException {
         //query business define by bdCode
-        List<BusinessDefine> bdList = Lists.newArrayList();//TODO:/bd/query
-        if (CollectionUtils.isEmpty(bdList)) {
+        BusinessDefine bd = blockChainFacade.queryBDInfoByCode(vo.getBdCode());
+        if (bd == null) {
             log.warn("business define is not find, txId:{}", vo.getTxId());
             throw new DappException(DappError.BD_NOT_FIND_ERROR);
         }
-        BusinessDefine bd = bdList.get(0);
         String execPolicyId;
         String execFuncName;
         String execPermission;
@@ -132,7 +130,12 @@ import java.util.Optional;
         PermissionCheckVO vo = new PermissionCheckVO();
         vo.setAddress(address);
         vo.setPermissionNames(Lists.newArrayList(permission));
-        // todo replace use permission check api
+        //permission check
+        Boolean res = blockChainFacade.checkPermission(vo);
+        if (!res) {
+            log.warn("address:{} not has permission:{}", address, permission);
+            throw new DappException(DappError.NO_PERMISSION_ERROR);
+        }
     }
 
     /**
