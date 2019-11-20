@@ -9,9 +9,11 @@ import com.higgschain.trust.drs.api.IDappApiService;
 import com.higgschain.trust.drs.exception.DappException;
 import com.higgschain.trust.drs.model.SampleRequest;
 import com.higgschain.trust.drs.model.SampleResult;
+import com.higgschain.trust.drs.model.attestation.SaveAttestationVO;
 import com.higgschain.trust.drs.model.bd.BusinessDefine;
 import com.higgschain.trust.drs.model.contract.ContractCreateVO;
 import com.higgschain.trust.drs.model.contract.ContractInvokeVO;
+import com.higgschain.trust.drs.model.fee.FeeTxRuleConfigVO;
 import com.higgschain.trust.drs.model.identity.IdentityBDManageVO;
 import com.higgschain.trust.drs.model.identity.IdentitySettingVO;
 import com.higgschain.trust.drs.model.identity.KYCSettingVO;
@@ -20,6 +22,8 @@ import com.higgschain.trust.drs.model.permission.CancelPermissionVO;
 import com.higgschain.trust.drs.model.permission.RegisterPermissionVO;
 import com.higgschain.trust.drs.model.policy.ModifyPolicyVO;
 import com.higgschain.trust.drs.model.policy.RegisterPolicyVO;
+import com.higgschain.trust.drs.model.property.SystemPropertyConfigVO;
+import com.higgschain.trust.drs.model.snapshot.BuildSnapshotVO;
 import com.higgschain.trust.drs.service.constant.Constants;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.InitializingBean;
@@ -38,6 +42,8 @@ import org.springframework.stereotype.Service;
 
     @Autowired TestService testService;
     @Autowired TxRequestService requestService;
+
+    //todo 反射动态代理优化
 
     @Override public SampleResult service(SampleRequest request) {
         log.info("request:{}", request);
@@ -86,6 +92,22 @@ import org.springframework.stereotype.Service;
     }
 
     @Override public void settingKYC(KYCSettingVO vo) throws DappException {
+        requestService.submitTx(vo);
+    }
+
+    @Override public void feeTxRuleConfig(FeeTxRuleConfigVO vo) throws DappException {
+        requestService.submitTx(vo);
+    }
+
+    @Override public void systemPropertyConfig(SystemPropertyConfigVO vo) throws DappException {
+        requestService.submitTx(vo);
+    }
+
+    @Override public void buildSnapshot(BuildSnapshotVO vo) throws DappException {
+        requestService.submitTx(vo);
+    }
+
+    @Override public void saveAttestation(SaveAttestationVO vo) throws DappException {
         requestService.submitTx(vo);
     }
 
