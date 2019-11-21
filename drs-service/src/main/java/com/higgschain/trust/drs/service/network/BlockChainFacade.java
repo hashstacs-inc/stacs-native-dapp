@@ -22,7 +22,6 @@ import java.util.Optional;
 import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.regex.Pattern;
-import java.util.stream.Stream;
 
 import static com.higgschain.trust.drs.service.utils.HttpHelper.buildGetRequestParam;
 import static com.higgschain.trust.drs.service.utils.LambdaExceptionUtil.rethrowFunction;
@@ -34,7 +33,7 @@ import static com.higgschain.trust.drs.service.utils.LambdaExceptionUtil.rethrow
 @Component @Slf4j public class BlockChainFacade implements ConfigListener {
     private final static String API_BD_QUERY = "/bd/query";
     private final static String API_CHECK_PERMISSION = "/identity/open/checkPermission";
-    private final static Stream<String> ENCRYPT_WHITE_LIST = Stream.of("callback/register");
+    private final static List<String> ENCRYPT_WHITE_LIST = Lists.newArrayList("callback/register");
 
     @Autowired private DrsHttpClient client;
     private static Predicate<String> encryptSkipFilter = Pattern.compile("[Qq]uery").asPredicate();
@@ -101,7 +100,7 @@ import static com.higgschain.trust.drs.service.utils.LambdaExceptionUtil.rethrow
 
     public <T> T send(String api, Object txData, Function<CasDecryptResponse, T> converter)
         throws IOException {
-        if (encryptSkipFilter.test(api) || ENCRYPT_WHITE_LIST.anyMatch(url -> url.equals(api))) {
+        if (encryptSkipFilter.test(api) || ENCRYPT_WHITE_LIST.stream().anyMatch(url -> url.equals(api))) {
             return client.post(txData, baseUrl + api, converter);
         }
         return client.postWithEncrypt(txData, baseUrl + api, converter);
