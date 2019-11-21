@@ -24,6 +24,7 @@ import lombok.Getter;
     NO_PERMISSION_ERROR("100013", "no permission error"),
     FUNCTION_NOT_FIND_ERROR("100014", "function not find error"),
 
+    DAPP_NET_WORK_COMMON_ERROR("100100", "net work common error"),
     ;
 
     private String code;

@@ -2,6 +2,8 @@ package com.higgschain.trust.drs.api.exception;
 
 import lombok.Getter;
 
+import java.util.function.Supplier;
+
 /**
  * @author liuyu
  * @description
@@ -23,5 +25,9 @@ import lombok.Getter;
         super(error);
         this.code = DappError.DAPP_COMMON_ERROR.getCode();
         this.msg = error;
+    }
+
+    public static Supplier<DappException> newError(DappError error) {
+        return () -> new DappException(error);
     }
 }

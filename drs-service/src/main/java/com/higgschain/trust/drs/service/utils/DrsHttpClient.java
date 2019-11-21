@@ -44,15 +44,15 @@ import static com.higgschain.trust.drs.service.utils.Pair.newPair;
     private static OkHttpClient client = new OkHttpClient.Builder().build();
     private DomainConfig config;
 
-    public static <T> T get(String url, Class<T> clazz) throws IOException {
-        String response = get(url);
-        return JSON.parseObject(response, clazz);
+    public static <T> T get(String url, Function<ResponseBody, T> converter) throws IOException {
+        ResponseBody responseBody = sendGet(url);
+        return converter.apply(responseBody);
     }
 
-    public static String get(String url) throws IOException {
+    @Nonnull public static ResponseBody sendGet(String url) throws IOException {
         Response response = client.newCall(newGetRequest(url)).execute();
         assert response.body() != null;
-        return response.body().string();
+        return response.body();
     }
 
     private static Request newPostRequest(String url, @Nonnull Object requestParam,

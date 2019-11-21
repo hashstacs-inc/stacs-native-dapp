@@ -27,6 +27,10 @@ import javax.validation.Valid;
 import java.util.List;
 import java.util.Optional;
 
+import static com.higgschain.trust.drs.api.exception.DappError.BD_NOT_FIND_ERROR;
+import static com.higgschain.trust.drs.api.exception.DappError.DAPP_NET_WORK_COMMON_ERROR;
+import static com.higgschain.trust.drs.api.exception.DappException.newError;
+
 /**
  * @author liuyu
  * @description
@@ -49,11 +53,7 @@ import java.util.Optional;
      */
     public void submitTx(@Valid BaseTxVO vo) throws DappException {
         //query business define by bdCode
-        BusinessDefine bd = blockChainFacade.queryBDInfoByCode(vo.getBdCode());
-        if (bd == null) {
-            log.warn("business define is not find, txId:{}", vo.getTxId());
-            throw new DappException(DappError.BD_NOT_FIND_ERROR);
-        }
+        BusinessDefine bd = blockChainFacade.queryBDInfoByCode(vo.getBdCode()).orElseThrow(newError(BD_NOT_FIND_ERROR));
         String execPolicyId;
         String execFuncName;
         String execPermission;
@@ -131,7 +131,8 @@ import java.util.Optional;
         vo.setAddress(address);
         vo.setPermissionNames(Lists.newArrayList(permission));
         //permission check
-        Boolean res = blockChainFacade.checkPermission(vo);
+        boolean res = blockChainFacade.checkPermission(vo).orElseThrow(newError(DAPP_NET_WORK_COMMON_ERROR));
+
         if (!res) {
             log.warn("address:{} not has permission:{}", address, permission);
             throw new DappException(DappError.NO_PERMISSION_ERROR);
