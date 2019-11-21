@@ -1,23 +1,23 @@
 package com.higgschain.trust.drs.api;
 
-import com.higgschain.trust.drs.exception.DappException;
-import com.higgschain.trust.drs.model.SampleRequest;
-import com.higgschain.trust.drs.model.SampleResult;
-import com.higgschain.trust.drs.model.attestation.SaveAttestationVO;
-import com.higgschain.trust.drs.model.bd.BusinessDefine;
-import com.higgschain.trust.drs.model.contract.ContractCreateVO;
-import com.higgschain.trust.drs.model.contract.ContractInvokeVO;
-import com.higgschain.trust.drs.model.fee.FeeTxRuleConfigVO;
-import com.higgschain.trust.drs.model.identity.IdentityBDManageVO;
-import com.higgschain.trust.drs.model.identity.IdentitySettingVO;
-import com.higgschain.trust.drs.model.identity.KYCSettingVO;
-import com.higgschain.trust.drs.model.permission.AuthPermissionVO;
-import com.higgschain.trust.drs.model.permission.CancelPermissionVO;
-import com.higgschain.trust.drs.model.permission.RegisterPermissionVO;
-import com.higgschain.trust.drs.model.policy.ModifyPolicyVO;
-import com.higgschain.trust.drs.model.policy.RegisterPolicyVO;
-import com.higgschain.trust.drs.model.property.SystemPropertyConfigVO;
-import com.higgschain.trust.drs.model.snapshot.BuildSnapshotVO;
+import com.higgschain.trust.drs.api.exception.DappException;
+import com.higgschain.trust.drs.api.model.SampleRequest;
+import com.higgschain.trust.drs.api.model.SampleResult;
+import com.higgschain.trust.drs.api.model.attestation.SaveAttestationVO;
+import com.higgschain.trust.drs.api.model.bd.BusinessDefine;
+import com.higgschain.trust.drs.api.model.contract.ContractCreateVO;
+import com.higgschain.trust.drs.api.model.contract.ContractInvokeVO;
+import com.higgschain.trust.drs.api.model.fee.FeeTxRuleConfigVO;
+import com.higgschain.trust.drs.api.model.identity.IdentityBDManageVO;
+import com.higgschain.trust.drs.api.model.identity.IdentitySettingVO;
+import com.higgschain.trust.drs.api.model.identity.KYCSettingVO;
+import com.higgschain.trust.drs.api.model.permission.AuthPermissionVO;
+import com.higgschain.trust.drs.api.model.permission.CancelPermissionVO;
+import com.higgschain.trust.drs.api.model.permission.RegisterPermissionVO;
+import com.higgschain.trust.drs.api.model.policy.ModifyPolicyVO;
+import com.higgschain.trust.drs.api.model.policy.RegisterPolicyVO;
+import com.higgschain.trust.drs.api.model.property.SystemPropertyConfigVO;
+import com.higgschain.trust.drs.api.model.snapshot.BuildSnapshotVO;
 
 /**
  * @author suimi

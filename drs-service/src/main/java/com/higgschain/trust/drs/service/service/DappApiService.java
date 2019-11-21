@@ -2,28 +2,29 @@ package com.higgschain.trust.drs.service.service;
 
 import com.alipay.sofa.ark.container.registry.PluginServiceProvider;
 import com.alipay.sofa.ark.spi.model.Plugin;
+import com.alipay.sofa.ark.spi.registry.ServiceReference;
 import com.alipay.sofa.ark.spi.service.ArkInject;
 import com.alipay.sofa.ark.spi.service.plugin.PluginManagerService;
 import com.alipay.sofa.ark.spi.service.registry.RegistryService;
 import com.higgschain.trust.drs.api.IDappApiService;
-import com.higgschain.trust.drs.exception.DappException;
-import com.higgschain.trust.drs.model.SampleRequest;
-import com.higgschain.trust.drs.model.SampleResult;
-import com.higgschain.trust.drs.model.attestation.SaveAttestationVO;
-import com.higgschain.trust.drs.model.bd.BusinessDefine;
-import com.higgschain.trust.drs.model.contract.ContractCreateVO;
-import com.higgschain.trust.drs.model.contract.ContractInvokeVO;
-import com.higgschain.trust.drs.model.fee.FeeTxRuleConfigVO;
-import com.higgschain.trust.drs.model.identity.IdentityBDManageVO;
-import com.higgschain.trust.drs.model.identity.IdentitySettingVO;
-import com.higgschain.trust.drs.model.identity.KYCSettingVO;
-import com.higgschain.trust.drs.model.permission.AuthPermissionVO;
-import com.higgschain.trust.drs.model.permission.CancelPermissionVO;
-import com.higgschain.trust.drs.model.permission.RegisterPermissionVO;
-import com.higgschain.trust.drs.model.policy.ModifyPolicyVO;
-import com.higgschain.trust.drs.model.policy.RegisterPolicyVO;
-import com.higgschain.trust.drs.model.property.SystemPropertyConfigVO;
-import com.higgschain.trust.drs.model.snapshot.BuildSnapshotVO;
+import com.higgschain.trust.drs.api.exception.DappException;
+import com.higgschain.trust.drs.api.model.SampleRequest;
+import com.higgschain.trust.drs.api.model.SampleResult;
+import com.higgschain.trust.drs.api.model.attestation.SaveAttestationVO;
+import com.higgschain.trust.drs.api.model.bd.BusinessDefine;
+import com.higgschain.trust.drs.api.model.contract.ContractCreateVO;
+import com.higgschain.trust.drs.api.model.contract.ContractInvokeVO;
+import com.higgschain.trust.drs.api.model.fee.FeeTxRuleConfigVO;
+import com.higgschain.trust.drs.api.model.identity.IdentityBDManageVO;
+import com.higgschain.trust.drs.api.model.identity.IdentitySettingVO;
+import com.higgschain.trust.drs.api.model.identity.KYCSettingVO;
+import com.higgschain.trust.drs.api.model.permission.AuthPermissionVO;
+import com.higgschain.trust.drs.api.model.permission.CancelPermissionVO;
+import com.higgschain.trust.drs.api.model.permission.RegisterPermissionVO;
+import com.higgschain.trust.drs.api.model.policy.ModifyPolicyVO;
+import com.higgschain.trust.drs.api.model.policy.RegisterPolicyVO;
+import com.higgschain.trust.drs.api.model.property.SystemPropertyConfigVO;
+import com.higgschain.trust.drs.api.model.snapshot.BuildSnapshotVO;
 import com.higgschain.trust.drs.service.constant.Constants;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.InitializingBean;
@@ -119,5 +120,12 @@ import org.springframework.stereotype.Service;
         }
         registryService.publishService(IDappApiService.class, this, new PluginServiceProvider(plugin));
         log.info("published service:{}", IDappApiService.class);
+        log.info("registryService:{}",registryService);
+        log.info("registryService.classLoader:{}",registryService.getClass().getClassLoader());
+        log.info("classLoader--->",IDappApiService.class.getClassLoader());
+        ServiceReference serviceReference = registryService.referenceService(IDappApiService.class);
+        log.info("service:{}",serviceReference);
     }
+
+
 }

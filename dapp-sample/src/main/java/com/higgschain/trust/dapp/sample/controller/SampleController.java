@@ -17,8 +17,8 @@
 package com.higgschain.trust.dapp.sample.controller;
 
 import com.higgschain.trust.dapp.sample.service.SampleService;
-import com.higgschain.trust.drs.model.SampleRequest;
-import com.higgschain.trust.drs.model.SampleResult;
+import com.higgschain.trust.drs.api.model.SampleRequest;
+import com.higgschain.trust.drs.api.model.SampleResult;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;

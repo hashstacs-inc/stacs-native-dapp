@@ -2,8 +2,8 @@ package com.higgschain.trust.drs.service.event;
 
 import com.alipay.sofa.ark.spi.service.ArkInject;
 import com.alipay.sofa.ark.spi.service.event.EventAdminService;
-import com.higgschain.trust.drs.event.DappEvent;
-import com.higgschain.trust.drs.model.callback.TransactionReceipt;
+import com.higgschain.trust.drs.api.event.DappEvent;
+import com.higgschain.trust.drs.api.model.callback.TransactionReceipt;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 

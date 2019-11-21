@@ -1,9 +1,9 @@
 package com.higgschain.trust.drs.service.service;
 
 import com.alibaba.fastjson.JSON;
-import com.higgschain.trust.drs.exception.DappError;
-import com.higgschain.trust.drs.exception.DappException;
-import com.higgschain.trust.drs.model.callback.TransactionReceipt;
+import com.higgschain.trust.drs.api.exception.DappError;
+import com.higgschain.trust.drs.api.exception.DappException;
+import com.higgschain.trust.drs.api.model.callback.TransactionReceipt;
 import com.higgschain.trust.drs.service.dao.TxCallbackDao;
 import com.higgschain.trust.drs.service.dao.TxRequestDao;
 import com.higgschain.trust.drs.service.dao.po.TxCallbackPO;

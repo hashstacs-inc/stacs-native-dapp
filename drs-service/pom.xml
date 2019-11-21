@@ -147,7 +147,7 @@
                             <exported>
                                 <!-- configure package-level exported class-->
                                 <packages>
-                                    <package>com.higgschain.trust.drs.service</package>
+                                    <package>com.higgschain.trust.drs.api.*</package>
                                 </packages>
                             </exported>
 

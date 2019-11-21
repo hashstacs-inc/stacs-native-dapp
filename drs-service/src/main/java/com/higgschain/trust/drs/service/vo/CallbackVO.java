@@ -1,6 +1,6 @@
 package com.higgschain.trust.drs.service.vo;
 
-import com.higgschain.trust.drs.model.callback.TransactionReceipt;
+import com.higgschain.trust.drs.api.model.callback.TransactionReceipt;
 import com.higgschain.trust.drs.service.model.block.BlockHeader;
 import lombok.Getter;
 import lombok.Setter;

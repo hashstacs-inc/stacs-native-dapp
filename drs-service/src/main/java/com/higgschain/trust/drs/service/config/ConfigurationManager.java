@@ -4,7 +4,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 import org.springframework.stereotype.Component;
-import org.springframework.util.ClassUtils;
 
 import javax.annotation.PostConstruct;
 import java.util.Collection;
@@ -28,14 +27,14 @@ import java.util.function.Function;
     private Collection<ConfigListener> listeners;
 
     @PostConstruct public void init() {
-        configMap = new ConcurrentHashMap<>();
-        context.getBeansWithAnnotation(DynamicConfig.class).values()
-            .forEach(config -> configMap.putIfAbsent(ClassUtils.getUserClass(config.getClass()), config));
-        listeners = context.getBeansOfType(ConfigListener.class).values();
-        // init set config
-        for (Object config : configMap.values()) {
-            listeners.forEach(NOTIFY_ALL_LISTENER.apply(config));
-        }
+//        configMap = new ConcurrentHashMap<>();
+//        context.getBeansWithAnnotation(DynamicConfig.class).values()
+//            .forEach(config -> configMap.putIfAbsent(ClassUtils.getUserClass(config.getClass()), config));
+//        listeners = context.getBeansOfType(ConfigListener.class).values();
+//        // init set config
+//        for (Object config : configMap.values()) {
+//            listeners.forEach(NOTIFY_ALL_LISTENER.apply(config));
+//        }
 
     }
 

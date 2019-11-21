@@ -7,8 +7,7 @@ import org.springframework.context.annotation.EnableAspectJAutoProxy;
 
 import java.util.Arrays;
 
-@SpringBootApplication(scanBasePackages = {"com.higgschain.trust.dapp"}) @Slf4j
-@EnableAspectJAutoProxy public class SampleApplication {
+@SpringBootApplication @Slf4j @EnableAspectJAutoProxy public class SampleApplication {
 
     public static void main(String[] args) {
         log.info("starting dapp with args:{}", Arrays.toString(args));

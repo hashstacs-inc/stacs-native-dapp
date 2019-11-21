@@ -2,9 +2,9 @@ package com.higgschain.trust.drs.boot;
 
 import com.alibaba.fastjson.JSON;
 import com.alipay.sofa.ark.springboot.runner.ArkBootRunner;
-import com.higgschain.trust.drs.model.bd.BusinessDefine;
-import com.higgschain.trust.drs.model.callback.TransactionReceipt;
-import com.higgschain.trust.drs.model.callback.TxReceiptData;
+import com.higgschain.trust.drs.api.model.bd.BusinessDefine;
+import com.higgschain.trust.drs.api.model.callback.TransactionReceipt;
+import com.higgschain.trust.drs.api.model.callback.TxReceiptData;
 import com.higgschain.trust.drs.service.model.TxCallbackBO;
 import com.higgschain.trust.drs.service.model.block.BlockHeader;
 import com.higgschain.trust.drs.service.service.TxCallbackService;
