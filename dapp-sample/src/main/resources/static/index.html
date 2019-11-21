@@ -27,7 +27,7 @@
             service(){
                 this.$nextTick(function () {
                     var self = this;
-                    axios.get('/sample/sample/service/test')
+                    axios.get('sample/service/test')
                         .then(function(res){
                             self.result = res.data.result
                         })

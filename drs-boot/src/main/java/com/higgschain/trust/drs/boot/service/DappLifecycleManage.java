@@ -18,6 +18,7 @@ import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.io.IOUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.context.event.ApplicationReadyEvent;
 import org.springframework.context.ApplicationListener;
 import org.springframework.stereotype.Service;
@@ -43,6 +44,11 @@ import static com.alipay.sofa.ark.spi.constant.Constants.*;
      * app config file name
      */
     private static final String DAPP_CONFIG_FILE_NAME = "application.properties";
+    private static final String SPRING_APP_NAME = "spring.application.name";
+    private static final String WEB_SERVER_PORT = "server.port";
+    private static final String WEB_SERVER_CONTEXT_PATH = "server.servlet.context-path";
+
+    @Value("${server.port}") private int serverPort;
 
     @Autowired DrsConfig drsConfig;
 
@@ -75,18 +81,14 @@ import static com.alipay.sofa.ark.spi.constant.Constants.*;
         File destination = new File(drsConfig.getDownloadPath(), fileName);
         try {
             URL url = new URL(urlPath);
-            if (!destination.exists()) {
-                FileUtils.copyURLToFile(url, destination);
-            }
+            FileUtils.copyURLToFile(url, destination);
         } catch (Throwable e) {
             File source = new File(urlPath);
             if (!source.exists()) {
                 log.warn("download is fail,source file is not exists");
                 throw new DappException(DappError.DAPP_SOURCE_FILE_NOT_EXISTS_ERROR);
             }
-            if (!destination.exists()) {
-                FileUtils.copyFile(source, destination);
-            }
+            FileUtils.copyFile(source, destination);
         }
         log.info("[download]the app file are saved to destination:{}", destination);
         //make jar file
@@ -147,6 +149,7 @@ import static com.alipay.sofa.ark.spi.constant.Constants.*;
      * @param appName
      */
     private void genAppConfig(JarFile bizFile, String appName) throws IOException {
+        String filePath = getConfigPath(appName);
         boolean isGened = false;
         Enumeration myEnum = bizFile.entries();
         while (myEnum.hasMoreElements()) {
@@ -156,7 +159,7 @@ import static com.alipay.sofa.ark.spi.constant.Constants.*;
                 FileOutputStream out = null;
                 try {
                     in = bizFile.getInputStream(myJarEntry);
-                    out = new FileOutputStream(getConfigPath(appName));
+                    out = new FileOutputStream(filePath);
                     byte[] data = IOUtils.toByteArray(in);
                     IOUtils.write(data, out);
                 } finally {
@@ -169,8 +172,35 @@ import static com.alipay.sofa.ark.spi.constant.Constants.*;
         }
         if (isGened) {
             log.info("generator config file is success,appName:{}", appName);
+            resetWebContextPath(appName, filePath);
         } else {
             log.warn("generator config file is fail,appName:{}", appName);
+        }
+    }
+
+    /**
+     * reset web-context-path
+     *
+     * @param appName
+     * @param filePath
+     */
+    private void resetWebContextPath(String appName, String filePath) {
+        Properties p = new Properties();
+        FileInputStream is = null;
+        FileOutputStream os = null;
+        try {
+            File f = new File(filePath);
+            is = new FileInputStream(f);
+            p.load(is);
+            p.put(WEB_SERVER_CONTEXT_PATH, "/" + appName);
+            os = new FileOutputStream(f);
+            p.store(os, null);
+        } catch (IOException e) {
+            log.warn("[resetWebContextPath] has IO error,appName:{}", appName, e);
+            throw new DappException(DappError.DAPP_CONFIG_NOT_FOUND);
+        } finally {
+            IOUtils.closeQuietly(is);
+            IOUtils.closeQuietly(os);
         }
     }
 
@@ -295,7 +325,8 @@ import static com.alipay.sofa.ark.spi.constant.Constants.*;
             is = new FileInputStream(new File(filePath));
             p.load(is);
             //filter
-            p.remove("server.port");
+            p.remove(WEB_SERVER_PORT);
+            p.remove(WEB_CONTEXT_PATH);
         } catch (IOException e) {
             log.warn("[queryConfig] has IO error,appName:{}", appName, e);
             throw new DappException(DappError.DAPP_CONFIG_NOT_FOUND);
@@ -315,14 +346,13 @@ import static com.alipay.sofa.ark.spi.constant.Constants.*;
         if (!config.isEmpty()) {
             p.putAll(config);
         }
-        String springAppNameKey = "spring.application.name";
-        if (!p.containsKey(springAppNameKey)) {
-            p.put(springAppNameKey, appName);
+        if (!p.containsKey(SPRING_APP_NAME)) {
+            p.put(SPRING_APP_NAME, appName);
         }
-        String serverPortKey = "server.port";
-        if(!p.containsKey(serverPortKey)){
-            p.put(serverPortKey, "8080");
+        if (!p.containsKey(WEB_SERVER_PORT)) {
+            p.put(WEB_SERVER_PORT, serverPort);
         }
+        p.put(WEB_SERVER_CONTEXT_PATH, "/" + appName);
         FileOutputStream os = null;
         try {
             os = new FileOutputStream(new File(filePath));
