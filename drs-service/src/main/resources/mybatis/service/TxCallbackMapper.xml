@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mappers.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.higgschain.trust.drs.service.dao.TxCallbackDao">
+<mapper namespace="io.stacs.nav.drs.service.dao.TxCallbackDao">
     <!-- Result Map -->
-    <resultMap id="baseResultMap" type="com.higgschain.trust.drs.service.dao.po.TxCallbackPO">
+    <resultMap id="baseResultMap" type="io.stacs.nav.drs.service.dao.po.TxCallbackPO">
         <result column="id" property="id"/>
         <result column="block_height" property="blockHeight"/>
         <result column="tx_receipts" property="txReceipts"/>

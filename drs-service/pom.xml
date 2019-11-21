@@ -4,7 +4,7 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <parent>
         <artifactId>stacs-native-dapp</artifactId>
-        <groupId>com.higgschain.trust</groupId>
+        <groupId>io.stacs.nav</groupId>
         <version>1.0.0-SNAPSHOT</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
@@ -13,7 +13,7 @@
 
     <dependencies>
         <dependency>
-            <groupId>com.higgschain.trust</groupId>
+            <groupId>io.stacs.nav</groupId>
             <artifactId>drs-api</artifactId>
         </dependency>
         <dependency>
@@ -139,7 +139,7 @@
                         <configuration>
 
                             <!--can only configure no more than one activator-->
-                            <activator>com.higgschain.trust.drs.service.ServiceActivator</activator>
+                            <activator>io.stacs.nav.drs.service.ServiceActivator</activator>
                             <!-- 配置优先级，数字越小，优先级越高，优先启动，优先导出类，默认1000 -->
                             <priority>20000</priority>
                             <pluginName>drs-service</pluginName>
@@ -147,7 +147,7 @@
                             <exported>
                                 <!-- configure package-level exported class-->
                                 <packages>
-                                    <package>com.higgschain.trust.drs.api.*</package>
+                                    <package>io.stacs.nav.drs.api.*</package>
                                 </packages>
                             </exported>
 
