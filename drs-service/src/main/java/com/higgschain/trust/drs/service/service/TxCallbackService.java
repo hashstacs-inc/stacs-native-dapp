@@ -12,9 +12,6 @@ import com.higgschain.trust.drs.service.enums.CallbackStatus;
 import com.higgschain.trust.drs.service.enums.RequestStatus;
 import com.higgschain.trust.drs.service.event.EventPublisher;
 import com.higgschain.trust.drs.service.model.TxCallbackBO;
-import com.higgschain.trust.drs.service.model.block.BlockHeader;
-import com.higgschain.trust.drs.service.network.BlockChainFacade;
-import com.higgschain.trust.drs.service.scheduler.InitTxDisruptor;
 import com.higgschain.trust.drs.service.vo.CallbackVO;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections4.CollectionUtils;
@@ -22,8 +19,6 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DuplicateKeyException;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.TransactionStatus;
-import org.springframework.transaction.support.TransactionCallback;
 import org.springframework.transaction.support.TransactionTemplate;
 import org.springframework.validation.annotation.Validated;
 

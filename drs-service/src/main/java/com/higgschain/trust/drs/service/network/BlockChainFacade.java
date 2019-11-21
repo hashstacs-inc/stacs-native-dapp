@@ -1,6 +1,7 @@
 package com.higgschain.trust.drs.service.network;
 
 import com.alibaba.fastjson.JSONObject;
+import com.higgschain.trust.drs.api.model.RespData;
 import com.google.common.base.Joiner;
 import com.google.common.collect.Lists;
 import com.higgschain.trust.drs.api.model.RespData;
