@@ -7,6 +7,7 @@ import com.alipay.sofa.ark.loader.JarBizArchive;
 import com.alipay.sofa.ark.loader.archive.JarFileArchive;
 import com.alipay.sofa.ark.loader.jar.JarEntry;
 import com.alipay.sofa.ark.loader.jar.JarFile;
+import com.google.common.io.Files;
 import com.higgschain.trust.drs.boot.bo.Dapp;
 import com.higgschain.trust.drs.boot.enums.DappStatus;
 import com.higgschain.trust.drs.boot.service.dapp.IDappService;
@@ -26,10 +27,7 @@ import org.springframework.util.CollectionUtils;
 
 import java.io.*;
 import java.net.URL;
-import java.util.Enumeration;
-import java.util.List;
-import java.util.Map;
-import java.util.Properties;
+import java.util.*;
 import java.util.jar.Attributes;
 
 import static com.alipay.sofa.ark.spi.constant.Constants.*;
@@ -78,7 +76,7 @@ import static com.alipay.sofa.ark.spi.constant.Constants.*;
     @Override public Dapp download(String urlPath) throws IOException {
         String fileName = FilenameUtils.getName(urlPath);
         log.info("[download]the app file name:{}", fileName);
-        File destination = new File(drsConfig.getDownloadPath(), fileName);
+        File destination = new File(drsConfig.getDownloadPath(), UUID.randomUUID().toString());
         try {
             URL url = new URL(urlPath);
             FileUtils.copyURLToFile(url, destination);
@@ -100,11 +98,13 @@ import static com.alipay.sofa.ark.spi.constant.Constants.*;
             log.warn("[download]the app is already download,url:{}", urlPath);
             throw new DappException(DappError.DAPP_ALREADY_EXISTS);
         }
-        app.setFileName(fileName);
         //generator config file from Jar file
         genAppConfig(bizFile, app.getName());
+        //move
+        Files.move(destination, new File(drsConfig.getDownloadPath(), fileName));
         //set DOWNLOADED status
         app.setStatus(DappStatus.DOWNLOADED);
+        app.setFileName(fileName);
         return dappService.save(app);
 
     }
