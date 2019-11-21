@@ -2,7 +2,7 @@ package com.higgschain.trust.dapp.core.event;
 
 import com.alipay.sofa.ark.spi.event.ArkEvent;
 import com.alipay.sofa.ark.spi.service.event.EventHandler;
-import com.higgschain.trust.drs.event.DappEvent;
+import com.higgschain.trust.drs.api.event.DappEvent;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
