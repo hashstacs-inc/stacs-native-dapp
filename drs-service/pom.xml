@@ -141,7 +141,7 @@
                             <!--can only configure no more than one activator-->
                             <activator>io.stacs.nav.drs.service.ServiceActivator</activator>
                             <!-- 配置优先级，数字越小，优先级越高，优先启动，优先导出类，默认1000 -->
-                            <priority>20000</priority>
+                            <priority>1</priority>
                             <pluginName>drs-service</pluginName>
                             <!-- configure exported class -->
                             <exported>
