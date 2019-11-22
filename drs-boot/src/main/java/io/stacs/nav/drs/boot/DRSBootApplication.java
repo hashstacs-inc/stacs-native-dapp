@@ -28,9 +28,9 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
  * @author suimi
  * @since 1.0.0
  */
-@SpringBootApplication(scanBasePackages = "com.higgschain.trust.drs") @Slf4j
+@SpringBootApplication(scanBasePackages = "io.stacs.nav.drs") @Slf4j
 @EnableTransactionManagement
-@MapperScan({ "com.higgschain.trust.drs.*.dao"})
+@MapperScan({ "io.stacs.nav.drs.*.dao"})
 public class DRSBootApplication {
     public static void main(String[] args) {
         SpringApplication.run(DRSBootApplication.class, args);
