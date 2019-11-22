@@ -12,13 +12,13 @@ import java.util.function.Supplier;
 @Getter public class DappException extends RuntimeException {
     private String code;
     private String msg;
-    private DappError error;
+    private ErrorInfo error;
 
-    public DappException(DappError error) {
-        super(error.getMsg());
+    public DappException(ErrorInfo error) {
+        super(error.getMessage());
         this.error = error;
         this.code = error.getCode();
-        this.msg = error.getMsg();
+        this.msg = error.getMessage();
     }
 
     public DappException(String error) {

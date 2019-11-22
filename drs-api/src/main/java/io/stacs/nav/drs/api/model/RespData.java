@@ -1,5 +1,6 @@
 package io.stacs.nav.drs.api.model;
 
+import io.stacs.nav.drs.api.exception.ErrorInfo;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -38,5 +39,9 @@ import lombok.Setter;
 
     public static RespData fail(String code, String msg) {
         return new RespData(code, msg);
+    }
+
+    public static RespData fail(ErrorInfo error) {
+        return new RespData(error.getCode(), error.getMessage());
     }
 }

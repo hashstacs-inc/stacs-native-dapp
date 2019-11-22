@@ -4,13 +4,13 @@ import com.alipay.sofa.ark.spi.model.Biz;
 import com.alipay.sofa.ark.spi.model.BizState;
 import com.alipay.sofa.ark.spi.service.ArkInject;
 import com.alipay.sofa.ark.spi.service.biz.BizManagerService;
-import io.stacs.nav.drs.boot.bo.Dapp;
-import io.stacs.nav.drs.boot.enums.DappStatus;
 import io.stacs.nav.drs.api.exception.DappError;
 import io.stacs.nav.drs.api.exception.DappException;
+import io.stacs.nav.drs.api.model.RespData;
+import io.stacs.nav.drs.boot.bo.Dapp;
+import io.stacs.nav.drs.boot.enums.DappStatus;
 import io.stacs.nav.drs.boot.service.IDappLifecycleManage;
 import io.stacs.nav.drs.boot.service.dapp.IDappService;
-import io.stacs.nav.drs.api.model.RespData;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -45,7 +45,7 @@ import java.util.stream.Collectors;
             return RespData.fail(e.getCode(), e.getMsg());
         } catch (Throwable e) {
             log.error("[download]has unknown error", e);
-            return RespData.fail(DappError.DAPP_COMMON_ERROR.getCode(), e.getMessage());
+            return RespData.fail(DappError.DAPP_COMMON_ERROR);
         }
     }
 
@@ -62,7 +62,7 @@ import java.util.stream.Collectors;
             return RespData.fail(e.getCode(), e.getMsg());
         } catch (Throwable e) {
             log.error("[initialized]has unknown error", e);
-            return RespData.fail(DappError.DAPP_COMMON_ERROR.getCode(), e.getMessage());
+            return RespData.fail(DappError.DAPP_COMMON_ERROR);
         }
     }
 
@@ -80,7 +80,7 @@ import java.util.stream.Collectors;
             return RespData.fail(e.getCode(), e.getMsg());
         } catch (Throwable e) {
             log.error("[install]has unknown error", e);
-            return RespData.fail(DappError.DAPP_COMMON_ERROR.getCode(), e.getMessage());
+            return RespData.fail(DappError.DAPP_COMMON_ERROR);
         }
     }
 
@@ -97,7 +97,7 @@ import java.util.stream.Collectors;
             return RespData.fail(e.getCode(), e.getMsg());
         } catch (Throwable e) {
             log.error("[uninstall]has unknown error", e);
-            return RespData.fail(DappError.DAPP_COMMON_ERROR.getCode(), e.getMessage());
+            return RespData.fail(DappError.DAPP_COMMON_ERROR);
         }
     }
 
@@ -124,7 +124,7 @@ import java.util.stream.Collectors;
             return RespData.fail(e.getCode(), e.getMsg());
         } catch (Throwable e) {
             log.error("[queryConfig]has unknown error", e);
-            return RespData.fail(DappError.DAPP_COMMON_ERROR.getCode(), e.getMessage());
+            return RespData.fail(DappError.DAPP_COMMON_ERROR);
         }
     }
 
@@ -146,7 +146,7 @@ import java.util.stream.Collectors;
             return RespData.fail(e.getCode(), e.getMsg());
         } catch (Throwable e) {
             log.error("[config]has unknown error", e);
-            return RespData.fail(DappError.DAPP_COMMON_ERROR.getCode(), e.getMessage());
+            return RespData.fail(DappError.DAPP_COMMON_ERROR);
         }
     }
 

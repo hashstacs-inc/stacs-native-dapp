@@ -11,6 +11,7 @@ import com.google.common.io.Files;
 import io.stacs.nav.drs.api.exception.DappError;
 import io.stacs.nav.drs.api.exception.DappException;
 import io.stacs.nav.drs.boot.bo.Dapp;
+import io.stacs.nav.drs.boot.config.BaseConfig;
 import io.stacs.nav.drs.boot.enums.DappStatus;
 import io.stacs.nav.drs.boot.service.dapp.IDappService;
 import io.stacs.nav.drs.service.config.DrsConfig;
@@ -19,7 +20,6 @@ import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.io.IOUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.context.event.ApplicationReadyEvent;
 import org.springframework.context.ApplicationListener;
 import org.springframework.stereotype.Service;
@@ -46,7 +46,7 @@ import static com.alipay.sofa.ark.spi.constant.Constants.*;
     private static final String WEB_SERVER_PORT = "server.port";
     private static final String WEB_SERVER_CONTEXT_PATH = "server.servlet.context-path";
 
-    @Value("${server.port}") private int serverPort;
+    @Autowired BaseConfig baseConfig;
 
     @Autowired DrsConfig drsConfig;
 
@@ -350,7 +350,7 @@ import static com.alipay.sofa.ark.spi.constant.Constants.*;
             p.put(SPRING_APP_NAME, appName);
         }
         if (!p.containsKey(WEB_SERVER_PORT)) {
-            p.put(WEB_SERVER_PORT, serverPort);
+            p.put(WEB_SERVER_PORT, baseConfig.getServerPort());
         }
         p.put(WEB_SERVER_CONTEXT_PATH, "/" + appName);
         FileOutputStream os = null;

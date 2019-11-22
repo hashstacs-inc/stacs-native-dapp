@@ -7,31 +7,48 @@ import lombok.Getter;
  * @description
  * @date 2019-11-05
  */
-@Getter public enum DappError {
-    DAPP_COMMON_ERROR("100000", "unknown error"),
-    DAPP_ALREADY_EXISTS("100001", "Dapp is already exists"),
-    DAPP_NOT_EXISTS("100002", "Dapp is not exists"),
-    DAPP_NOT_INITIALIZED("100003", "Dapp is not initialized"),
-    DAPP_ALREADY_RUNNING("100004", "Dapp is already running"),
-    DAPP_UPDATE_STATUS_ERROR("100005", "udpate status is error"),
-    DAPP_SOURCE_FILE_NOT_EXISTS_ERROR("100006", "source file is not exists"),
-    DB_ERROR("100007", "has data base error" ),
-    IDEMPOTENT_ERROR("100008", "has idempotent error" ),
-    DAPP_ALREADY_INITIALIZED("100009", "Dapp is already initialized"),
-    DAPP_CONFIG_NOT_FOUND("100010", "Dapp config file is not found"),
-    PARAM_VILIDATE_ERROR("100011", "param validate error"),
-    BD_NOT_FIND_ERROR("100012", "bd is not find error"),
-    NO_PERMISSION_ERROR("100013", "no permission error"),
-    FUNCTION_NOT_FIND_ERROR("100014", "function not find error"),
+@Getter public enum DappError implements ErrorInfo{
 
-    DAPP_NET_WORK_COMMON_ERROR("100100", "net work common error"),
+    DAPP_COMMON_ERROR("20","00","00", "unknown error"),
+    DAPP_NET_WORK_COMMON_ERROR("20","00","01", "net work common error"),
+    IDEMPOTENT_ERROR("20","00","02", "has idempotent error" ),
+    PARAM_VILIDATE_ERROR("20","00","03", "param validate error"),
+    DB_ERROR("20","00","04", "has data base error" ),
+
+    DAPP_ALREADY_EXISTS("20","01","01", "Dapp is already exists"),
+    DAPP_NOT_EXISTS("20","01","02", "Dapp is not exists"),
+    DAPP_NOT_INITIALIZED("20","01","03", "Dapp is not initialized"),
+    DAPP_ALREADY_RUNNING("20","01","04", "Dapp is already running"),
+    DAPP_UPDATE_STATUS_ERROR("20","01","05", "udpate status is error"),
+    DAPP_SOURCE_FILE_NOT_EXISTS_ERROR("20","01","06", "source file is not exists"),
+    DAPP_ALREADY_INITIALIZED("20","01","07", "Dapp is already initialized"),
+    DAPP_CONFIG_NOT_FOUND("20","01","08", "Dapp config file is not found"),
+
+    BD_NOT_FIND_ERROR("20","02","01", "bd is not find error"),
+    NO_PERMISSION_ERROR("20","02","02", "no permission error"),
+    FUNCTION_NOT_FIND_ERROR("20","02","03", "function not find error"),
     ;
 
-    private String code;
-    private String msg;
+    private final String majorCode;
 
-    DappError(String code, String msg) {
-        this.code = code;
-        this.msg = msg;
+    private final String minorCode;
+
+    private final String errorCode;
+
+    private final String message;
+
+    DappError(String majorCode, String minorCode, String errorCode, String message) {
+        this.majorCode = majorCode;
+        this.minorCode = minorCode;
+        this.errorCode = errorCode;
+        this.message = message;
+    }
+
+    @Override public String getCode() {
+        return majorCode + minorCode + errorCode;
+    }
+
+    @Override public String getMessage() {
+        return message;
     }
 }
