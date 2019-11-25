@@ -15,18 +15,18 @@ import lombok.Getter;
     PARAM_VILIDATE_ERROR("20","00","03", "param validate error"),
     DB_ERROR("20","00","04", "has data base error" ),
 
-    DAPP_ALREADY_EXISTS("20","01","01", "Dapp is already exists"),
-    DAPP_NOT_EXISTS("20","01","02", "Dapp is not exists"),
-    DAPP_NOT_INITIALIZED("20","01","03", "Dapp is not initialized"),
-    DAPP_ALREADY_RUNNING("20","01","04", "Dapp is already running"),
-    DAPP_UPDATE_STATUS_ERROR("20","01","05", "udpate status is error"),
-    DAPP_SOURCE_FILE_NOT_EXISTS_ERROR("20","01","06", "source file is not exists"),
-    DAPP_ALREADY_INITIALIZED("20","01","07", "Dapp is already initialized"),
-    DAPP_CONFIG_NOT_FOUND("20","01","08", "Dapp config file is not found"),
+    DAPP_ALREADY_EXISTS("21","00","01", "Dapp is already exists"),
+    DAPP_NOT_EXISTS("21","01","00", "Dapp is not exists"),
+    DAPP_NOT_INITIALIZED("21","00","03", "Dapp is not initialized"),
+    DAPP_ALREADY_RUNNING("21","00","04", "Dapp is already running"),
+    DAPP_UPDATE_STATUS_ERROR("21","00","05", "udpate status is error"),
+    DAPP_SOURCE_FILE_NOT_EXISTS_ERROR("21","00","06", "source file is not exists"),
+    DAPP_ALREADY_INITIALIZED("21","00","07", "Dapp is already initialized"),
+    DAPP_CONFIG_NOT_FOUND("21","00","08", "Dapp config file is not found"),
 
-    BD_NOT_FIND_ERROR("20","02","01", "bd is not find error"),
-    NO_PERMISSION_ERROR("20","02","02", "no permission error"),
-    FUNCTION_NOT_FIND_ERROR("20","02","03", "function not find error"),
+    BD_NOT_FIND_ERROR("22","00","01", "bd is not find error"),
+    NO_PERMISSION_ERROR("22","00","02", "no permission error"),
+    FUNCTION_NOT_FIND_ERROR("22","00","03", "function not find error"),
     ;
 
     private final String majorCode;
