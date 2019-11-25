@@ -1,5 +1,6 @@
 package io.stacs.nav.drs.api.model.contract;
 
+import com.alipay.sofa.common.utils.StringUtil;
 import io.stacs.nav.drs.api.model.BaseTxVO;
 import lombok.Getter;
 import lombok.Setter;
@@ -46,4 +47,13 @@ import java.math.BigDecimal;
      */
     @NotBlank private String functionName;
 
+    @Override
+    public String getSignValue(){
+        return super.getSignValue()
+                        + methodSignature
+                        + from
+                        + to
+                        + StringUtil.join(args,",")
+                        + getFunctionName();
+    }
 }

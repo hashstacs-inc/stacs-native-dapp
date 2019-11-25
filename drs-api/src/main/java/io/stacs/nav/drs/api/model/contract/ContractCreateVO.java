@@ -39,4 +39,19 @@ import lombok.Setter;
     @Override public String getFunctionName() {
         return FunctionDefineEnum.CREATE_CONTRACT.getFunctionName();
     }
+
+    /**
+     * get sign value
+     *
+     * @return
+     */
+    @Override
+    public String getSignValue(){
+        return getSignValue()
+                    + fromAddr
+                    + contractAddress
+                    + name
+                    + extension
+                    + getFunctionName();
+    }
 }
