@@ -6,6 +6,7 @@ import lombok.Getter;
 import lombok.Setter;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * @author dekuofa <br>
@@ -31,5 +32,18 @@ import java.util.List;
 
     @Override public String getFunctionName() {
         return FunctionDefineEnum.BD_PUBLISH.getFunctionName();
+    }
+
+    @Override public String getSignValue() {
+        return super.getSignValue()
+                    + code
+                    + name
+                    + bdType
+                    + desc
+                    + initPermission
+                    + initPolicy
+                    + bdVersion
+                    + String.join(",",functions.stream().map(FunctionDefine::getSignValue).collect(Collectors.toList()))
+                    + getFunctionName();
     }
 }

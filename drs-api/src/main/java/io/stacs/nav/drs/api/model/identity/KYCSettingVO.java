@@ -25,4 +25,13 @@ import org.hibernate.validator.constraints.NotBlank;
     @Override public String getFunctionName() {
         return FunctionDefineEnum.KYC_SETTING.getFunctionName();
     }
+
+    @Override
+    public String getSignValue(){
+        return super.getSignValue()
+                    + identityAddress
+                    + KYC
+                    + identityType
+                    + getFunctionName();
+    }
 }

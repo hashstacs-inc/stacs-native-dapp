@@ -27,4 +27,13 @@ import org.hibernate.validator.constraints.NotEmpty;
     @Override public String getFunctionName() {
         return FunctionDefineEnum.IDENTITY_BD_MANAGE.getFunctionName();
     }
+
+    @Override
+    public String getSignValue(){
+        return super.getSignValue()
+            + targetAddress
+            + actionType
+            + String.join(",",BDCodes)
+            + getFunctionName();
+    }
 }

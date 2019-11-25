@@ -22,4 +22,11 @@ import org.hibernate.validator.constraints.NotEmpty;
     @Override public String getFunctionName() {
         return FunctionDefineEnum.CANCEL_PERMISSION.getFunctionName();
     }
+    @Override
+    public String getSignValue(){
+        return super.getSignValue()
+            + identityAddress
+            + String.join(",",permissionNames)
+            + getFunctionName();
+    }
 }

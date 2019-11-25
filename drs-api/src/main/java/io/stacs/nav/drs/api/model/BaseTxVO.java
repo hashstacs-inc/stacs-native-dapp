@@ -33,4 +33,13 @@ import javax.validation.constraints.NotBlank;
     private String feeMaxAmount;
 
     public abstract String getFunctionName();
+
+    /**
+     * get sign value
+     *
+     * @return
+     */
+    public String getSignValue(){
+        return txId + bdCode + submitter + execPolicyId + feeCurrency + feeMaxAmount;
+    }
 }

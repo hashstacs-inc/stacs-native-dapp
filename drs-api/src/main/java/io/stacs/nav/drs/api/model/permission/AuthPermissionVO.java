@@ -27,4 +27,13 @@ import org.hibernate.validator.constraints.NotEmpty;
     @Override public String getFunctionName() {
         return FunctionDefineEnum.AUTHORIZE_PERMISSION.getFunctionName();
     }
+
+    @Override
+    public String getSignValue(){
+        return super.getSignValue()
+                        + identityAddress
+                        + identityType
+                        + String.join(",",permissionNames)
+                        + getFunctionName();
+    }
 }

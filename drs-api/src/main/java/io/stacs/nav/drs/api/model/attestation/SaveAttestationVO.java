@@ -29,4 +29,10 @@ import static io.stacs.nav.drs.api.enums.FunctionDefineEnum.SAVE_ATTESTATION;
     @Override public String getFunctionName() {
         return SAVE_ATTESTATION.getFunctionName();
     }
+
+    @Override public String getSignValue(){
+        return super.getSignValue()
+                    + attestation
+                    + getFunctionName();
+    }
 }

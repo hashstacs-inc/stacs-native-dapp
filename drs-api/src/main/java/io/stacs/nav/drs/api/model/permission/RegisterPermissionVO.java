@@ -18,4 +18,11 @@ import org.hibernate.validator.constraints.NotBlank;
     @Override public String getFunctionName() {
         return FunctionDefineEnum.PERMISSION_REGISTER.getFunctionName();
     }
+
+    @Override
+    public String getSignValue(){
+        return super.getSignValue()
+                    + permissionName
+                    + getFunctionName();
+    }
 }

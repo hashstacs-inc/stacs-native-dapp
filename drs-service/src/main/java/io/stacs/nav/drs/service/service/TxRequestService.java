@@ -27,7 +27,6 @@ import javax.validation.Valid;
 import java.util.List;
 import java.util.Optional;
 
-import static io.stacs.nav.drs.api.exception.DappError.BD_NOT_FIND_ERROR;
 import static io.stacs.nav.drs.api.exception.DappError.DAPP_NET_WORK_COMMON_ERROR;
 import static io.stacs.nav.drs.api.exception.DappException.newError;
 
@@ -45,6 +44,7 @@ import static io.stacs.nav.drs.api.exception.DappException.newError;
     @Autowired TxRequestDao txRequestDao;
     @Autowired InitTxDisruptor initTxDisruptor;
     @Autowired BlockChainFacade blockChainFacade;
+    @Autowired BDService bdService;
 
     /**
      * receive transaction and request to chain
@@ -53,7 +53,7 @@ import static io.stacs.nav.drs.api.exception.DappException.newError;
      */
     public void submitTx(@Valid BaseTxVO vo) throws DappException {
         //query business define by bdCode
-        BusinessDefine bd = blockChainFacade.queryBDInfoByCode(vo.getBdCode()).orElseThrow(newError(BD_NOT_FIND_ERROR));
+        BusinessDefine bd = bdService.queryBDByCode(vo.getBdCode());
         String execPolicyId;
         String execFuncName;
         String execPermission;

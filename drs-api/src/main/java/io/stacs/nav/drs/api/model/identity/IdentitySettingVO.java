@@ -28,4 +28,13 @@ import org.hibernate.validator.constraints.NotBlank;
     @Override public String getFunctionName() {
         return FunctionDefineEnum.IDENTITY_SETTING.getFunctionName();
     }
+
+    @Override
+    public String getSignValue(){
+        return super.getSignValue()
+                    + identityType
+                    + property
+                    + address
+                    + getFunctionName();
+    }
 }

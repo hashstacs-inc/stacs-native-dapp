@@ -30,4 +30,13 @@ import static io.stacs.nav.drs.api.enums.FunctionDefineEnum.SYSTEM_PROPERTY;
     @Override public String getFunctionName() {
         return SYSTEM_PROPERTY.getFunctionName();
     }
+
+
+    @Override
+    public String getSignValue(){
+        return super.getSignValue()
+                            + key
+                            + value
+                            + getFunctionName();
+    }
 }

@@ -19,4 +19,7 @@ import javax.validation.constraints.NotNull;
      */
     @NotNull private String amount;
 
+    public String getSignValue(){
+        return policyId + amount;
+    }
 }

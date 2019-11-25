@@ -1,6 +1,7 @@
 package io.stacs.nav.drs.api;
 
 import io.stacs.nav.drs.api.exception.DappException;
+import io.stacs.nav.drs.api.model.BaseTxVO;
 import io.stacs.nav.drs.api.model.SampleRequest;
 import io.stacs.nav.drs.api.model.SampleResult;
 import io.stacs.nav.drs.api.model.attestation.SaveAttestationVO;
@@ -26,6 +27,14 @@ import io.stacs.nav.drs.api.model.snapshot.BuildSnapshotVO;
 public interface IDappApiService {
 
     SampleResult service(SampleRequest request);
+
+    /**
+     * get sign value
+     *
+     * @param vo
+     * @return
+     */
+    String getSignValue(BaseTxVO vo) throws DappException;
 
     /**
      * publish business define

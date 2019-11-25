@@ -7,6 +7,7 @@ import org.hibernate.validator.constraints.NotEmpty;
 
 import javax.validation.Valid;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import static io.stacs.nav.drs.api.enums.FunctionDefineEnum.SET_FEE_RULE;
 
@@ -22,5 +23,12 @@ import static io.stacs.nav.drs.api.enums.FunctionDefineEnum.SET_FEE_RULE;
 
     @Override public String getFunctionName() {
         return SET_FEE_RULE.getFunctionName();
+    }
+
+    @Override
+    public String getSignValue(){
+        return super.getSignValue()
+                    + String.join(",",rules.stream().map(FeeTxRuleVO::getSignValue).collect(Collectors.toList()))
+                    + getFunctionName();
     }
 }

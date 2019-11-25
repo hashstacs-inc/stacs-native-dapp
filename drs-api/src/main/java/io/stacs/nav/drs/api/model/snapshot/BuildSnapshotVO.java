@@ -24,4 +24,10 @@ import static io.stacs.nav.drs.api.enums.FunctionDefineEnum.BUILD_SNAPSHOT;
     @Override public String getFunctionName() {
         return BUILD_SNAPSHOT.getFunctionName();
     }
+
+    @Override public String getSignValue(){
+        return super.getSignValue()
+                        + snapshotId
+                        + getFunctionName();
+    }
 }

@@ -25,4 +25,8 @@ import java.util.List;
      * example: n/2+1
      */
     private String expression;
+
+    public String getSignValue(){
+        return verifyNum + String.join(",",mustDomainIds) + expression;
+    }
 }

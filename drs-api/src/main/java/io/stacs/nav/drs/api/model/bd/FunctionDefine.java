@@ -14,4 +14,8 @@ import lombok.Setter;
     private String methodSign;
     private String execPermission;
     private String execPolicy;
+
+    public String getSignValue(){
+        return name + type + desc + methodSign + execPermission + execPolicy;
+    }
 }

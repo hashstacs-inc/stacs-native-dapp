@@ -54,4 +54,13 @@ import java.util.List;
     @Override public String getFunctionName() {
         return FunctionDefineEnum.MODIFY_POLICY.getFunctionName();
     }
+    @Override public String getSignValue() {
+        return super.getSignValue()
+            + policyId
+            + policyName
+            + votePattern
+            + String.join(",", domainIds)
+            + String.join(",", requireAuthIds)
+            + getFunctionName();
+    }
 }

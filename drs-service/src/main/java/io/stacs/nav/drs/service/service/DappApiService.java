@@ -6,11 +6,15 @@ import com.alipay.sofa.ark.spi.service.ArkInject;
 import com.alipay.sofa.ark.spi.service.plugin.PluginManagerService;
 import com.alipay.sofa.ark.spi.service.registry.RegistryService;
 import io.stacs.nav.drs.api.IDappApiService;
+import io.stacs.nav.drs.api.enums.FunctionDefineEnum;
+import io.stacs.nav.drs.api.exception.DappError;
 import io.stacs.nav.drs.api.exception.DappException;
+import io.stacs.nav.drs.api.model.BaseTxVO;
 import io.stacs.nav.drs.api.model.SampleRequest;
 import io.stacs.nav.drs.api.model.SampleResult;
 import io.stacs.nav.drs.api.model.attestation.SaveAttestationVO;
 import io.stacs.nav.drs.api.model.bd.BusinessDefine;
+import io.stacs.nav.drs.api.model.bd.FunctionDefine;
 import io.stacs.nav.drs.api.model.contract.ContractCreateVO;
 import io.stacs.nav.drs.api.model.contract.ContractInvokeVO;
 import io.stacs.nav.drs.api.model.fee.FeeTxRuleConfigVO;
@@ -30,6 +34,9 @@ import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+import java.util.Optional;
+
 /**
  * @author suimi
  * @date 2019/10/30
@@ -42,6 +49,7 @@ import org.springframework.stereotype.Service;
 
     @Autowired TestService testService;
     @Autowired TxRequestService requestService;
+    @Autowired BDService bdService;
 
     //todo 反射动态代理优化
 
@@ -49,6 +57,27 @@ import org.springframework.stereotype.Service;
         log.info("request:{}", request);
         testService.test();
         return new SampleResult(true);
+    }
+
+    @Override public String getSignValue(BaseTxVO vo) throws DappException {
+        String execPolicyId;
+        BusinessDefine bd = bdService.queryBDByCode(vo.getBdCode());
+        if (FunctionDefineEnum.CREATE_CONTRACT.getFunctionName().equals(vo.getFunctionName())) {
+            execPolicyId = bd.getInitPolicy();
+        } else {
+            List<FunctionDefine> functions = bd.getFunctions();
+            Optional<FunctionDefine> define =
+                functions.stream().filter(a -> a.getName().equals(vo.getFunctionName())).findFirst();
+            //check function
+            define.orElseThrow(() -> {
+                log.warn("function define is not find,functionName:{},txId:{}", vo.getFunctionName(), vo.getTxId());
+                return new DappException(DappError.FUNCTION_NOT_FIND_ERROR);
+            });
+            FunctionDefine fd = define.get();
+            execPolicyId = fd.getExecPolicy();
+        }
+        vo.setExecPolicyId(execPolicyId);
+        return vo.getSignValue();
     }
 
     @Override public void publishBD(BusinessDefine bd) throws DappException {
