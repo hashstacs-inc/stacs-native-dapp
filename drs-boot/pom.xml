@@ -110,15 +110,15 @@
 
                         <configuration>
                             <priority>1</priority>
-                            <!--specify destination where executable-ark-jar will be saved, default saved to ${project.build.directory}-->
-                            <outputDirectory>./target</outputDirectory>
-
-                            <!--default none-->
                             <arkClassifier>executable</arkClassifier>
                             <bizClassifier>dev</bizClassifier>
                         </configuration>
                     </execution>
                 </executions>
+                <configuration>
+                    <attach>true</attach>
+                    <outputDirectory>target</outputDirectory>
+                </configuration>
             </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
