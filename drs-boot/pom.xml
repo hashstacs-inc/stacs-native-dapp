@@ -115,6 +115,7 @@
 
                             <!--default none-->
                             <arkClassifier>executable</arkClassifier>
+                            <bizClassifier>dev</bizClassifier>
                         </configuration>
                     </execution>
                 </executions>
