@@ -17,13 +17,13 @@ public enum FunctionDefineEnum {
      CANCEL_PERMISSION("CANCEL_PERMISSION","/permission/open/cancel"),
      REGISTER_POLICY("REGISTER_POLICY","/manage/open/policy/register"),
      MODIFY_POLICY("MODIFY_POLICY","/manage/open/policy/modify"),
-     SYSTEM_PROPERTY("SYSTEM_PROPERTY",""),
+     SYSTEM_PROPERTY("SYSTEM_PROPERTY","/systemProperty/open/config"),
      KYC_SETTING("KYC_SETTING","/kyc/open/setting"),
-     SET_FEE_RULE("SET_FEE_RULE",""),
-     SAVE_ATTESTATION("SAVE_ATTESTATION",""),
-     BUILD_SNAPSHOT("BUILD_SNAPSHOT",""),
+     SET_FEE_RULE("SET_FEE_RULE","/fee/open/setRule"),
+     SAVE_ATTESTATION("SAVE_ATTESTATION","/attestation/open/save"),
+     BUILD_SNAPSHOT("BUILD_SNAPSHOT","/snapshot/open/build"),
      CREATE_CONTRACT("CREATE_CONTRACT","/contract/open/deploy"),
-     CONTRACT_INVOKER("CONTRACT_INVOER","/contract/open/invoke")
+     CONTRACT_INVOKER("CONTRACT_INVOKER","/contract/open/invoke")
      ;
 
     private String functionName;
