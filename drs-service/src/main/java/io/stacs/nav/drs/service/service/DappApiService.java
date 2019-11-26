@@ -51,15 +51,13 @@ import java.util.Optional;
     @Autowired TxRequestService requestService;
     @Autowired BDService bdService;
 
-    //todo 反射动态代理优化
-
     @Override public SampleResult service(SampleRequest request) {
         log.info("request:{}", request);
         testService.test();
         return new SampleResult(true);
     }
 
-    @Override public String getSignValue(BaseTxVO vo) throws DappException {
+    @Override public String getSignValue(BaseTxVO vo) {
         String execPolicyId;
         BusinessDefine bd = bdService.queryBDByCode(vo.getBdCode());
         if (FunctionDefineEnum.CREATE_CONTRACT.getFunctionName().equals(vo.getFunctionName())) {
@@ -69,10 +67,10 @@ import java.util.Optional;
             Optional<FunctionDefine> define =
                 functions.stream().filter(a -> a.getName().equals(vo.getFunctionName())).findFirst();
             //check function
-            define.orElseThrow(() -> {
+            if (!define.isPresent()) {
                 log.warn("function define is not find,functionName:{},txId:{}", vo.getFunctionName(), vo.getTxId());
-                return new DappException(DappError.FUNCTION_NOT_FIND_ERROR);
-            });
+                throw new DappException(DappError.FUNCTION_NOT_FIND_ERROR);
+            }
             FunctionDefine fd = define.get();
             execPolicyId = fd.getExecPolicy();
         }
@@ -80,63 +78,63 @@ import java.util.Optional;
         return vo.getSignValue();
     }
 
-    @Override public void publishBD(BusinessDefine bd) throws DappException {
+    @Override public void publishBD(BusinessDefine bd) {
         requestService.submitTx(bd);
     }
 
-    @Override public void contractPublish(ContractCreateVO vo) throws DappException {
+    @Override public void contractPublish(ContractCreateVO vo) {
         requestService.submitTx(vo);
     }
 
-    @Override public void contractInvoke(ContractInvokeVO vo) throws DappException {
+    @Override public void contractInvoke(ContractInvokeVO vo) {
         requestService.submitTx(vo);
     }
 
-    @Override public void registPolicy(RegisterPolicyVO vo) throws DappException {
+    @Override public void registPolicy(RegisterPolicyVO vo) {
         requestService.submitTx(vo);
     }
 
-    @Override public void modifyPolicy(ModifyPolicyVO vo) throws DappException {
+    @Override public void modifyPolicy(ModifyPolicyVO vo) {
         requestService.submitTx(vo);
     }
 
-    @Override public void registerPermission(RegisterPermissionVO vo) throws DappException {
+    @Override public void registerPermission(RegisterPermissionVO vo) {
         requestService.submitTx(vo);
     }
 
-    @Override public void authPermission(AuthPermissionVO vo) throws DappException {
+    @Override public void authPermission(AuthPermissionVO vo) {
         requestService.submitTx(vo);
     }
 
-    @Override public void cancelPermission(CancelPermissionVO vo) throws DappException {
+    @Override public void cancelPermission(CancelPermissionVO vo) {
         requestService.submitTx(vo);
     }
 
-    @Override public void identitySetting(IdentitySettingVO vo) throws DappException {
+    @Override public void identitySetting(IdentitySettingVO vo) {
         requestService.submitTx(vo);
     }
 
-    @Override public void identityManager(IdentityBDManageVO vo) throws DappException {
+    @Override public void identityManager(IdentityBDManageVO vo) {
         requestService.submitTx(vo);
     }
 
-    @Override public void settingKYC(KYCSettingVO vo) throws DappException {
+    @Override public void settingKYC(KYCSettingVO vo) {
         requestService.submitTx(vo);
     }
 
-    @Override public void feeTxRuleConfig(FeeTxRuleConfigVO vo) throws DappException {
+    @Override public void feeTxRuleConfig(FeeTxRuleConfigVO vo) {
         requestService.submitTx(vo);
     }
 
-    @Override public void systemPropertyConfig(SystemPropertyConfigVO vo) throws DappException {
+    @Override public void systemPropertyConfig(SystemPropertyConfigVO vo) {
         requestService.submitTx(vo);
     }
 
-    @Override public void buildSnapshot(BuildSnapshotVO vo) throws DappException {
+    @Override public void buildSnapshot(BuildSnapshotVO vo) {
         requestService.submitTx(vo);
     }
 
-    @Override public void saveAttestation(SaveAttestationVO vo) throws DappException {
+    @Override public void saveAttestation(SaveAttestationVO vo) {
         requestService.submitTx(vo);
     }
 

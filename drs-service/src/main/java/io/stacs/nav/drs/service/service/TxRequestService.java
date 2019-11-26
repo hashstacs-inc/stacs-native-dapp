@@ -66,10 +66,10 @@ import static io.stacs.nav.drs.api.exception.DappException.newError;
             Optional<FunctionDefine> define =
                 functions.stream().filter(a -> a.getName().equals(vo.getFunctionName())).findFirst();
             //check function
-            define.orElseThrow(() -> {
+            if (!define.isPresent()) {
                 log.warn("function define is not find,functionName:{},txId:{}", vo.getFunctionName(), vo.getTxId());
-                return new DappException(DappError.FUNCTION_NOT_FIND_ERROR);
-            });
+                throw new DappException(DappError.FUNCTION_NOT_FIND_ERROR);
+            }
             FunctionDefine fd = define.get();
             execPolicyId = fd.getExecPolicy();
             execPermission = fd.getExecPermission();

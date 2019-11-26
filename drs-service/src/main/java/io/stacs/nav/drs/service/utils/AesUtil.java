@@ -110,23 +110,37 @@ public class AesUtil {
      */
     public static String decryptFromFile(String password, String filePath) {
         File file = new File(filePath);
-
+        InputStream input = null;
+        ByteArrayOutputStream bos = null;
         try {
-            InputStream input = new FileInputStream(file);
-            ByteArrayOutputStream bos = new ByteArrayOutputStream(1000);
+            input = new FileInputStream(file);
+            bos = new ByteArrayOutputStream(1000);
             byte[] b = new byte[1000];
             int n;
             while ((n = input.read(b)) != -1) {
                 bos.write(b, 0, n);
             }
-            input.close();
-            bos.close();
             byte[] contentBytes = bos.toByteArray();
             //解密成byte
             decryptToBytes(contentBytes, password);
             return new String(decryptToBytes(contentBytes, password));
         } catch (Exception e) {
             LOGGER.error("DecryptFromFile failed " + e.getMessage(), e);
+        } finally {
+            if (input != null) {
+                try {
+                    input.close();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+            if (bos != null) {
+                try {
+                    bos.close();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
         }
 
         return null;
