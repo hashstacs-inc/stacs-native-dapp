@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xmlns="http://maven.apache.org/POM/4.0.0"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <parent>
+        <artifactId>stacs-native-dapp</artifactId>
+        <groupId>io.stacs.nav</groupId>
+        <version>1.0.0-SNAPSHOT</version>
+    </parent>
+    <modelVersion>4.0.0</modelVersion>
+    <artifactId>dapp-maven-plugin</artifactId>
+    <packaging>maven-plugin</packaging>
+
+    <properties>
+        <sofa.version>1.1.0-SNAPSHOT</sofa.version>
+    </properties>
+
+
+    <dependencies>
+
+        <!--SOFAArk modules-->
+        <dependency>
+            <groupId>com.alipay.sofa</groupId>
+            <artifactId>sofa-ark-common</artifactId>
+            <exclusions>
+                <exclusion>
+                    <groupId>com.alipay.sofa</groupId>
+                    <artifactId>sofa-ark-spi</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>com.google.inject</groupId>
+                    <artifactId>guice</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>com.alipay.sofa</groupId>
+                    <artifactId>log-sofa-boot-starter</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>org.slf4j</groupId>
+                    <artifactId>slf4j-log4j12</artifactId>
+                </exclusion>
+            </exclusions>
+            <version>${sofa.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>com.alipay.sofa</groupId>
+            <artifactId>sofa-ark-tools</artifactId>
+            <version>${sofa.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.apache.maven</groupId>
+            <artifactId>maven-plugin-api</artifactId>
+            <version>3.1.1</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.maven</groupId>
+            <artifactId>maven-core</artifactId>
+            <version>3.3.9</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.maven.plugin-tools</groupId>
+            <artifactId>maven-plugin-annotations</artifactId>
+            <version>3.4</version>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.maven.shared</groupId>
+            <artifactId>maven-common-artifact-filters</artifactId>
+            <version>1.4</version>
+        </dependency>
+    </dependencies>
+
+    <build>
+        <plugins>
+            <!-- jdk8 maven bug: https://issues.apache.org/jira/browse/MPLUGIN-272 -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-plugin-plugin</artifactId>
+                <version>3.4</version>
+                <configuration>
+                    <goalPrefix>dapp</goalPrefix>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>${groupId}</groupId>
+                <artifactId>${artifactId}</artifactId>
+                <version>${version}</version>
+            </plugin>
+        </plugins>
+    </build>
+
+</project>

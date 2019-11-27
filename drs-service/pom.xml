@@ -137,7 +137,6 @@
                         </goals>
 
                         <configuration>
-
                             <!--can only configure no more than one activator-->
                             <activator>io.stacs.nav.drs.service.ServiceActivator</activator>
                             <!-- 配置优先级，数字越小，优先级越高，优先启动，优先导出类，默认1000 -->
@@ -150,9 +149,6 @@
                                     <package>io.stacs.nav.drs.api.*</package>
                                 </packages>
                             </exported>
-
-                            <!--specify destination where ark-plugin will be saved, default saved to ${project.build.directory}-->
-                            <outputDirectory>../target</outputDirectory>
                         </configuration>
                     </execution>
 
