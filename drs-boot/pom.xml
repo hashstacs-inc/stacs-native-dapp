@@ -147,7 +147,7 @@
                 <configuration>
                     <executable>npm</executable>
                     <arguments>
-                        <argument>run</argument>
+                        <argument>install</argument>
                         <argument>build</argument>
                     </arguments>
                     <workingDirectory>./src/main/websource</workingDirectory>
