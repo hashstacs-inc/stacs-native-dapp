@@ -23,6 +23,8 @@ import lombok.Getter;
     DAPP_SOURCE_FILE_NOT_EXISTS_ERROR("21","00","06", "source file is not exists"),
     DAPP_ALREADY_INITIALIZED("21","00","07", "Dapp is already initialized"),
     DAPP_CONFIG_NOT_FOUND("21","00","08", "Dapp config file is not found"),
+    DAPP_DRS_VERSION_NOT_EXISTS("21","00","09", "Dapp drs version is not exists"),
+    DAPP_VERSION_UNEQUAL("21","00","10", "Dapp is unequal"),
 
     BD_NOT_FIND_ERROR("22","00","01", "bd is not find error"),
     NO_PERMISSION_ERROR("22","00","02", "no permission error"),
