@@ -26,6 +26,7 @@ addons:
 
 before_install:
   - npm i -g npm
+  - npm i -S @vue/cli-service
 
 install: mvn clean install -DskipTests=true -Ddockerfile.skip -Dmaven.javadoc.skip=true -B -V
 
