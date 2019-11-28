@@ -84,5 +84,4 @@ public class WriteHelper {
         return new FileInputStream(temp);
     }
 
-
 }
