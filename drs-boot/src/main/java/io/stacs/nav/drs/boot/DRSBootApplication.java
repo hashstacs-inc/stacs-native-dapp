@@ -32,8 +32,13 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
 @EnableTransactionManagement
 @MapperScan({ "io.stacs.nav.drs.*.dao"})
 public class DRSBootApplication {
-    // todo 代码整理 创建新的Application专用配置
+
     public static void main(String[] args) {
-        SpringApplication.run(DRSBootApplication.class, args);
+        String[] params = new String[args.length + 1];
+        params[0] = "--spring.config.name=boot";
+        for (int i = 0; i < args.length; i++)
+            params[i + 1] = args[i];
+
+        SpringApplication.run(DRSBootApplication.class, params);
     }
 }
