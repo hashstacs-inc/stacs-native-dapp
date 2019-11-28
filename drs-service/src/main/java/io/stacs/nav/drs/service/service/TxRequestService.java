@@ -2,6 +2,7 @@ package io.stacs.nav.drs.service.service;
 
 import com.alibaba.fastjson.JSON;
 import com.google.common.collect.Lists;
+import io.stacs.nav.drs.api.enums.ApiConstants;
 import io.stacs.nav.drs.api.exception.DappError;
 import io.stacs.nav.drs.api.exception.DappException;
 import io.stacs.nav.drs.api.model.BaseTxVO;
@@ -26,6 +27,8 @@ import javax.validation.Valid;
 import java.util.List;
 import java.util.Optional;
 
+import static io.stacs.nav.drs.api.enums.ApiConstants.TransactionApiEnum.CONTRACT_INVOKER;
+import static io.stacs.nav.drs.api.enums.ApiConstants.TransactionApiEnum.CREATE_CONTRACT;
 import static io.stacs.nav.drs.api.exception.DappError.DAPP_NET_WORK_COMMON_ERROR;
 import static io.stacs.nav.drs.api.exception.DappException.newError;
 
@@ -56,9 +59,9 @@ import static io.stacs.nav.drs.api.exception.DappException.newError;
         String execPolicyId;
         String execFuncName;
         String execPermission;
-        if (FunctionDefineEnum.CREATE_CONTRACT.getFunctionName().equals(vo.getFunctionName())) {
+        if (CREATE_CONTRACT.getFunctionName().equals(vo.getFunctionName())) {
             execPolicyId = bd.getInitPolicy();
-            execFuncName = FunctionDefineEnum.CREATE_CONTRACT.getFunctionName();
+            execFuncName = CREATE_CONTRACT.getFunctionName();
             execPermission = bd.getInitPermission();
         } else {
             List<FunctionDefine> functions = bd.getFunctions();
@@ -74,7 +77,7 @@ import static io.stacs.nav.drs.api.exception.DappException.newError;
             execPermission = fd.getExecPermission();
             //contract type
             if (BD_TYPE_CONTRACT.equalsIgnoreCase(fd.getType())) {
-                execFuncName = FunctionDefineEnum.CONTRACT_INVOKER.getFunctionName();
+                execFuncName = CONTRACT_INVOKER.getFunctionName();
             } else {
                 execFuncName = fd.getName();
             }
@@ -156,8 +159,8 @@ import static io.stacs.nav.drs.api.exception.DappException.newError;
         }
         try {
             //send to block chain
-            RespData response =
-                blockChainFacade.send(FunctionDefineEnum.fromFuncName(bo.getFuncName()).getApi(), bo.getTxData());
+            RespData response = blockChainFacade
+                .send(ApiConstants.TransactionApiEnum.fromTxName(bo.getFuncName()).getApi(), bo.getTxData());
             //update to END status
             r = txRequestDao
                 .updateStatusAndReceipt(bo.getTxId(), RequestStatus.SUBMITTING.name(), RequestStatus.PROCESSING.name(),

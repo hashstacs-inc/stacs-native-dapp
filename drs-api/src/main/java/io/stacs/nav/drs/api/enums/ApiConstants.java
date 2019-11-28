@@ -1,12 +1,17 @@
 package io.stacs.nav.drs.api.enums;
 
+import com.google.common.collect.Lists;
 import lombok.Getter;
+
+import java.util.List;
 
 /**
  * @author dekuofa <br>
  * @date 2019-11-28 <br>
  */
 public interface ApiConstants {
+
+    List<String> ENCRYPT_WHITE_LIST = Lists.newArrayList("callback/register");
     @Getter enum TransactionApiEnum {
         IDENTITY_SETTING("IDENTITY_SETTING", "/identity/setting"),
         IDENTITY_BD_MANAGE("IDENTITY_BD_MANAGE", "/identity/bdManage"),
@@ -49,6 +54,7 @@ public interface ApiConstants {
         BD_QUERY("bdQuery", "/bd/query"),
         CHECK_PERMISSION("checkPermission", "/identity/checkPermission"),
         QUERY_MAX_BLOCK_HEIGHT("getMaxBlockHeight", "/block/currentHeight/query"),
+        QUERY_BLOCKS("queryBlocks", "/block/query"),
         ;
 
         private String name;

@@ -18,6 +18,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import java.io.IOException;
 import java.util.List;
 import java.util.Optional;
@@ -25,6 +26,8 @@ import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.regex.Pattern;
 
+import static io.stacs.nav.drs.api.enums.ApiConstants.ENCRYPT_WHITE_LIST;
+import static io.stacs.nav.drs.api.enums.ApiConstants.QueryApiEnum.*;
 import static io.stacs.nav.drs.service.utils.HttpHelper.buildGetRequestParam;
 
 /**
@@ -32,9 +35,6 @@ import static io.stacs.nav.drs.service.utils.HttpHelper.buildGetRequestParam;
  * @date 2019-11-07
  */
 @Component @Slf4j public class BlockChainFacade implements ConfigListener {
-    private final static String API_BD_QUERY = "/bd/query";
-    private final static String API_CHECK_PERMISSION = "/identity/checkPermission";
-    private final static List<String> ENCRYPT_WHITE_LIST = Lists.newArrayList("callback/register");
 
     @Autowired private DrsHttpClient client;
     private static Predicate<String> encryptSkipFilter = Pattern.compile("[Qq]uery").asPredicate();
@@ -75,7 +75,25 @@ import static io.stacs.nav.drs.service.utils.HttpHelper.buildGetRequestParam;
             params = Lists.newArrayList(Pair.newPair("bdCode", bdCode));
         }
         try {
-            return sendGet(API_BD_QUERY, params, checkSuccessAndGetRealData());
+            return sendGet(BD_QUERY.getApi(), params, checkSuccessAndGetRealData());
+        } catch (IOException e) {
+            log.error("[queryAllBDInfo]has unknown error", e);
+            return Optional.empty();
+        }
+    }
+
+    public Optional<Long> queryCurrentHeight() {
+        try {
+            return sendGet(QUERY_MAX_BLOCK_HEIGHT.getApi(), null, checkSuccessAndGetRealData());
+        } catch (IOException e) {
+            log.error("[queryAllBDInfo]has unknown error", e);
+            return Optional.empty();
+        }
+    }
+
+    public Optional<Long> queryBlocks() {
+        try {
+            return sendGet(QUERY_BLOCKS.getApi(), null, checkSuccessAndGetRealData());
         } catch (IOException e) {
             log.error("[queryAllBDInfo]has unknown error", e);
             return Optional.empty();
@@ -84,14 +102,16 @@ import static io.stacs.nav.drs.service.utils.HttpHelper.buildGetRequestParam;
 
     public Optional<Boolean> checkPermission(PermissionCheckVO vo) {
         try {
-            return Optional.of((Boolean)send(API_CHECK_PERMISSION, vo, getRealData().compose(defaultPostConverter())));
+            return Optional
+                .of((Boolean)send(CHECK_PERMISSION.getApi(), vo, getRealData().compose(defaultPostConverter())));
         } catch (IOException e) {
             log.error("[checkPermission]has unknown error", e);
             return Optional.empty();
         }
     }
 
-    @Nonnull public <T> T sendGet(String api, List<Pair<String, String>> params, Function<RespData<?>, T> converter)
+    @Nonnull
+    public <T> T sendGet(String api, @Nullable List<Pair<String, String>> params, Function<RespData<?>, T> converter)
         throws IOException {
         String url = baseUrl + api;
         String requestParam = buildGetRequestParam(params);

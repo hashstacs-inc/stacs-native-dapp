@@ -4,6 +4,7 @@ import com.google.common.base.Joiner;
 import org.apache.commons.collections4.CollectionUtils;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import java.util.Iterator;
 import java.util.List;
 
@@ -13,7 +14,7 @@ import java.util.List;
  */
 public class HttpHelper {
 
-    @Nonnull public static String buildGetRequestParam(List<Pair<String, String>> params) {
+    @Nonnull public static String buildGetRequestParam(@Nullable List<Pair<String, String>> params) {
         if (CollectionUtils.isEmpty(params))
             return "";
         Joiner joiner = Joiner.on('&');
