@@ -9,7 +9,7 @@ import javax.validation.Valid;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import static io.stacs.nav.drs.api.enums.FunctionDefineEnum.SET_FEE_RULE;
+import static io.stacs.nav.drs.api.enums.ApiConstants.TransactionApiEnum.SET_FEE_RULE;
 
 /**
  * @author liuyu

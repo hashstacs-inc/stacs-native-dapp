@@ -54,7 +54,7 @@ public interface IDappApiService {
     /**
      * register policy
      */
-    void registPolicy(RegisterPolicyVO vo) throws DappException;
+    void registerPolicy(RegisterPolicyVO vo) throws DappException;
 
     /**
      * modify policy

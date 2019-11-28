@@ -1,11 +1,13 @@
 package io.stacs.nav.drs.api.model.identity;
 
-import io.stacs.nav.drs.api.enums.FunctionDefineEnum;
+
 import io.stacs.nav.drs.api.model.BaseTxVO;
 import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.validator.constraints.Length;
 import org.hibernate.validator.constraints.NotBlank;
+
+import static io.stacs.nav.drs.api.enums.ApiConstants.TransactionApiEnum.IDENTITY_SETTING;
 
 /**
  * @author ganxiang
@@ -26,7 +28,7 @@ import org.hibernate.validator.constraints.NotBlank;
     @NotBlank @Length(max = 40) private String address;
 
     @Override public String getFunctionName() {
-        return FunctionDefineEnum.IDENTITY_SETTING.getFunctionName();
+        return IDENTITY_SETTING.getFunctionName();
     }
 
     @Override

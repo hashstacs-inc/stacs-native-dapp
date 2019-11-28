@@ -1,9 +1,10 @@
 package io.stacs.nav.drs.api.model.contract;
 
-import io.stacs.nav.drs.api.enums.FunctionDefineEnum;
 import io.stacs.nav.drs.api.model.BaseTxVO;
 import lombok.Getter;
 import lombok.Setter;
+
+import static io.stacs.nav.drs.api.enums.ApiConstants.TransactionApiEnum.CREATE_CONTRACT;
 
 /**
  * The type Contract create request.
@@ -37,7 +38,7 @@ import lombok.Setter;
     private Object[] initArgs;
 
     @Override public String getFunctionName() {
-        return FunctionDefineEnum.CREATE_CONTRACT.getFunctionName();
+        return CREATE_CONTRACT.getFunctionName();
     }
 
     /**

@@ -1,12 +1,14 @@
 package io.stacs.nav.drs.api.model.permission;
 
-import io.stacs.nav.drs.api.enums.FunctionDefineEnum;
+
 import io.stacs.nav.drs.api.model.BaseTxVO;
 import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.validator.constraints.Length;
 import org.hibernate.validator.constraints.NotBlank;
 import org.hibernate.validator.constraints.NotEmpty;
+
+import static io.stacs.nav.drs.api.enums.ApiConstants.TransactionApiEnum.AUTHORIZE_PERMISSION;
 
 /**
  * auth/cancel identity permissions
@@ -25,7 +27,7 @@ import org.hibernate.validator.constraints.NotEmpty;
     @NotEmpty private String identityType;
 
     @Override public String getFunctionName() {
-        return FunctionDefineEnum.AUTHORIZE_PERMISSION.getFunctionName();
+        return AUTHORIZE_PERMISSION.getFunctionName();
     }
 
     @Override

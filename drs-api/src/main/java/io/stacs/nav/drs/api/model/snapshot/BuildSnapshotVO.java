@@ -12,7 +12,7 @@ import org.hibernate.validator.constraints.NotBlank;
 
 import javax.validation.constraints.Size;
 
-import static io.stacs.nav.drs.api.enums.FunctionDefineEnum.BUILD_SNAPSHOT;
+import static io.stacs.nav.drs.api.enums.ApiConstants.TransactionApiEnum.BUILD_SNAPSHOT;
 
 /**
  * @author suimi

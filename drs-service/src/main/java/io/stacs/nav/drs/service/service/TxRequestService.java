@@ -2,7 +2,6 @@ package io.stacs.nav.drs.service.service;
 
 import com.alibaba.fastjson.JSON;
 import com.google.common.collect.Lists;
-import io.stacs.nav.drs.api.enums.FunctionDefineEnum;
 import io.stacs.nav.drs.api.exception.DappError;
 import io.stacs.nav.drs.api.exception.DappException;
 import io.stacs.nav.drs.api.model.BaseTxVO;

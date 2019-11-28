@@ -1,12 +1,13 @@
 package io.stacs.nav.drs.api.model.bd;
 
-import io.stacs.nav.drs.api.enums.FunctionDefineEnum;
 import io.stacs.nav.drs.api.model.BaseTxVO;
 import lombok.Getter;
 import lombok.Setter;
 
 import java.util.List;
 import java.util.stream.Collectors;
+
+import static io.stacs.nav.drs.api.enums.ApiConstants.TransactionApiEnum.BD_PUBLISH;
 
 /**
  * @author dekuofa <br>
@@ -31,7 +32,7 @@ import java.util.stream.Collectors;
     private String bdVersion;
 
     @Override public String getFunctionName() {
-        return FunctionDefineEnum.BD_PUBLISH.getFunctionName();
+        return BD_PUBLISH.getFunctionName();
     }
 
     @Override public String getSignValue() {

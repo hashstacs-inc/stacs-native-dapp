@@ -1,6 +1,6 @@
 package io.stacs.nav.drs.api.model.policy;
 
-import io.stacs.nav.drs.api.enums.FunctionDefineEnum;
+
 import io.stacs.nav.drs.api.model.BaseTxVO;
 import lombok.Getter;
 import lombok.Setter;
@@ -10,6 +10,8 @@ import org.hibernate.validator.constraints.NotEmpty;
 
 import javax.validation.constraints.NotNull;
 import java.util.List;
+
+import static io.stacs.nav.drs.api.enums.ApiConstants.TransactionApiEnum.MODIFY_POLICY;
 
 /**
  * modify policy vo.
@@ -52,7 +54,7 @@ import java.util.List;
     private List<String> requireAuthIds;
 
     @Override public String getFunctionName() {
-        return FunctionDefineEnum.MODIFY_POLICY.getFunctionName();
+        return MODIFY_POLICY.getFunctionName();
     }
     @Override public String getSignValue() {
         return super.getSignValue()

@@ -1,12 +1,14 @@
 package io.stacs.nav.drs.api.model.identity;
 
-import io.stacs.nav.drs.api.enums.FunctionDefineEnum;
+
 import io.stacs.nav.drs.api.model.BaseTxVO;
 import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.validator.constraints.Length;
 import org.hibernate.validator.constraints.NotBlank;
 import org.hibernate.validator.constraints.NotEmpty;
+
+import static io.stacs.nav.drs.api.enums.ApiConstants.TransactionApiEnum.IDENTITY_BD_MANAGE;
 
 /**
  * froze/unfroze identity bd(Code)s
@@ -25,7 +27,7 @@ import org.hibernate.validator.constraints.NotEmpty;
     @NotBlank private String actionType;
 
     @Override public String getFunctionName() {
-        return FunctionDefineEnum.IDENTITY_BD_MANAGE.getFunctionName();
+        return IDENTITY_BD_MANAGE.getFunctionName();
     }
 
     @Override

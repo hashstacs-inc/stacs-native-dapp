@@ -6,7 +6,7 @@ import lombok.Setter;
 import org.hibernate.validator.constraints.Length;
 import org.hibernate.validator.constraints.NotBlank;
 
-import static io.stacs.nav.drs.api.enums.FunctionDefineEnum.SAVE_ATTESTATION;
+import static io.stacs.nav.drs.api.enums.ApiConstants.TransactionApiEnum.SAVE_ATTESTATION;
 
 /**
  * @author dekuofa <br>

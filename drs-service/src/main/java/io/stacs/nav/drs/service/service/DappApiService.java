@@ -6,8 +6,6 @@ import com.alipay.sofa.ark.spi.service.ArkInject;
 import com.alipay.sofa.ark.spi.service.plugin.PluginManagerService;
 import com.alipay.sofa.ark.spi.service.registry.RegistryService;
 import io.stacs.nav.drs.api.IDappApiService;
-import io.stacs.nav.drs.api.enums.FunctionDefineEnum;
-import io.stacs.nav.drs.api.exception.DappError;
 import io.stacs.nav.drs.api.exception.DappException;
 import io.stacs.nav.drs.api.model.BaseTxVO;
 import io.stacs.nav.drs.api.model.SampleRequest;
@@ -37,6 +35,9 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 import java.util.Optional;
 
+import static io.stacs.nav.drs.api.enums.ApiConstants.TransactionApiEnum.CREATE_CONTRACT;
+import static io.stacs.nav.drs.api.exception.DappError.FUNCTION_NOT_FIND_ERROR;
+
 /**
  * @author suimi
  * @date 2019/10/30
@@ -60,7 +61,7 @@ import java.util.Optional;
     @Override public String getSignValue(BaseTxVO vo) {
         String execPolicyId;
         BusinessDefine bd = bdService.queryBDByCode(vo.getBdCode());
-        if (FunctionDefineEnum.CREATE_CONTRACT.getFunctionName().equals(vo.getFunctionName())) {
+        if (CREATE_CONTRACT.getFunctionName().equals(vo.getFunctionName())) {
             execPolicyId = bd.getInitPolicy();
         } else {
             List<FunctionDefine> functions = bd.getFunctions();
@@ -69,7 +70,7 @@ import java.util.Optional;
             //check function
             if (!define.isPresent()) {
                 log.warn("function define is not find,functionName:{},txId:{}", vo.getFunctionName(), vo.getTxId());
-                throw new DappException(DappError.FUNCTION_NOT_FIND_ERROR);
+                throw new DappException(FUNCTION_NOT_FIND_ERROR);
             }
             FunctionDefine fd = define.get();
             execPolicyId = fd.getExecPolicy();
@@ -90,7 +91,7 @@ import java.util.Optional;
         requestService.submitTx(vo);
     }
 
-    @Override public void registPolicy(RegisterPolicyVO vo) {
+    @Override public void registerPolicy(RegisterPolicyVO vo) {
         requestService.submitTx(vo);
     }
 

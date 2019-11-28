@@ -33,7 +33,7 @@ import static io.stacs.nav.drs.service.utils.HttpHelper.buildGetRequestParam;
  */
 @Component @Slf4j public class BlockChainFacade implements ConfigListener {
     private final static String API_BD_QUERY = "/bd/query";
-    private final static String API_CHECK_PERMISSION = "/identity/open/checkPermission";
+    private final static String API_CHECK_PERMISSION = "/identity/checkPermission";
     private final static List<String> ENCRYPT_WHITE_LIST = Lists.newArrayList("callback/register");
 
     @Autowired private DrsHttpClient client;
