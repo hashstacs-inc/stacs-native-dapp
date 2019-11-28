@@ -148,9 +148,9 @@
                     </execution>
                     <!-- Install all project dependencies -->
                     <execution>
-                        <id>npm install</id>
+                        <id>yarn install</id>
                         <goals>
-                            <goal>npm</goal>
+                            <goal>yarn</goal>
                         </goals>
                         <!-- optional: default phase is "generate-resources" -->
                         <phase>generate-resources</phase>
@@ -162,13 +162,13 @@
                     <execution>
                         <id>vue install</id>
                         <goals>
-                            <goal>npm</goal>
+                            <goal>yarn</goal>
                         </goals>
                         <!-- optional: default phase is "generate-resources" -->
                         <phase>generate-resources</phase>
                         <!-- Optional configuration which provides for running any npm command -->
                         <configuration>
-                            <arguments>install -G @vue/cli-service</arguments>
+                            <arguments>add -g @vue/cli-service</arguments>
                         </configuration>
                     </execution>
                     <!-- Run End2End tests with Nightwatch -->
