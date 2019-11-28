@@ -35,3 +35,5 @@ nbdist/
 /slave/scripts/1.0.0/slave_1.0.0_full.sql
 drs/config/*
 drs/download/*
+
+**/*.DS_Store
