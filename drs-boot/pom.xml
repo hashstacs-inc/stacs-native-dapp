@@ -159,6 +159,18 @@
                             <arguments>install</arguments>
                         </configuration>
                     </execution>
+                    <execution>
+                        <id>npm install</id>
+                        <goals>
+                            <goal>npm</goal>
+                        </goals>
+                        <!-- optional: default phase is "generate-resources" -->
+                        <phase>generate-resources</phase>
+                        <!-- Optional configuration which provides for running any npm command -->
+                        <configuration>
+                            <arguments>install -S @vue/vue-cli-service</arguments>
+                        </configuration>
+                    </execution>
                     <!-- Run End2End tests with Nightwatch -->
                     <!--
                     <execution>
