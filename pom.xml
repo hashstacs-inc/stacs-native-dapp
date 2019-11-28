@@ -28,13 +28,13 @@
         <developer>
             <name>swiftledger</name>
             <email>swiftledger@primeledger.cn</email>
-            <organization>https://www.higgschain.com</organization>
+            <organization>https://www.stacs.io</organization>
             <timezone>+8</timezone>
         </developer>
         <developer>
             <name>lichengcai</name>
             <email>lichengcai@primeledger.cn</email>
-            <organization>https://www.higgschain.com</organization>
+            <organization>https://www.stacs.io</organization>
             <timezone>+8</timezone>
         </developer>
     </developers>
@@ -207,7 +207,7 @@
                 <version>4.1</version>
             </dependency>
             <dependency>
-                <groupId>com.higgschain.trust</groupId>
+                <groupId>io.stacs.nav</groupId>
                 <artifactId>crypto</artifactId>
                 <version>${stacs-crypto.version}</version>
             </dependency>
