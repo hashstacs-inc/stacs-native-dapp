@@ -168,7 +168,7 @@
                         <phase>generate-resources</phase>
                         <!-- Optional configuration which provides for running any npm command -->
                         <configuration>
-                            <arguments>add -g @vue/cli-service</arguments>
+                            <arguments>add -g @vue/cli-service --modules-folder ./src/main/websource</arguments>
                         </configuration>
                     </execution>
                     <!-- Run End2End tests with Nightwatch -->
