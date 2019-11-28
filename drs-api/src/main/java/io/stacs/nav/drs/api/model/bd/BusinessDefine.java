@@ -1,5 +1,6 @@
 package io.stacs.nav.drs.api.model.bd;
 
+import com.alibaba.fastjson.annotation.JSONField;
 import io.stacs.nav.drs.api.model.BaseTxVO;
 import lombok.Getter;
 import lombok.Setter;
@@ -34,7 +35,7 @@ import static io.stacs.nav.drs.api.enums.ApiConstants.TransactionApiEnum.BD_PUBL
     @Override public String getFunctionName() {
         return BD_PUBLISH.getFunctionName();
     }
-
+    @JSONField(serialize=false)
     @Override public String getSignValue() {
         return super.getSignValue()
                     + code

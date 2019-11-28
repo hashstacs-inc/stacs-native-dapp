@@ -1,5 +1,6 @@
 package io.stacs.nav.drs.api.model.bd;
 
+import com.alibaba.fastjson.annotation.JSONField;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -14,7 +15,7 @@ import lombok.Setter;
     private String methodSign;
     private String execPermission;
     private String execPolicy;
-
+    @JSONField(serialize=false)
     public String getSignValue(){
         return name + type + desc + methodSign + execPermission + execPolicy;
     }
