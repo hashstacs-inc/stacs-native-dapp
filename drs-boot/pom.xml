@@ -132,61 +132,6 @@
             </plugin>
 
             <plugin>
-                <groupId>com.github.eirslett</groupId>
-                <artifactId>frontend-maven-plugin</artifactId>
-                <version>1.8.0</version>
-                <executions>
-                    <!-- Install our node and npm version to run npm/node scripts-->
-                    <execution>
-                        <id>install node and npm</id>
-                        <goals>
-                            <goal>install-node-and-npm</goal>
-                        </goals>
-                        <configuration>
-                            <nodeVersion>v12.12.0</nodeVersion>
-                        </configuration>
-                    </execution>
-                    <!-- Install all project dependencies -->
-                    <execution>
-                        <id>yarn install</id>
-                        <goals>
-                            <goal>yarn</goal>
-                        </goals>
-                        <!-- optional: default phase is "generate-resources" -->
-                        <phase>generate-resources</phase>
-                        <!-- Optional configuration which provides for running any npm command -->
-                        <configuration>
-                            <arguments>install --modules-folder ./src/main/websource</arguments>
-                        </configuration>
-                    </execution>
-                    <execution>
-                        <id>vue install</id>
-                        <goals>
-                            <goal>yarn</goal>
-                        </goals>
-                        <!-- optional: default phase is "generate-resources" -->
-                        <phase>generate-resources</phase>
-                        <!-- Optional configuration which provides for running any npm command -->
-                        <configuration>
-                            <arguments>add -g @vue/cli-service</arguments>
-                        </configuration>
-                    </execution>
-                    <!-- Run End2End tests with Nightwatch -->
-                    <!--
-                    <execution>
-                    <id>npm run test:e2e</id>
-                    <goals>
-                        <goal>npm</goal>
-                    </goals>
-                    <phase>test</phase>
-                    <configuration>
-                          <arguments>run test:e2e</arguments>
-                    </configuration>
-                    </execution>
-                    -->
-                </executions>
-            </plugin>
-            <plugin>
                 <!-- Build the front end -->
                 <groupId>org.codehaus.mojo</groupId>
                 <artifactId>exec-maven-plugin</artifactId>
