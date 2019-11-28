@@ -31,8 +31,10 @@ import java.io.File;
 import java.io.IOException;
 import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 
+import static io.stacs.nav.dapp.maven.mojo.Constants.DRS_API_ARTIFACT_KEY;
 import static io.stacs.nav.dapp.maven.mojo.Constants.MIN_PRIORITY;
 import static io.stacs.nav.dapp.maven.mojo.utils.Artifacts.filterExcludeArtifacts;
 import static io.stacs.nav.dapp.maven.mojo.utils.Files.getTargetFile;
@@ -121,7 +123,9 @@ public class DappRepackageMojo extends AbstractMojo {
         if (!checkParam())
             return;
 
-        // todo get drs-api version
+        Artifact drsApi = Optional.ofNullable(project.getArtifactMap().get(DRS_API_ARTIFACT_KEY))
+            .orElseThrow(() -> new MojoExecutionException("can't repackage dapp without drs-api dependency"));
+        drsVersion = drsApi.getVersion();
         // write drs config
 
         repackage();
@@ -157,6 +161,7 @@ public class DappRepackageMojo extends AbstractMojo {
         repackager.setKeepArkBizJar(keepArkBizJar);
         repackager.setBaseDir(baseDir);
         repackager.setWebContextPath(webContextPath);
+        repackager.setDrsVersion(drsVersion);
         return repackager;
     }
 
@@ -172,12 +177,11 @@ public class DappRepackageMojo extends AbstractMojo {
 
     private Set<Artifact> getAdditionalArtifact() throws MojoExecutionException {
         Artifact ark = artifactFactory.createArtifact(Ark.GROUP_ID, Ark.ARTIFACT_ID, arkVersion, Ark.SCOPE, Ark.TYPE);
-        // todo version 根据api jar 动态获取
         Artifact drs = artifactFactory
-            .createArtifactWithClassifier(DRS.GROUP_ID, DRS.ARTIFACT_ID, "1.0.0-SNAPSHOT", DRS.TYPE, DRS.CLASSIFIER);
+            .createArtifactWithClassifier(DRS.GROUP_ID, DRS.ARTIFACT_ID, drsVersion, DRS.TYPE, DRS.CLASSIFIER);
         drs.setScope(DRS.SCOPE);
         Artifact service = artifactFactory
-            .createArtifact(Plugin.DrsService.GROUP_ID, Plugin.DrsService.ARTIFACT_ID, "1.0.0-SNAPSHOT",
+            .createArtifact(Plugin.DrsService.GROUP_ID, Plugin.DrsService.ARTIFACT_ID, drsVersion,
                 Plugin.DrsService.SCOPE, Plugin.DrsService.TYPE);
         try {
             artifactResolver.resolve(ark, project.getRemoteArtifactRepositories(), mavenSession.getLocalRepository());
@@ -194,7 +198,6 @@ public class DappRepackageMojo extends AbstractMojo {
     }
 
     private boolean checkParam() {
-        // todo drs 依赖
         Log log = getLog();
         if ("pom".equals(project.getPackaging()) || "war".equals(project.getPackaging())) {
             log.warn("package goal can't be applied to " + project.getPackaging() + " project");

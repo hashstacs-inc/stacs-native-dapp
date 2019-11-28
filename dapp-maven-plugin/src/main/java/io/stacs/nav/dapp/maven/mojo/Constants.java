@@ -10,6 +10,11 @@ public interface Constants {
     String WRAP = "\n";
     String PROPERTY_SEPARATOR = "=";
 
+    String DRS_API_ARTIFACT_KEY = "io.stacs.nav:drs-api";
+    String APPLICATION_PROPERTIES = "application.properties";
+    String CONFIG_DIR = "conf/drs/";
+    String APP_PROPERTIES_ENTITY = "conf/drs/application.properties";
+
     interface Ark {
 
         String GROUP_ID = "com.alipay.sofa";
@@ -23,6 +28,7 @@ public interface Constants {
         String TYPE = "jar";
 
     }
+
 
     interface DRS {
 
@@ -38,6 +44,9 @@ public interface Constants {
 
         String ARK_CONFIG_KEY = "com.alipay.sofa.ark.master.biz";
         String ARK_CONFIG_VALUE = "drs-boot";
+        String DRS_CALL_BACK_URL_KEY = "drs.domain.callbackUrl";
+        String DRS_CALL_BACK_URL_VALUE = "http://localhost:8000/drs/callback";
+        String DRS_VERSION = "DRS-Version";
     }
 
     interface Plugin {

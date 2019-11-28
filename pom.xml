@@ -40,12 +40,12 @@
     </developers>
 
     <modules>
+        <module>dapp-maven-plugin</module>
         <module>drs-api</module>
         <module>dapp-sample</module>
         <module>drs-service</module>
         <module>drs-boot</module>
         <module>dapp-core</module>
-        <module>dapp-maven-plugin</module>
     </modules>
 
     <properties>

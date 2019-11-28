@@ -113,6 +113,7 @@
                             <priority>1</priority>
                             <arkClassifier>executable</arkClassifier>
                             <bizClassifier>dev</bizClassifier>
+                            <mainClass>io.stacs.nav.drs.boot.DRSDebugBootApplication</mainClass>
                         </configuration>
                     </execution>
                 </executions>

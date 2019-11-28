@@ -26,11 +26,13 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.*;
 import java.util.concurrent.TimeUnit;
+import java.util.function.Supplier;
 import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
 import java.util.jar.Manifest;
 
 import static com.alipay.sofa.ark.spi.constant.Constants.*;
+import static io.stacs.nav.dapp.maven.mojo.Constants.DRS.DRS_VERSION;
 import static io.stacs.nav.dapp.maven.mojo.utils.Files.remove;
 import static io.stacs.nav.dapp.maven.mojo.utils.WriteHelper.writeConfDir;
 
@@ -73,6 +75,7 @@ public class Repackager {
     private String webContextPath;
     private String arkVersion = null;
     private Library arkContainerLibrary = null;
+    private String drsVersion;
 
     public Repackager(File source) {
         if (source == null) {
@@ -262,6 +265,9 @@ public class Repackager {
             writer.writeManifest(manifest);
             writeConfDir(baseDir.getParent().length(), new File(baseDir, Constants.CONF_BASE_DIR), writer);// copy conf
             writer.writeBootstrapEntry(jarFileSource);
+            // // write config
+            // writer.writeEntry(APP_PROPERTIES_ENTITY, new FileInputStream(
+            //     buildPropertiesFile(new File(baseDir, CONFIG_DIR), newProperties(), drsPropertiesBuilder())));
             writeNestedLibraries(Collections.singletonList(arkContainerLibrary), Layouts.Jar.jar(), writer);
             writeNestedLibraries(arkPluginLibraries, Layouts.Jar.jar(), writer);
             writeNestedLibraries(getModuleLibraries(), Layouts.Jar.jar(), writer);
@@ -272,6 +278,10 @@ public class Repackager {
                 // Ignore
             }
         }
+    }
+
+    private Supplier<Properties> newProperties() {
+        return Properties::new;
     }
 
     private void removeArkBizJar() {
@@ -336,6 +346,9 @@ public class Repackager {
             .putValue(DENY_IMPORT_CLASSES, StringUtils.setToStr(denyImportClasses, MANIFEST_VALUE_SPLIT));
         manifest.getMainAttributes()
             .putValue(DENY_IMPORT_RESOURCES, StringUtils.setToStr(denyImportResources, MANIFEST_VALUE_SPLIT));
+        manifest.getMainAttributes()
+            .putValue(DENY_IMPORT_RESOURCES, StringUtils.setToStr(denyImportResources, MANIFEST_VALUE_SPLIT));
+        manifest.getMainAttributes().putValue(DRS_VERSION, drsVersion);
 
         return manifest;
     }
@@ -406,6 +419,9 @@ public class Repackager {
         this.webContextPath = webContextPath;
     }
 
+    public void setDrsVersion(String drsVersion) {
+        this.drsVersion = drsVersion;
+    }
     /**
      * Callback interface used to present a warning when finding the main class takes too
      * long.

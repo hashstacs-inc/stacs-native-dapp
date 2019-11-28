@@ -16,11 +16,7 @@
  */
 package io.stacs.nav.drs.boot;
 
-import lombok.extern.slf4j.Slf4j;
-import org.mybatis.spring.annotation.MapperScan;
 import org.springframework.boot.SpringApplication;
-import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.transaction.annotation.EnableTransactionManagement;
 
 /**
  * A sample spring boot web project repackage as ark fat jar.
@@ -28,12 +24,19 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
  * @author suimi
  * @since 1.0.0
  */
-@SpringBootApplication(scanBasePackages = "io.stacs.nav.drs") @Slf4j
-@EnableTransactionManagement
-@MapperScan({ "io.stacs.nav.drs.*.dao"})
-public class DRSBootApplication {
+public class DRSDebugBootApplication {
     // todo 代码整理 创建新的Application专用配置
+    private static final String DRS_CONFIG_PREFIX = "-stacs.";
+
     public static void main(String[] args) {
+
+        for (int i = 0; i < args.length; i++) {
+            String arg = args[i];
+            if (arg.startsWith(DRS_CONFIG_PREFIX)) {
+                args[i] = String.format("--%s", arg.substring(DRS_CONFIG_PREFIX.length()));
+            }
+        }
+
         SpringApplication.run(DRSBootApplication.class, args);
     }
 }
