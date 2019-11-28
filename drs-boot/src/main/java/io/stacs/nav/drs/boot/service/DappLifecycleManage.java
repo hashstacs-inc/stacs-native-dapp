@@ -24,13 +24,17 @@ import org.springframework.boot.context.event.ApplicationReadyEvent;
 import org.springframework.context.ApplicationListener;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
+import org.springframework.util.StringUtils;
 
 import java.io.*;
 import java.net.URL;
 import java.util.*;
 import java.util.jar.Attributes;
+import java.util.jar.Manifest;
 
 import static com.alipay.sofa.ark.spi.constant.Constants.*;
+import static io.stacs.nav.drs.service.constant.Constants.DRS_VERSION_KEY;
+import static io.stacs.nav.drs.service.utils.ResourceLoader.getManifest;
 
 /**
  * @author suimi
@@ -139,6 +143,25 @@ import static com.alipay.sofa.ark.spi.constant.Constants.*;
         dapp.setName(manifestMainAttributes.getValue(ARK_BIZ_NAME));
         dapp.setVersion(manifestMainAttributes.getValue(ARK_BIZ_VERSION));
         dapp.setContextPath(manifestMainAttributes.getValue(WEB_CONTEXT_PATH));
+
+        String usedDrsVersion = manifestMainAttributes.getValue(DRS_VERSION_KEY);
+        log.info("[getInfo]dapp usedDrsVersion:{}",usedDrsVersion);
+        if(StringUtils.isEmpty(usedDrsVersion)){
+            log.warn("[getInfo]dapp drs version is not exists");
+            throw new DappException(DappError.DAPP_DRS_VERSION_NOT_EXISTS);
+        }
+        Optional<Manifest> manifestOpt = getManifest(DappLifecycleManage.class);
+        if(!manifestOpt.isPresent()){
+            log.warn("[getInfo]dapp version is not exists");
+            throw new DappException(DappError.DAPP_COMMON_ERROR);
+        }
+        Manifest manifest = manifestOpt.get();
+        String version = manifest.getMainAttributes().getValue(ARK_BIZ_VERSION);
+        log.info("[getInfo]drs version:{}",version);
+        if(!usedDrsVersion.equals(version)){
+            log.warn("[getInfo]dapp version:{} is unequal {}",usedDrsVersion,version);
+            throw new DappException(DappError.DAPP_VERSION_UNEQUAL);
+        }
         return dapp;
     }
 
