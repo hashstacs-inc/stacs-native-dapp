@@ -13,6 +13,7 @@ import io.stacs.nav.drs.service.utils.Pair;
 import io.stacs.nav.drs.service.vo.PermissionCheckVO;
 import lombok.extern.slf4j.Slf4j;
 import okhttp3.ResponseBody;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -46,7 +47,8 @@ import static io.stacs.nav.drs.service.utils.HttpHelper.buildGetRequestParam;
 
     @SuppressWarnings("unchecked") private static <T> Function<ResponseBody, RespData<T>> defaultGetConverter()
         throws IOException {
-        return LambdaExceptionUtil.rethrowFunction(body -> (RespData<T>)JSONObject.parseObject(body.string(), RespData.class));
+        return LambdaExceptionUtil
+            .rethrowFunction(body -> (RespData<T>)JSONObject.parseObject(body.string(), RespData.class));
     }
 
     @SuppressWarnings("unchecked") private static <T> Function<RespData, T> getRealData() {
@@ -59,11 +61,23 @@ import static io.stacs.nav.drs.service.utils.HttpHelper.buildGetRequestParam;
 
     public Optional<BusinessDefine> queryBDInfoByCode(String bdCode) {
         try {
-            Optional<List<BusinessDefine>> result =
-                sendGet(API_BD_QUERY, Lists.newArrayList(Pair.newPair("bdCode", bdCode)), checkSuccessAndGetRealData());
+            Optional<List<BusinessDefine>> result = queryBDInfo(bdCode);
             return result.map(list -> list.get(0));
+        } catch (Exception e) {
+            log.error("[queryBDInfoByCode]has unknown error", e);
+            return Optional.empty();
+        }
+    }
+
+    public Optional<List<BusinessDefine>> queryBDInfo(String bdCode) {
+        List<Pair<String, String>> params = null;
+        if (StringUtils.isNotEmpty(bdCode)) {
+            params = Lists.newArrayList(Pair.newPair("bdCode", bdCode));
+        }
+        try {
+            return sendGet(API_BD_QUERY, params, checkSuccessAndGetRealData());
         } catch (IOException e) {
-            log.error("[queryBDInfoByCode]has unknown error",e);
+            log.error("[queryAllBDInfo]has unknown error", e);
             return Optional.empty();
         }
     }
@@ -72,7 +86,7 @@ import static io.stacs.nav.drs.service.utils.HttpHelper.buildGetRequestParam;
         try {
             return Optional.of((Boolean)send(API_CHECK_PERMISSION, vo, getRealData().compose(defaultPostConverter())));
         } catch (IOException e) {
-            log.error("[checkPermission]has unknown error",e);
+            log.error("[checkPermission]has unknown error", e);
             return Optional.empty();
         }
     }
@@ -81,10 +95,12 @@ import static io.stacs.nav.drs.service.utils.HttpHelper.buildGetRequestParam;
         throws IOException {
         String url = baseUrl + api;
         String requestParam = buildGetRequestParam(params);
-        if (url.endsWith("?")) {
-            url = url + requestParam;
-        } else {
-            url = url + "?" + requestParam;
+        if(StringUtils.isNotEmpty(requestParam)) {
+            if (url.contains("?")) {
+                url = url + "&" + requestParam;
+            } else {
+                url = url + "?" + requestParam;
+            }
         }
         return sendGet(url, converter);
     }
@@ -93,13 +109,11 @@ import static io.stacs.nav.drs.service.utils.HttpHelper.buildGetRequestParam;
         return DrsHttpClient.get(url, defaultGetConverter().andThen(converter));
     }
 
-
     public RespData<?> send(String api, Object txData) throws IOException {
         return send(api, txData, defaultPostConverter());
     }
 
-    public <T> T send(String api, Object txData, Function<CasDecryptResponse, T> converter)
-        throws IOException {
+    public <T> T send(String api, Object txData, Function<CasDecryptResponse, T> converter) throws IOException {
         if (encryptSkipFilter.test(api) || ENCRYPT_WHITE_LIST.stream().anyMatch(url -> url.equals(api))) {
             return client.post(txData, baseUrl + api, converter);
         }

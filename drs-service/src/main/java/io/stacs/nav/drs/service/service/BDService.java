@@ -5,6 +5,8 @@ import io.stacs.nav.drs.service.network.BlockChainFacade;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 import static io.stacs.nav.drs.api.exception.DappError.BD_NOT_FIND_ERROR;
 import static io.stacs.nav.drs.api.exception.DappException.newError;
 
@@ -25,5 +27,14 @@ public class BDService {
      */
     public BusinessDefine queryBDByCode(String bdCode){
         return blockChainFacade.queryBDInfoByCode(bdCode).orElseThrow(newError(BD_NOT_FIND_ERROR));
+    }
+    /**
+     * query all bd info
+     *
+     * @param bdCode
+     * @return
+     */
+    public List<BusinessDefine> queryAllBDInfo(String bdCode){
+        return blockChainFacade.queryBDInfo(bdCode).orElseThrow(newError(BD_NOT_FIND_ERROR));
     }
 }
