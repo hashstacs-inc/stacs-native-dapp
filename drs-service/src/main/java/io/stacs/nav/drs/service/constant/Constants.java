@@ -6,4 +6,5 @@ package io.stacs.nav.drs.service.constant;
  */
 public interface Constants {
     String SERVICE_NAME = "drs-service";
+    String DRS_VERSION_KEY = "Ark-Biz-Version";
 }

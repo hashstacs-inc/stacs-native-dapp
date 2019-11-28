@@ -56,7 +56,7 @@ public class WriteHelper {
         Properties prop = newProp.get();
         File temp = path.toFile();
         if (confDir.exists() && confDir.isDirectory()) {
-            File source = new File(confDir, "drs.properties");// todo check exist //yml 支持
+            File source = new File(confDir, "drs.properties");
             if (source.exists()) {
                 FileInputStream in = new FileInputStream(source);
                 java.nio.file.Files.copy(in, path, StandardCopyOption.REPLACE_EXISTING);

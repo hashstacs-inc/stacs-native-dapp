@@ -18,6 +18,9 @@ package io.stacs.nav.drs.boot;
 
 import org.springframework.boot.SpringApplication;
 
+import static io.stacs.nav.drs.service.constant.Constants.DRS_VERSION_KEY;
+import static io.stacs.nav.drs.service.utils.ResourceLoader.getManifest;
+
 /**
  * A sample spring boot web project repackage as ark fat jar.
  *
@@ -30,6 +33,8 @@ public class DRSDebugBootApplication {
 
     public static void main(String[] args) {
 
+        getManifest(DRSDebugBootApplication.class)
+            .ifPresent(manifest -> System.out.println(manifest.getMainAttributes().getValue(DRS_VERSION_KEY)));
         for (int i = 0; i < args.length; i++) {
             String arg = args[i];
             if (arg.startsWith(DRS_CONFIG_PREFIX)) {
