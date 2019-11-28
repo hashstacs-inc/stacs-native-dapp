@@ -77,8 +77,8 @@ public class DappRepackageMojo extends AbstractMojo {
      */
     @Parameter(defaultValue = "false") private boolean skipArkExecutable;
     @Parameter(defaultValue = "false", property = "stacs.package.skip") private boolean skip;
-    @Parameter(defaultValue = "stack-dapp", required = true) private String dappClassifier;
-    @Parameter(defaultValue = "stacs-executable", required = true) private String debugClassifier;
+    @Parameter(defaultValue = "dapp", required = true) private String dappClassifier;
+    @Parameter(defaultValue = "debug", required = true) private String debugClassifier;
     @Parameter(defaultValue = "100", property = "stacs.dapp.priority") private Integer priority;
     @Parameter(defaultValue = "true") private boolean keepArkBizJar;
     /**
