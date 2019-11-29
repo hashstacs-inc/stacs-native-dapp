@@ -138,18 +138,33 @@
                 <version>1.4.0</version>
                 <executions>
                     <execution>
-                        <phase>generate-resources</phase>
+                        <id>yarn install (initialize)</id>
                         <goals>
                             <goal>exec</goal>
                         </goals>
+                        <phase>initialize</phase>
+                        <configuration>
+                            <executable>yarn</executable>
+                            <arguments>
+                                <argument>install</argument>
+                            </arguments>
+                        </configuration>
+                    </execution>
+                    <execution>
+                        <id>yarn build</id>
+                        <goals>
+                            <goal>exec</goal>
+                        </goals>
+                        <phase>compile</phase>
+                        <configuration>
+                            <executable>yarn</executable>
+                            <arguments>
+                                <argument>build</argument>
+                            </arguments>
+                        </configuration>
                     </execution>
                 </executions>
                 <configuration>
-                    <executable>npm</executable>
-                    <arguments>
-                        <argument>install</argument>
-                        <argument>build</argument>
-                    </arguments>
                     <workingDirectory>./src/main/websource</workingDirectory>
                 </configuration>
             </plugin>
@@ -160,7 +175,7 @@
                 <executions>
                     <execution>
                         <id>copy-resources</id>
-                        <phase>generate-resources</phase>
+                        <phase>compile</phase>
                         <goals>
                             <goal>copy-resources</goal>
                         </goals>
