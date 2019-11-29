@@ -3,11 +3,13 @@ package io.stacs.nav.dapp.sample.service;
 import com.alipay.sofa.ark.spi.service.ArkInject;
 import io.stacs.nav.drs.api.IDappApiService;
 import io.stacs.nav.drs.api.exception.DappException;
-import io.stacs.nav.drs.api.model.SampleRequest;
-import io.stacs.nav.drs.api.model.SampleResult;
+import io.stacs.nav.drs.api.model.RespData;
 import io.stacs.nav.drs.api.model.permission.AuthPermissionVO;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+
+import static io.stacs.nav.drs.api.model.RespData.fail;
+import static io.stacs.nav.drs.api.model.RespData.success;
 
 /**
  * @author suimi
@@ -17,13 +19,14 @@ import org.springframework.stereotype.Service;
 
     @ArkInject IDappApiService dappService;
 
-    public SampleResult service(SampleRequest request){
+    public RespData<?> authPermission(AuthPermissionVO vo) {
         log.info("dapp service is called...");
         try {
-            dappService.authPermission(new AuthPermissionVO());
-        }catch (DappException e){
-            log.error("has error",e);
+            dappService.authPermission(vo);
+            return success();
+        } catch (DappException e) {
+            log.error("has error", e);
+            return fail(e);
         }
-        return dappService.service(request);
     }
 }

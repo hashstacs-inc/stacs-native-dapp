@@ -9,14 +9,12 @@ import java.util.function.Supplier;
  * @description
  * @date 2019-11-05
  */
-@Getter public class DappException extends RuntimeException {
+@Getter public class DappException extends RuntimeException implements ErrorInfo {
     private String code;
     private String msg;
-    private ErrorInfo error;
 
     public DappException(ErrorInfo error) {
         super(error.getMessage());
-        this.error = error;
         this.code = error.getCode();
         this.msg = error.getMessage();
     }

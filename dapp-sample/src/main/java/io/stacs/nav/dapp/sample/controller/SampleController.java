@@ -17,13 +17,12 @@
 package io.stacs.nav.dapp.sample.controller;
 
 import io.stacs.nav.dapp.sample.service.SampleService;
-import io.stacs.nav.drs.api.model.SampleRequest;
-import io.stacs.nav.drs.api.model.SampleResult;
+import io.stacs.nav.drs.api.model.RespData;
+import io.stacs.nav.drs.api.model.permission.AuthPermissionVO;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -42,9 +41,10 @@ import org.springframework.web.bind.annotation.RestController;
      *
      * @return
      */
-    @GetMapping("/service/{request}") public SampleResult service(@PathVariable("request") String request) {
+    @GetMapping("/authPermission") public RespData<?> service() {
         log.info("appName:{}, port:{}", appName, port);
-        return sampleService.service(new SampleRequest(request));
+        return sampleService.authPermission(new AuthPermissionVO());
+
     }
 
 }
