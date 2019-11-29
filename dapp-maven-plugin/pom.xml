@@ -82,9 +82,9 @@
                 </configuration>
             </plugin>
             <plugin>
-                <groupId>${groupId}</groupId>
-                <artifactId>${artifactId}</artifactId>
-                <version>${version}</version>
+                <groupId>${project.groupId}</groupId>
+                <artifactId>${project.artifactId}</artifactId>
+                <version>${project.version}</version>
             </plugin>
         </plugins>
     </build>
