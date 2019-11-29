@@ -49,12 +49,12 @@ import static org.apache.maven.plugins.annotations.ResolutionScope.COMPILE_PLUS_
 public class DappRepackageMojo extends AbstractMojo {
 
     private final String arkVersion = "1.0.0";
-    @Parameter(defaultValue = "${project}", readonly = true, required = true) private MavenProject project;
     @Component private MavenProjectHelper projectHelper;
+    @Parameter(defaultValue = "${project}", readonly = true, required = true) private MavenProject project;
     @Parameter(defaultValue = "${project.basedir}", required = true) private File baseDir;
     @Parameter(defaultValue = "${project.build.finalName}", required = true) private String finalName;
     @Parameter(defaultValue = "${project.build.directory}", required = true) private File outputDirectory;
-    @Parameter(defaultValue = "${project.artifactId}") private String bizName;
+    @Parameter(defaultValue = "${project.artifactId}") private String appName;
     @Parameter(defaultValue = "${project.version}") private String bizVersion;
     /**
      * list of packages denied to be imported
@@ -86,7 +86,7 @@ public class DappRepackageMojo extends AbstractMojo {
      *
      * @since 0.1.0
      */
-    @Parameter(defaultValue = "false") private boolean attach;
+    @Parameter(defaultValue = "true") private boolean attach;
     /**
      * The name of the main class. If not specified the first compiled class found that
      * contains a 'main' method will be used.
@@ -155,7 +155,7 @@ public class DappRepackageMojo extends AbstractMojo {
     private Repackager buildRepackager(Repackager repackager) {
         repackager.addMainClassTimeoutWarningListener(new LoggingMainClassTimeoutWarningListener());
         repackager.setMainClass(mainClass);
-        repackager.setBizName(bizName);
+        repackager.setBizName(appName);
         repackager.setBizVersion(bizVersion);
         repackager.setPriority(String.valueOf(priority));
         repackager.setArkVersion(arkVersion);
