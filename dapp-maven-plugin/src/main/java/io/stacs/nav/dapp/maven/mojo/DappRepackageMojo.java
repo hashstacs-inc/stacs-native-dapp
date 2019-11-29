@@ -75,19 +75,24 @@ public class DappRepackageMojo extends AbstractMojo {
     /**
      * whether to skip package ark-executable jar
      */
-    @Parameter(defaultValue = "false") private boolean skipArkExecutable;
+    @Parameter(defaultValue = "false") private boolean skipBuildDebug;
     @Parameter(defaultValue = "false", property = "stacs.package.skip") private boolean skip;
     @Parameter(defaultValue = "dapp", required = true) private String dappClassifier;
     @Parameter(defaultValue = "debug", required = true) private String debugClassifier;
     @Parameter(defaultValue = "100", property = "stacs.dapp.priority") private Integer priority;
     @Parameter(defaultValue = "true") private boolean keepArkBizJar;
     /**
+     * Attach the module archive to be installed and deployed.
+     *
+     * @since 0.1.0
+     */
+    @Parameter(defaultValue = "false") private boolean attach;
+    /**
      * The name of the main class. If not specified the first compiled class found that
      * contains a 'main' method will be used.
      *
      * @since 0.1.0
      */
-    @Parameter(defaultValue = "false") private boolean attach;
     @Parameter private String mainClass;
     /**
      * Colon separated groupId, artifactId [and classifier] to exclude (exact match)
@@ -139,7 +144,7 @@ public class DappRepackageMojo extends AbstractMojo {
         Repackager repackager = buildRepackager(new Repackager(sourceJar));
         Libraries libraries = new ArtifactsLibraries(getAdditionalArtifact(), this.requiresUnpack, getLog());
         try {
-            repackager.repackage(appTarget, moduleTarget, libraries, skipArkExecutable);
+            repackager.repackage(appTarget, moduleTarget, libraries, skipBuildDebug);
         } catch (IOException ex) {
             throw new MojoExecutionException(ex.getMessage(), ex);
         }
@@ -177,20 +182,27 @@ public class DappRepackageMojo extends AbstractMojo {
 
     private Set<Artifact> getAdditionalArtifact() throws MojoExecutionException {
         Artifact ark = artifactFactory.createArtifact(Ark.GROUP_ID, Ark.ARTIFACT_ID, arkVersion, Ark.SCOPE, Ark.TYPE);
-        Artifact drs = artifactFactory
-            .createArtifactWithClassifier(DRS.GROUP_ID, DRS.ARTIFACT_ID, drsVersion, DRS.TYPE, DRS.CLASSIFIER);
-        drs.setScope(DRS.SCOPE);
-        Artifact service = artifactFactory
-            .createArtifact(Plugin.DrsService.GROUP_ID, Plugin.DrsService.ARTIFACT_ID, drsVersion,
-                Plugin.DrsService.SCOPE, Plugin.DrsService.TYPE);
+
         try {
             artifactResolver.resolve(ark, project.getRemoteArtifactRepositories(), mavenSession.getLocalRepository());
-            artifactResolver.resolve(drs, project.getRemoteArtifactRepositories(), mavenSession.getLocalRepository());
-            artifactResolver
-                .resolve(service, project.getRemoteArtifactRepositories(), mavenSession.getLocalRepository());
-            Set<Artifact> artifacts = Sets.newHashSet(ark, drs, service);
-            artifacts
-                .addAll(filterExcludeArtifacts(project.getArtifacts(), excludes, excludeGroupIds, excludeArtifactIds));
+
+            Set<Artifact> artifacts = Sets.newHashSet(ark);
+            if (!skipBuildDebug) {
+                Artifact drs = artifactFactory.createArtifactWithClassifier(DRS.GROUP_ID, DRS.ARTIFACT_ID, drsVersion,
+                                                                            DRS.TYPE, DRS.CLASSIFIER);
+                drs.setScope(DRS.SCOPE);
+                Artifact service = artifactFactory.createArtifact(Plugin.DrsService.GROUP_ID,
+                                                                  Plugin.DrsService.ARTIFACT_ID, drsVersion,
+                                                                  Plugin.DrsService.SCOPE, Plugin.DrsService.TYPE);
+                artifactResolver.resolve(drs, project.getRemoteArtifactRepositories(),
+                                         mavenSession.getLocalRepository());
+                artifactResolver.resolve(service, project.getRemoteArtifactRepositories(),
+                                         mavenSession.getLocalRepository());
+                artifacts.add(drs);
+                artifacts.add(service);
+            }
+            artifacts.addAll(
+                filterExcludeArtifacts(project.getArtifacts(), excludes, excludeGroupIds, excludeArtifactIds));
             return artifacts;
         } catch (ArtifactResolutionException | ArtifactNotFoundException ex) {
             throw new MojoExecutionException(ex.getMessage(), ex);
@@ -199,6 +211,10 @@ public class DappRepackageMojo extends AbstractMojo {
 
     private boolean checkParam() {
         Log log = getLog();
+        if (skip) {
+            log.warn("skipping package, notice your configuration.");
+            return false;
+        }
         if ("pom".equals(project.getPackaging()) || "war".equals(project.getPackaging())) {
             log.warn("package goal can't be applied to " + project.getPackaging() + " project");
             return false;
@@ -211,10 +227,7 @@ public class DappRepackageMojo extends AbstractMojo {
             log.warn("priority can't less than: " + MIN_PRIORITY + " .");
             return false;
         }
-        if (skip) {
-            log.warn("skipping package, notice your configuration.");
-            return false;
-        }
+
         log.debug("param check success");
         return true;
     }
