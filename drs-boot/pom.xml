@@ -168,7 +168,7 @@
                             <outputDirectory>${basedir}/target/classes/static</outputDirectory>
                             <resources>
                                 <resource>
-                                    <directory>./src/main/websource/dist</directory>
+                                    <directory>${basedir}/src/main/websource/dist</directory>
                                     <filtering>false</filtering>
                                 </resource>
                             </resources>

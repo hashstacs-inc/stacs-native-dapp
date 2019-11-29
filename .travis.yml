@@ -26,9 +26,6 @@ addons:
     organization: "aurorasic-github"
 
 before_install:
-  #  - npm i -g npm
-  #  - npm i -g yarn
-  - yarn global add @vue/cli-service @vue/cli-plugin-babel @vue/cli-plugin-eslint
 
 install: mvn clean install -DskipTests=true -Ddockerfile.skip -Dmaven.javadoc.skip=true -B -V
 

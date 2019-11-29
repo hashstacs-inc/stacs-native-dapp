@@ -96,6 +96,35 @@
                 <artifactId>sofa-ark-springboot-starter</artifactId>
                 <version>${sofa.ark.version}</version>
             </dependency>
+            <dependency>
+                <groupId>com.alipay.sofa</groupId>
+                <artifactId>sofa-ark-common</artifactId>
+                <version>${sofa.ark.version}</version>
+                <exclusions>
+                    <exclusion>
+                        <groupId>com.alipay.sofa</groupId>
+                        <artifactId>sofa-ark-spi</artifactId>
+                    </exclusion>
+                    <exclusion>
+                        <groupId>com.google.inject</groupId>
+                        <artifactId>guice</artifactId>
+                    </exclusion>
+                    <exclusion>
+                        <groupId>com.alipay.sofa</groupId>
+                        <artifactId>log-sofa-boot-starter</artifactId>
+                    </exclusion>
+                    <exclusion>
+                        <groupId>org.slf4j</groupId>
+                        <artifactId>slf4j-log4j12</artifactId>
+                    </exclusion>
+                </exclusions>
+            </dependency>
+
+            <dependency>
+                <groupId>com.alipay.sofa</groupId>
+                <artifactId>sofa-ark-tools</artifactId>
+                <version>${sofa.ark.version}</version>
+            </dependency>
 
             <dependency>
                 <groupId>com.alipay.sofa</groupId>
