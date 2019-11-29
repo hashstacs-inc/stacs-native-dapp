@@ -12,7 +12,7 @@ target/
 ### IntelliJ IDEA ###
 .idea
 *.iws
-*/**/.iml
+*.iml
 *.ipr
 
 ### JRebel config ###
@@ -37,3 +37,6 @@ drs/config/*
 drs/download/*
 
 **/*.DS_Store
+
+### VUE ###
+**/yarn.lock
