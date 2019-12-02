@@ -46,7 +46,7 @@ import static io.stacs.nav.drs.api.exception.DappException.newError;
     @Autowired TxRequestDao txRequestDao;
     @Autowired InitTxDisruptor initTxDisruptor;
     @Autowired BlockChainFacade blockChainFacade;
-    @Autowired BDService bdService;
+    @Autowired BlockChainService blockChainService;
 
     /**
      * receive transaction and request to chain
@@ -55,7 +55,7 @@ import static io.stacs.nav.drs.api.exception.DappException.newError;
      */
     public void submitTx(@Valid BaseTxVO vo) throws DappException {
         //query business define by bdCode
-        BusinessDefine bd = bdService.queryBDByCode(vo.getBdCode());
+        BusinessDefine bd = blockChainService.queryBDByCode(vo.getBdCode());
         String execPolicyId;
         String execFuncName;
         String execPermission;

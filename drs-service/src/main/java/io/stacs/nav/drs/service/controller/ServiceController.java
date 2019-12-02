@@ -1,9 +1,11 @@
 package io.stacs.nav.drs.service.controller;
 
+import io.stacs.nav.drs.api.model.Policy;
 import io.stacs.nav.drs.api.model.RespData;
+import io.stacs.nav.drs.api.model.RsDomain;
 import io.stacs.nav.drs.api.model.bd.BusinessDefine;
 import io.stacs.nav.drs.service.event.EventPublisher;
-import io.stacs.nav.drs.service.service.BDService;
+import io.stacs.nav.drs.service.service.BlockChainService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -17,7 +19,7 @@ import java.util.List;
 @RestController @Slf4j @RequestMapping("/drs") public class ServiceController {
 
     @Autowired EventPublisher eventPublisher;
-    @Autowired BDService bdService;
+    @Autowired BlockChainService blockChainService;
 
     /**
      * publish event
@@ -38,9 +40,39 @@ import java.util.List;
         @RequestParam(required = false) String bdCode) {
         RespData<List<BusinessDefine>> respData = new RespData<>();
         try {
-            respData.setData(bdService.queryAllBDInfo(bdCode));
+            respData.setData(blockChainService.queryAllBDInfo(bdCode));
         } catch (Throwable e) {
             log.error("[queryBDList]has error", e);
+        }
+        return respData;
+    }
+
+    /**
+     * query all domain info
+     *
+     * @return
+     */
+    @GetMapping("/queryAllDomain") @ResponseBody public RespData<List<RsDomain>> queryAllDomain() {
+        RespData<List<RsDomain>> respData = new RespData<>();
+        try {
+            respData.setData(blockChainService.queryAllDomains());
+        } catch (Throwable e) {
+            log.error("[queryAllDomain]has error", e);
+        }
+        return respData;
+    }
+
+    /**
+     * query all policy info
+     *
+     * @return
+     */
+    @GetMapping("/queryAllPolicy") @ResponseBody public RespData<List<Policy>> queryAllPolicy() {
+        RespData<List<Policy>> respData = new RespData<>();
+        try {
+            respData.setData(blockChainService.queryAllPolicy());
+        } catch (Throwable e) {
+            log.error("[queryAllPolicy]has error", e);
         }
         return respData;
     }

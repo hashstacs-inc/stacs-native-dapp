@@ -32,7 +32,7 @@ import static io.stacs.nav.drs.api.exception.DappError.FUNCTION_NOT_FIND_ERROR;
 
     @ArkInject PluginManagerService pluginManagerService;
 
-    @Autowired BDService bdService;
+    @Autowired BlockChainService bdService;
 
     @Override public String generateSignature(BaseTxVO vo) throws DappException {
         String execPolicyId;

@@ -141,6 +141,67 @@
 | data           | `Object`        |          | N    | 返回数据，List<Dapp>
 
 
+#### Policy 信息查询
+##### 接口地址：/drs/queryAllPolicy
+请求方式：GET
+##### 参数列表
+
+无
+
+###### 请求参数样例:
+```
+无
+```
+##### 返回值：
+| 属性            | 类型            | 最大长度 | 必填 | 说明                           |
+| -------------  | -------------   | -------- | ---- | -------------------------------- |
+| code           | `int`           | 6        | Y    | 返回码 '000000'表示成功
+| msg            | `String`        | 64       | Y    | 消息信息
+| data           | `Object`        |          | N    | 返回数据，List<Policy>
+#####RsDomain
+| 属性            | 类型            | 最大长度 | 必填 | 说明                           |
+| -------------  | -------------   | -------- | ---- | -------------------------------- |
+| policyId       | `String`        | 32       | Y    | id
+| policyName     | `String`        | 24       | Y    | name
+###### 返回参数样例:
+```
+[
+    {"policyId":"policyId-0","policyName":"policy name-0"},
+    {"policyId":"policyId-1","policyName":"policy name-1"},
+    {"policyId":"policyId-2","policyName":"policy name-2"}
+]
+```
+
+#### Domain 信息查询
+##### 接口地址：/drs/queryAllDomain
+请求方式：GET
+##### 参数列表
+
+无
+
+###### 请求参数样例:
+```
+无
+```
+##### 返回值：
+| 属性            | 类型            | 最大长度 | 必填 | 说明                           |
+| -------------  | -------------   | -------- | ---- | -------------------------------- |
+| code           | `int`           | 6        | Y    | 返回码 '000000'表示成功
+| msg            | `String`        | 64       | Y    | 消息信息
+| data           | `Object`        |          | N    | 返回数据，List<RsDomain>
+#####RsDomain
+| 属性            | 类型            | 最大长度 | 必填 | 说明                           |
+| -------------  | -------------   | -------- | ---- | -------------------------------- |
+| domainId       | `String`        | 64       | Y    | 返回码 '000000'表示成功
+| desc           | `String`        | 1024     | N    | 描述
+###### 返回参数样例:
+```
+[
+    {"desc":"test desc","domainId":"domainId-0"},
+    {"desc":"test desc","domainId":"domainId-1"},
+    {"desc":"test desc","domainId":"domainId-2"}
+]
+```
 #### BD(Business Define) 查询
 ##### 接口地址：/drs/bd/query
 请求方式：GET
@@ -163,7 +224,7 @@
 #####BusinessDefine
 | 属性            | 类型            | 最大长度 | 必填 | 说明                           |
 | -------------  | -------------   | -------- | ---- | -------------------------------- |
-| code           | `int`           | 64       | Y    | 返回码 '000000'表示成功
+| code           | `int`           | 64       | Y    | bd code
 | name           | `String`        | 64       | Y    | bd 名称
 | bdType         | `String`        | 32       | Y    | 类型
 | desc           | `String`        | 1024     | N    | 描述

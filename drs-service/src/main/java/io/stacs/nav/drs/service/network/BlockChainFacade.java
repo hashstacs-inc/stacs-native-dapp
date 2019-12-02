@@ -2,7 +2,9 @@ package io.stacs.nav.drs.service.network;
 
 import com.alibaba.fastjson.JSONObject;
 import com.google.common.collect.Lists;
+import io.stacs.nav.drs.api.model.Policy;
 import io.stacs.nav.drs.api.model.RespData;
+import io.stacs.nav.drs.api.model.RsDomain;
 import io.stacs.nav.drs.api.model.bd.BusinessDefine;
 import io.stacs.nav.drs.service.config.ConfigListener;
 import io.stacs.nav.drs.service.config.DomainConfig;
@@ -96,6 +98,46 @@ import static io.stacs.nav.drs.service.utils.HttpHelper.buildGetRequestParam;
             return sendGet(QUERY_BLOCKS.getApi(), null, checkSuccessAndGetRealData());
         } catch (IOException e) {
             log.error("[queryAllBDInfo]has unknown error", e);
+            return Optional.empty();
+        }
+    }
+
+    /**
+     * query domains of block chain
+     *
+     * @return
+     */
+    public Optional<List<RsDomain>> queryAllDomains() {
+        try {
+            return sendGet(QUERY_ALL_DOMAIN.getApi(), null, checkSuccessAndGetRealData());
+        } catch (IOException e) {
+            log.error("[queryAllDomains]has unknown error", e);
+            return Optional.empty();
+        }
+    }
+    /**
+     * query domains of block chain
+     *
+     * @return
+     */
+    public Optional<List<Policy>> queryAllPolicys() {
+        try {
+            return sendGet(QUERY_POLICY_LIST.getApi(), null, checkSuccessAndGetRealData());
+        } catch (IOException e) {
+            log.error("[queryAllPolicys]has unknown error", e);
+            return Optional.empty();
+        }
+    }
+/**
+     * query all permission of block chain
+     *
+     * @return
+     */
+    public Optional<List<Policy>> queryPermissionList() {
+        try {
+            return sendGet(QUERY_PERMISSION_LIST.getApi(), null, checkSuccessAndGetRealData());
+        } catch (IOException e) {
+            log.error("[queryAllPolicys]has unknown error", e);
             return Optional.empty();
         }
     }

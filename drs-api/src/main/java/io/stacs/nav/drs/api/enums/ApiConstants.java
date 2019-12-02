@@ -55,6 +55,9 @@ public interface ApiConstants {
         CHECK_PERMISSION("checkPermission", "/identity/checkPermission"),
         QUERY_MAX_BLOCK_HEIGHT("getMaxBlockHeight", "/block/currentHeight/query"),
         QUERY_BLOCKS("queryBlocks", "/block/query"),
+        QUERY_ALL_DOMAIN("queryDomainAll", "/domain/queryAll"),
+        QUERY_POLICY_LIST("queryPolicyList", "/policy/queryAll"),
+        QUERY_PERMISSION_LIST("queryPermissionList", "/permission/queryAll"),
         ;
 
         private String name;
