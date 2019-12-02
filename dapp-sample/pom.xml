@@ -66,6 +66,7 @@
                     </execution>
                 </executions>
                 <configuration>
+                    <skip>true</skip>
                     <!--need to set the web context-->
                     <webContextPath>sample</webContextPath>
                 </configuration>
