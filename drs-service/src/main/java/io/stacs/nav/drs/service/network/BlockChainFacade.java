@@ -25,6 +25,7 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.io.IOException;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.function.Function;
 import java.util.function.Predicate;
@@ -33,6 +34,7 @@ import java.util.regex.Pattern;
 import static io.stacs.nav.drs.api.enums.ApiConstants.ENCRYPT_WHITE_LIST;
 import static io.stacs.nav.drs.api.enums.ApiConstants.QueryApiEnum.*;
 import static io.stacs.nav.drs.service.utils.HttpHelper.buildGetRequestParam;
+import static io.stacs.nav.drs.service.utils.Pair.newPair;
 
 /**
  * @author liuyu
@@ -85,7 +87,7 @@ import static io.stacs.nav.drs.service.utils.HttpHelper.buildGetRequestParam;
     public Optional<List<BusinessDefine>> queryBDInfo(String bdCode) {
         List<Pair<String, String>> params = null;
         if (StringUtils.isNotEmpty(bdCode)) {
-            params = Lists.newArrayList(Pair.newPair("bdCode", bdCode));
+            params = Lists.newArrayList(newPair("bdCode", bdCode));
         }
         return commonQueryApi(BD_QUERY, params);
     }
@@ -94,8 +96,12 @@ import static io.stacs.nav.drs.service.utils.HttpHelper.buildGetRequestParam;
         return commonQueryApi(QUERY_MAX_BLOCK_HEIGHT, null);
     }
 
-    public Optional<Long> queryBlocks() {
-        return commonQueryApi(QUERY_MAX_BLOCK_HEIGHT, null);
+    public Optional<Long> queryBlocks(Long startHeight, Integer size) {
+        Objects.requireNonNull(startHeight);
+        Objects.requireNonNull(size);
+
+        return commonQueryApi(QUERY_BLOCKS, Lists
+            .newArrayList(newPair("startHeight", startHeight.toString()), newPair("size", size.toString())));
     }
 
     /**
