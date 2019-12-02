@@ -20,8 +20,9 @@ import java.util.function.Predicate;
  */
 @Component @Slf4j @EnableScheduling public class CallbackRegisterSchedule implements ConfigListener {
     private static final long REGISTER_RATE = 5 * 60 * 1_000;
-    @Autowired private BlockChainFacade facade;
     private String callbackUrl;
+
+    @Autowired private BlockChainFacade facade;
 
     @Scheduled(fixedRate = REGISTER_RATE) public void exe() {
         try {

@@ -58,7 +58,7 @@ import static io.stacs.nav.drs.api.exception.DappException.newError;
      * @return
      */
     public List<Policy> queryAllPolicy() {
-        Optional<List<Policy>> policies = blockChainFacade.queryAllPolicys();
+        Optional<List<Policy>> policies = blockChainFacade.queryAllPolicyList();
         return policies.isPresent() ? policies.get() : null;
     }
 }

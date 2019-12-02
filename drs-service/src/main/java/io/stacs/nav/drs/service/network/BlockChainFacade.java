@@ -2,6 +2,7 @@ package io.stacs.nav.drs.service.network;
 
 import com.alibaba.fastjson.JSONObject;
 import com.google.common.collect.Lists;
+import io.stacs.nav.drs.api.enums.ApiConstants.QueryApiEnum;
 import io.stacs.nav.drs.api.model.Policy;
 import io.stacs.nav.drs.api.model.RespData;
 import io.stacs.nav.drs.api.model.RsDomain;
@@ -49,16 +50,25 @@ import static io.stacs.nav.drs.service.utils.HttpHelper.buildGetRequestParam;
 
     @SuppressWarnings("unchecked") private static <T> Function<ResponseBody, RespData<T>> defaultGetConverter()
         throws IOException {
-        return LambdaExceptionUtil
-            .rethrowFunction(body -> (RespData<T>)JSONObject.parseObject(body.string(), RespData.class));
+        return LambdaExceptionUtil.rethrowFunction(
+            body -> (RespData<T>)JSONObject.parseObject(body.string(), RespData.class));
     }
 
-    @SuppressWarnings("unchecked") private static <T> Function<RespData, T> getRealData() {
+    @SuppressWarnings("unchecked") private static <T> Function<RespData<?>, T> getRealData() {
         return respData -> (T)respData.getData();
     }
 
     @SuppressWarnings("unchecked") private static <T> Function<RespData<?>, Optional<T>> checkSuccessAndGetRealData() {
         return resp -> resp.isSuccessful() ? Optional.of((T)resp.getData()) : Optional.empty();
+    }
+
+    public <T> Optional<T> commonQueryApi(QueryApiEnum query, @Nullable List<Pair<String, String>> params) {
+        try {
+            return sendGet(query.getApi(), params, checkSuccessAndGetRealData());
+        } catch (IOException e) {
+            log.error("[{}]has unknown error", query.getName(), e);
+            return Optional.empty();
+        }
     }
 
     public Optional<BusinessDefine> queryBDInfoByCode(String bdCode) {
@@ -76,76 +86,42 @@ import static io.stacs.nav.drs.service.utils.HttpHelper.buildGetRequestParam;
         if (StringUtils.isNotEmpty(bdCode)) {
             params = Lists.newArrayList(Pair.newPair("bdCode", bdCode));
         }
-        try {
-            return sendGet(BD_QUERY.getApi(), params, checkSuccessAndGetRealData());
-        } catch (IOException e) {
-            log.error("[queryAllBDInfo]has unknown error", e);
-            return Optional.empty();
-        }
+        return commonQueryApi(BD_QUERY, params);
     }
 
     public Optional<Long> queryCurrentHeight() {
-        try {
-            return sendGet(QUERY_MAX_BLOCK_HEIGHT.getApi(), null, checkSuccessAndGetRealData());
-        } catch (IOException e) {
-            log.error("[queryAllBDInfo]has unknown error", e);
-            return Optional.empty();
-        }
+        return commonQueryApi(QUERY_MAX_BLOCK_HEIGHT, null);
     }
 
     public Optional<Long> queryBlocks() {
-        try {
-            return sendGet(QUERY_BLOCKS.getApi(), null, checkSuccessAndGetRealData());
-        } catch (IOException e) {
-            log.error("[queryAllBDInfo]has unknown error", e);
-            return Optional.empty();
-        }
+        return commonQueryApi(QUERY_MAX_BLOCK_HEIGHT, null);
     }
 
     /**
      * query domains of block chain
-     *
-     * @return
      */
     public Optional<List<RsDomain>> queryAllDomains() {
-        try {
-            return sendGet(QUERY_ALL_DOMAIN.getApi(), null, checkSuccessAndGetRealData());
-        } catch (IOException e) {
-            log.error("[queryAllDomains]has unknown error", e);
-            return Optional.empty();
-        }
+        return commonQueryApi(QUERY_ALL_DOMAIN, null);
     }
+
     /**
      * query domains of block chain
-     *
-     * @return
      */
-    public Optional<List<Policy>> queryAllPolicys() {
-        try {
-            return sendGet(QUERY_POLICY_LIST.getApi(), null, checkSuccessAndGetRealData());
-        } catch (IOException e) {
-            log.error("[queryAllPolicys]has unknown error", e);
-            return Optional.empty();
-        }
+    public Optional<List<Policy>> queryAllPolicyList() {
+        return commonQueryApi(QUERY_POLICY_LIST, null);
     }
-/**
+
+    /**
      * query all permission of block chain
-     *
-     * @return
      */
     public Optional<List<Policy>> queryPermissionList() {
-        try {
-            return sendGet(QUERY_PERMISSION_LIST.getApi(), null, checkSuccessAndGetRealData());
-        } catch (IOException e) {
-            log.error("[queryAllPolicys]has unknown error", e);
-            return Optional.empty();
-        }
+        return commonQueryApi(QUERY_PERMISSION_LIST, null);
     }
 
     public Optional<Boolean> checkPermission(PermissionCheckVO vo) {
         try {
-            return Optional
-                .of((Boolean)send(CHECK_PERMISSION.getApi(), vo, getRealData().compose(defaultPostConverter())));
+            return Optional.of(
+                (Boolean)send(CHECK_PERMISSION.getApi(), vo, getRealData().compose(defaultPostConverter())));
         } catch (IOException e) {
             log.error("[checkPermission]has unknown error", e);
             return Optional.empty();
@@ -157,7 +133,7 @@ import static io.stacs.nav.drs.service.utils.HttpHelper.buildGetRequestParam;
         throws IOException {
         String url = baseUrl + api;
         String requestParam = buildGetRequestParam(params);
-        if(StringUtils.isNotEmpty(requestParam)) {
+        if (StringUtils.isNotEmpty(requestParam)) {
             if (url.contains("?")) {
                 url = url + "&" + requestParam;
             } else {
