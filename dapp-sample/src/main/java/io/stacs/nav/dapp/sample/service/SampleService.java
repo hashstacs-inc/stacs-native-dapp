@@ -1,7 +1,7 @@
 package io.stacs.nav.dapp.sample.service;
 
 import com.alipay.sofa.ark.spi.service.ArkInject;
-import io.stacs.nav.drs.api.IDappApiService;
+import io.stacs.nav.drs.api.ISubmitterService;
 import io.stacs.nav.drs.api.exception.DappException;
 import io.stacs.nav.drs.api.model.RespData;
 import io.stacs.nav.drs.api.model.permission.AuthPermissionVO;
@@ -17,7 +17,7 @@ import static io.stacs.nav.drs.api.model.RespData.success;
  */
 @Service @Slf4j public class SampleService {
 
-    @ArkInject IDappApiService dappService;
+    @ArkInject ISubmitterService dappService;
 
     public RespData<?> authPermission(AuthPermissionVO vo) {
         log.info("dapp service is called...");

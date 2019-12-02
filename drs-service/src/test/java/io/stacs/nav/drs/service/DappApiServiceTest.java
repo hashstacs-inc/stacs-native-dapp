@@ -1,7 +1,7 @@
 package io.stacs.nav.drs.service;
 
 import io.stacs.nav.drs.api.model.bd.BusinessDefine;
-import io.stacs.nav.drs.service.service.DappApiService;
+import io.stacs.nav.drs.service.service.SubmitterService;
 import org.junit.Test;
 
 /**
@@ -13,7 +13,7 @@ public class DappApiServiceTest {
 
     @Test
     public void test(){
-        DappApiService dappApiService = new DappApiService();
+        SubmitterService dappApiService = new SubmitterService();
         BusinessDefine bd = new BusinessDefine();
         bd.setTxId("tx_id");
         bd.setSubmitter("aaa");

@@ -19,12 +19,12 @@ import lombok.Getter;
         return new Pair<>(left, right);
     }
 
-    public Pair left(L l) {
+    public Pair<L, R> left(L l) {
         this.left = l;
         return this;
     }
 
-    public Pair right(R r) {
+    public Pair<L, R> right(R r) {
         this.right = r;
         return this;
     }
