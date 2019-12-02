@@ -3,6 +3,7 @@ package io.stacs.nav.drs.service.service;
 import io.stacs.nav.drs.api.model.Policy;
 import io.stacs.nav.drs.api.model.RsDomain;
 import io.stacs.nav.drs.api.model.bd.BusinessDefine;
+import io.stacs.nav.drs.api.model.permission.PermissionInfoVO;
 import io.stacs.nav.drs.service.network.BlockChainFacade;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -59,6 +60,16 @@ import static io.stacs.nav.drs.api.exception.DappException.newError;
      */
     public List<Policy> queryAllPolicy() {
         Optional<List<Policy>> policies = blockChainFacade.queryAllPolicyList();
+        return policies.isPresent() ? policies.get() : null;
+    }
+
+    /**
+     * query all permission list
+     *
+     * @return
+     */
+    public List<PermissionInfoVO> queryPermissionList() {
+        Optional<List<PermissionInfoVO>> policies = blockChainFacade.queryPermissionList();
         return policies.isPresent() ? policies.get() : null;
     }
 }

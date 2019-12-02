@@ -7,6 +7,7 @@ import io.stacs.nav.drs.api.model.Policy;
 import io.stacs.nav.drs.api.model.RespData;
 import io.stacs.nav.drs.api.model.RsDomain;
 import io.stacs.nav.drs.api.model.bd.BusinessDefine;
+import io.stacs.nav.drs.api.model.permission.PermissionInfoVO;
 import io.stacs.nav.drs.service.config.ConfigListener;
 import io.stacs.nav.drs.service.config.DomainConfig;
 import io.stacs.nav.drs.service.utils.CasDecryptResponse;
@@ -114,7 +115,7 @@ import static io.stacs.nav.drs.service.utils.HttpHelper.buildGetRequestParam;
     /**
      * query all permission of block chain
      */
-    public Optional<List<Policy>> queryPermissionList() {
+    public Optional<List<PermissionInfoVO>> queryPermissionList() {
         return commonQueryApi(QUERY_PERMISSION_LIST, null);
     }
 

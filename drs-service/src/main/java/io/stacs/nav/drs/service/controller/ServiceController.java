@@ -4,6 +4,7 @@ import io.stacs.nav.drs.api.model.Policy;
 import io.stacs.nav.drs.api.model.RespData;
 import io.stacs.nav.drs.api.model.RsDomain;
 import io.stacs.nav.drs.api.model.bd.BusinessDefine;
+import io.stacs.nav.drs.api.model.permission.PermissionInfoVO;
 import io.stacs.nav.drs.service.event.EventPublisher;
 import io.stacs.nav.drs.service.service.BlockChainService;
 import lombok.extern.slf4j.Slf4j;
@@ -73,6 +74,21 @@ import java.util.List;
             respData.setData(blockChainService.queryAllPolicy());
         } catch (Throwable e) {
             log.error("[queryAllPolicy]has error", e);
+        }
+        return respData;
+    }
+
+    /**
+     * query all policy info
+     *
+     * @return
+     */
+    @GetMapping("/queryPermissionList") @ResponseBody public RespData<List<PermissionInfoVO>> queryPermissionList() {
+        RespData<List<PermissionInfoVO>> respData = new RespData<>();
+        try {
+            respData.setData(blockChainService.queryPermissionList());
+        } catch (Throwable e) {
+            log.error("[queryPermissionList]has error", e);
         }
         return respData;
     }

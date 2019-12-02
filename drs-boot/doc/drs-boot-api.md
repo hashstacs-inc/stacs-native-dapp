@@ -171,6 +171,35 @@
     {"policyId":"policyId-2","policyName":"policy name-2"}
 ]
 ```
+#### Permission 信息查询
+##### 接口地址：/drs/queryPermissionList
+请求方式：GET
+##### 参数列表
+
+无
+
+###### 请求参数样例:
+```
+无
+```
+##### 返回值：
+| 属性            | 类型            | 最大长度 | 必填 | 说明                           |
+| -------------  | -------------   | -------- | ---- | -------------------------------- |
+| code           | `int`           | 6        | Y    | 返回码 '000000'表示成功
+| msg            | `String`        | 64       | Y    | 消息信息
+| data           | `Object`        |          | N    | 返回数据，List<Policy>
+#####RsDomain
+| 属性            | 类型            | 最大长度 | 必填 | 说明                           |
+| -------------  | -------------   | -------- | ---- | -------------------------------- |
+| permissionName | `String`        | 32       | Y    | 权限名称
+###### 返回参数样例:
+```
+[
+    {"permissionName":"name-0"},
+    {"permissionName":"name-1"},
+    {"permissionName":"name-2"}
+]
+```
 
 #### Domain 信息查询
 ##### 接口地址：/drs/queryAllDomain
