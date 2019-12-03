@@ -12,7 +12,9 @@ import java.util.List;
 public interface ApiConstants {
 
     List<String> ENCRYPT_WHITE_LIST = Lists.newArrayList("callback/register");
-    @Getter enum TransactionApiEnum {
+
+    @Getter enum TransactionApiEnum implements ApiInterface {
+        //@formatter:off
         IDENTITY_SETTING("IDENTITY_SETTING", "/identity/setting"),
         IDENTITY_BD_MANAGE("IDENTITY_BD_MANAGE", "/identity/bdManage"),
         BD_PUBLISH("BD_PUBLISH", "/bd/publish"),
@@ -27,8 +29,9 @@ public interface ApiConstants {
         SAVE_ATTESTATION("SAVE_ATTESTATION", "/attestation/save"),
         BUILD_SNAPSHOT("BUILD_SNAPSHOT", "/snapshot/build"),
         CREATE_CONTRACT("CREATE_CONTRACT", "/contract/deploy"),
-        CONTRACT_INVOKER("CONTRACT_INVOKER", "/contract/invoke");
-
+        CONTRACT_INVOKER("CONTRACT_INVOKER", "/contract/invoke"),
+        ;
+        //@formatter:on
         private String functionName;
         private String api;
 
@@ -48,17 +51,26 @@ public interface ApiConstants {
             }
             return null;
         }
+
+        @Override public String getName() {
+            return functionName;
+        }
     }
 
-    @Getter enum QueryApiEnum {
+    @Getter enum QueryApiEnum implements ApiInterface {
+        //@formatter:off
         BD_QUERY("bdQuery", "/bd/query"),
         CHECK_PERMISSION("checkPermission", "/identity/checkPermission"),
         QUERY_MAX_BLOCK_HEIGHT("getMaxBlockHeight", "/block/currentHeight/query"),
-        QUERY_BLOCKS("queryBlocks", "/block/query"),
+        QUERY_BLOCKS_BY_PAGE("queryBlocksByPage", "/explorer/queryBlocksByPage"),
+        QUERY_BLOCK_BY_Height("queryBlockByHeight", "/explorer/queryBlockByHeight"),
+        QUERY_TX_LIST_BY_PAGE("queryTxsByPage", "/explorer/queryTxsByPage"),
+        QUERY_TX_BY_ID("queryTxById", "/explorer/queryTxById"),
         QUERY_ALL_DOMAIN("queryDomainAll", "/domain/queryAll"),
         QUERY_POLICY_LIST("queryPolicyList", "/policy/queryAll"),
         QUERY_PERMISSION_LIST("queryPermissionList", "/permission/queryAll"),
         ;
+        //@formatter:on
 
         private String name;
         private String api;
@@ -79,5 +91,11 @@ public interface ApiConstants {
             }
             return null;
         }
+    }
+
+    interface ApiInterface {
+        String getName();
+
+        String getApi();
     }
 }

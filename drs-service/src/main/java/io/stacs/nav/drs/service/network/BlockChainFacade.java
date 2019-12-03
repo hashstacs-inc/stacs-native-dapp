@@ -2,12 +2,18 @@ package io.stacs.nav.drs.service.network;
 
 import com.alibaba.fastjson.JSONObject;
 import com.google.common.collect.Lists;
-import io.stacs.nav.drs.api.enums.ApiConstants.QueryApiEnum;
+import io.stacs.nav.drs.api.enums.ApiConstants.ApiInterface;
 import io.stacs.nav.drs.api.model.Policy;
 import io.stacs.nav.drs.api.model.RespData;
 import io.stacs.nav.drs.api.model.RsDomain;
 import io.stacs.nav.drs.api.model.bd.BusinessDefine;
+import io.stacs.nav.drs.api.model.block.BlockVO;
 import io.stacs.nav.drs.api.model.permission.PermissionInfoVO;
+import io.stacs.nav.drs.api.model.query.QueryBlockByHeightVO;
+import io.stacs.nav.drs.api.model.query.QueryBlockVO;
+import io.stacs.nav.drs.api.model.query.QueryTxListVO;
+import io.stacs.nav.drs.api.model.query.QueryTxVO;
+import io.stacs.nav.drs.api.model.tx.CoreTransactionVO;
 import io.stacs.nav.drs.service.config.ConfigListener;
 import io.stacs.nav.drs.service.config.DomainConfig;
 import io.stacs.nav.drs.service.utils.CasDecryptResponse;
@@ -65,11 +71,28 @@ import static io.stacs.nav.drs.service.utils.Pair.newPair;
         return resp -> resp.isSuccessful() ? Optional.of((T)resp.getData()) : Optional.empty();
     }
 
-    public <T> Optional<T> commonQueryApi(QueryApiEnum query, @Nullable List<Pair<String, String>> params) {
+    public <T> Optional<T> commonGetApi(ApiInterface api, @Nullable List<Pair<String, String>> params) {
         try {
-            return sendGet(query.getApi(), params, checkSuccessAndGetRealData());
+            return sendGet(api.getApi(), params, checkSuccessAndGetRealData());
         } catch (IOException e) {
-            log.error("[{}]has unknown error", query.getName(), e);
+            log.error("[{}]has unknown error", api.getName(), e);
+            return Optional.empty();
+        }
+    }
+
+    public <T> Optional<T> commonPostApi(ApiInterface api, Object param) {
+        return this.commonPostApi(api, param, null);
+    }
+
+    @SuppressWarnings("unchecked")
+    public <T> Optional<T> commonPostApi(ApiInterface api, Object param, @Nullable Function<RespData<?>, T> converter) {
+        if (Objects.isNull(converter)) {
+            converter = respData -> (T)respData.getData();
+        }
+        try {
+            return Optional.of(send(api.getApi(), param)).map(converter);
+        } catch (IOException e) {
+            log.error("[{}]has unknown error", api.getName(), e);
             return Optional.empty();
         }
     }
@@ -89,50 +112,52 @@ import static io.stacs.nav.drs.service.utils.Pair.newPair;
         if (StringUtils.isNotEmpty(bdCode)) {
             params = Lists.newArrayList(newPair("bdCode", bdCode));
         }
-        return commonQueryApi(BD_QUERY, params);
+        return commonGetApi(BD_QUERY, params);
     }
 
     public Optional<Long> queryCurrentHeight() {
-        return commonQueryApi(QUERY_MAX_BLOCK_HEIGHT, null);
+        return commonGetApi(QUERY_MAX_BLOCK_HEIGHT, null);
     }
 
-    public Optional<Long> queryBlocks(Long startHeight, Integer size) {
-        Objects.requireNonNull(startHeight);
-        Objects.requireNonNull(size);
+    public Optional<List<CoreTransactionVO>> queryCoreTxListByPage(QueryTxListVO vo) {
+        return commonPostApi(QUERY_TX_LIST_BY_PAGE, vo);
+    }
 
-        return commonQueryApi(QUERY_BLOCKS, Lists
-            .newArrayList(newPair("startHeight", startHeight.toString()), newPair("size", size.toString())));
+    public Optional<CoreTransactionVO> queryCoreTxById(QueryTxVO vo) {
+        return commonPostApi(QUERY_TX_BY_ID, vo);
+    }
+
+    public Optional<BlockVO> queryBlockByHeight(QueryBlockByHeightVO vo) {
+        return commonPostApi(QUERY_BLOCK_BY_Height, vo);
+    }
+
+    public Optional<List<BlockVO>> queryBlockListByPage(QueryBlockVO vo) {
+        return commonPostApi(QUERY_BLOCKS_BY_PAGE, vo);
     }
 
     /**
      * query domains of block chain
      */
     public Optional<List<RsDomain>> queryAllDomains() {
-        return commonQueryApi(QUERY_ALL_DOMAIN, null);
+        return commonGetApi(QUERY_ALL_DOMAIN, null);
     }
 
     /**
      * query domains of block chain
      */
     public Optional<List<Policy>> queryAllPolicyList() {
-        return commonQueryApi(QUERY_POLICY_LIST, null);
+        return commonGetApi(QUERY_POLICY_LIST, null);
     }
 
     /**
      * query all permission of block chain
      */
     public Optional<List<PermissionInfoVO>> queryPermissionList() {
-        return commonQueryApi(QUERY_PERMISSION_LIST, null);
+        return commonGetApi(QUERY_PERMISSION_LIST, null);
     }
 
     public Optional<Boolean> checkPermission(PermissionCheckVO vo) {
-        try {
-            return Optional.of(
-                (Boolean)send(CHECK_PERMISSION.getApi(), vo, getRealData().compose(defaultPostConverter())));
-        } catch (IOException e) {
-            log.error("[checkPermission]has unknown error", e);
-            return Optional.empty();
-        }
+        return commonPostApi(CHECK_PERMISSION, vo);
     }
 
     @Nonnull

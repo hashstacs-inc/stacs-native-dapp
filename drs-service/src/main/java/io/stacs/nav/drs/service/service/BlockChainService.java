@@ -4,6 +4,7 @@ import io.stacs.nav.drs.api.model.Policy;
 import io.stacs.nav.drs.api.model.RsDomain;
 import io.stacs.nav.drs.api.model.bd.BusinessDefine;
 import io.stacs.nav.drs.api.model.permission.PermissionInfoVO;
+import io.stacs.nav.drs.api.model.tx.CoreTransactionVO;
 import io.stacs.nav.drs.service.network.BlockChainFacade;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -12,6 +13,7 @@ import java.util.List;
 import java.util.Optional;
 
 import static io.stacs.nav.drs.api.exception.DappError.BD_NOT_FIND_ERROR;
+import static io.stacs.nav.drs.api.exception.DappError.DRS_NET_WORK_COMMON_ERROR;
 import static io.stacs.nav.drs.api.exception.DappException.newError;
 
 /**
@@ -25,9 +27,6 @@ import static io.stacs.nav.drs.api.exception.DappException.newError;
 
     /**
      * query bd info by code
-     *
-     * @param bdCode
-     * @return
      */
     public BusinessDefine queryBDByCode(String bdCode) {
         return blockChainFacade.queryBDInfoByCode(bdCode).orElseThrow(newError(BD_NOT_FIND_ERROR));
@@ -35,9 +34,6 @@ import static io.stacs.nav.drs.api.exception.DappException.newError;
 
     /**
      * query all bd info
-     *
-     * @param bdCode
-     * @return
      */
     public List<BusinessDefine> queryAllBDInfo(String bdCode) {
         return blockChainFacade.queryBDInfo(bdCode).orElseThrow(newError(BD_NOT_FIND_ERROR));
@@ -45,31 +41,33 @@ import static io.stacs.nav.drs.api.exception.DappException.newError;
 
     /**
      * query all domain
-     *
-     * @return
      */
     public List<RsDomain> queryAllDomains() {
         Optional<List<RsDomain>> domains = blockChainFacade.queryAllDomains();
-        return domains.isPresent() ? domains.get() : null;
+        return domains.orElse(null);
     }
 
     /**
      * query all policy
-     *
-     * @return
      */
     public List<Policy> queryAllPolicy() {
         Optional<List<Policy>> policies = blockChainFacade.queryAllPolicyList();
-        return policies.isPresent() ? policies.get() : null;
+        return policies.orElse(null);
     }
 
     /**
      * query all permission list
-     *
-     * @return
      */
     public List<PermissionInfoVO> queryPermissionList() {
         Optional<List<PermissionInfoVO>> policies = blockChainFacade.queryPermissionList();
-        return policies.isPresent() ? policies.get() : null;
+        return policies.orElse(null);
+    }
+
+    public Long queryCurrentHeight() {
+        return blockChainFacade.queryCurrentHeight().orElseThrow(newError(DRS_NET_WORK_COMMON_ERROR));
+    }
+
+    public List<CoreTransactionVO> queryCoreTxList() {
+        return blockChainFacade.queryCurrentHeight().orElseThrow(newError(DRS_NET_WORK_COMMON_ERROR));
     }
 }
