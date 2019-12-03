@@ -4,6 +4,7 @@ import io.stacs.nav.drs.api.model.Policy;
 import io.stacs.nav.drs.api.model.RsDomain;
 import io.stacs.nav.drs.api.model.bd.BusinessDefine;
 import io.stacs.nav.drs.api.model.permission.PermissionInfoVO;
+import io.stacs.nav.drs.api.model.query.QueryTxListVO;
 import io.stacs.nav.drs.api.model.tx.CoreTransactionVO;
 import io.stacs.nav.drs.service.network.BlockChainFacade;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -67,7 +68,7 @@ import static io.stacs.nav.drs.api.exception.DappException.newError;
         return blockChainFacade.queryCurrentHeight().orElseThrow(newError(DRS_NET_WORK_COMMON_ERROR));
     }
 
-    public List<CoreTransactionVO> queryCoreTxList() {
-        return blockChainFacade.queryCurrentHeight().orElseThrow(newError(DRS_NET_WORK_COMMON_ERROR));
+    public List<CoreTransactionVO> queryCoreTxList(QueryTxListVO vo) {
+        return blockChainFacade.queryCoreTxListByPage(vo).orElseThrow(newError(DRS_NET_WORK_COMMON_ERROR));
     }
 }
