@@ -1,7 +1,7 @@
 package io.stacs.nav.drs.service;
 
 import io.stacs.nav.drs.api.model.bd.BusinessDefine;
-import io.stacs.nav.drs.service.service.SubmitterService;
+import io.stacs.nav.drs.service.service.QueryService;
 import org.junit.Test;
 
 /**
@@ -13,11 +13,11 @@ public class DappApiServiceTest {
 
     @Test
     public void test(){
-        SubmitterService dappApiService = new SubmitterService();
+        QueryService queryService = new QueryService();
         BusinessDefine bd = new BusinessDefine();
         bd.setTxId("tx_id");
         bd.setSubmitter("aaa");
-        String str = dappApiService.getSignValue(bd);
+        String str = queryService.generateSignature(bd);
         System.out.println(str);
     }
 }

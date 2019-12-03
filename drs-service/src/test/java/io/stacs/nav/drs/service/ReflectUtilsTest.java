@@ -43,7 +43,7 @@ public class ReflectUtilsTest {
     @Test public void test_reflect_function() {
         ReflectTestInterface service = ReflectUtils.getInstance(
             ReflectTestInterface.class,
-            ReflectUtils.newProxy(TEST_FUNCTION, method -> true));
+            ReflectUtils.newProxy(TEST_FUNCTION, (method,args) -> true));
         assertEquals("hello", service.getHello());
 
     }
@@ -51,7 +51,7 @@ public class ReflectUtilsTest {
     @Test public void test_reflect_consumer() {
         ReflectTestInterface service = ReflectUtils.getInstance(
             ReflectTestInterface.class,
-            ReflectUtils.newProxy(TEST_CONSUMER, method -> true));
+            ReflectUtils.newProxy(TEST_CONSUMER, (method,args) -> true));
         service.sayHello("hello, world");
 
     }
