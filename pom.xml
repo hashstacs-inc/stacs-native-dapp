@@ -410,16 +410,53 @@
 
     <distributionManagement>
         <repository>
-            <id>ossrh</id>
-            <name>snapshots repository</name>
-            <url>https://oss.sonatype.org/service/local/staging/deploy/maven2</url>
+            <id>nexus-releases</id>
+            <name>nexus-releases</name>
+            <url>http://maven.primeledger.cn:8081/repository/maven-releases/</url>
         </repository>
+
         <snapshotRepository>
-            <id>ossrh</id>
-            <name>Nexus Snapshot Repository</name>
-            <url>https://oss.sonatype.org/content/repositories/snapshots</url>
+            <id>nexus-snapshots</id>
+            <name>nexus-snapshots</name>
+            <url>http://maven.primeledger.cn:8081/repository/maven-snapshots/</url>
         </snapshotRepository>
     </distributionManagement>
 
+    <repositories>
+        <repository>
+            <id>nexus-public</id>
+            <name>nexus-public</name>
+            <url>http://maven.primeledger.cn:8081/repository/maven-public/</url>
+            <releases>
+                <enabled>true</enabled>
+            </releases>
+            <snapshots>
+                <enabled>false</enabled>
+            </snapshots>
+        </repository>
+        <repository>
+            <id>nexus-releases</id>
+            <name>nexus-releases</name>
+            <url>http://maven.primeledger.cn:8081/repository/maven-releases/</url>
+            <releases>
+                <enabled>true</enabled>
+            </releases>
+            <snapshots>
+                <enabled>false</enabled>
+            </snapshots>
+        </repository>
+        <repository>
+            <id>nexus-snapshots</id>
+            <name>nexus-snapshots</name>
+            <url>http://maven.primeledger.cn:8081/repository/maven-snapshots/</url>
+            <releases>
+                <enabled>false</enabled>
+            </releases>
+            <snapshots>
+                <enabled>true</enabled>
+                <updatePolicy>always</updatePolicy>
+            </snapshots>
+        </repository>
+    </repositories>
 
 </project>
