@@ -15,6 +15,7 @@ import lombok.Getter;
     IDEMPOTENT_ERROR("20","00","02", "has idempotent error" ),
     PARAM_VALIDATE_ERROR("20","00","03", "param validate error"),
     DB_ERROR("20","00","04", "has data base error" ),
+    DAPP_WAIT_TIMEOUT("20","00","05", "wait is timeout" ),
 
     DAPP_ALREADY_EXISTS("21","00","01", "Dapp is already exists"),
     DAPP_NOT_EXISTS("21","01","00", "Dapp is not exists"),
