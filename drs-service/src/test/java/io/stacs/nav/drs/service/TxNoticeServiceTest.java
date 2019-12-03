@@ -20,7 +20,7 @@ public class TxNoticeServiceTest extends ConfigurationManagerTest {
         //do some thing
         doSomething(txId);
         //wait
-        TransactionReceipt tr = noticeService.wait(txId, 6000L);
+        TransactionReceipt tr = noticeService.syncWait(txId, 6000L);
         Assert.isTrue(tr != null, "wait result is null");
     }
 
