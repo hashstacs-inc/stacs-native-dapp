@@ -10,6 +10,12 @@ import io.stacs.nav.drs.api.exception.DappException;
 import io.stacs.nav.drs.api.model.BaseTxVO;
 import io.stacs.nav.drs.api.model.bd.BusinessDefine;
 import io.stacs.nav.drs.api.model.bd.FunctionDefine;
+import io.stacs.nav.drs.api.model.block.BlockVO;
+import io.stacs.nav.drs.api.model.query.QueryBlockByHeightVO;
+import io.stacs.nav.drs.api.model.query.QueryBlockVO;
+import io.stacs.nav.drs.api.model.query.QueryTxListVO;
+import io.stacs.nav.drs.api.model.query.QueryTxVO;
+import io.stacs.nav.drs.api.model.tx.CoreTransactionVO;
 import io.stacs.nav.drs.service.constant.Constants;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.InitializingBean;
@@ -53,6 +59,26 @@ import static io.stacs.nav.drs.api.exception.DappError.FUNCTION_NOT_FIND_ERROR;
         }
         vo.setExecPolicyId(execPolicyId);
         return vo.getSignValue();
+    }
+
+    public Long queryCurrentHeight() {
+        return bdService.queryCurrentHeight();
+    }
+
+    public List<CoreTransactionVO> queryCoreTxListByPage(QueryTxListVO vo) {
+        return bdService.queryCoreTxListByPage(vo);
+    }
+
+    public CoreTransactionVO queryCoreTxById(QueryTxVO vo) {
+        return bdService.queryCoreTxById(vo);
+    }
+
+    public List<BlockVO> queryBlockListByPage(QueryBlockVO vo) {
+        return bdService.queryBlockListByPage(vo);
+    }
+
+    public BlockVO queryBlockByHeight(QueryBlockByHeightVO vo) {
+        return bdService.queryBlockByHeight(vo);
     }
 
     // @formatter:off
