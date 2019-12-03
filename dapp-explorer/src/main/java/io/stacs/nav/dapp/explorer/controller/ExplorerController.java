@@ -21,7 +21,7 @@ import static io.stacs.nav.drs.api.model.RespData.success;
  * @author dekuofa <br>
  * @date 2019-12-02 <br>
  */
-@SuppressWarnings("unchecked") @RestController @RequestMapping("/block") @Slf4j public class BlockController {
+@SuppressWarnings("unchecked") @RestController @RequestMapping("/explorer") @Slf4j public class ExplorerController {
 
     @ArkInject private IQueryService queryService;
 

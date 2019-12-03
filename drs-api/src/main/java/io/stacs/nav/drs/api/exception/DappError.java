@@ -13,7 +13,7 @@ import lombok.Getter;
     DAPP_COMMON_ERROR("20","00","00", "unknown error"),
     DAPP_NET_WORK_COMMON_ERROR("20","00","01", "net work common error"),
     IDEMPOTENT_ERROR("20","00","02", "has idempotent error" ),
-    PARAM_VILIDATE_ERROR("20","00","03", "param validate error"),
+    PARAM_VALIDATE_ERROR("20","00","03", "param validate error"),
     DB_ERROR("20","00","04", "has data base error" ),
 
     DAPP_ALREADY_EXISTS("21","00","01", "Dapp is already exists"),
