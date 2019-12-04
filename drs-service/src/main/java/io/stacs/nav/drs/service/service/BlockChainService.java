@@ -16,7 +16,6 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 
-import static io.stacs.nav.drs.api.exception.DappError.BD_NOT_FIND_ERROR;
 import static io.stacs.nav.drs.api.exception.DappError.DRS_NET_WORK_COMMON_ERROR;
 import static io.stacs.nav.drs.api.exception.DappException.newError;
 
@@ -32,14 +31,14 @@ import static io.stacs.nav.drs.api.exception.DappException.newError;
      * query bd info by code
      */
     public BusinessDefine queryBDByCode(String bdCode) {
-        return blockChainFacade.queryBDInfoByCode(bdCode).orElseThrow(newError(BD_NOT_FIND_ERROR));
+        return blockChainFacade.queryBDInfoByCode(bdCode).orElseThrow(newError(DRS_NET_WORK_COMMON_ERROR));
     }
 
     /**
      * query all bd info
      */
     public List<BusinessDefine> queryAllBDInfo(String bdCode) {
-        return blockChainFacade.queryBDInfo(bdCode).orElseThrow(newError(BD_NOT_FIND_ERROR));
+        return blockChainFacade.queryBDInfo(bdCode).orElseThrow(newError(DRS_NET_WORK_COMMON_ERROR));
     }
 
     /**
