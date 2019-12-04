@@ -10,6 +10,7 @@ import io.stacs.nav.drs.api.model.query.QueryTxListVO;
 import io.stacs.nav.drs.api.model.query.QueryTxVO;
 import io.stacs.nav.drs.api.model.tx.CoreTransactionVO;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -25,23 +26,24 @@ import static io.stacs.nav.drs.api.model.RespData.success;
 
     @ArkInject private IQueryService queryService;
 
-    public RespData<Long> queryCurrentHeight() {
+    @PostMapping("/currentHeight") public RespData<Long> queryCurrentHeight() {
         return success(queryService.queryCurrentHeight());
     }
 
+    @PostMapping("/queryTxListByPage")
     public RespData<List<CoreTransactionVO>> queryCoreTxListByPage(QueryTxListVO vo) {
         return success(queryService.queryCoreTxListByPage(vo));
     }
 
-    public RespData<CoreTransactionVO> queryCoreTxById(QueryTxVO vo) {
+    @PostMapping("/queryCoreTxById") public RespData<CoreTransactionVO> queryCoreTxById(QueryTxVO vo) {
         return success(queryService.queryCoreTxById(vo));
     }
 
-    public RespData<List<BlockVO>> queryBlockListByPage(QueryBlockVO vo) {
+    @PostMapping("/queryBlockListByPage") public RespData<List<BlockVO>> queryBlockListByPage(QueryBlockVO vo) {
         return success(queryService.queryBlockListByPage(vo));
     }
 
-    public RespData<BlockVO> queryBlockByHeight(QueryBlockByHeightVO vo) {
+    @PostMapping("/queryBlockByHeight") public RespData<BlockVO> queryBlockByHeight(QueryBlockByHeightVO vo) {
         return success(queryService.queryBlockByHeight(vo));
     }
 }
