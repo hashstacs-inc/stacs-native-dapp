@@ -21,7 +21,7 @@ import lombok.Getter;
     DAPP_NOT_EXISTS("21","01","00", "Dapp is not exists"),
     DAPP_NOT_INITIALIZED("21","00","03", "Dapp is not initialized"),
     DAPP_ALREADY_RUNNING("21","00","04", "Dapp is already running"),
-    DAPP_UPDATE_STATUS_ERROR("21","00","05", "udpate status is error"),
+    DAPP_UPDATE_STATUS_ERROR("21","00","05", "update status is error"),
     DAPP_SOURCE_FILE_NOT_EXISTS_ERROR("21","00","06", "source file is not exists"),
     DAPP_ALREADY_INITIALIZED("21","00","07", "Dapp is already initialized"),
     DAPP_CONFIG_NOT_FOUND("21","00","08", "Dapp config file is not found"),
