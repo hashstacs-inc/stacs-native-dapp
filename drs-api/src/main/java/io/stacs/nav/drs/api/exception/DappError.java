@@ -11,7 +11,7 @@ import lombok.Getter;
 
     // @formatter:off
     DAPP_COMMON_ERROR("20","00","00", "unknown error"),
-    DAPP_NET_WORK_COMMON_ERROR("20","00","01", "net work common error"),
+    DAPP_NETWORK_COMMON_ERROR("20","00","01", "network common error"),
     IDEMPOTENT_ERROR("20","00","02", "has idempotent error" ),
     PARAM_VALIDATE_ERROR("20","00","03", "param validate error"),
     DB_ERROR("20","00","04", "has data base error" ),
@@ -32,7 +32,7 @@ import lombok.Getter;
     NO_PERMISSION_ERROR("22","00","02", "no permission error"),
     FUNCTION_NOT_FIND_ERROR("22","00","03", "function not find error"),
 
-    DRS_NET_WORK_COMMON_ERROR("22", "00", "04","net work common error"),
+    DRS_NETWORK_COMMON_ERROR("22", "00", "04","network common error"),
     ;
     // @formatter:on
 

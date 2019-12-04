@@ -16,7 +16,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 
-import static io.stacs.nav.drs.api.exception.DappError.DRS_NET_WORK_COMMON_ERROR;
+import static io.stacs.nav.drs.api.exception.DappError.DRS_NETWORK_COMMON_ERROR;
 import static io.stacs.nav.drs.api.exception.DappException.newError;
 
 /**
@@ -31,54 +31,54 @@ import static io.stacs.nav.drs.api.exception.DappException.newError;
      * query bd info by code
      */
     public BusinessDefine queryBDByCode(String bdCode) {
-        return blockChainFacade.queryBDInfoByCode(bdCode).orElseThrow(newError(DRS_NET_WORK_COMMON_ERROR));
+        return blockChainFacade.queryBDInfoByCode(bdCode).orElseThrow(newError(DRS_NETWORK_COMMON_ERROR));
     }
 
     /**
      * query all bd info
      */
     public List<BusinessDefine> queryAllBDInfo(String bdCode) {
-        return blockChainFacade.queryBDInfo(bdCode).orElseThrow(newError(DRS_NET_WORK_COMMON_ERROR));
+        return blockChainFacade.queryBDInfo(bdCode).orElseThrow(newError(DRS_NETWORK_COMMON_ERROR));
     }
 
     /**
      * query all domain
      */
     public List<RsDomain> queryAllDomains() {
-        return blockChainFacade.queryAllDomains().orElseThrow(newError(DRS_NET_WORK_COMMON_ERROR));
+        return blockChainFacade.queryAllDomains().orElseThrow(newError(DRS_NETWORK_COMMON_ERROR));
     }
 
     /**
      * query all policy
      */
     public List<Policy> queryAllPolicy() {
-        return blockChainFacade.queryAllPolicyList().orElseThrow(newError(DRS_NET_WORK_COMMON_ERROR));
+        return blockChainFacade.queryAllPolicyList().orElseThrow(newError(DRS_NETWORK_COMMON_ERROR));
     }
 
     /**
      * query all permission list
      */
     public List<PermissionInfoVO> queryPermissionList() {
-        return blockChainFacade.queryPermissionList().orElseThrow(newError(DRS_NET_WORK_COMMON_ERROR));
+        return blockChainFacade.queryPermissionList().orElseThrow(newError(DRS_NETWORK_COMMON_ERROR));
     }
 
     public Long queryCurrentHeight() {
-        return blockChainFacade.queryCurrentHeight().orElseThrow(newError(DRS_NET_WORK_COMMON_ERROR));
+        return blockChainFacade.queryCurrentHeight().orElseThrow(newError(DRS_NETWORK_COMMON_ERROR));
     }
 
     public List<CoreTransactionVO> queryCoreTxListByPage(QueryTxListVO vo) {
-        return blockChainFacade.queryCoreTxListByPage(vo).orElseThrow(newError(DRS_NET_WORK_COMMON_ERROR));
+        return blockChainFacade.queryCoreTxListByPage(vo).orElseThrow(newError(DRS_NETWORK_COMMON_ERROR));
     }
 
     public CoreTransactionVO queryCoreTxById(QueryTxVO vo) {
-        return blockChainFacade.queryCoreTxById(vo).orElseThrow(newError(DRS_NET_WORK_COMMON_ERROR));
+        return blockChainFacade.queryCoreTxById(vo).orElseThrow(newError(DRS_NETWORK_COMMON_ERROR));
     }
 
     public List<BlockVO> queryBlockListByPage(QueryBlockVO vo) {
-        return blockChainFacade.queryBlockListByPage(vo).orElseThrow(newError(DRS_NET_WORK_COMMON_ERROR));
+        return blockChainFacade.queryBlockListByPage(vo).orElseThrow(newError(DRS_NETWORK_COMMON_ERROR));
     }
 
     public BlockVO queryBlockByHeight(QueryBlockByHeightVO vo) {
-        return blockChainFacade.queryBlockByHeight(vo).orElseThrow(newError(DRS_NET_WORK_COMMON_ERROR));
+        return blockChainFacade.queryBlockByHeight(vo).orElseThrow(newError(DRS_NETWORK_COMMON_ERROR));
     }
 }
