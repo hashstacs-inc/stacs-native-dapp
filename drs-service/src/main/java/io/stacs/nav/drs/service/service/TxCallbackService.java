@@ -34,6 +34,7 @@ import java.util.List;
     @Autowired TxRequestDao txRequestDao;
     @Autowired TxCallbackDao txCallbackDao;
     @Autowired EventPublisher eventPublisher;
+    @Autowired TxNoticeService txNoticeService;
     @Autowired private TransactionTemplate txRequired;
     /**
      * receive transaction from block chain
@@ -82,6 +83,8 @@ import java.util.List;
                         JSON.toJSONString(v));
                     //callback dapp
                     eventPublisher.publish(bo.getBlockHeight(), v.getTxId(), v);
+                    //notify
+                    txNoticeService.notify(v);
                 }
             });
             //update status

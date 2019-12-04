@@ -29,7 +29,7 @@ import java.util.Optional;
 
 import static io.stacs.nav.drs.api.enums.ApiConstants.TransactionApiEnum.CONTRACT_INVOKER;
 import static io.stacs.nav.drs.api.enums.ApiConstants.TransactionApiEnum.CREATE_CONTRACT;
-import static io.stacs.nav.drs.api.exception.DappError.DAPP_NET_WORK_COMMON_ERROR;
+import static io.stacs.nav.drs.api.exception.DappError.DAPP_NETWORK_COMMON_ERROR;
 import static io.stacs.nav.drs.api.exception.DappException.newError;
 
 /**
@@ -133,7 +133,7 @@ import static io.stacs.nav.drs.api.exception.DappException.newError;
         vo.setAddress(address);
         vo.setPermissionNames(Lists.newArrayList(permission));
         //permission check
-        boolean res = blockChainFacade.checkPermission(vo).orElseThrow(newError(DAPP_NET_WORK_COMMON_ERROR));
+        boolean res = blockChainFacade.checkPermission(vo).orElseThrow(newError(DAPP_NETWORK_COMMON_ERROR));
 
         if (!res) {
             log.warn("address:{} not has permission:{}", address, permission);

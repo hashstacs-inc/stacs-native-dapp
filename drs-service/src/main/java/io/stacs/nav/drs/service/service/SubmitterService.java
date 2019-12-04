@@ -44,7 +44,7 @@ import java.util.function.Consumer;
         };
 
         BiPredicate<Method, Object[]> FILTER = (method, args) -> {
-            if (!(args.length == 1 && args[0].getClass().isAssignableFrom(BaseTxVO.class)))
+            if (!(args.length == 1 && BaseTxVO.class.isAssignableFrom(args[0].getClass())))
                 throw new IllegalArgumentException(String.format("Illegal args for tx submitter: %s", Arrays.toString(args)));
             return true;
         };
