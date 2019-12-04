@@ -238,7 +238,7 @@
             </dependency>
             <dependency>
                 <groupId>io.stacs.nav</groupId>
-                <artifactId>crypto</artifactId>
+                <artifactId>stacs-crypto</artifactId>
                 <version>${stacs-crypto.version}</version>
             </dependency>
             <dependency>
