@@ -22,13 +22,12 @@ export const notify = {
   error: 'ERROR'
 };
 
+// 获取语言环境，默认英文
 export const getLang = () => {
   let localStorageLang = localStorage.getItem(LOCAL_STORAGE_LANG);
-  let lang = ZH_CN;
+  let lang = EN_GB;
   if (!localStorageLang) {
     lang = navigator.language;
-  } else {
-    lang = localStorageLang;
   }
   return lang;
 }

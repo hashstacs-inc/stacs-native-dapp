@@ -1,11 +1,11 @@
 <template>
-  <div>
-    <h1>首页1</h1>
+  <div class="home-page">
+    <h1>{{$t('home.headTitle')}}</h1>
   </div>
 </template>
 <script>
 export default {
-  name: 'HOME',
+  name: 'Home',
   data () {
     return {
 
@@ -14,7 +14,9 @@ export default {
 }
 </script>
 <style lang="scss" scoped>
-h1 {
-  text-align: center;
+.home-page {
+  h1 {
+    text-align: center;
+  }
 }
 </style>
