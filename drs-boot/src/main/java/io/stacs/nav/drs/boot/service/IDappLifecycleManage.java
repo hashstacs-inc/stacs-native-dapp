@@ -1,6 +1,7 @@
 package io.stacs.nav.drs.boot.service;
 
 import io.stacs.nav.drs.boot.bo.Dapp;
+import io.stacs.nav.drs.boot.vo.AppProfileVO;
 
 import java.io.IOException;
 import java.util.List;
@@ -66,4 +67,10 @@ public interface IDappLifecycleManage {
      * @param config
      */
     void config(String appName, Map<String, String> config);
+
+    /**
+     * 获取当前安装过的app
+     * @return
+     */
+    List<AppProfileVO> queryCurrentApps();
 }

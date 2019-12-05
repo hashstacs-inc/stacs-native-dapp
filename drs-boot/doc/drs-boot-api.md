@@ -123,8 +123,49 @@
 | msg            | `String`        | 64       | Y    | 消息信息
 | data           | `Object`        |          | N    | 返回数据
 
+#### Dapp Store列表查询
+##### 接口地址：/dapp/queryAppStore
+请求方式：GET
+##### 参数列表
 
-#### Dapp 列表查询
+|     属性     | 类型     | 最大长度 | 必填 | 说明                                              |
+| :----------: | -------- | -------- | ---- | ------------------------------------------------- |
+
+##### 返回值：
+
+| 属性            | 类型            | 最大长度 | 必填 | 说明                           |
+| -------------  | -------------   | -------- | ---- | -------------------------------- |
+| code           | `int`           | 6        | Y    | 返回码 '000000'表示成功
+| msg            | `String`        | 64       | Y    | 消息信息
+| data           | `Object`        |          | N    | 返回数据，List<AppProfileVO>
+
+###### 返回参数样例:
+```
+[
+  {
+
+    "showName":"测试App1",
+    "name":"dapp-sample",
+    "icon":"appstore/img/icon1.ong",
+    "author":"test",
+    "remark":"this is a test app",
+    "downloadUrl":"http://www.appstore.cn",
+    "status":"STOPPED"
+  },
+  {
+
+    "showName":"测试App2",
+    "name":"dapp-sample",
+    "icon":"appstore/img/icon2.ong",
+    "author":"test",
+    "remark":"this is a test app",
+    "downloadUrl":"http://www.appstore.cn",
+    "status":"DOWNLOAD"
+  }
+]
+```
+
+#### Dapp 已下载列表查询
 ##### 接口地址：/dapp/installList
 请求方式：GET
 ##### 参数列表
@@ -138,8 +179,33 @@
 | -------------  | -------------   | -------- | ---- | -------------------------------- |
 | code           | `int`           | 6        | Y    | 返回码 '000000'表示成功
 | msg            | `String`        | 64       | Y    | 消息信息
-| data           | `Object`        |          | N    | 返回数据，List<Dapp>
+| data           | `Object`        |          | N    | 返回数据，List<AppProfileVO>
 
+###### 返回参数样例:
+```
+[
+  {
+
+    "showName":"测试App1",
+    "name":"dapp-sample",
+    "icon":"appstore/img/icon1.ong",
+    "author":"test",
+    "remark":"this is a test app",
+    "downloadUrl":"",
+    "status":""
+  },
+  {
+
+    "showName":"测试App2",
+    "name":"dapp-sample",
+    "icon":"appstore/img/icon2.ong",
+    "author":"test",
+    "remark":"this is a test app",
+    "downloadUrl":"",
+    "status":"DOWNLOAD"
+  }
+]
+```
 
 #### Policy 信息查询
 ##### 接口地址：/drs/queryAllPolicy

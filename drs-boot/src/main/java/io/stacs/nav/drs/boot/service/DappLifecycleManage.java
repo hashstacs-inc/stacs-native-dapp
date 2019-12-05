@@ -7,6 +7,7 @@ import com.alipay.sofa.ark.loader.JarBizArchive;
 import com.alipay.sofa.ark.loader.archive.JarFileArchive;
 import com.alipay.sofa.ark.loader.jar.JarEntry;
 import com.alipay.sofa.ark.loader.jar.JarFile;
+import com.google.common.collect.Lists;
 import com.google.common.io.Files;
 import io.stacs.nav.drs.api.exception.DappError;
 import io.stacs.nav.drs.api.exception.DappException;
@@ -14,6 +15,8 @@ import io.stacs.nav.drs.boot.bo.Dapp;
 import io.stacs.nav.drs.boot.config.BaseConfig;
 import io.stacs.nav.drs.boot.enums.DappStatus;
 import io.stacs.nav.drs.boot.service.dapp.IDappService;
+import io.stacs.nav.drs.boot.service.dappstore.DappStoreService;
+import io.stacs.nav.drs.boot.vo.AppProfileVO;
 import io.stacs.nav.drs.service.config.DrsConfig;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.io.FileUtils;
@@ -55,6 +58,7 @@ import static io.stacs.nav.drs.service.utils.ResourceLoader.getManifest;
     @Autowired DrsConfig drsConfig;
 
     @Autowired IDappService dappService;
+    @Autowired DappStoreService dappStoreService;
 
     @Override public void onApplicationEvent(ApplicationReadyEvent applicationReadyEvent) {
         init();
@@ -145,21 +149,21 @@ import static io.stacs.nav.drs.service.utils.ResourceLoader.getManifest;
         dapp.setContextPath(manifestMainAttributes.getValue(WEB_CONTEXT_PATH));
 
         String usedDrsVersion = manifestMainAttributes.getValue(DRS_VERSION_KEY);
-        log.info("[getInfo]dapp usedDrsVersion:{}",usedDrsVersion);
-        if(StringUtils.isEmpty(usedDrsVersion)){
+        log.info("[getInfo]dapp usedDrsVersion:{}", usedDrsVersion);
+        if (StringUtils.isEmpty(usedDrsVersion)) {
             log.warn("[getInfo]dapp drs version is not exists");
             throw new DappException(DappError.DAPP_DRS_VERSION_NOT_EXISTS);
         }
         Optional<Manifest> manifestOpt = getManifest(DappLifecycleManage.class);
-        if(!manifestOpt.isPresent()){
+        if (!manifestOpt.isPresent()) {
             log.warn("[getInfo]dapp version is not exists");
             throw new DappException(DappError.DAPP_COMMON_ERROR);
         }
         Manifest manifest = manifestOpt.get();
         String version = manifest.getMainAttributes().getValue(ARK_BIZ_VERSION);
-        log.info("[getInfo]drs version:{}",version);
-        if(!usedDrsVersion.equals(version)){
-            log.warn("[getInfo]dapp version:{} is unequal {}",usedDrsVersion,version);
+        log.info("[getInfo]drs version:{}", version);
+        if (!usedDrsVersion.equals(version)) {
+            log.warn("[getInfo]dapp version:{} is unequal {}", usedDrsVersion, version);
             throw new DappException(DappError.DAPP_VERSION_UNEQUAL);
         }
         return dapp;
@@ -386,5 +390,24 @@ import static io.stacs.nav.drs.service.utils.ResourceLoader.getManifest;
         } finally {
             IOUtils.closeQuietly(os);
         }
+    }
+
+    @Override public List<AppProfileVO> queryCurrentApps() {
+        List<Dapp> list = dappService.findAll();
+        if(CollectionUtils.isEmpty(list)){
+            return null;
+        }
+        List<AppProfileVO> appProfileVOList = Lists.newArrayList();
+        list.forEach(v -> {
+            try {
+                AppProfileVO vo = dappStoreService.queryAppByName(v.getName());
+                //set status
+                vo.setStatus(v.getStatus().name());
+                appProfileVOList.add(vo);
+            } catch (IOException e) {
+                log.error("has io error", e);
+            }
+        });
+        return appProfileVOList;
     }
 }

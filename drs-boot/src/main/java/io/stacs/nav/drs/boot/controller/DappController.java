@@ -11,6 +11,7 @@ import io.stacs.nav.drs.boot.bo.Dapp;
 import io.stacs.nav.drs.boot.enums.DappStatus;
 import io.stacs.nav.drs.boot.service.IDappLifecycleManage;
 import io.stacs.nav.drs.boot.service.dapp.IDappService;
+import io.stacs.nav.drs.boot.service.dappstore.DappStoreService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -30,6 +31,8 @@ import java.util.stream.Collectors;
     @ArkInject BizManagerService bizManagerService;
 
     @Autowired IDappService dappService;
+
+    @Autowired DappStoreService dappStoreService;
 
     /**
      * install dapp
@@ -106,8 +109,18 @@ import java.util.stream.Collectors;
      *
      * @return
      */
+    @GetMapping("/queryAppStore") public RespData appStoreList() {
+        try {
+            return RespData.success(dappStoreService.queryApps());
+        } catch (Exception e) {
+            log.error("has error",e);
+            return RespData.fail(DappError.DRS_NETWORK_COMMON_ERROR);
+        }
+    }
+
+
     @GetMapping("/installList") public RespData installList() {
-        return RespData.success(dappLifecycleManage.list());
+        return RespData.success(dappLifecycleManage.queryCurrentApps());
     }
 
     /**
