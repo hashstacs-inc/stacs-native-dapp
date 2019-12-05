@@ -1,4 +1,4 @@
-package io.stacs.nav.drs.service.config;
+package io.stacs.nav.drs.service.utils.config;
 
 import org.springframework.context.annotation.Configuration;
 

@@ -2,6 +2,7 @@ package io.stacs.nav.drs.service.config;
 
 import com.alipay.sofa.ark.springboot.runner.ArkBootRunner;
 import io.stacs.nav.drs.ConfigWithoutDataSource;
+import io.stacs.nav.drs.service.utils.config.ConfigurationManager;
 import org.junit.FixMethodOrder;
 import org.junit.Test;
 import org.junit.runner.RunWith;

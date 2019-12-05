@@ -1,9 +1,9 @@
 package io.stacs.nav.drs.service.scheduler;
 
 import com.alibaba.fastjson.JSONObject;
-import io.stacs.nav.drs.service.config.ConfigListener;
 import io.stacs.nav.drs.service.config.DomainConfig;
 import io.stacs.nav.drs.service.network.BlockChainFacade;
+import io.stacs.nav.drs.service.utils.config.ConfigListener;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.EnableScheduling;

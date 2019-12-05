@@ -5,8 +5,8 @@ package io.stacs.nav.drs.service.utils;
 
 import com.alibaba.fastjson.JSON;
 import com.google.common.collect.Lists;
-import io.stacs.nav.drs.service.config.ConfigListener;
 import io.stacs.nav.drs.service.config.DomainConfig;
+import io.stacs.nav.drs.service.utils.config.ConfigListener;
 import lombok.extern.slf4j.Slf4j;
 import okhttp3.*;
 import org.apache.commons.collections4.CollectionUtils;
