@@ -175,7 +175,7 @@ import static io.stacs.nav.drs.service.utils.Pair.newPair;
         return sendGet(url, converter);
     }
 
-    private <T> T sendGet(String url, Function<RespData<?>, T> converter) throws IOException {
+    public <T> T sendGet(String url, Function<RespData<?>, T> converter) throws IOException {
         return DrsHttpClient.get(url, defaultGetConverter().andThen(converter));
     }
 
