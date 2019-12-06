@@ -45,7 +45,6 @@
         <module>drs-boot</module>
         <module>dapp-core</module>
         <module>dapp-maven-plugin</module>
-        <module>dapp-explorer</module>
         <module>dapp-sample</module>
     </modules>
 
