@@ -40,7 +40,7 @@ import java.util.regex.Pattern;
 import static io.stacs.nav.drs.api.enums.ApiConstants.ENCRYPT_WHITE_LIST;
 import static io.stacs.nav.drs.api.enums.ApiConstants.QueryApiEnum.*;
 import static io.stacs.nav.drs.service.utils.HttpHelper.buildGetRequestParam;
-import static io.stacs.nav.drs.service.utils.Pair.newPair;
+import static io.stacs.nav.drs.service.utils.Pair.of;
 
 /**
  * @author liuyu
@@ -110,7 +110,7 @@ import static io.stacs.nav.drs.service.utils.Pair.newPair;
     public Optional<List<BusinessDefine>> queryBDInfo(String bdCode) {
         List<Pair<String, String>> params = null;
         if (StringUtils.isNotEmpty(bdCode)) {
-            params = Lists.newArrayList(newPair("bdCode", bdCode));
+            params = Lists.newArrayList(of("bdCode", bdCode));
         }
         return commonGetApi(BD_QUERY, params);
     }
@@ -128,7 +128,7 @@ import static io.stacs.nav.drs.service.utils.Pair.newPair;
     }
 
     public Optional<BlockVO> queryBlockByHeight(QueryBlockByHeightVO vo) {
-        return commonPostApi(QUERY_BLOCK_BY_Height, vo);
+        return commonPostApi(QUERY_BLOCK_BY_HEIGHT, vo);
     }
 
     public Optional<List<BlockVO>> queryBlockListByPage(QueryBlockVO vo) {
@@ -140,6 +140,11 @@ import static io.stacs.nav.drs.service.utils.Pair.newPair;
      */
     public Optional<List<RsDomain>> queryAllDomains() {
         return commonGetApi(QUERY_ALL_DOMAIN, null);
+    }
+
+    public Optional<List<RsDomain>> queryBlocks(Long startHeight, Integer size) {
+        return commonGetApi(QUERY_BLOCKS, Lists
+            .newArrayList(Pair.of("startHeight", startHeight.toString()), Pair.of("size", size.toString())));
     }
 
     /**
