@@ -1,4 +1,4 @@
-package io.stacs.nav.drs.service.model.block;
+package io.stacs.nav.drs.service.model.bo;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -11,7 +11,7 @@ import javax.validation.constraints.NotNull;
  * @Description: block p2p information
  * @author: pengdi
  */
-@Setter @Getter public class BlockHeader{
+@Setter @Getter public class BlockHeader implements BaseBO {
     private String version;
 
     private String previousHash;
