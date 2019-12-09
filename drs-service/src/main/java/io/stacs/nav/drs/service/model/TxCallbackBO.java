@@ -17,7 +17,7 @@ public class TxCallbackBO {
     /**
      * tx receipt json datas
      */
-    private String txReceipts;
+    private String blockData;
     /***
      * status,INIT、PROCESSED
      */

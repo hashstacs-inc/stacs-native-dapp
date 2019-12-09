@@ -1,7 +1,8 @@
-package io.stacs.nav.drs.service.model.action;
+package io.stacs.nav.drs.api.model.action;
 
+import io.stacs.nav.drs.api.enums.ActionTypeEnum;
+import io.stacs.nav.drs.api.model.Action;
 import io.stacs.nav.drs.api.model.bd.FunctionDefine;
-import io.stacs.nav.drs.service.enums.ActionTypeEnum;
 import lombok.Getter;
 import lombok.Setter;
 

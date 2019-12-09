@@ -1,5 +1,6 @@
-package io.stacs.nav.drs.service.model.bo;
+package io.stacs.nav.drs.api.model.bo;
 
+import io.stacs.nav.drs.api.model.BaseBO;
 import lombok.Getter;
 import lombok.Setter;
 

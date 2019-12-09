@@ -5,14 +5,14 @@
     <resultMap id="baseResultMap" type="io.stacs.nav.drs.service.dao.po.TxCallbackPO">
         <result column="id" property="id"/>
         <result column="block_height" property="blockHeight"/>
-        <result column="tx_receipts" property="txReceipts"/>
+        <result column="block_data" property="blockData"/>
         <result column="status" property="status"/>
         <result column="create_time" property="createTime"/>
         <result column="update_time" property="updateTime"/>
     </resultMap>
     <!-- tx_callback table all fields -->
     <sql id="baseColumnList">
-		id,block_height,tx_receipts,status,create_time,update_time
+		id,block_height,block_data,status,create_time,update_time
 	</sql>
     <!-- 查询条件 -->
     <sql id="baseWhereClause">
@@ -24,8 +24,8 @@
             <if test="blockHeight != null">
                 and block_height=#{blockHeight}
             </if>
-            <if test="txReceipts != null">
-                and tx_receipts=#{txReceipts}
+            <if test="blockData != null">
+                and block_data=#{blockData}
             </if>
             <if test="status != null and status != ''">
                 and status=#{status}
@@ -41,8 +41,8 @@
     <!-- 插入记录 -->
     <insert id="save" parameterType="Object">
 		insert into
-		tx_callback(id,block_height,tx_receipts,status,create_time,update_time)
-		values(#{id},#{blockHeight},#{txReceipts},#{status},now(),now())
+		tx_callback(id,block_height,block_data,status,create_time,update_time)
+		values(#{id},#{blockHeight},#{blockData},#{status},now(),now())
 	</insert>
 
     <!-- queryByHeightAndStatus -->

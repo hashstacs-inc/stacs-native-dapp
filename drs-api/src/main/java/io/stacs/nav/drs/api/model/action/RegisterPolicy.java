@@ -1,28 +1,26 @@
-package io.stacs.nav.drs.service.model.action;
+package io.stacs.nav.drs.api.model.action;
 
-import io.stacs.nav.slave.api.enums.ActionTypeEnum;
-import io.stacs.nav.slave.api.enums.manage.CallbackTypeEnum;
-import io.stacs.nav.slave.api.enums.manage.DecisionTypeEnum;
-import io.stacs.nav.slave.api.enums.manage.VotePatternEnum;
-import io.stacs.nav.slave.model.bo.action.ActionJsonDeserialize;
+import io.stacs.nav.drs.api.enums.ActionTypeEnum;
+import io.stacs.nav.drs.api.enums.CallbackTypeEnum;
+import io.stacs.nav.drs.api.enums.DecisionTypeEnum;
+import io.stacs.nav.drs.api.enums.VotePatternEnum;
+import io.stacs.nav.drs.api.model.Action;
 import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.validator.constraints.Length;
 import org.hibernate.validator.constraints.NotBlank;
-import org.hibernate.validator.constraints.NotEmpty;
 
 import javax.validation.constraints.NotNull;
 import java.util.List;
 
 /**
- * modify policy.
+ * The type Register policy.
  *
- * @author liuyu
- * @desc modify policy action
- * @date 2019-06-24
+ * @author tangfashuang
+ * @desc register policy action
+ * @date 2018 -03-27
  */
-@ActionJsonDeserialize(types = ActionTypeEnum.MODIFY_POLICY) @Getter @Setter public class ModifyPolicyAction
-    extends Action {
+@Getter @Setter public class RegisterPolicy extends Action {
 
     /**
      * policy id
@@ -31,19 +29,19 @@ import java.util.List;
     /**
      * policy name
      */
-    @NotBlank @Length(max = 64) private String policyName;
+    @Length(max = 64) private String policyName;
     /**
      * domain ids of related to policy
      */
-    @NotEmpty private List<String> domainIds;
+    private List<String> domainIds;
     /**
      * the decision type for vote ,1.FULL_VOTE,2.ONE_VOTE,3.ASSIGN_NUM
      */
-    @NotNull private DecisionTypeEnum decisionType;
+    private DecisionTypeEnum decisionType;
     /**
      * rs vote pattern 1.SYNC 2.ASYNC
      */
-    @NotNull private VotePatternEnum votePattern;
+    private VotePatternEnum votePattern;
     /**
      * callback type of slave 1.ALL 2.SELF
      */
@@ -62,12 +60,13 @@ import java.util.List;
      */
     private String expression;
     /**
-     * An authorized domain_ids collection is required for modification
+     * An authorized domain-ids collection is required for modification
      */
     private List<String> requireAuthIds;
 
-    public ModifyPolicyAction() {
-        this.setType(ActionTypeEnum.MODIFY_POLICY);
+    public RegisterPolicy() {
+        this.setType(ActionTypeEnum.REGISTER_POLICY);
         this.setIndex(0);
     }
+
 }

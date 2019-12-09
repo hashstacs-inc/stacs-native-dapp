@@ -41,7 +41,7 @@ import java.util.List;
      *
      * @param bo
      */
-    public void receivedTxs(TxCallbackBO bo) {
+    public void receivedBlock(TxCallbackBO bo) {
         TxCallbackPO po = new TxCallbackPO();
         BeanUtils.copyProperties(bo, po);
         po.setStatus(RequestStatus.INIT.name());
@@ -64,7 +64,7 @@ import java.util.List;
      */
     public void processCallbackTx(TxCallbackBO bo) {
         log.info("[processCallbackTx]start process callback,blockHeight:{}", bo.getBlockHeight());
-        String receipts = bo.getTxReceipts();
+        String receipts = bo.getBlockData();
         CallbackVO callbackVO = JSON.parseObject(receipts, CallbackVO.class);
         List<TransactionReceipt> list = callbackVO.getReceipts();
         if (CollectionUtils.isEmpty(list)) {

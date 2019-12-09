@@ -1,5 +1,7 @@
-package io.stacs.nav.drs.service.model.bo;
+package io.stacs.nav.drs.api.model.bo;
 
+import io.stacs.nav.drs.api.model.BaseBO;
+import io.stacs.nav.drs.api.model.callback.TxReceiptData;
 import lombok.Getter;
 import lombok.Setter;
 import org.apache.commons.lang3.StringUtils;
@@ -27,6 +29,8 @@ import java.util.List;
      * the list that store signatures
      */
     private List<SignInfo> signatureList;
+
+    private TxReceiptData receiptData;
 
     @Override public int hashCode() {
         if (coreTx != null && coreTx.getTxId() != null) {

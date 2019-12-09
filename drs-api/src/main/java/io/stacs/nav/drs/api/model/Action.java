@@ -1,8 +1,7 @@
-package io.stacs.nav.drs.service.model.action;
+package io.stacs.nav.drs.api.model;
 
-import io.stacs.nav.drs.service.enums.ActionTypeEnum;
-import io.stacs.nav.drs.service.enums.VersionEnum;
-import io.stacs.nav.drs.service.model.bo.BaseBO;
+import io.stacs.nav.drs.api.enums.ActionTypeEnum;
+import io.stacs.nav.drs.api.enums.VersionEnum;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -14,7 +13,7 @@ import javax.validation.constraints.NotNull;
  * @Description: abstract action class
  * @author: pengdi
  */
-@Getter @Setter public abstract class Action implements BaseBO {
+@Getter @Setter public abstract class Action {
     private static final long serialVersionUID = -9206591383343379207L;
 
     /**

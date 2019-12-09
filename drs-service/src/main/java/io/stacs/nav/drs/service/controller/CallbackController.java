@@ -4,9 +4,9 @@ import com.alibaba.fastjson.JSON;
 import io.stacs.nav.drs.api.exception.DappError;
 import io.stacs.nav.drs.api.exception.DappException;
 import io.stacs.nav.drs.api.model.RespData;
+import io.stacs.nav.drs.api.model.bo.Block;
 import io.stacs.nav.drs.service.model.TxCallbackBO;
 import io.stacs.nav.drs.service.service.TxCallbackService;
-import io.stacs.nav.drs.service.vo.CallbackVO;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -26,15 +26,15 @@ import org.springframework.web.bind.annotation.RestController;
      *
      * @return
      */
-    @PostMapping("/callback") public RespData callback(@RequestBody CallbackVO vo) {
+    @PostMapping("/callback") public RespData callback(@RequestBody Block vo) {
         TxCallbackBO bo = new TxCallbackBO();
         bo.setBlockHeight(vo.getBlockHeader().getHeight());
-        bo.setTxReceipts(JSON.toJSONString(vo));
+        bo.setBlockData(JSON.toJSONString(vo));
         try {
-            txCallbackService.receivedTxs(bo);
+            txCallbackService.receivedBlock(bo);
             return RespData.success();
         } catch (DappException e) {
-            log.error("[callback]has error",e);
+            log.error("[callback]has error", e);
             return RespData.fail(e.getCode(), e.getMsg());
         } catch (Throwable e) {
             log.error("[callback]has error",e);

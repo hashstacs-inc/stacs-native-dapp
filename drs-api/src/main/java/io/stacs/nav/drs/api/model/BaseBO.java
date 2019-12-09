@@ -1,4 +1,4 @@
-package io.stacs.nav.drs.service.model.bo;
+package io.stacs.nav.drs.api.model;
 
 /**
  * @author dekuofa <br>

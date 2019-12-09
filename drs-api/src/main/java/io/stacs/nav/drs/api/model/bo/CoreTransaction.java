@@ -1,6 +1,8 @@
-package io.stacs.nav.drs.service.model.bo;
+package io.stacs.nav.drs.api.model.bo;
 
 import com.alibaba.fastjson.JSONObject;
+import io.stacs.nav.drs.api.enums.TxTypeEnum;
+import io.stacs.nav.drs.api.model.BaseBO;
 import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.validator.constraints.Length;
@@ -8,8 +10,6 @@ import org.hibernate.validator.constraints.Length;
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
 import java.util.Date;
-
-import static io.stacs.nav.drs.service.enums.TxTypeEnum.DEFAULT;
 
 /**
  * The type Core transaction.
@@ -76,7 +76,7 @@ import static io.stacs.nav.drs.service.enums.TxTypeEnum.DEFAULT;
     /**
      * the type of transaction
      */
-    private String txType = DEFAULT.getCode();
+    private String txType = TxTypeEnum.DEFAULT.getCode();
     /**
      * policy version of tx
      */

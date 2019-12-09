@@ -1,10 +1,8 @@
-package io.stacs.nav.drs.service.model.action;
+package io.stacs.nav.drs.api.model.action;
 
-import io.stacs.nav.slave.model.bo.action.ActionJsonDeserialize;
+import io.stacs.nav.drs.api.model.Action;
 import lombok.Getter;
 import lombok.Setter;
-
-import static io.stacs.nav.slave.api.enums.ActionTypeEnum.CONTRACT_CREATION;
 
 /**
  * The type Contract creation v 2 action.
@@ -13,7 +11,7 @@ import static io.stacs.nav.slave.api.enums.ActionTypeEnum.CONTRACT_CREATION;
  * @description smart contract create action v2
  * @date 2018 -11-29
  */
-@ActionJsonDeserialize(types = CONTRACT_CREATION) @Getter @Setter public class ContractCreationV2Action extends Action {
+@Getter @Setter public class ContractCreationV2Action extends Action {
 
     private String code;
 

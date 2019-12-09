@@ -1,9 +1,10 @@
-package io.stacs.nav.drs.service.model.action;
+package io.stacs.nav.drs.api.model.action;
 
-import io.stacs.nav.slave.api.enums.manage.CallbackTypeEnum;
-import io.stacs.nav.slave.api.enums.manage.DecisionTypeEnum;
-import io.stacs.nav.slave.api.enums.manage.VotePatternEnum;
-import io.stacs.nav.slave.model.bo.action.ActionJsonDeserialize;
+import io.stacs.nav.drs.api.enums.ActionTypeEnum;
+import io.stacs.nav.drs.api.enums.CallbackTypeEnum;
+import io.stacs.nav.drs.api.enums.DecisionTypeEnum;
+import io.stacs.nav.drs.api.enums.VotePatternEnum;
+import io.stacs.nav.drs.api.model.Action;
 import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.validator.constraints.Length;
@@ -13,16 +14,14 @@ import org.hibernate.validator.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 import java.util.List;
 
-import static io.stacs.nav.slave.api.enums.ActionTypeEnum.REGISTER_POLICY;
-
 /**
- * The type Register policy.
+ * modify policy.
  *
- * @author tangfashuang
- * @desc register policy action
- * @date 2018 -03-27
+ * @author liuyu
+ * @desc modify policy action
+ * @date 2019-06-24
  */
-@ActionJsonDeserialize(types = REGISTER_POLICY) @Getter @Setter public class RegisterPolicy extends Action {
+@Getter @Setter public class ModifyPolicyAction extends Action {
 
     /**
      * policy id
@@ -62,13 +61,12 @@ import static io.stacs.nav.slave.api.enums.ActionTypeEnum.REGISTER_POLICY;
      */
     private String expression;
     /**
-     * An authorized domain-ids collection is required for modification
+     * An authorized domain_ids collection is required for modification
      */
     private List<String> requireAuthIds;
 
-    public RegisterPolicy() {
-        this.setType(REGISTER_POLICY);
+    public ModifyPolicyAction() {
+        this.setType(ActionTypeEnum.MODIFY_POLICY);
         this.setIndex(0);
     }
-
 }
