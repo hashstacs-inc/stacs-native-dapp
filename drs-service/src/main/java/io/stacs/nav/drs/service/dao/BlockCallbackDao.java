@@ -1,22 +1,24 @@
 package io.stacs.nav.drs.service.dao;
 
-import io.stacs.nav.drs.service.dao.po.TxCallbackPO;
+import io.stacs.nav.drs.service.dao.po.BlockCallbackPO;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
+
+import javax.annotation.Nullable;
 
 /**
  * callback
  *
  * @author liuyu
  */
-@Mapper public interface TxCallbackDao {
+@Mapper public interface BlockCallbackDao {
     /**
      * save
      *
      * @param po
      * @return
      */
-    int save(TxCallbackPO po);
+    int save(BlockCallbackPO po);
 
     /**
      * get max height
@@ -25,11 +27,13 @@ import org.apache.ibatis.annotations.Param;
      */
     Long maxHeight();
 
+    @Nullable Long initCallbackMinHeight();
+
     /**
      * @param height
      * @return
      */
-    TxCallbackPO queryByHeightAndStatus(@Param("height") Long height,@Param("status")String status);
+    BlockCallbackPO queryByHeightAndStatus(@Param("height") Long height, @Param("status") String status);
 
     /**
      * update status

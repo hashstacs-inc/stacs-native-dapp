@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mappers.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="io.stacs.nav.drs.service.dao.TxCallbackDao">
+<mapper namespace="io.stacs.nav.drs.service.dao.BlockCallbackDao">
     <!-- Result Map -->
-    <resultMap id="baseResultMap" type="io.stacs.nav.drs.service.dao.po.TxCallbackPO">
+    <resultMap id="baseResultMap" type="io.stacs.nav.drs.service.dao.po.BlockCallbackPO">
         <result column="id" property="id"/>
         <result column="block_height" property="blockHeight"/>
         <result column="block_data" property="blockData"/>
@@ -55,6 +55,10 @@
     <select id="maxHeight" resultType="java.lang.Long" parameterType="Object">
 		select block_height from tx_callback where status='PROCESSED' order by block_height desc limit 1
 	</select>
+
+    <select id="initCallbackMinHeight" resultType="java.lang.Long">
+        select block_height from tx_callback where status='INIT' order by block_height asc limit 1
+    </select>
 
     <!-- update status-->
     <update id="updateStatus">

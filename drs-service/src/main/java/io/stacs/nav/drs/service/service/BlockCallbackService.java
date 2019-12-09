@@ -4,14 +4,14 @@ import com.alibaba.fastjson.JSON;
 import io.stacs.nav.drs.api.exception.DappError;
 import io.stacs.nav.drs.api.exception.DappException;
 import io.stacs.nav.drs.api.model.callback.TransactionReceipt;
-import io.stacs.nav.drs.service.dao.TxCallbackDao;
+import io.stacs.nav.drs.service.dao.BlockCallbackDao;
 import io.stacs.nav.drs.service.dao.TxRequestDao;
-import io.stacs.nav.drs.service.dao.po.TxCallbackPO;
+import io.stacs.nav.drs.service.dao.po.BlockCallbackPO;
 import io.stacs.nav.drs.service.dao.po.TxRequestPO;
 import io.stacs.nav.drs.service.enums.CallbackStatus;
 import io.stacs.nav.drs.service.enums.RequestStatus;
 import io.stacs.nav.drs.service.event.EventPublisher;
-import io.stacs.nav.drs.service.model.TxCallbackBO;
+import io.stacs.nav.drs.service.model.BlockCallbackBO;
 import io.stacs.nav.drs.service.vo.CallbackVO;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections4.CollectionUtils;
@@ -30,19 +30,20 @@ import java.util.List;
  * @description
  * @date 2019-11-07
  */
-@Service @Slf4j @Validated public class TxCallbackService {
+@Service @Slf4j @Validated public class BlockCallbackService {
     @Autowired TxRequestDao txRequestDao;
-    @Autowired TxCallbackDao txCallbackDao;
+    @Autowired BlockCallbackDao txCallbackDao;
     @Autowired EventPublisher eventPublisher;
     @Autowired TxNoticeService txNoticeService;
     @Autowired private TransactionTemplate txRequired;
+
     /**
      * receive transaction from block chain
      *
      * @param bo
      */
-    public void receivedBlock(TxCallbackBO bo) {
-        TxCallbackPO po = new TxCallbackPO();
+    public void receivedBlock(BlockCallbackBO bo) {
+        BlockCallbackPO po = new BlockCallbackPO();
         BeanUtils.copyProperties(bo, po);
         po.setStatus(RequestStatus.INIT.name());
         try {
@@ -62,14 +63,14 @@ import java.util.List;
      *
      * @param bo
      */
-    public void processCallbackTx(TxCallbackBO bo) {
+    public void processCallbackTx(BlockCallbackBO bo) {
         log.info("[processCallbackTx]start process callback,blockHeight:{}", bo.getBlockHeight());
         String receipts = bo.getBlockData();
         CallbackVO callbackVO = JSON.parseObject(receipts, CallbackVO.class);
         List<TransactionReceipt> list = callbackVO.getReceipts();
         if (CollectionUtils.isEmpty(list)) {
             log.warn("[processCallbackTx]get receipts is empty,blockHeight:{},receiptJSON:{}", bo.getBlockHeight(),
-                receipts);
+                     receipts);
             return;
         }
         //order by txid

@@ -8,8 +8,7 @@ import lombok.Data;
  * @description
  * @date 2019-11-08
  */
-@Data
-public class TxCallbackBO {
+@Data public class BlockCallbackBO {
     /**
      * block height
      */

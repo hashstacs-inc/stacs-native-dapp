@@ -62,7 +62,7 @@ public interface ApiConstants {
         BD_QUERY("bdQuery", "/bd/query"),
         CHECK_PERMISSION("checkPermission", "/identity/checkPermission"),
         QUERY_MAX_BLOCK_HEIGHT("getMaxBlockHeight", "/block/currentHeight/query"),
-        QUERY_BLOCKS("queryBlocks", "/block/query"),
+        QUERY_BLOCKS("queryBlocks", "/block/queryBlocks"),
         QUERY_BLOCKS_BY_PAGE("queryBlocksByPage", "/explorer/queryBlocksByPage"),
         QUERY_BLOCK_BY_HEIGHT("queryBlockByHeight", "/explorer/queryBlockByHeight"),
         QUERY_TX_LIST_BY_PAGE("queryTxsByPage", "/explorer/queryTxsByPage"),

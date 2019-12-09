@@ -16,10 +16,10 @@ CREATE TABLE IF NOT EXISTS `tx_request` (
   UNIQUE KEY `uniq_tx_id` (`tx_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT 'the request tx info';
 
-CREATE TABLE IF NOT EXISTS `tx_callback` (
+CREATE TABLE IF NOT EXISTS `block_callback` (
   `id` bigint(20) NOT NULL AUTO_INCREMENT,
   `block_height` bigint(20) DEFAULT NULL COMMENT 'block height',
-  `tx_receipts` TEXT DEFAULT NULL COMMENT 'tx receipt json datas',
+  `block_data` TEXT DEFAULT NULL COMMENT 'block json data',
   `status` varchar(16) NOT NULL COMMENT 'status,INIT、PROCESSED',
   `create_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP  COMMENT 'create time',
   `update_time` datetime DEFAULT CURRENT_TIMESTAMP COMMENT 'update time',

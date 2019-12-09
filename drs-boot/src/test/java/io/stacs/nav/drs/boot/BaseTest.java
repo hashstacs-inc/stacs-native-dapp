@@ -6,8 +6,8 @@ import io.stacs.nav.drs.api.model.bd.BusinessDefine;
 import io.stacs.nav.drs.api.model.bo.BlockHeader;
 import io.stacs.nav.drs.api.model.callback.TransactionReceipt;
 import io.stacs.nav.drs.api.model.callback.TxReceiptData;
-import io.stacs.nav.drs.service.model.TxCallbackBO;
-import io.stacs.nav.drs.service.service.TxCallbackService;
+import io.stacs.nav.drs.service.model.BlockCallbackBO;
+import io.stacs.nav.drs.service.service.BlockCallbackService;
 import io.stacs.nav.drs.service.service.TxRequestService;
 import io.stacs.nav.drs.service.vo.CallbackVO;
 import org.assertj.core.util.Lists;
@@ -26,7 +26,7 @@ import java.util.List;
 @SpringBootTest(classes = DRSBootApplication.class)
 public class BaseTest {
     @Autowired private TxRequestService txRequestService;
-    @Autowired private TxCallbackService callbackService;
+    @Autowired private BlockCallbackService callbackService;
 
     @Test
     public void testSubmitTx()  {
@@ -37,7 +37,7 @@ public class BaseTest {
 
     @Test
     public void testReceiveCallbackTx(){
-        TxCallbackBO bo = new TxCallbackBO();
+        BlockCallbackBO bo = new BlockCallbackBO();
         bo.setBlockHeight(2L);
         CallbackVO vo = new CallbackVO();
         BlockHeader header = new BlockHeader();
