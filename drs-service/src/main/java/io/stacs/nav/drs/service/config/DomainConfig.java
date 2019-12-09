@@ -1,5 +1,6 @@
 package io.stacs.nav.drs.service.config;
 
+import io.stacs.nav.drs.service.utils.config.DynamicConfig;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;

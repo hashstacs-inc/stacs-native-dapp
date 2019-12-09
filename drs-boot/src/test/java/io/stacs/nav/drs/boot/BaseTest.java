@@ -3,10 +3,10 @@ package io.stacs.nav.drs.boot;
 import com.alibaba.fastjson.JSON;
 import com.alipay.sofa.ark.springboot.runner.ArkBootRunner;
 import io.stacs.nav.drs.api.model.bd.BusinessDefine;
+import io.stacs.nav.drs.api.model.bo.BlockHeader;
 import io.stacs.nav.drs.api.model.callback.TransactionReceipt;
 import io.stacs.nav.drs.api.model.callback.TxReceiptData;
 import io.stacs.nav.drs.service.model.TxCallbackBO;
-import io.stacs.nav.drs.service.model.block.BlockHeader;
 import io.stacs.nav.drs.service.service.TxCallbackService;
 import io.stacs.nav.drs.service.service.TxRequestService;
 import io.stacs.nav.drs.service.vo.CallbackVO;
@@ -51,7 +51,7 @@ public class BaseTest {
         receipts.add(tr);
 
         vo.setReceipts(receipts);
-        bo.setTxReceipts(JSON.toJSONString(vo));
-        callbackService.receivedTxs(bo);
+        bo.setBlockData(JSON.toJSONString(vo));
+        callbackService.receivedBlock(bo);
     }
 }

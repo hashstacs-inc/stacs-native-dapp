@@ -1,7 +1,7 @@
 package io.stacs.nav.drs.service.vo;
 
+import io.stacs.nav.drs.api.model.bo.BlockHeader;
 import io.stacs.nav.drs.api.model.callback.TransactionReceipt;
-import io.stacs.nav.drs.service.model.block.BlockHeader;
 import lombok.Getter;
 import lombok.Setter;
 

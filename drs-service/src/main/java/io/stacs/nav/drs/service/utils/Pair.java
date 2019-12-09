@@ -15,7 +15,7 @@ import lombok.Getter;
         this.right = right;
     }
 
-    public static <L, R> Pair<L, R> newPair(L left, R right) {
+    public static <L, R> Pair<L, R> of(L left, R right) {
         return new Pair<>(left, right);
     }
 

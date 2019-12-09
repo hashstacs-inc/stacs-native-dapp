@@ -29,7 +29,6 @@ import java.util.function.Consumer;
 
     @ArkInject PluginManagerService pluginManagerService;
 
-    @Autowired TestService testService;
     @Autowired TxRequestService requestService;
 
     // @formatter:off

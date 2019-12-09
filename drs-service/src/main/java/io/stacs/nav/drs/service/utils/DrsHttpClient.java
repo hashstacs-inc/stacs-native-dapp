@@ -5,8 +5,8 @@ package io.stacs.nav.drs.service.utils;
 
 import com.alibaba.fastjson.JSON;
 import com.google.common.collect.Lists;
-import io.stacs.nav.drs.service.config.ConfigListener;
 import io.stacs.nav.drs.service.config.DomainConfig;
+import io.stacs.nav.drs.service.utils.config.ConfigListener;
 import lombok.extern.slf4j.Slf4j;
 import okhttp3.*;
 import org.apache.commons.collections4.CollectionUtils;
@@ -32,8 +32,7 @@ import java.util.function.Predicate;
 
     private static final MediaType JSON_TYPE = MediaType.parse("application/json; charset=utf-8");
 
-    private static Function<String, Pair<String, String>> HEADER_MERCHANT_ID = header -> Pair
-        .newPair("merchantId", header);
+    private static Function<String, Pair<String, String>> HEADER_MERCHANT_ID = header -> Pair.of("merchantId", header);
 
     // private static final String TEST_NO_ENCRYPT_MERCHANT = "TEST_NO_ENCRYPT_MERCHANT";
 
@@ -81,9 +80,10 @@ import java.util.function.Predicate;
     @Nonnull public LambdaExceptionUtil.BiFunctionWithExceptions<Object, String, CasDecryptResponse, IOException> post() {
         return (param, url) -> {
             Objects.requireNonNull(param, "post request body can't be null");
-            Response resp =
-                buildRequest().andThen(LambdaExceptionUtil.rethrowFunction(execute())).apply(url, Pair
-                    .newPair(param, Optional.empty()));
+            Response resp = buildRequest().andThen(LambdaExceptionUtil.rethrowFunction(execute())).apply(url,
+                                                                                                         Pair.of(param,
+                                                                                                                 Optional
+                                                                                                                     .empty()));
             return parseResponse().apply(resp, Optional.empty());
         };
     }
@@ -95,7 +95,7 @@ import java.util.function.Predicate;
             Objects.requireNonNull(config.getMerchantId(), "merchantId can't be null");
             String aesKey = config.getAesKey();
             String priKey = config.getMerchantPriKey();
-            return Pair.newPair(CasCryptoUtil.encrypt(param, priKey, aesKey), Optional.of(config));
+            return Pair.of(CasCryptoUtil.encrypt(param, priKey, aesKey), Optional.of(config));
         };
     }
 

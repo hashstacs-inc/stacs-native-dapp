@@ -1,5 +1,6 @@
-package io.stacs.nav.drs.service.model.block;
+package io.stacs.nav.drs.api.model.bo;
 
+import io.stacs.nav.drs.api.model.BaseBO;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -10,7 +11,7 @@ import lombok.Setter;
  * @desc state root hash object
  * @date 2018 /4/8 20:40
  */
-@Getter @Setter public class StateRootHash {
+@Getter @Setter public class StateRootHash implements BaseBO {
     /**
      * calculate merkle tree root hash by transaction list of current package
      */
