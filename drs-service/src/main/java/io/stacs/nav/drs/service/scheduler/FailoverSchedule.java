@@ -16,8 +16,7 @@ import javax.annotation.Nullable;
 import java.util.List;
 import java.util.Optional;
 
-import static io.stacs.nav.drs.service.model.ConvertHelper.block2CallbackBOConvert;
-import static io.stacs.nav.drs.service.model.ConvertHelper.block2CallbackPOConvert;
+import static io.stacs.nav.drs.service.model.ConvertHelper.*;
 
 /**
  * @author dekuofa <br>
@@ -39,8 +38,9 @@ import static io.stacs.nav.drs.service.model.ConvertHelper.block2CallbackPOConve
                 List<Block> blocks = blockChainService.queryBlocks(interval.left(), interval.right());
                 if (blocks.isEmpty())
                     return;
-                blocks.stream().map(block2CallbackBOConvert.andThen(block2CallbackPOConvert)).forEach(
-                    txCallbackDao::save);
+                // bo -> po & setPO state = INIT
+                blocks.stream().map(block2CallbackBOConvert.andThen(block2CallbackPOConvert).andThen(setPOInitState))
+                    .forEach(txCallbackDao::save);
             });
     }
 

@@ -21,7 +21,7 @@ import org.springframework.stereotype.Service;
  */
 @Service @Slf4j @EnableScheduling public class BlockCallbackProcessSchedule implements InitializingBean {
     @Autowired BlockCallbackDao txCallbackDao;
-    @Autowired BlockCallbackService txCallbackService;
+    @Autowired BlockCallbackService blockCallbackService;
     /**
      * next height
      */
@@ -50,7 +50,7 @@ import org.springframework.stereotype.Service;
         BlockCallbackBO bo = new BlockCallbackBO();
         BeanUtils.copyProperties(po, bo);
         bo.setStatus(CallbackStatus.INIT);
-        txCallbackService.processCallbackTx(bo);
+        blockCallbackService.processCallbackBlock(bo);
         runtimeData.setNextHeight(nextHeight + 1);
     }
 }

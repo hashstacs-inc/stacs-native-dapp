@@ -1,6 +1,6 @@
 package io.stacs.nav.drs.service;
 
-import io.stacs.nav.drs.api.model.callback.TransactionReceipt;
+import io.stacs.nav.drs.api.model.TransactionPO;
 import io.stacs.nav.drs.service.config.ConfigurationManagerTest;
 import io.stacs.nav.drs.service.service.TxNoticeService;
 import org.junit.Test;
@@ -20,8 +20,8 @@ public class TxNoticeServiceTest extends ConfigurationManagerTest {
         //do some thing
         doSomething(txId);
         //wait
-        TransactionReceipt tr = noticeService.syncWait(txId, 6000L);
-        Assert.isTrue(tr != null, "wait result is null");
+        TransactionPO po = noticeService.syncWait(txId, 6000L);
+        Assert.isTrue(po != null, "wait result is null");
     }
 
     /**
@@ -36,9 +36,9 @@ public class TxNoticeServiceTest extends ConfigurationManagerTest {
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
-            TransactionReceipt tr = new TransactionReceipt();
-            tr.setTxId(txId);
-            noticeService.notify(tr);
+            TransactionPO tx = new TransactionPO();
+            tx.setTxId(txId);
+            noticeService.notify(tx);
         }).start();
     }
 }

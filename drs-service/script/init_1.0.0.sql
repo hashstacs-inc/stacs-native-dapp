@@ -47,7 +47,6 @@ IF NOT EXISTS `block` (
 	`tx_num` INT NOT NULL DEFAULT 0 COMMENT 'transaction num',
 	`total_tx_num` BIGINT (20) DEFAULT 0 COMMENT 'total transaction num',
 	`total_block_size` DECIMAL(8,2) DEFAULT NULL COMMENT 'total block size,unit:kb',
-	`create_time` datetime (3) NOT NULL COMMENT 'create time',
 	PRIMARY KEY (`id`),
 	UNIQUE KEY `uniq_block` (`height`)
 ) ENGINE = INNODB DEFAULT CHARSET = utf8mb4 COMMENT = 'block';

@@ -10,7 +10,7 @@ import com.google.common.cache.CacheBuilder;
 import io.stacs.nav.drs.api.ITxNoticeService;
 import io.stacs.nav.drs.api.exception.DappError;
 import io.stacs.nav.drs.api.exception.DappException;
-import io.stacs.nav.drs.api.model.callback.TransactionReceipt;
+import io.stacs.nav.drs.api.model.TransactionPO;
 import io.stacs.nav.drs.service.constant.Constants;
 import lombok.Getter;
 import lombok.Setter;
@@ -43,7 +43,7 @@ import java.util.concurrent.locks.ReentrantLock;
      * @param timeout
      * @return
      */
-    @Override public TransactionReceipt syncWait(String txId, long timeout) {
+    @Override public TransactionPO syncWait(String txId, long timeout) {
         LockObject lockObject = createOrGetLockObj(txId);
         long remain = TIME_UNIT.toNanos(timeout);
         LockObject finalLockObject = null;
@@ -70,22 +70,22 @@ import java.util.concurrent.locks.ReentrantLock;
             log.warn("wait is timeout for txId:{}", txId);
             throw new DappException(DappError.DAPP_WAIT_TIMEOUT);
         }
-        return finalLockObject.getResult();
+        return finalLockObject.getTxPO();
     }
 
     /**
      * notify
      *
-     * @param transactionReceipt
+     * @param tx
      */
-    public void notify(TransactionReceipt transactionReceipt) {
-        LockObject lockObject = createOrGetLockObj(transactionReceipt.getTxId());
+    public void notify(TransactionPO tx) {
+        LockObject lockObject = createOrGetLockObj(tx.getTxId());
         // notify
         Lock lock = lockObject.getLock();
         lock.lock();
         try {
             if (!lockObject.isFinish()) {
-                lockObject.setResult(transactionReceipt);
+                lockObject.setTxPO(tx);
                 lockObject.setFinish(true);
                 lockObject.getCondition().signalAll();
             }
@@ -142,6 +142,6 @@ import java.util.concurrent.locks.ReentrantLock;
         /**
          * result
          */
-        private TransactionReceipt result;
+        private TransactionPO txPO;
     }
 }

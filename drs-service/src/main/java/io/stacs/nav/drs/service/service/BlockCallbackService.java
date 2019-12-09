@@ -3,18 +3,20 @@ package io.stacs.nav.drs.service.service;
 import com.alibaba.fastjson.JSON;
 import io.stacs.nav.drs.api.exception.DappError;
 import io.stacs.nav.drs.api.exception.DappException;
-import io.stacs.nav.drs.api.model.callback.TransactionReceipt;
+import io.stacs.nav.drs.api.model.TransactionPO;
+import io.stacs.nav.drs.api.model.bo.Block;
 import io.stacs.nav.drs.service.dao.BlockCallbackDao;
+import io.stacs.nav.drs.service.dao.BlockDao;
+import io.stacs.nav.drs.service.dao.TransactionDao;
 import io.stacs.nav.drs.service.dao.TxRequestDao;
 import io.stacs.nav.drs.service.dao.po.BlockCallbackPO;
+import io.stacs.nav.drs.service.dao.po.BlockPO;
 import io.stacs.nav.drs.service.dao.po.TxRequestPO;
 import io.stacs.nav.drs.service.enums.CallbackStatus;
 import io.stacs.nav.drs.service.enums.RequestStatus;
 import io.stacs.nav.drs.service.event.EventPublisher;
 import io.stacs.nav.drs.service.model.BlockCallbackBO;
-import io.stacs.nav.drs.service.vo.CallbackVO;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.collections4.CollectionUtils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DuplicateKeyException;
@@ -24,6 +26,10 @@ import org.springframework.validation.annotation.Validated;
 
 import java.util.Comparator;
 import java.util.List;
+import java.util.stream.Collectors;
+
+import static io.stacs.nav.drs.service.model.ConvertHelper.blockHeader2BlockPO;
+import static io.stacs.nav.drs.service.model.ConvertHelper.signedTx2TxPO;
 
 /**
  * @author liuyu
@@ -32,6 +38,9 @@ import java.util.List;
  */
 @Service @Slf4j @Validated public class BlockCallbackService {
     @Autowired TxRequestDao txRequestDao;
+    @Autowired BlockCallbackDao blockCallbackDao;
+    @Autowired BlockDao blockDao;
+    @Autowired TransactionDao txDao;
     @Autowired BlockCallbackDao txCallbackDao;
     @Autowired EventPublisher eventPublisher;
     @Autowired TxNoticeService txNoticeService;
@@ -47,7 +56,7 @@ import java.util.List;
         BeanUtils.copyProperties(bo, po);
         po.setStatus(RequestStatus.INIT.name());
         try {
-            txCallbackDao.save(po);
+            blockCallbackDao.save(po);
         } catch (DuplicateKeyException e) {
             log.error("[receivedTxs] has duplicate key error", e);
             throw new DappException(DappError.IDEMPOTENT_ERROR);
@@ -59,38 +68,39 @@ import java.util.List;
     }
 
     /**
-     * process callback tx
-     *
-     * @param bo
+     * process callback block
      */
-    public void processCallbackTx(BlockCallbackBO bo) {
-        log.info("[processCallbackTx]start process callback,blockHeight:{}", bo.getBlockHeight());
-        String receipts = bo.getBlockData();
-        CallbackVO callbackVO = JSON.parseObject(receipts, CallbackVO.class);
-        List<TransactionReceipt> list = callbackVO.getReceipts();
-        if (CollectionUtils.isEmpty(list)) {
-            log.warn("[processCallbackTx]get receipts is empty,blockHeight:{},receiptJSON:{}", bo.getBlockHeight(),
-                     receipts);
-            return;
-        }
+    public void processCallbackBlock(BlockCallbackBO bo) {
+        // todo 1. 块信息
+        //      2. 交易数据
+        //      3. BD、policy、contract
+        Block block = JSON.parseObject(bo.getBlockData(), Block.class);
+        BlockPO blockPO = blockHeader2BlockPO.apply(block.getBlockHeader());
+        List<TransactionPO> txList = block.getSignedTxList().stream().map(signedTx2TxPO).sorted(
+            Comparator.comparing(TransactionPO::getTxId)).collect(Collectors.toList());
+
         //order by txid
-        list.sort(Comparator.comparing(TransactionReceipt::getTxId));
         txRequired.execute(transactionStatus -> {
-            list.forEach(v -> {
-                TxRequestPO po = txRequestDao.queryByTxId(v.getTxId());
+            // 1. save block
+            blockDao.add(blockPO);
+            // 2. save txs
+            txDao.batchInsert(txList);
+            // todo 3. save bd、policy、contract
+            txList.forEach(tx -> {
+                TxRequestPO po = txRequestDao.queryByTxId(tx.getTxId());
                 if (po != null) {
                     //set status and receipt for request
-                    txRequestDao.updateStatusAndReceipt(v.getTxId(), po.getStatus(), RequestStatus.END.name(),
-                        JSON.toJSONString(v));
+                    txRequestDao.updateStatusAndReceipt(tx.getTxId(), po.getStatus(), RequestStatus.END.name(),
+                                                        JSON.toJSONString(tx));
                     //callback dapp
-                    eventPublisher.publish(bo.getBlockHeight(), v.getTxId(), v);
+                    eventPublisher.publish(bo.getBlockHeight(), tx.getTxId(), tx);
                     //notify
-                    txNoticeService.notify(v);
+                    txNoticeService.notify(tx);
                 }
             });
             //update status
-            int r = txCallbackDao
-                .updateStatus(bo.getBlockHeight(), CallbackStatus.INIT.name(), CallbackStatus.PROCESSED.name());
+            int r = blockCallbackDao.updateStatus(bo.getBlockHeight(), CallbackStatus.INIT.name(),
+                                                  CallbackStatus.PROCESSED.name());
             if (r != 1) {
                 log.error("[processCallbackTx]update status is error");
                 throw new DappException(DappError.DB_ERROR);
@@ -99,4 +109,9 @@ import java.util.List;
         });
         log.info("[processCallbackTx]process callback is success,blockHeight:{}", bo.getBlockHeight());
     }
+
+    private void handleBlock() {
+
+    }
+
 }

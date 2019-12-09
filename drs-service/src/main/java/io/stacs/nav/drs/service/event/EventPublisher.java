@@ -3,7 +3,7 @@ package io.stacs.nav.drs.service.event;
 import com.alipay.sofa.ark.spi.service.ArkInject;
 import com.alipay.sofa.ark.spi.service.event.EventAdminService;
 import io.stacs.nav.drs.api.event.DappEvent;
-import io.stacs.nav.drs.api.model.callback.TransactionReceipt;
+import io.stacs.nav.drs.api.model.TransactionPO;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
@@ -15,7 +15,7 @@ import org.springframework.stereotype.Component;
 
     @ArkInject private EventAdminService eventAdminService;
 
-    public void publish(long height, String txId, TransactionReceipt value) {
+    public void publish(long height, String txId, TransactionPO value) {
         DappEvent event = new DappEvent();
         event.setHeight(height);
         event.setTxId(txId);
