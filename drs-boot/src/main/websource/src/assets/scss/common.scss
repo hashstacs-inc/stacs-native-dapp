@@ -1,0 +1,105 @@
+// 输入框样式
+.el-form {
+  position: relative;
+  .el-input__inner {
+    border: 1px solid #E7E7E7 !important;
+    border-radius: 0px;
+  }
+  .general-submit {
+    margin: 0 !important;
+    .el-form-item__content {
+      margin: 0 !important;
+      padding-left: 50px;
+    }
+  }
+  .el-select {
+    width: 100% !important;
+  }
+}
+// 下拉选中颜色
+.el-select-dropdown__item.selected {
+  color: #053C8C;
+}
+
+// dialog样式
+.el-dialog {
+  padding: 20px 0;
+  text-align: center;
+  .el-dialog__header {
+    text-align: center;
+    color: #333333;
+    font-size: 16px;
+    font-weight:500;
+  }
+  .el-dialog__footer {
+    text-align: center;
+    .el-button + .el-button {
+      margin-left: 30px;
+    }
+  }
+}
+
+// loading样式
+.el-loading-spinner {
+  margin-top: -11px;
+}
+.el-loading-spinner .circular {
+  width: 22px;
+  height: 22px;
+}
+
+// 按钮样式
+.el-button {
+  border-radius: 0px;
+  width: 140px;
+  height: 40px;
+}
+.el-button--primary {
+  background-color: #053C8C !important;
+  border-color: #053C8C !important;
+  font-size: 14px;
+  &:hover {
+    background-color: #053C8C;
+    border-color: #053C8C;
+  }
+}
+.el-button--default {
+  border-color: #D5D5D5;
+  color: #666666;
+  font-size: 14px;
+}
+
+// messageBox样式
+.el-message-box {
+  border-radius: 0 !important;
+  padding: 30px 0px 40px 0px!important;
+  text-align: center !important;
+  .el-message-box__title {
+    text-align: center;
+    font-size: 16px;
+    color: #333333;
+    margin-bottom: 10px;
+  }
+  .el-message-box__close {
+    position: relative;
+    top: -30px !important;
+  }
+  .el-message-box__btns {
+    text-align: center;
+    margin-top: 30px;
+    .el-button--default {
+      width: 140px;
+      height: 40px;
+      border-radius: 0px;
+      font-size: 14px;
+      background-color: #fff;
+      border-color: #D5D5D5;
+      color: #666666;
+    }
+    .el-button--primary {
+      background-color: #053C8C;
+      border-color: #053C8C;
+      color: #fff;
+    }
+  }
+}
