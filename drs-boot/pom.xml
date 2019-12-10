@@ -208,7 +208,8 @@
                                     <artifactId>drs-boot</artifactId>
                                     <version>${project.version}</version>
                                     <type>jar</type>
-                                    <destFileName>drs-boot-v4.jar</destFileName>
+                                    <classifier>executable</classifier>
+                                    <destFileName>drs-boot.jar</destFileName>
                                 </artifactItem>
                             </artifactItems>
                             <outputDirectory>../target/</outputDirectory>
