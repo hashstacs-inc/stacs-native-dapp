@@ -1,6 +1,6 @@
 package io.stacs.nav.drs.service.scheduler;
 
-import io.stacs.nav.drs.api.model.bo.Block;
+import io.stacs.nav.drs.api.model.block.BlockVO;
 import io.stacs.nav.drs.service.config.DrsRuntimeData;
 import io.stacs.nav.drs.service.dao.BlockCallbackDao;
 import io.stacs.nav.drs.service.service.BlockCallbackService;
@@ -35,7 +35,7 @@ import static io.stacs.nav.drs.service.model.ConvertHelper.*;
         Long optCallbackHeight = txCallbackDao.initCallbackMinHeight();
         HeightChecker.of(nextHeight, chainMaxHeight, optCallbackHeight).countMissBlocksInterval().ifPresent(
             interval -> {
-                List<Block> blocks = blockChainService.queryBlocks(interval.left(), interval.right());
+                List<BlockVO> blocks = blockChainService.queryBlocks(interval.left(), interval.right());
                 if (blocks.isEmpty())
                     return;
                 // bo -> po & setPO state = INIT

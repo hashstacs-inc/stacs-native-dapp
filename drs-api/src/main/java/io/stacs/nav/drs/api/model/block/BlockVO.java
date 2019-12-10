@@ -1,34 +1,25 @@
 package io.stacs.nav.drs.api.model.block;
 
-import lombok.Getter;
-import lombok.Setter;
+import io.stacs.nav.drs.api.model.TransactionPO;
+import io.stacs.nav.drs.api.model.bo.BlockHeader;
+import lombok.*;
 
-import java.math.BigDecimal;
-import java.util.Date;
+import javax.validation.Valid;
+import javax.validation.constraints.NotNull;
+import java.util.List;
 
-/**
- * The type Block vo.
- */
-@Setter @Getter public class BlockVO {
-   private Long height;
+@ToString @NoArgsConstructor @AllArgsConstructor @Getter @Setter public class BlockVO {
+    /**
+     * is genesis of block
+     */
+    private boolean genesis;
+    /**
+     * block p2p
+     */
+    @Valid @NotNull private BlockHeader blockHeader;
 
-   private String blockHash;
-   /**
-    * previous block hash
-    */
-   private String previousHash;
-
-   private Integer txNum;
-   /**
-    * total block size,unit:kb
-    */
-   private BigDecimal totalBlockSize;
-   /**
-    * the number of transactions recorded by the current block
-    */
-   private Long totalTxNum;
-
-   private Date BlockTime;
-
-   private String version;
+    /**
+     * the list that store signed transaction
+     */
+    private List<TransactionPO> transactionList;
 }

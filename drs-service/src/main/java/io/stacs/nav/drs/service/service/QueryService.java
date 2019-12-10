@@ -10,7 +10,7 @@ import io.stacs.nav.drs.api.exception.DappException;
 import io.stacs.nav.drs.api.model.BaseTxVO;
 import io.stacs.nav.drs.api.model.bd.BusinessDefine;
 import io.stacs.nav.drs.api.model.bd.FunctionDefine;
-import io.stacs.nav.drs.api.model.block.BlockVO;
+import io.stacs.nav.drs.api.model.block.BlockHeaderVO;
 import io.stacs.nav.drs.api.model.query.QueryBlockByHeightVO;
 import io.stacs.nav.drs.api.model.query.QueryBlockVO;
 import io.stacs.nav.drs.api.model.query.QueryTxListVO;
@@ -73,11 +73,11 @@ import static io.stacs.nav.drs.api.exception.DappError.FUNCTION_NOT_FIND_ERROR;
         return bdService.queryCoreTxById(vo);
     }
 
-    public List<BlockVO> queryBlockListByPage(QueryBlockVO vo) {
+    public List<BlockHeaderVO> queryBlockListByPage(QueryBlockVO vo) {
         return bdService.queryBlockListByPage(vo);
     }
 
-    public BlockVO queryBlockByHeight(QueryBlockByHeightVO vo) {
+    public BlockHeaderVO queryBlockByHeight(QueryBlockByHeightVO vo) {
         return bdService.queryBlockByHeight(vo);
     }
 

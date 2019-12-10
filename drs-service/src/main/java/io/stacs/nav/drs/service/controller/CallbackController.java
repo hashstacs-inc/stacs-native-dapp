@@ -3,7 +3,7 @@ package io.stacs.nav.drs.service.controller;
 import io.stacs.nav.drs.api.exception.DappError;
 import io.stacs.nav.drs.api.exception.DappException;
 import io.stacs.nav.drs.api.model.RespData;
-import io.stacs.nav.drs.api.model.bo.Block;
+import io.stacs.nav.drs.api.model.block.BlockVO;
 import io.stacs.nav.drs.service.model.BlockCallbackBO;
 import io.stacs.nav.drs.service.service.BlockCallbackService;
 import lombok.extern.slf4j.Slf4j;
@@ -27,7 +27,7 @@ import static io.stacs.nav.drs.service.model.ConvertHelper.block2CallbackBOConve
      *
      * @return
      */
-    @PostMapping("/callback") public RespData callback(@RequestBody Block vo) {
+    @PostMapping("/callback") public RespData callback(@RequestBody BlockVO vo) {
         BlockCallbackBO bo = block2CallbackBOConvert.apply(vo);
         try {
             txCallbackService.receivedBlock(bo);
@@ -36,7 +36,7 @@ import static io.stacs.nav.drs.service.model.ConvertHelper.block2CallbackBOConve
             log.error("[callback]has error", e);
             return RespData.fail(e.getCode(), e.getMsg());
         } catch (Throwable e) {
-            log.error("[callback]has error",e);
+            log.error("[callback]has error", e);
             return RespData.fail(DappError.DAPP_COMMON_ERROR.getCode(), e.getMessage());
         }
     }

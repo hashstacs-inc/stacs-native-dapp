@@ -1,12 +1,10 @@
 package io.stacs.nav.drs.api.model.bd;
 
-import com.alibaba.fastjson.annotation.JSONField;
 import io.stacs.nav.drs.api.model.BaseTxVO;
 import lombok.Getter;
 import lombok.Setter;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 import static io.stacs.nav.drs.api.enums.ApiConstants.TransactionApiEnum.BD_PUBLISH;
 
@@ -35,17 +33,5 @@ import static io.stacs.nav.drs.api.enums.ApiConstants.TransactionApiEnum.BD_PUBL
     @Override public String getFunctionName() {
         return BD_PUBLISH.getFunctionName();
     }
-    @JSONField(serialize=false)
-    @Override public String getSignValue() {
-        return super.getSignValue()
-                    + code
-                    + name
-                    + bdType
-                    + desc
-                    + initPermission
-                    + initPolicy
-                    + bdVersion
-                    + String.join(",",functions.stream().map(FunctionDefine::getSignValue).collect(Collectors.toList()))
-                    + getFunctionName();
-    }
+
 }

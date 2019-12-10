@@ -4,7 +4,7 @@ import com.alibaba.fastjson.JSON;
 import io.stacs.nav.drs.api.exception.DappError;
 import io.stacs.nav.drs.api.exception.DappException;
 import io.stacs.nav.drs.api.model.TransactionPO;
-import io.stacs.nav.drs.api.model.bo.Block;
+import io.stacs.nav.drs.api.model.block.BlockVO;
 import io.stacs.nav.drs.service.dao.BlockCallbackDao;
 import io.stacs.nav.drs.service.dao.BlockDao;
 import io.stacs.nav.drs.service.dao.TransactionDao;
@@ -24,12 +24,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.support.TransactionTemplate;
 import org.springframework.validation.annotation.Validated;
 
-import java.util.Comparator;
 import java.util.List;
-import java.util.stream.Collectors;
 
 import static io.stacs.nav.drs.service.model.ConvertHelper.blockHeader2BlockPO;
-import static io.stacs.nav.drs.service.model.ConvertHelper.signedTx2TxPO;
 
 /**
  * @author liuyu
@@ -74,10 +71,9 @@ import static io.stacs.nav.drs.service.model.ConvertHelper.signedTx2TxPO;
         // todo 1. 块信息
         //      2. 交易数据
         //      3. BD、policy、contract
-        Block block = JSON.parseObject(bo.getBlockData(), Block.class);
+        BlockVO block = JSON.parseObject(bo.getBlockData(), BlockVO.class);
         BlockPO blockPO = blockHeader2BlockPO.apply(block.getBlockHeader());
-        List<TransactionPO> txList = block.getSignedTxList().stream().map(signedTx2TxPO).sorted(
-            Comparator.comparing(TransactionPO::getTxId)).collect(Collectors.toList());
+        List<TransactionPO> txList = block.getTransactionList();
 
         //order by txid
         txRequired.execute(transactionStatus -> {
