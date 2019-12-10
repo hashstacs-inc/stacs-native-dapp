@@ -29,6 +29,14 @@ import lombok.Getter;
         return this;
     }
 
+    public L left() {
+        return this.left;
+    }
+
+    public R right() {
+        return this.right;
+    }
+
     @Override public boolean equals(Object obj) {
         if (!(obj instanceof Pair))
             return false;

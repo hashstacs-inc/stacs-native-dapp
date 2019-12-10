@@ -16,10 +16,10 @@ CREATE TABLE IF NOT EXISTS `tx_request` (
   UNIQUE KEY `uniq_tx_id` (`tx_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT 'the request tx info';
 
-CREATE TABLE IF NOT EXISTS `tx_callback` (
+CREATE TABLE IF NOT EXISTS `block_callback` (
   `id` bigint(20) NOT NULL AUTO_INCREMENT,
   `block_height` bigint(20) DEFAULT NULL COMMENT 'block height',
-  `tx_receipts` TEXT DEFAULT NULL COMMENT 'tx receipt json datas',
+  `block_data` TEXT DEFAULT NULL COMMENT 'block json data',
   `status` varchar(16) NOT NULL COMMENT 'status,INIT、PROCESSED',
   `create_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP  COMMENT 'create time',
   `update_time` datetime DEFAULT CURRENT_TIMESTAMP COMMENT 'update time',
@@ -47,7 +47,6 @@ IF NOT EXISTS `block` (
 	`tx_num` INT NOT NULL DEFAULT 0 COMMENT 'transaction num',
 	`total_tx_num` BIGINT (20) DEFAULT 0 COMMENT 'total transaction num',
 	`total_block_size` DECIMAL(8,2) DEFAULT NULL COMMENT 'total block size,unit:kb',
-	`create_time` datetime (3) NOT NULL COMMENT 'create time',
 	PRIMARY KEY (`id`),
 	UNIQUE KEY `uniq_block` (`height`)
 ) ENGINE = INNODB DEFAULT CHARSET = utf8mb4 COMMENT = 'block';

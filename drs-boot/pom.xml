@@ -76,6 +76,13 @@
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-thymeleaf</artifactId>
         </dependency>
+
+        <dependency>
+            <groupId>com.ctrip.framework.apollo</groupId>
+            <artifactId>apollo-client</artifactId>
+            <version>1.3.0</version>
+        </dependency>
+
         <!--test-->
         <dependency>
             <groupId>org.springframework.boot</groupId>
@@ -208,7 +215,8 @@
                                     <artifactId>drs-boot</artifactId>
                                     <version>${project.version}</version>
                                     <type>jar</type>
-                                    <destFileName>drs-boot-v4.jar</destFileName>
+                                    <classifier>executable</classifier>
+                                    <destFileName>stacs.drs.jar</destFileName>
                                 </artifactItem>
                             </artifactItems>
                             <outputDirectory>../target/</outputDirectory>

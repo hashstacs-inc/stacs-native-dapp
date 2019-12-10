@@ -1,7 +1,7 @@
 package io.stacs.nav.drs.api;
 
 import io.stacs.nav.drs.api.exception.DappException;
-import io.stacs.nav.drs.api.model.callback.TransactionReceipt;
+import io.stacs.nav.drs.api.model.TransactionPO;
 
 /**
  * @author liuyu
@@ -16,5 +16,5 @@ public interface ITxNoticeService {
      * @param timeout
      * @return
      */
-    TransactionReceipt syncWait(String uniqueKey,long timeout) throws DappException;
+    TransactionPO syncWait(String uniqueKey, long timeout) throws DappException;
 }

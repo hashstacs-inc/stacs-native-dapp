@@ -7,7 +7,7 @@ import io.stacs.nav.drs.api.model.Policy;
 import io.stacs.nav.drs.api.model.RespData;
 import io.stacs.nav.drs.api.model.RsDomain;
 import io.stacs.nav.drs.api.model.bd.BusinessDefine;
-import io.stacs.nav.drs.api.model.block.BlockVO;
+import io.stacs.nav.drs.api.model.block.BlockHeaderVO;
 import io.stacs.nav.drs.api.model.permission.PermissionInfoVO;
 import io.stacs.nav.drs.api.model.query.QueryBlockByHeightVO;
 import io.stacs.nav.drs.api.model.query.QueryBlockVO;
@@ -15,6 +15,7 @@ import io.stacs.nav.drs.api.model.query.QueryTxListVO;
 import io.stacs.nav.drs.api.model.query.QueryTxVO;
 import io.stacs.nav.drs.api.model.tx.CoreTransactionVO;
 import io.stacs.nav.drs.service.config.DomainConfig;
+import io.stacs.nav.drs.service.dao.BlockVO;
 import io.stacs.nav.drs.service.utils.CasDecryptResponse;
 import io.stacs.nav.drs.service.utils.DrsHttpClient;
 import io.stacs.nav.drs.service.utils.LambdaExceptionUtil;
@@ -127,11 +128,11 @@ import static io.stacs.nav.drs.service.utils.Pair.of;
         return commonPostApi(QUERY_TX_BY_ID, vo);
     }
 
-    public Optional<BlockVO> queryBlockByHeight(QueryBlockByHeightVO vo) {
+    public Optional<BlockHeaderVO> queryBlockByHeight(QueryBlockByHeightVO vo) {
         return commonPostApi(QUERY_BLOCK_BY_HEIGHT, vo);
     }
 
-    public Optional<List<BlockVO>> queryBlockListByPage(QueryBlockVO vo) {
+    public Optional<List<BlockHeaderVO>> queryBlockListByPage(QueryBlockVO vo) {
         return commonPostApi(QUERY_BLOCKS_BY_PAGE, vo);
     }
 
@@ -142,9 +143,9 @@ import static io.stacs.nav.drs.service.utils.Pair.of;
         return commonGetApi(QUERY_ALL_DOMAIN, null);
     }
 
-    public Optional<List<RsDomain>> queryBlocks(Long startHeight, Integer size) {
-        return commonGetApi(QUERY_BLOCKS, Lists
-            .newArrayList(Pair.of("startHeight", startHeight.toString()), Pair.of("size", size.toString())));
+    public Optional<List<BlockVO>> queryBlocks(long startHeight, long endHeight) {
+        return commonGetApi(QUERY_BLOCK_VO, Lists.newArrayList(Pair.of("startHeight", String.valueOf(startHeight)),
+                                                               Pair.of("endHeight", String.valueOf(endHeight))));
     }
 
     /**

@@ -1,4 +1,4 @@
-package io.stacs.nav.drs.api.model.bo;
+package io.stacs.nav.drs.api.model.block;
 
 import io.stacs.nav.drs.api.model.BaseBO;
 import lombok.Getter;
@@ -10,7 +10,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-import static io.stacs.nav.drs.api.model.bo.SignInfo.SignTypeEnum.BIZ;
+import static io.stacs.nav.drs.api.model.block.SignInfo.SignTypeEnum.BIZ;
 
 /**
  * The type Sign info.

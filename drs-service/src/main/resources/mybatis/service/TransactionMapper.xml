@@ -1,0 +1,158 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mappers.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="io.stacs.nav.drs.service.dao.TransactionDao">
+    <!-- Result Map -->
+    <resultMap id="baseResultMap" type="io.stacs.nav.drs.api.model.TransactionPO">
+        <result column="tx_id" property="txId"/>
+        <result column="biz_model" property="bizModel"/>
+        <result column="policy_id" property="policyId"/>
+        <result column="lock_time" property="lockTime"/>
+        <result column="version" property="version"/>
+        <result column="block_height" property="blockHeight"/>
+        <result column="block_time" property="blockTime"/>
+        <result column="send_time" property="sendTime"/>
+        <result column="sender" property="sender"/>
+        <result column="sign_datas" property="signDatas"/>
+        <result column="action_datas" property="actionDatas"/>
+        <result column="execute_result" property="executeResult"/>
+        <result column="error_code" property="errorCode"/>
+        <result column="tx_type" property="txType"/>
+        <result column="policy_version" property="policyVersion"/>
+        <result column="deal_count" property="dealCount"/>
+        <result column="max_allow_fee" property="maxAllowFee"/>
+        <result column="fee_amount" property="feeAmount"/>
+        <result column="fee_payment_address" property="feePaymentAddress"/>
+        <result column="fee_currency" property="feeCurrency"/>
+        <result column="bd_code" property="bdCode"/>
+        <result column="submitter" property="submitter"/>
+        <result column="submitter_sign" property="submitterSign"/>
+    </resultMap>
+
+    <!-- transaction table all fields -->
+    <sql id="baseColumnList">
+        tx_id,biz_model,policy_id,lock_time,version,block_height,block_time,send_time,sender,execute_result,error_code,
+        error_message,sign_datas,action_datas,tx_type,policy_version,deal_count,max_allow_fee,fee_amount,fee_payment_address,
+        fee_currency,bd_code,submitter,receipt_data,submitter_sign
+    </sql>
+    <!-- query  conditions -->
+    <sql id="baseWhereClause">
+        where 1=1
+        <trim suffixOverrides=",">
+            <if test="txId != null and txId != ''">
+                and tx_id=#{txId}
+            </if>
+            <if test="bizModel != null">
+                and biz_model=#{bizModel}
+            </if>
+            <if test="policyId != null and policyId != ''">
+                and policy_id=#{policyId}
+            </if>
+            <if test="lockTime != null">
+                and lock_time=#{lockTime}
+            </if>
+            <if test="version != null and version != ''">
+                and version=#{version}
+            </if>
+            <if test="blockHeight != null">
+                and block_height=#{blockHeight}
+            </if>
+            <if test="blockTime != null">
+                and block_time=#{blockTime}
+            </if>
+            <if test="sendTime != null">
+                and send_time=#{sendTime}
+            </if>
+            <if test="sender != null">
+                and sender=#{sender}
+            </if>
+            <if test="signDatas != null">
+                and sign_datas=#{signDatas}
+            </if>
+        </trim>
+    </sql>
+    <!-- insert row -->
+    <insert id="add">
+        insert into
+        transaction(tx_id,biz_model,policy_id,lock_time,version,block_height,block_time,send_time,sender,sign_datas,action_datas,execute_result,error_code,tx_type,policy_version,deal_count,max_allow_fee,fee_payment_address,fee_currency,bd_code,submitter,receipt_data,submitter_sign)
+        values(#{txId},#{bizModel},#{policyId},#{lockTime},#{version},#{blockHeight},#{blockTime},#{sendTime},#{sender},#{signDatas},#{actionDatas},#{executeResult},#{errorCode},#{txType},#{policyVersion},#{dealCount},#{maxAllowFee},#{feePaymentAddress},#{feeCurrency},#{bdCode},#{submitter},#{receiptData},#{submitterSign})
+    </insert>
+    <!-- 列表总数 -->
+    <select id="queryByCount" resultType="java.lang.Integer">
+        select count(1) from transaction
+        <include refid="baseWhereClause"/>
+    </select>
+    <!-- 查询列表 -->
+    <select id="queryByList" resultMap="baseResultMap">
+        select
+        <include refid="baseColumnList"/>
+        from transaction
+        <include refid="baseWhereClause"/>
+    </select>
+    <!-- below are auto create -->
+
+    <select id="queryByTxId" resultMap="baseResultMap" parameterType="Object">
+        select
+        <include refid="baseColumnList"/>
+        from transaction where tx_id=#{txId}
+    </select>
+
+    <!--batch insert-->
+    <insert id="batchInsert" parameterType="java.util.List">
+        insert into transaction
+        (tx_id,biz_model,policy_id,lock_time,version,block_height,block_time,send_time,sender,sign_datas,action_datas,execute_result,error_code,policy_version,deal_count,max_allow_fee,fee_payment_address,fee_currency,bd_code,submitter,receipt_data,submitter_sign)
+        values
+        <foreach collection="list" item="item" index="index" separator=",">
+            (#{item.txId},#{item.bizModel},#{item.policyId},#{item.lockTime},#{item.version},#{item.blockHeight},#{item.blockTime},#{item.sendTime},#{item.sender},#{item.signDatas},#{item.actionDatas},#{item.executeResult},#{item.errorCode},#{item.policyVersion},#{item.dealCount},#{item.maxAllowFee},#{item.feePaymentAddress},#{item.feeCurrency},
+            #{item.bdCode},#{item.submitter},#{item.receiptData},#{item.submitterSign})
+        </foreach>
+    </insert>
+    <!--query by block height-->
+    <select id="queryByBlockHeight" resultMap="baseResultMap">
+        select
+        <include refid="baseColumnList"/>
+        from transaction
+        where block_height=#{blockHeight}
+    </select>
+    <!--query by tx ids-->
+    <select id="queryByTxIds" resultType="java.lang.String">
+        select
+        tx_id
+        from transaction
+        where tx_id in
+        <foreach collection="txIds" index="index" item="item" open="(" separator="," close=")">
+            #{item}
+        </foreach>
+    </select>
+    <select id="queryTxWithCondition" resultMap="baseResultMap">
+        select
+        <include refid="baseColumnList"/>
+        from transaction
+        where 1=1
+        <if test="height != null">
+            and block_height=#{height}
+        </if>
+        <if test="txId != null and txId != ''">
+            and tx_id=#{txId}
+        </if>
+        <if test="sender != null and sender != ''">
+            and sender=#{sender}
+        </if>
+        order by block_height desc
+        limit #{start}, #{end}
+    </select>
+    <select id="countTxWithCondition" resultType="java.lang.Long">
+        select
+        count(1)
+        from transaction
+        where 1=1
+        <if test="height != null">
+            and block_height=#{height}
+        </if>
+        <if test="txId != null and txId != ''">
+            and tx_id=#{txId}
+        </if>
+        <if test="sender != null and sender != ''">
+            and sender=#{sender}
+        </if>
+    </select>
+</mapper>

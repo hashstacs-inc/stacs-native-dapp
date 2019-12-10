@@ -3,13 +3,14 @@ package io.stacs.nav.drs.service.service;
 import io.stacs.nav.drs.api.model.Policy;
 import io.stacs.nav.drs.api.model.RsDomain;
 import io.stacs.nav.drs.api.model.bd.BusinessDefine;
-import io.stacs.nav.drs.api.model.block.BlockVO;
+import io.stacs.nav.drs.api.model.block.BlockHeaderVO;
 import io.stacs.nav.drs.api.model.permission.PermissionInfoVO;
 import io.stacs.nav.drs.api.model.query.QueryBlockByHeightVO;
 import io.stacs.nav.drs.api.model.query.QueryBlockVO;
 import io.stacs.nav.drs.api.model.query.QueryTxListVO;
 import io.stacs.nav.drs.api.model.query.QueryTxVO;
 import io.stacs.nav.drs.api.model.tx.CoreTransactionVO;
+import io.stacs.nav.drs.service.dao.BlockVO;
 import io.stacs.nav.drs.service.network.BlockChainFacade;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -74,11 +75,15 @@ import static io.stacs.nav.drs.api.exception.DappException.newError;
         return blockChainFacade.queryCoreTxById(vo).orElseThrow(newError(DRS_NETWORK_COMMON_ERROR));
     }
 
-    public List<BlockVO> queryBlockListByPage(QueryBlockVO vo) {
+    public List<BlockHeaderVO> queryBlockListByPage(QueryBlockVO vo) {
         return blockChainFacade.queryBlockListByPage(vo).orElseThrow(newError(DRS_NETWORK_COMMON_ERROR));
     }
 
-    public BlockVO queryBlockByHeight(QueryBlockByHeightVO vo) {
+    public List<BlockVO> queryBlocks(long startHeight, long endHeight) {
+        return blockChainFacade.queryBlocks(startHeight, endHeight).orElseThrow(newError(DRS_NETWORK_COMMON_ERROR));
+    }
+
+    public BlockHeaderVO queryBlockByHeight(QueryBlockByHeightVO vo) {
         return blockChainFacade.queryBlockByHeight(vo).orElseThrow(newError(DRS_NETWORK_COMMON_ERROR));
     }
 }

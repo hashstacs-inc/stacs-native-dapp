@@ -10,6 +10,7 @@ import io.stacs.nav.drs.api.exception.DappException;
 import io.stacs.nav.drs.api.model.BaseTxVO;
 import io.stacs.nav.drs.api.model.bd.BusinessDefine;
 import io.stacs.nav.drs.api.model.bd.FunctionDefine;
+import io.stacs.nav.drs.api.model.block.BlockHeaderVO;
 import io.stacs.nav.drs.api.model.block.BlockVO;
 import io.stacs.nav.drs.api.model.query.QueryBlockByHeightVO;
 import io.stacs.nav.drs.api.model.query.QueryBlockVO;
@@ -17,6 +18,7 @@ import io.stacs.nav.drs.api.model.query.QueryTxListVO;
 import io.stacs.nav.drs.api.model.query.QueryTxVO;
 import io.stacs.nav.drs.api.model.tx.CoreTransactionVO;
 import io.stacs.nav.drs.service.constant.Constants;
+import io.stacs.nav.drs.service.dao.BlockDao;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -39,6 +41,7 @@ import static io.stacs.nav.drs.api.exception.DappError.FUNCTION_NOT_FIND_ERROR;
     @ArkInject PluginManagerService pluginManagerService;
 
     @Autowired BlockChainService bdService;
+    @Autowired BlockDao blockDao;
 
     @Override public String generateSignature(BaseTxVO vo) throws DappException {
         String execPolicyId;
@@ -73,11 +76,11 @@ import static io.stacs.nav.drs.api.exception.DappError.FUNCTION_NOT_FIND_ERROR;
         return bdService.queryCoreTxById(vo);
     }
 
-    public List<BlockVO> queryBlockListByPage(QueryBlockVO vo) {
-        return bdService.queryBlockListByPage(vo);
+    public List<BlockVO> queryBlocks(QueryBlockVO vo) {
+        return blockDao.queryByCond(vo);
     }
 
-    public BlockVO queryBlockByHeight(QueryBlockByHeightVO vo) {
+    public BlockHeaderVO queryBlockByHeight(QueryBlockByHeightVO vo) {
         return bdService.queryBlockByHeight(vo);
     }
 

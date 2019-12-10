@@ -1,0 +1,172 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mappers.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="io.stacs.nav.drs.service.dao.BlockDao">
+    <!-- Result Map -->
+    <resultMap id="baseResultMap" type="io.stacs.nav.drs.service.dao.po.BlockPO">
+        <result column="height" property="height"/>
+        <result column="version" property="version"/>
+        <result column="previous_hash" property="previousHash"/>
+        <result column="block_hash" property="blockHash"/>
+        <result column="tx_root_hash" property="txRootHash"/>
+        <result column="account_root_hash" property="accountRootHash"/>
+        <result column="contract_root_hash" property="contractRootHash"/>
+        <result column="policy_root_hash" property="policyRootHash"/>
+        <result column="rs_root_hash" property="rsRootHash"/>
+        <result column="tx_receipt_root_hash" property="txReceiptRootHash"/>
+        <result column="ca_root_hash" property="caRootHash"/>
+        <result column="state_root_hash" property="stateRootHash"/>
+        <result column="block_time" property="blockTime"/>
+        <result column="tx_num" property="txNum"/>
+        <result column="total_tx_num" property="totalTxNum"/>
+        <result column="total_block_size" property="totalBlockSize"/>
+    </resultMap>
+
+    <!-- block table all fields -->
+    <sql id="baseColumnList">
+		height,version,previous_hash,block_hash,tx_root_hash,account_root_hash,contract_root_hash,policy_root_hash,rs_root_hash,tx_receipt_root_hash,ca_root_hash,state_root_hash,block_time,tx_num,total_tx_num,total_block_size,create_time
+	</sql>
+    <!-- 查询条件 -->
+    <sql id="baseWhereClause">
+        where 1=1
+        <trim suffixOverrides=",">
+            <if test="height != null">
+                and height=#{height}
+            </if>
+            <if test="version != null and version != ''">
+                and version=#{version}
+            </if>
+            <if test="previousHash != null and previousHash != ''">
+                and previous_hash=#{previousHash}
+            </if>
+            <if test="blockHash != null and blockHash != ''">
+                and block_hash=#{blockHash}
+            </if>
+            <if test="txRootHash != null and txRootHash != ''">
+                and tx_root_hash=#{txRootHash}
+            </if>
+            <if test="accountRootHash != null and accountRootHash != ''">
+                and account_root_hash=#{accountRootHash}
+            </if>
+            <if test="contractRootHash != null and contractRootHash != ''">
+                and contract_root_hash=#{contractRootHash}
+            </if>
+            <if test="policyRootHash != null and policyRootHash != ''">
+                and policy_root_hash=#{policyRootHash}
+            </if>
+            <if test="rsRootHash != null and rsRootHash != ''">
+                and rs_root_hash=#{rsRootHash}
+            </if>
+            <if test="txReceiptRootHash != null and txReceiptRootHash != ''">
+                and tx_receipt_root_hash=#{txReceiptRootHash}
+            </if>
+            <if test="caRootHash != null and caRootHash != ''">
+                and ca_root_hash=#{caRootHash}
+            </if>
+            <if test="stateRootHash != null and stateRootHash!=''">
+                and state_root_hash=#{stateRootHash}
+            </if>
+            <if test="blockTime != null">
+                and block_time=#{blockTime}
+            </if>
+        </trim>
+    </sql>
+    <!-- 插入记录 -->
+    <insert id="add" parameterType="object">
+		insert into
+		block(height,version,previous_hash,block_hash,tx_root_hash,account_root_hash,contract_root_hash,policy_root_hash,rs_root_hash,tx_receipt_root_hash,ca_root_hash,state_root_hash,block_time,tx_num,total_tx_num,total_block_size,create_time)
+		values(#{height},#{version},#{previousHash},#{blockHash},#{txRootHash},#{accountRootHash},#{contractRootHash},#{policyRootHash},#{rsRootHash},#{txReceiptRootHash},#{caRootHash},#{stateRootHash},#{blockTime},#{txNum},#{totalTxNum},#{totalBlockSize},now(3))
+	</insert>
+    <!-- 删除记录 -->
+    <delete id="delete" parameterType="object">
+		delete from block where
+		height=#{height}
+	</delete>
+    <!-- 根据id查询 -->
+    <select id="queryById" resultMap="baseResultMap" parameterType="object">
+        select
+        <include refid="baseColumnList"/>
+        from block where id=#{id}
+    </select>
+    <!-- 列表总数 -->
+    <select id="queryByCount" resultType="java.lang.Integer"
+            parameterType="object">
+        select count(1) from block
+        <include refid="baseWhereClause"/>
+    </select>
+    <!-- 查询列表 -->
+    <select id="queryByList" resultMap="baseResultMap"
+            parameterType="object">
+        select
+        <include refid="baseColumnList"/>
+        from block
+        <include refid="baseWhereClause"/>
+    </select>
+
+    <!-- 条件查询 -->
+    <select id="queryByCond" resultMap="baseResultMap"
+            parameterType="io.stacs.nav.drs.api.model.query.QueryBlockVO">
+        select
+        <include refid="baseColumnList"/>
+        from block
+        <where>
+            1=1
+            <if test="cond.height != null">
+                and height=#{cond.height}
+            </if>
+            <if test="cond.blockHash != null and cond.blockHash != '' ">
+                and block_hash=#{cond.blockHash}
+            </if>
+        </where>
+    </select>
+    <!-- 以上为工具自动生成 -->
+
+    <!-- query block by block height -->
+    <select id="queryByHeight" resultMap="baseResultMap"
+            parameterType="object">
+        select
+        <include refid="baseColumnList"/>
+        from block where height=#{height}
+    </select>
+
+    <select id="queryBlocks" resultMap="baseResultMap"
+            parameterType="object">
+        select
+        <include refid="baseColumnList"/>
+        from block where height >= #{startHeight} order by height asc limit #{limit}
+    </select>
+
+    <select id="getMaxHeight" resultType="java.lang.Long">
+        select max(height) from block
+    </select>
+
+    <select id="getLimitHeight" resultType="java.lang.Long">
+        select height from block order by height desc limit #{limit}
+    </select>
+    <select id="queryBlocksWithCondition" resultMap="baseResultMap">
+        select
+        <include refid="baseColumnList"/>
+        from block b
+        where 1=1
+        <if test="height != null">
+            and height = #{height}
+        </if>
+        <if test="blockHash != null and blockHash !=''">
+            and block_hash = #{blockHash}
+        </if>
+        order by height desc
+        limit #{start}, #{end}
+    </select>
+    <select id="countBlockWithCondition" resultType="java.lang.Long">
+        select
+        count(1)
+        from block b
+        where 1=1
+        <if test="height != null">
+            and height = #{height}
+        </if>
+        <if test="blockHash != null and blockHash !=''">
+            and block_hash = #{blockHash}
+        </if>
+    </select>
+
+</mapper>

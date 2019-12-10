@@ -10,7 +10,7 @@ import lombok.Setter;
  * @description the execution result of the transaction
  * @date 2018 -04-09
  */
-@Getter @Setter public class TransactionReceipt{
+@Getter @Setter public class TransactionReceipt {
     /**
      * the id of the transaction
      */
