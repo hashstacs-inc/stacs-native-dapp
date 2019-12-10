@@ -1,5 +1,7 @@
 package io.stacs.nav.drs.service.dao;
 
+import io.stacs.nav.drs.api.model.block.BlockVO;
+import io.stacs.nav.drs.api.model.query.QueryBlockVO;
 import io.stacs.nav.drs.service.BaseDao;
 import io.stacs.nav.drs.service.dao.po.BlockPO;
 import org.apache.ibatis.annotations.Mapper;
@@ -54,6 +56,8 @@ import java.util.List;
      */
     List<BlockPO> queryBlocksWithCondition(@Param("height") Long height, @Param("blockHash") String blockHash,
                                            @Param("start") int start, @Param("end") int end);
+
+    List<BlockVO> queryByCond(@Param("cond") QueryBlockVO cond);
 
     /**
      * count blocks with condition

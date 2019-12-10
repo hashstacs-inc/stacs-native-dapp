@@ -10,7 +10,7 @@ import java.util.concurrent.atomic.AtomicLong;
  */
 @Component public class DrsRuntimeData {
 
-    private AtomicLong nextHeight;
+    private AtomicLong nextHeight = new AtomicLong();
 
     public long getNextHeight() {
         return nextHeight.get();

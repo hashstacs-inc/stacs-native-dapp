@@ -10,7 +10,7 @@
         <result column="create_time" property="createTime"/>
         <result column="update_time" property="updateTime"/>
     </resultMap>
-    <!-- tx_callback table all fields -->
+    <!-- block_callback table all fields -->
     <sql id="baseColumnList">
 		id,block_height,block_data,status,create_time,update_time
 	</sql>
@@ -41,7 +41,7 @@
     <!-- 插入记录 -->
     <insert id="save" parameterType="Object">
 		insert into
-		tx_callback(id,block_height,block_data,status,create_time,update_time)
+		block_callback(id,block_height,block_data,status,create_time,update_time)
 		values(#{id},#{blockHeight},#{blockData},#{status},now(),now())
 	</insert>
 
@@ -49,20 +49,20 @@
     <select id="queryByHeightAndStatus" resultMap="baseResultMap" parameterType="Object">
         select
         <include refid="baseColumnList"/>
-        from tx_callback where block_height=#{height} and status=#{status}
+        from block_callback where block_height=#{height} and status=#{status}
     </select>
     <!-- maxHeight -->
     <select id="maxHeight" resultType="java.lang.Long" parameterType="Object">
-		select block_height from tx_callback where status='PROCESSED' order by block_height desc limit 1
+		select block_height from block_callback where status='PROCESSED' order by block_height desc limit 1
 	</select>
 
     <select id="initCallbackMinHeight" resultType="java.lang.Long">
-        select block_height from tx_callback where status='INIT' order by block_height asc limit 1
+        select block_height from block_callback where status='INIT' order by block_height asc limit 1
     </select>
 
     <!-- update status-->
     <update id="updateStatus">
-        UPDATE `tx_callback`
+        UPDATE `block_callback`
         SET
         `status` = #{to},
         `update_time`= now()

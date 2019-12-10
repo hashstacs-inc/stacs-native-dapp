@@ -3,7 +3,7 @@ package io.stacs.nav.drs.service.controller;
 import io.stacs.nav.drs.api.exception.DappError;
 import io.stacs.nav.drs.api.exception.DappException;
 import io.stacs.nav.drs.api.model.RespData;
-import io.stacs.nav.drs.api.model.block.BlockVO;
+import io.stacs.nav.drs.service.dao.BlockVO;
 import io.stacs.nav.drs.service.model.BlockCallbackBO;
 import io.stacs.nav.drs.service.service.BlockCallbackService;
 import lombok.extern.slf4j.Slf4j;

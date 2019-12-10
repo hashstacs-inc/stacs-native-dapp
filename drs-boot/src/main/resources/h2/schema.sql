@@ -74,7 +74,7 @@ IF NOT EXISTS `contract` (
 	`id` bigint(20) NOT NULL AUTO_INCREMENT COMMENT 'id',
   `address` varchar(64) NOT NULL COMMENT 'contract address',
   `name` varchar(64) DEFAULT '' COMMENT 'name',
-  `symbol` VARCHAR(64) DEFAULT NULL COMMENT 'symbol of contract';
+  `symbol` VARCHAR(64) DEFAULT NULL COMMENT 'symbol of contract',
   `extension` varchar(1024) DEFAULT '' COMMENT 'extension',
   `bd_code` varchar(255) NOT NULL,
   `status` varchar(32) NOT NULL,
@@ -83,7 +83,6 @@ IF NOT EXISTS `contract` (
   `action_index` int(11) NOT NULL COMMENT 'the index create action',
   `version` varchar(5) NOT NULL,
   `code` text NOT NULL COMMENT 'contract code',
-  `create_time` datetime(3) NOT NULL COMMENT 'create time',
   PRIMARY KEY (`id`),
   UNIQUE  (`address`),
   UNIQUE (`tx_id`,`action_index`)
@@ -144,7 +143,7 @@ IF NOT EXISTS `transaction` (
 	INDEX  (`block_height`)
 );
 
-CREATE TABLE `business_define` (
+CREATE TABLE IF NOT EXISTS `business_define` (
   `id` bigint(20) NOT NULL AUTO_INCREMENT,
   `code` varchar(32) NOT NULL DEFAULT '' COMMENT 'bd code',
   `name` varchar(64) DEFAULT NULL,

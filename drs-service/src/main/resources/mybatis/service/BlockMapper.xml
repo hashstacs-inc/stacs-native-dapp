@@ -19,7 +19,6 @@
         <result column="tx_num" property="txNum"/>
         <result column="total_tx_num" property="totalTxNum"/>
         <result column="total_block_size" property="totalBlockSize"/>
-        <result column="create_time" property="createTime"/>
     </resultMap>
 
     <!-- block table all fields -->
@@ -69,9 +68,6 @@
             <if test="blockTime != null">
                 and block_time=#{blockTime}
             </if>
-            <if test="createTime != null">
-                and create_time=#{createTime}
-            </if>
         </trim>
     </sql>
     <!-- 插入记录 -->
@@ -104,6 +100,23 @@
         <include refid="baseColumnList"/>
         from block
         <include refid="baseWhereClause"/>
+    </select>
+
+    <!-- 条件查询 -->
+    <select id="queryByCond" resultMap="baseResultMap"
+            parameterType="io.stacs.nav.drs.api.model.query.QueryBlockVO">
+        select
+        <include refid="baseColumnList"/>
+        from block
+        <where>
+            1=1
+            <if test="cond.height != null">
+                and height=#{cond.height}
+            </if>
+            <if test="cond.blockHash != null and cond.blockHash != '' ">
+                and block_hash=#{cond.blockHash}
+            </if>
+        </where>
     </select>
     <!-- 以上为工具自动生成 -->
 

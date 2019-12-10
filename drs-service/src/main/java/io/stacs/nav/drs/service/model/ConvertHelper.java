@@ -2,7 +2,7 @@ package io.stacs.nav.drs.service.model;
 
 import com.alibaba.fastjson.JSON;
 import io.stacs.nav.drs.api.model.block.BlockHeader;
-import io.stacs.nav.drs.api.model.block.BlockVO;
+import io.stacs.nav.drs.service.dao.BlockVO;
 import io.stacs.nav.drs.service.dao.po.BlockCallbackPO;
 import io.stacs.nav.drs.service.dao.po.BlockPO;
 import io.stacs.nav.drs.service.utils.BeanConvertor;

@@ -2,7 +2,7 @@ package io.stacs.nav.drs.service;
 
 import com.alibaba.fastjson.JSON;
 import io.stacs.nav.drs.api.model.TransactionPO;
-import io.stacs.nav.drs.api.model.block.BlockVO;
+import io.stacs.nav.drs.service.dao.BlockVO;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.Test;
 
