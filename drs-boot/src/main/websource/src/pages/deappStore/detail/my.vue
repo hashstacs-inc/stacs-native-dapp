@@ -38,6 +38,18 @@
         <el-button @click="configCancel">取 消</el-button>
       </p>
     </el-dialog>
+    <el-dialog
+      title="Tips"
+      :visible.sync="uninstallVisible"
+      width="520px">
+      <p>All configuration and data will be wipe out</p>
+      <p>once the application is uninstall.</p>
+      <p>Please confirm to proceed.</p>
+      <p slot="footer" class="dialog-footer">
+        <el-button type="primary" @click="uninstallVisible = false">Back</el-button>
+        <el-button @click="uninstallConfirm">Uninstall</el-button>
+      </p>
+    </el-dialog>
   </div>
 </template>
 <script>
@@ -52,7 +64,9 @@ export default {
       appList: [],
       copyAppList: [],
       configVisible: false,
+      uninstallVisible: false,
       currentItem: {},
+      currentUninstall: {},
       myAppInp: ''
     }
   },
@@ -95,16 +109,39 @@ export default {
           break;
       }
     },
-    async unInstall (v) {
-      let params = {
-        name: v.name,
-        data: {
-          appName: v.name
-        },
-        notify: notify.any
+    async uninstallConfirm () {
+      if (this.currentUninstall.status !== 'RUNNING') {
+        let params = {
+          name: this.currentUninstall.name,
+          data: {
+            appName: this.currentUninstall.name
+          },
+          notify: notify.any,
+          slient: true
+        }
+        let data = await unInstallApp(params);
+        if (data.code === '000000') {
+          this.$alert('Successfully uninstalled!', 'Tips', {
+            confirmButtonText: 'Confirm'
+          }).then(() => {
+            this.getList();
+          });
+        } else {
+          this.$alert('Uninstall failed, please try again!', 'Tips', {
+            confirmButtonText: 'Confirm'
+          });
+        }
+        this.uninstallVisible = false;
+      } else {
+        this.$alert(`<p>Operation Fail.</p><p>There are program running at the moment.</p>`, 'Tips', {
+          confirmButtonText: 'OK',
+          dangerouslyUseHTMLString: true
+        });
       }
-      await unInstallApp(params);
-      this.getList();
+    },
+    unInstall (v) {
+      this.currentUninstall = v;
+      this.uninstallVisible = true;
     },
     async configConfirm () {
       // 已下载状态

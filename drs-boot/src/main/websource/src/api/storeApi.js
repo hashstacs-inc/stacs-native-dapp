@@ -47,3 +47,27 @@ export const unInstallApp = async config => {
   const { data } = await requestObj.request(Object.assign({ method: 'GET', url: '/dapp/uninstall/' + config.name }, { data: config }));
   return data;
 }
+
+// BD配置查询
+export const BDOptionInfo = async config => {
+  const { data } = await requestObj.request(Object.assign({ method: 'GET', url: '/drs/bd/query/' + config.name }, { data: config }));
+  return data;
+}
+
+// Policy信息查询
+export const getPolicyList = async config => {
+  const { data } = await requestObj.request(Object.assign({ method: 'GET', url: '/drs/queryAllPolicy' }, { data: config }));
+  return data;
+}
+
+// Domain信息查询
+export const getDomainList = async config => {
+  const { data } = await requestObj.request(Object.assign({ method: 'GET', url: '/drs/queryAllDomain' }, { data: config }));
+  return data;
+}
+
+// Permission信息查询
+export const getPermissionList = async config => {
+  const { data } = await requestObj.request(Object.assign({ method: 'GET', url: '/drs/queryPermissionList' }, { data: config }));
+  return data;
+}

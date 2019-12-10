@@ -15,7 +15,20 @@
   .el-select {
     width: 100% !important;
   }
+  .el-form-item {
+    &:not(.is-required) {
+      .el-form-item__label {
+        padding-left: 11px;
+      }
+    }
+  }
 }
+
+// 表单验证失败提示
+.el-form-item__error {
+  padding-left: 10px;
+}
+
 // 下拉选中颜色
 .el-select-dropdown__item.selected {
   color: #053C8C;
