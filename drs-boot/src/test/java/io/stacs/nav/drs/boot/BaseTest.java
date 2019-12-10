@@ -3,7 +3,7 @@ package io.stacs.nav.drs.boot;
 import com.alibaba.fastjson.JSON;
 import com.alipay.sofa.ark.springboot.runner.ArkBootRunner;
 import io.stacs.nav.drs.api.model.bd.BusinessDefine;
-import io.stacs.nav.drs.api.model.bo.BlockHeader;
+import io.stacs.nav.drs.api.model.block.BlockHeader;
 import io.stacs.nav.drs.api.model.callback.TransactionReceipt;
 import io.stacs.nav.drs.api.model.callback.TxReceiptData;
 import io.stacs.nav.drs.service.model.BlockCallbackBO;

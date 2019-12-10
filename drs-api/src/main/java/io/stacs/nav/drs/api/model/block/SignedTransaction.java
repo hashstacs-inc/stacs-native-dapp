@@ -1,4 +1,4 @@
-package io.stacs.nav.drs.api.model.bo;
+package io.stacs.nav.drs.api.model.block;
 
 import io.stacs.nav.drs.api.model.BaseBO;
 import io.stacs.nav.drs.api.model.callback.TransactionReceipt;

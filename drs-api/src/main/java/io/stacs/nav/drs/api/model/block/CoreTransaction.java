@@ -1,4 +1,4 @@
-package io.stacs.nav.drs.api.model.bo;
+package io.stacs.nav.drs.api.model.block;
 
 import com.alibaba.fastjson.JSONObject;
 import io.stacs.nav.drs.api.enums.TxTypeEnum;

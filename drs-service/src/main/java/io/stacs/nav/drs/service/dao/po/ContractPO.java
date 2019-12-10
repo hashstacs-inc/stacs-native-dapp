@@ -1,9 +1,8 @@
 package io.stacs.nav.drs.service.dao.po;
 
+import com.alibaba.fastjson.annotation.JSONField;
 import lombok.Getter;
 import lombok.Setter;
-
-import java.util.Date;
 
 /**
  * Contract persist object
@@ -13,17 +12,16 @@ import java.util.Date;
  */
 @Getter @Setter public class ContractPO {
     private Long id;
-    private String address;
+    @JSONField(name = "to") private String address;
     private String name;
+    private String symbol;
     private String extension;
     private String bdCode;
-    private String bdCodeVersion;
     private String status;
     private Long blockHeight;
     private String txId;
-    private Integer actionIndex;
-    private String language;
+    @JSONField(name = "index") private Integer actionIndex;
     private String version;
-    private String code;
-    private Date createTime;
+    @JSONField(name = "sourCode") private String code;
+    private Long createTime;
 }

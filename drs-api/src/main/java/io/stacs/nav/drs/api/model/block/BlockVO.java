@@ -1,7 +1,6 @@
 package io.stacs.nav.drs.api.model.block;
 
 import io.stacs.nav.drs.api.model.TransactionPO;
-import io.stacs.nav.drs.api.model.bo.BlockHeader;
 import lombok.*;
 
 import javax.validation.Valid;

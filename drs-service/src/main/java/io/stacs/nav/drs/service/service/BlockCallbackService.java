@@ -82,6 +82,12 @@ import static io.stacs.nav.drs.service.model.ConvertHelper.blockHeader2BlockPO;
             // 2. save txs
             txDao.batchInsert(txList);
             // todo 3. save bd、policy、contract
+
+            // txList.stream().map(ActionConverterUtil::doConvert).flatMap(optList -> {
+            //     optList.ifPresent(list -> {
+            //         list.get()
+            //     });
+            // });
             txList.forEach(tx -> {
                 TxRequestPO po = txRequestDao.queryByTxId(tx.getTxId());
                 if (po != null) {
