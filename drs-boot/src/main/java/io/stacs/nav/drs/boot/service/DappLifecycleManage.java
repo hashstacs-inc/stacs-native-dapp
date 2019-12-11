@@ -377,7 +377,7 @@ import static io.stacs.nav.drs.service.utils.ResourceLoader.getManifest;
             p.put(SPRING_APP_NAME, appName);
         }
         if (!p.containsKey(WEB_SERVER_PORT)) {
-            p.put(WEB_SERVER_PORT, baseConfig.getServerPort());
+            p.put(WEB_SERVER_PORT, baseConfig.getServerPort() + "");
         }
         p.put(WEB_SERVER_CONTEXT_PATH, "/" + appName);
         FileOutputStream os = null;
