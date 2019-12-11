@@ -6,10 +6,8 @@ import io.stacs.nav.drs.api.model.bd.BusinessDefine;
 import io.stacs.nav.drs.api.model.block.BlockHeader;
 import io.stacs.nav.drs.api.model.callback.TransactionReceipt;
 import io.stacs.nav.drs.api.model.callback.TxReceiptData;
-import io.stacs.nav.drs.api.model.query.QueryBlockVO;
 import io.stacs.nav.drs.service.model.BlockCallbackBO;
 import io.stacs.nav.drs.service.service.BlockCallbackService;
-import io.stacs.nav.drs.service.service.QueryService;
 import io.stacs.nav.drs.service.service.TxRequestService;
 import io.stacs.nav.drs.service.vo.CallbackVO;
 import org.assertj.core.util.Lists;
@@ -27,13 +25,7 @@ import java.util.List;
 @RunWith(ArkBootRunner.class) @SpringBootTest(classes = DRSBootApplication.class) public class BaseTest {
     @Autowired private TxRequestService txRequestService;
     @Autowired private BlockCallbackService callbackService;
-    @Autowired private QueryService queryService;
 
-    @Test public void test1() {
-        QueryBlockVO vo = new QueryBlockVO();
-        vo.setHeight(1L);
-        queryService.queryBlocks(vo);
-    }
 
     @Test public void testSubmitTx() {
         BusinessDefine bd = new BusinessDefine();

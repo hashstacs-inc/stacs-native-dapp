@@ -17,7 +17,6 @@ import io.stacs.nav.drs.api.model.query.QueryBlockByHeightVO;
 import io.stacs.nav.drs.api.model.query.QueryBlockVO;
 import io.stacs.nav.drs.api.model.query.QueryTxListVO;
 import io.stacs.nav.drs.api.model.query.QueryTxVO;
-import io.stacs.nav.drs.api.model.tx.CoreTransactionVO;
 import io.stacs.nav.drs.service.constant.Constants;
 import io.stacs.nav.drs.service.dao.BlockDao;
 import io.stacs.nav.drs.service.dao.TransactionDao;
@@ -79,8 +78,8 @@ import static io.stacs.nav.drs.api.exception.DappError.FUNCTION_NOT_FIND_ERROR;
         return blockDao.queryByCond(vo);
     }
 
-    public CoreTransactionVO queryCoreTxById(QueryTxVO vo) {
-        return bdService.queryCoreTxById(vo);
+    public TransactionPO queryCoreTxById(QueryTxVO vo) {
+        return txDao.queryByTxId(vo.getTxId());
     }
 
     public BlockHeaderVO queryBlockByHeight(QueryBlockByHeightVO vo) {

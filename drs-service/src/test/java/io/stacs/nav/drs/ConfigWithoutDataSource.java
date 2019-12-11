@@ -19,11 +19,11 @@ package io.stacs.nav.drs;
 import org.mybatis.spring.annotation.MapperScan;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
-import org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration;
 import org.springframework.boot.autoconfigure.orm.jpa.HibernateJpaAutoConfiguration;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.FilterType;
+import org.springframework.test.context.TestPropertySource;
 
 /**
  * A sample spring boot web project repackage as ark fat jar.
@@ -31,8 +31,8 @@ import org.springframework.context.annotation.FilterType;
  * @author suimi
  * @since 1.0.0
  */
-@MapperScan({"io.stacs.nav.drs.*.dao"}) @Configuration
+@TestPropertySource(properties = "scheduling.enable=false") @MapperScan({"io.stacs.nav.drs.*.dao"}) @Configuration
 @ComponentScan(excludeFilters = @ComponentScan.Filter(type = FilterType.ASSIGNABLE_TYPE, value = CommandLineRunner.class))
-@EnableAutoConfiguration(exclude = {DataSourceAutoConfiguration.class, HibernateJpaAutoConfiguration.class}) public class ConfigWithoutDataSource {
+@EnableAutoConfiguration(exclude = {HibernateJpaAutoConfiguration.class}) public class ConfigWithoutDataSource {
 
 }

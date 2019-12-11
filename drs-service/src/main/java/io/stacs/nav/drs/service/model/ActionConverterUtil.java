@@ -7,8 +7,10 @@ import io.stacs.nav.drs.api.model.TransactionPO;
 import io.stacs.nav.drs.service.dao.po.BusinessDefinePO;
 import io.stacs.nav.drs.service.dao.po.ContractPO;
 import io.stacs.nav.drs.service.dao.po.PolicyPO;
+import io.stacs.nav.drs.service.enums.ActionExecTypeEnum;
 import io.stacs.nav.drs.service.enums.ContractStatusEnum;
 import io.stacs.nav.drs.service.utils.JSONHelper;
+import io.stacs.nav.drs.service.utils.Pair;
 
 import java.util.HashMap;
 import java.util.List;
@@ -25,10 +27,11 @@ import static io.stacs.nav.drs.service.utils.JSONHelper.parseJSONOArray;
 public class ActionConverterUtil {
 
     static final ThreadLocal<TransactionPO> TRANSACTION_LOCAL = new ThreadLocal<>();
-    static final Function<JSONObject, Optional<?>> BDConverter = CommonConvert(BusinessDefinePO.class);
-    static final Function<JSONObject, Optional<?>> PolicyConverter = CommonConvert(PolicyPO.class);
-    static final Function<JSONObject, Optional<?>> ContractConverter = json -> JSONHelper.toJavaObject(json,
-                                                                                                       ContractPO.class)
+
+    static final Function<JSONObject, Optional<BusinessDefinePO>> BDConverter = CommonConvert(BusinessDefinePO.class);
+    static final Function<JSONObject, Optional<PolicyPO>> PolicyConverter = CommonConvert(PolicyPO.class);
+    static final Function<JSONObject, Optional<ContractPO>> ContractConverter = json -> JSONHelper.toJavaObject(json,
+                                                                                                                ContractPO.class)
         .map(po -> {
             TransactionPO tx = TRANSACTION_LOCAL.get();
             po.setBdCode(tx.getBdCode());
@@ -40,16 +43,15 @@ public class ActionConverterUtil {
         });
 
     private static final String ACTION_TYPE_KEY = "type";
-    private static Map<String, Function<JSONObject, Optional<?>>> converterMap =
-        new HashMap<String, Function<JSONObject, Optional<?>>>() {
-            {
-                put("BD_PUBLISH", BDConverter);
-                put("CONTRACT_CREATION", ContractConverter);
-                put("REGISTER_POLICY", PolicyConverter);
-            }
-        };
+    private static Map<String, Function<JSONObject, ?>> converterMap = new HashMap<String, Function<JSONObject, ?>>() {
+        {
+            put("BD_PUBLISH", BDConverter);
+            put("CONTRACT_CREATION", ContractConverter);
+            put("REGISTER_POLICY", PolicyConverter);
+        }
+    };
 
-    public static Optional<List<?>> doConvert(TransactionPO tx) {
+    public static <T> Optional<List<Pair<ActionExecTypeEnum, T>>> doConvert(TransactionPO tx) {
         try {
             TRANSACTION_LOCAL.set(tx);
             return convertTxToActionList(tx.getActionDatas());
@@ -58,29 +60,34 @@ public class ActionConverterUtil {
         }
     }
 
-    private static Optional<List<?>> convertTxToActionList(String json) {
+    private static <T> Optional<List<Pair<ActionExecTypeEnum, T>>> convertTxToActionList(String json) {
         // 1. jsonArray 2. actions 3. for(actions) -> action
         return parseJSONOArray(json).flatMap(ActionConverterUtil::arrayToActions);
     }
 
-    private static Optional<List<?>> arrayToActions(JSONArray array) {
-        List<Object> actions = Lists.newArrayList();
+    @SuppressWarnings("unchecked")
+    private static <T> Optional<List<Pair<ActionExecTypeEnum, T>>> arrayToActions(JSONArray array) {
+        List<Pair<ActionExecTypeEnum, T>> actions = Lists.newArrayList();
         for (Object obj : array) {
             JSONObject json = (JSONObject)obj;
-            json2Action(json).ifPresent(actions::add);
+            String actionType = json.getString(ACTION_TYPE_KEY);
+            ActionExecTypeEnum.valueOfActionType(actionType).ifPresent(
+                execType -> json2Action(json).ifPresent(action -> actions.add(Pair.of(execType, action))));
+
         }
         return actions.isEmpty() ? Optional.empty() : Optional.of(actions);
     }
 
-    private static Optional<?> json2Action(JSONObject json) {
-        Function<JSONObject, Optional<?>> converter = converterMap.get(json.getString(ACTION_TYPE_KEY));
+    @SuppressWarnings("unchecked") private static <T> Optional<T> json2Action(JSONObject json) {
+        Function<JSONObject, Optional<?>> converter = (Function<JSONObject, Optional<?>>)converterMap.get(
+            json.getString(ACTION_TYPE_KEY));
         if (converter == null) {
             return Optional.empty();
         }
-        return converter.apply(json);
+        return (Optional<T>)converter.apply(json);
     }
 
-    private static Function<JSONObject, Optional<?>> CommonConvert(Class<?> clazz) {
+    private static <T> Function<JSONObject, Optional<T>> CommonConvert(Class<T> clazz) {
         return json -> JSONHelper.toJavaObject(json, clazz);
     }
 }

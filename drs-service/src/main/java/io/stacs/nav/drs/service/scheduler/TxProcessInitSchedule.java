@@ -9,7 +9,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
@@ -21,7 +20,7 @@ import java.util.List;
  *
  * @author liuyu
  */
-@Service @Slf4j @EnableScheduling public class TxProcessInitSchedule {
+@Service @Slf4j public class TxProcessInitSchedule {
     @Autowired TxRequestDao txRequestDao;
 
     @Autowired private InitTxDisruptor initTxDisruptor;

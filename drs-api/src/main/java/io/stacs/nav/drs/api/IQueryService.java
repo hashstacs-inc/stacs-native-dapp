@@ -9,7 +9,6 @@ import io.stacs.nav.drs.api.model.query.QueryBlockByHeightVO;
 import io.stacs.nav.drs.api.model.query.QueryBlockVO;
 import io.stacs.nav.drs.api.model.query.QueryTxListVO;
 import io.stacs.nav.drs.api.model.query.QueryTxVO;
-import io.stacs.nav.drs.api.model.tx.CoreTransactionVO;
 
 import java.util.List;
 
@@ -26,7 +25,7 @@ public interface IQueryService {
 
     Long queryCurrentHeight();
 
-    CoreTransactionVO queryCoreTxById(QueryTxVO vo);
+    TransactionPO queryTxById(QueryTxVO vo);
 
     List<TransactionPO> queryTx(QueryTxListVO vo);
 

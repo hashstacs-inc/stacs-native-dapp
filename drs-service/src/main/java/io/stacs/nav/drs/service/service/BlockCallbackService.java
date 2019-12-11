@@ -1,6 +1,7 @@
 package io.stacs.nav.drs.service.service;
 
 import com.alibaba.fastjson.JSON;
+import com.google.common.collect.Lists;
 import io.stacs.nav.drs.api.exception.DappError;
 import io.stacs.nav.drs.api.exception.DappException;
 import io.stacs.nav.drs.api.model.TransactionPO;
@@ -8,9 +9,11 @@ import io.stacs.nav.drs.service.dao.*;
 import io.stacs.nav.drs.service.dao.po.BlockCallbackPO;
 import io.stacs.nav.drs.service.dao.po.BlockPO;
 import io.stacs.nav.drs.service.dao.po.TxRequestPO;
+import io.stacs.nav.drs.service.enums.ActionExecTypeEnum;
 import io.stacs.nav.drs.service.enums.CallbackStatus;
 import io.stacs.nav.drs.service.enums.RequestStatus;
 import io.stacs.nav.drs.service.event.EventPublisher;
+import io.stacs.nav.drs.service.model.ActionConverterUtil;
 import io.stacs.nav.drs.service.model.BlockCallbackBO;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
@@ -20,7 +23,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.support.TransactionTemplate;
 import org.springframework.validation.annotation.Validated;
 
-import java.util.List;
+import java.util.*;
 
 import static io.stacs.nav.drs.service.model.ConvertHelper.blockHeader2BlockPO;
 
@@ -38,6 +41,8 @@ import static io.stacs.nav.drs.service.model.ConvertHelper.blockHeader2BlockPO;
     @Autowired EventPublisher eventPublisher;
     @Autowired TxNoticeService txNoticeService;
     @Autowired private TransactionTemplate txRequired;
+
+    private static final String TX_SUCCESS = "1";
 
     /**
      * receive transaction from block chain
@@ -69,9 +74,18 @@ import static io.stacs.nav.drs.service.model.ConvertHelper.blockHeader2BlockPO;
         //      3. BD、policy、contract
         BlockVO block = JSON.parseObject(bo.getBlockData(), BlockVO.class);
         BlockPO blockPO = blockHeader2BlockPO.apply(block.getBlockHeader());
+        Map<ActionExecTypeEnum, List<Object>> actionsMap = new HashMap<>();
         List<TransactionPO> txList = block.getTransactionList();
-
-        //order by txid
+        txList.stream().filter(tx -> TX_SUCCESS.equals(tx.getExecuteResult())).sorted(
+            Comparator.comparing(TransactionPO::getTxId)).map(ActionConverterUtil::doConvert).forEach(optPairs -> {
+            optPairs.ifPresent(pairs -> pairs.forEach(pair -> actionsMap.compute(pair.left(), (k, oldVal) -> {
+                if (oldVal == null)
+                    return Lists.newArrayList(pair.right());
+                oldVal.add(pair.right());
+                return oldVal;
+            })));
+        });
+        // order by txid
         txRequired.execute(transactionStatus -> {
             // 1. save block
             blockDao.add(blockPO);
@@ -79,11 +93,6 @@ import static io.stacs.nav.drs.service.model.ConvertHelper.blockHeader2BlockPO;
             txDao.batchInsert(txList);
             // todo 3. save bd、policy、contract
 
-            // txList.stream().map(ActionConverterUtil::doConvert).flatMap(optList -> {
-            //     optList.ifPresent(list -> {
-            //         list.get()
-            //     });
-            // });
             txList.forEach(tx -> {
                 TxRequestPO po = txRequestDao.queryByTxId(tx.getTxId());
                 if (po != null) {
@@ -110,6 +119,18 @@ import static io.stacs.nav.drs.service.model.ConvertHelper.blockHeader2BlockPO;
 
     private void handleBlock() {
 
+    }
+
+    private void handleActions(Map<ActionExecTypeEnum, List<Object>> actionsMap) {
+
+    }
+
+    private <T> Optional<T> headOfOptList(List<T> list) {
+        return (list == null || list.size() == 0) ? Optional.empty() : Optional.of(list.get(0));
+    }
+
+    private <T> Optional<Class> optClass(T optObj) {
+        return optObj == null ? Optional.empty() : Optional.of(optObj.getClass());
     }
 
 }

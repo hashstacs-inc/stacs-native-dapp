@@ -8,7 +8,6 @@ import io.stacs.nav.drs.service.service.BlockChainService;
 import io.stacs.nav.drs.service.utils.Pair;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
@@ -22,15 +21,14 @@ import static io.stacs.nav.drs.service.model.ConvertHelper.*;
  * @author dekuofa <br>
  * @date 2019-12-09 <br>
  */
-@Service @Slf4j @EnableScheduling public class FailoverSchedule {
+@Service @Slf4j public class FailoverSchedule {
 
     @Autowired BlockCallbackDao txCallbackDao;
     @Autowired BlockCallbackService txCallbackService;
     @Autowired BlockChainService blockChainService;
     @Autowired private DrsRuntimeData runtimeData;
 
-    @Scheduled(fixedDelayString = "${drs.schedule.failover:5000}")
-    public void exe() {
+    @Scheduled(fixedDelayString = "${drs.schedule.failover:5000}") public void exe() {
         long nextHeight = runtimeData.getNextHeight();
         long chainMaxHeight = blockChainService.queryCurrentHeight();
         Long optCallbackHeight = txCallbackDao.initCallbackMinHeight();
