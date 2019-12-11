@@ -35,7 +35,7 @@ nbdist/
 /slave/scripts/1.0.0/slave_1.0.0_full.sql
 drs/config/*
 drs/download/*
-
+*.db
 **/*.DS_Store
 
 ### VUE ###
