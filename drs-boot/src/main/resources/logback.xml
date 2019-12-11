@@ -13,9 +13,9 @@
               value="%d [%t] %-5p %c{0} - %m [%X{X-B3-TraceId:-},%X{X-B3-SpanId:-},%X{X-Span-Export:-}]%n%xThrowable{500, FULL, bar}"/>
 
     <!-- 项目名称 -->
-    <property name="APP_NAME" value="drs-boot"/>​
+    <property name="APP_NAME" value="stacs.drs"/>​
     <!-- 日志文件目录 -->
-    <property name="LOG_PATH" value="logs/${APP_NAME}}"/>​
+    <property name="LOG_PATH" value="/data/home/admin/stacs.drs/data/logs/${APP_NAME}}"/>​
     <!-- 归档文件保留的时间，即只保留几天前的归档文件，单位与fileNamePattern中配置的最小时间单位相同 -->
     <property name="MAX_HISTORY" value="7"/>
 
