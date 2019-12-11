@@ -1,8 +1,8 @@
 package io.stacs.nav.drs.api;
 
-import com.github.pagehelper.PageInfo;
 import io.stacs.nav.drs.api.exception.DappException;
 import io.stacs.nav.drs.api.model.BaseTxVO;
+import io.stacs.nav.drs.api.model.PageInfo;
 import io.stacs.nav.drs.api.model.TransactionPO;
 import io.stacs.nav.drs.api.model.block.BlockHeaderVO;
 import io.stacs.nav.drs.api.model.block.BlockVO;
@@ -25,6 +25,8 @@ public interface IQueryService {
     Long queryCurrentHeight();
 
     TransactionPO queryTxById(QueryTxVO vo);
+
+    BlockVO queryTxByHeight(Long height);
 
     PageInfo<TransactionPO> queryTx(QueryTxListVO vo);
 
