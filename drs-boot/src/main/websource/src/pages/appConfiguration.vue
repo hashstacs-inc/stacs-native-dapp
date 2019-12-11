@@ -77,7 +77,10 @@ export default {
         let startData = await startDeapp(startParams);
         if (startData.code === '000000') {
           this.$alert('Configuration success.', 'Tips', {
-            confirmButtonText: 'YES'
+            confirmButtonText: 'YES',
+            callback: () => {
+              this.$router.go(-1);
+            }
           });
         }
       }

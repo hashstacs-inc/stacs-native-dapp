@@ -1,15 +1,15 @@
 <template>
-  <div class="bd-box">
+  <div class="bd-box" v-loading="loading">
     <div class="general-information">
       <p class="title">General Information</p>
       <el-form :model="ruleForm" :rules="rules" ref="ruleForm" 
         label-width="150px" class="general-form" label-position="left">
-        <el-form-item label="BD Name" prop="bDName">
-          <el-select v-model="ruleForm.bDName" @change="changeBDName">
-            <el-option :label="v.bdCode" :value="v.bdCode" v-for="(v, k) in dbNameList" :key="k"></el-option>
+        <el-form-item label="BD Name" prop="code">
+          <el-select v-model="ruleForm.code" @change="changeBDName">
+            <el-option :label="v.name" :value="v.code" v-for="(v, k) in dbNameList" :key="k"></el-option>
           </el-select>
         </el-form-item>
-        <el-form-item label="Contract Name" prop="contractName" v-if="ruleForm.bDName !== 'SysBD'">
+        <el-form-item label="Contract Name" prop="contractName" v-if="ruleForm.code !== 'SystemBD' && ruleForm.code !== ''">
           <!-- <el-select v-model="ruleForm.contractName">
             <el-option :label="v.name" :value="v.name" v-for="(v, k) in contractNameList" :key="k"></el-option>
           </el-select> -->
@@ -17,12 +17,12 @@
         </el-form-item>
         <el-form-item label="Function Name" prop="functionName">
           <el-select v-model="ruleForm.functionName" placeholder="Please select"
-            :disabled="ruleForm.bDName !== 'SysBD' ? ruleForm.contractName ? false : true: false">
-            <el-option :label="v.name" :value="v.name" v-for="(v, k) in functionNameList" :key="k"></el-option>
+            :disabled="ruleForm.code !== 'SystemBD' ? ruleForm.contractName ? false : true: false">
+            <el-option :label="v.desc" :value="v.name" v-for="(v, k) in functionNameList" :key="k"></el-option>
           </el-select>
         </el-form-item>
-        <el-form-item label="Opeartion Address" prop="opeartionAddress">
-          <el-input v-model="ruleForm.opeartionAddress" placeholder="Please enter address" :maxlength="40"></el-input>
+        <el-form-item label="Opeartion Address" prop="submitter">
+          <el-input v-model="ruleForm.submitter" placeholder="Please enter address" :maxlength="40"></el-input>
         </el-form-item>
         <el-form-item label="Fee Currency" prop="feeCurrency">
           <el-input v-model="ruleForm.feeCurrency" :maxlength="32"></el-input>
@@ -30,7 +30,7 @@
         <el-form-item label="Fee Max Amount" prop="feeMaxAmount">
           <el-input v-model="ruleForm.feeMaxAmount" placeholder="Please enter fee max amount" :maxlength="18"></el-input>
         </el-form-item>
-        <template v-if="ruleForm.bDName !== 'SysBD'">
+        <template v-if="ruleForm.code !== 'SystemBD' && ruleForm.code !== ''">
           <p class="title" style="margin-bottom: 25px;">Special Information</p>
           <el-form-item label="Policy Name" prop="policyName">
             <el-input v-model="ruleForm.policyName" placeholder="Please enter policy name" :maxlength="64"></el-input>
@@ -98,7 +98,7 @@
   </div>
 </template>
 <script>
-// import { BDOptionInfo, getDomainList, getPolicyList } from '@/api/storeApi';
+import { BDOptionInfo, getDomainList, getPolicyList } from '@/api/storeApi';
 import RegisterPolicy from './BDDetail/RegisterPolicy';
 import ModifyPolicy from './BDDetail/ModifyPolicy';
 import IdentitySetting from './BDDetail/IdentitySetting';
@@ -111,7 +111,6 @@ import SystemProperty from './BDDetail/SystemProperty';
 import BDSpecification from './BDDetail/BDSpecification';
 import SetFeeRule from './BDDetail/SetFeeRule';
 import IdentityBDManage from './BDDetail/IdentityBDManage';
-// import mixin from './mixinValidate';
 
 export default {
   name: 'BD',
@@ -127,9 +126,9 @@ export default {
       },
       deep: true
     },
-    'ruleForm.functionName': {
-      handler () {
-        // this.ruleForm.feeCurrency = this.functionNameList.filter(v => v.id === n)[0].feeCurrency;
+    'ruleForm.contractName': {
+      handler (n) {
+        if (!n) this.ruleForm.functionName = '';
       },
       deep: true
     }
@@ -137,11 +136,12 @@ export default {
   data () {
     return {
       ruleForm: {
-        bDName: '',
+        code: '',
         functionName: '',
-        opeartionAddress: '',
+        submitter: '',
         feeCurrency: '',
         feeMaxAmount: '',
+
         contractName: '',
         policyName: '',
         votePattern: 'SYNC',
@@ -159,7 +159,7 @@ export default {
         functionName: [
           { required: true, message: 'This filed is required', trigger: 'change' }
         ],
-        opeartionAddress: [
+        submitter: [
           { required: true, message: 'This filed is required', trigger: 'blur' }
         ],
         feeMaxAmount: [
@@ -193,6 +193,7 @@ export default {
           { required: true, message: 'This filed is required', trigger: 'blur' }
         ]
       },
+      loading: false,
       dbNameList: [],
       functionNameList: [],
       contractNameList: [
@@ -243,11 +244,14 @@ export default {
   },
   methods: {
     submitBD () {
-      let validChild = this.$refs[this.ruleForm.functionName].validateFrom();
-      console.log(validChild)
       this.$refs['ruleForm'].validate(valid => {
+        let validChild = this.$refs[this.ruleForm.functionName].validateFrom();
         if (valid && validChild.valid) {
-          console.log(validChild)
+          let params = {
+            functionName: this.ruleForm.functionName,
+            param: this.ruleForm
+          }
+          console.log(params)
         }
       });
     },
@@ -255,402 +259,23 @@ export default {
       this.ruleForm.functionName = '';
     },
     async getPolicy () {
-      // let data = await getPolicyList();
-      let data = {
-        data: [
-          {"policyId":"policyId-0","policyName":"policy name-0"},
-          {"policyId":"policyId-1","policyName":"policy name-1"},
-          {"policyId":"policyId-2","policyName":"policy name-2"}
-        ]
-      }
-      this.requireAuthIDList = [];
-      this.requireAuthIDList.push(...data.data);
+      let data = await getPolicyList();
+      this.requireAuthIDList = JSON.parse(JSON.stringify(data.data));
     },
     async getDomain () {
-      // let data = await getDomainList();
-      let data = {
-        data: [
-          {"desc":"test desc","domainId":"domainId-0"},
-          {"desc":"test desc","domainId":"domainId-1"},
-          {"desc":"test desc","domainId":"domainId-2"}
-        ]
-      }
-      this.domainIDList = [];
-      this.domainIDList.push(...data.data);
+      let data = await getDomainList();
+      this.domainIDList = JSON.parse(JSON.stringify(data.data));
     },
     async getOption () {
-      // let params = {
-      //   name: ''
-      // }
-      // let data = await BDOptionInfo(params);
-      let data = {
-        "code":"000000",
-        "data":[
-            {
-                "bdCode":"SysBD",
-                "bdType":"system",
-                "bdVersion":"1.0",
-                "functionName":"BD_PUBLISH",
-                "initPermission":"SLAVE",
-                "initPolicy":"INIT_BD",
-                "functions":[
-                    {
-                        "desc":"Identity设置",
-                        "execPermission":"RS",
-                        "execPolicy":"IDENTITY_SETTING",
-                        "methodSign":"IDENTITY_SETTING",
-                        "name":"IDENTITY_SETTING",
-                        "type":"SyetemAction"
-                    },
-                    {
-                        "desc":"BD发布",
-                        "execPermission":"RS",
-                        "execPolicy":"BD_PUBLISH",
-                        "methodSign":"BD_PUBLISH",
-                        "name":"BD_PUBLISH",
-                        "type":"SyetemAction"
-                    },
-                    {
-                        "desc":"Permission注册",
-                        "execPermission":"RS",
-                        "execPolicy":"PERMISSION_REGISTER",
-                        "methodSign":"PERMISSION_REGISTER",
-                        "name":"PERMISSION_REGISTER",
-                        "type":"SyetemAction"
-                    },
-                    {
-                        "desc":"Permission授权",
-                        "execPermission":"RS",
-                        "execPolicy":"AUTHORIZE_PERMISSION",
-                        "methodSign":"AUTHORIZE_PERMISSION",
-                        "name":"AUTHORIZE_PERMISSION",
-                        "type":"SyetemAction"
-                    },
-                    {
-                        "desc":"Permission撤销授权",
-                        "execPermission":"RS",
-                        "execPolicy":"CANCEL_PERMISSION",
-                        "methodSign":"CANCEL_PERMISSION",
-                        "name":"CANCEL_PERMISSION",
-                        "type":"SyetemAction"
-                    },
-                    {
-                        "desc":"注册policy",
-                        "execPermission":"RS",
-                        "execPolicy":"REGISTER_POLICY",
-                        "methodSign":"REGISTER_POLICY",
-                        "name":"REGISTER_POLICY",
-                        "type":"SyetemAction"
-                    },
-                    {
-                        "desc":"修改policy",
-                        "execPermission":"RS",
-                        "execPolicy":"MODIFY_POLICY",
-                        "methodSign":"MODIFY_POLICY",
-                        "name":"MODIFY_POLICY",
-                        "type":"SyetemAction"
-                    },
-                    {
-                        "desc":"注册RS",
-                        "execPermission":"RS",
-                        "execPolicy":"REGISTER_RS",
-                        "methodSign":"REGISTER_RS",
-                        "name":"REGISTER_RS",
-                        "type":"SyetemAction"
-                    },
-                    {
-                        "desc":"撤销RS",
-                        "execPermission":"RS",
-                        "execPolicy":"CANCEL_RS",
-                        "methodSign":"CANCEL_RS",
-                        "name":"CANCEL_RS",
-                        "type":"SyetemAction"
-                    },
-                    {
-                        "desc":"CA认证",
-                        "execPermission":"RS",
-                        "execPolicy":"CA_AUTH",
-                        "methodSign":"CA_AUTH",
-                        "name":"CA_AUTH",
-                        "type":"SyetemAction"
-                    },
-                    {
-                        "desc":"CA撤销",
-                        "execPermission":"RS",
-                        "execPolicy":"CA_CANCEL",
-                        "methodSign":"CA_CANCEL",
-                        "name":"CA_CANCEL",
-                        "type":"SyetemAction"
-                    },
-                    {
-                        "desc":"CA更新",
-                        "execPermission":"RS",
-                        "execPolicy":"CA_UPDATE",
-                        "methodSign":"CA_UPDATE",
-                        "name":"CA_UPDATE",
-                        "type":"SyetemAction"
-                    },
-                    {
-                        "desc":"节点加入",
-                        "execPermission":"RS",
-                        "execPolicy":"NODE_JOIN",
-                        "methodSign":"NODE_JOIN",
-                        "name":"NODE_JOIN",
-                        "type":"SyetemAction"
-                    },
-                    {
-                        "desc":"节点退出",
-                        "execPermission":"RS",
-                        "execPolicy":"NODE_LEAVE",
-                        "methodSign":"NODE_LEAVE",
-                        "name":"NODE_LEAVE",
-                        "type":"SyetemAction"
-                    },
-                    {
-                        "desc":"系统属性配置",
-                        "execPermission":"RS",
-                        "execPolicy":"SYSTEM_PROPERTY",
-                        "methodSign":"SYSTEM_PROPERTY",
-                        "name":"SYSTEM_PROPERTY",
-                        "type":"SyetemAction"
-                    },
-                    {
-                        "desc":"Identity BD 管理（froze/unfroze）",
-                        "execPermission":"RS",
-                        "execPolicy":"IDENTITY_BD_MANAGE",
-                        "methodSign":"IDENTITY_BD_MANAGE",
-                        "name":"IDENTITY_BD_MANAGE",
-                        "type":"SyetemAction"
-                    },
-                    {
-                        "desc":"identity kyc 设置",
-                        "execPermission":"RS",
-                        "execPolicy":"KYC_SETTING",
-                        "methodSign":"KYC_SETTING",
-                        "name":"KYC_SETTING",
-                        "type":"SyetemAction"
-                    },
-                    {
-                        "desc":"手续费设置：合约地址 & 收取地址",
-                        "execPermission":"RS",
-                        "execPolicy":"SET_FEE_CONFIG",
-                        "methodSign":"SET_FEE_CONFIG",
-                        "name":"SET_FEE_CONFIG",
-                        "type":"SyetemAction"
-                    },
-                    {
-                        "desc":"手续费费率配置",
-                        "execPermission":"RS",
-                        "execPolicy":"SET_FEE_RULE",
-                        "methodSign":"SET_FEE_RULE",
-                        "name":"SET_FEE_RULE",
-                        "type":"SyetemAction"
-                    },
-                    {
-                        "desc":"保存存证",
-                        "execPermission":"RS",
-                        "execPolicy":"SAVE_ATTESTATION",
-                        "methodSign":"SAVE_ATTESTATION",
-                        "name":"SAVE_ATTESTATION",
-                        "type":"SyetemAction"
-                    },
-                    {
-                        "desc":"打快照",
-                        "execPermission":"RS",
-                        "execPolicy":"BUILD_SNAPSHOT",
-                        "methodSign":"BUILD_SNAPSHOT",
-                        "name":"BUILD_SNAPSHOT",
-                        "type":"SyetemAction"
-                    }
-                ]
-            }, {
-              "bdCode":"UserBD",
-                "bdType":"system",
-                "bdVersion":"1.0",
-                "functionName":"BD_PUBLISH",
-                "initPermission":"SLAVE",
-                "initPolicy":"INIT_BD",
-                "functions":[
-                    {
-                        "desc":"Identity设置",
-                        "execPermission":"RS",
-                        "execPolicy":"IDENTITY_SETTING",
-                        "methodSign":"IDENTITY_SETTING",
-                        "name":"IDENTITY_SETTING",
-                        "type":"SyetemAction"
-                    },
-                    {
-                        "desc":"BD发布",
-                        "execPermission":"RS",
-                        "execPolicy":"BD_PUBLISH",
-                        "methodSign":"BD_PUBLISH",
-                        "name":"BD_PUBLISH",
-                        "type":"SyetemAction"
-                    },
-                    {
-                        "desc":"Permission注册",
-                        "execPermission":"RS",
-                        "execPolicy":"PERMISSION_REGISTER",
-                        "methodSign":"PERMISSION_REGISTER",
-                        "name":"PERMISSION_REGISTER",
-                        "type":"SyetemAction"
-                    },
-                    {
-                        "desc":"Permission授权",
-                        "execPermission":"RS",
-                        "execPolicy":"AUTHORIZE_PERMISSION",
-                        "methodSign":"AUTHORIZE_PERMISSION",
-                        "name":"AUTHORIZE_PERMISSION",
-                        "type":"SyetemAction"
-                    },
-                    {
-                        "desc":"Permission撤销授权",
-                        "execPermission":"RS",
-                        "execPolicy":"CANCEL_PERMISSION",
-                        "methodSign":"CANCEL_PERMISSION",
-                        "name":"CANCEL_PERMISSION",
-                        "type":"SyetemAction"
-                    },
-                    {
-                        "desc":"注册policy",
-                        "execPermission":"RS",
-                        "execPolicy":"REGISTER_POLICY",
-                        "methodSign":"REGISTER_POLICY",
-                        "name":"REGISTER_POLICY",
-                        "type":"SyetemAction"
-                    },
-                    {
-                        "desc":"修改policy",
-                        "execPermission":"RS",
-                        "execPolicy":"MODIFY_POLICY",
-                        "methodSign":"MODIFY_POLICY",
-                        "name":"MODIFY_POLICY",
-                        "type":"SyetemAction"
-                    },
-                    {
-                        "desc":"注册RS",
-                        "execPermission":"RS",
-                        "execPolicy":"REGISTER_RS",
-                        "methodSign":"REGISTER_RS",
-                        "name":"REGISTER_RS",
-                        "type":"SyetemAction"
-                    },
-                    {
-                        "desc":"撤销RS",
-                        "execPermission":"RS",
-                        "execPolicy":"CANCEL_RS",
-                        "methodSign":"CANCEL_RS",
-                        "name":"CANCEL_RS",
-                        "type":"SyetemAction"
-                    },
-                    {
-                        "desc":"CA认证",
-                        "execPermission":"RS",
-                        "execPolicy":"CA_AUTH",
-                        "methodSign":"CA_AUTH",
-                        "name":"CA_AUTH",
-                        "type":"SyetemAction"
-                    },
-                    {
-                        "desc":"CA撤销",
-                        "execPermission":"RS",
-                        "execPolicy":"CA_CANCEL",
-                        "methodSign":"CA_CANCEL",
-                        "name":"CA_CANCEL",
-                        "type":"SyetemAction"
-                    },
-                    {
-                        "desc":"CA更新",
-                        "execPermission":"RS",
-                        "execPolicy":"CA_UPDATE",
-                        "methodSign":"CA_UPDATE",
-                        "name":"CA_UPDATE",
-                        "type":"SyetemAction"
-                    },
-                    {
-                        "desc":"节点加入",
-                        "execPermission":"RS",
-                        "execPolicy":"NODE_JOIN",
-                        "methodSign":"NODE_JOIN",
-                        "name":"NODE_JOIN",
-                        "type":"SyetemAction"
-                    },
-                    {
-                        "desc":"节点退出",
-                        "execPermission":"RS",
-                        "execPolicy":"NODE_LEAVE",
-                        "methodSign":"NODE_LEAVE",
-                        "name":"NODE_LEAVE",
-                        "type":"SyetemAction"
-                    },
-                    {
-                        "desc":"系统属性配置",
-                        "execPermission":"RS",
-                        "execPolicy":"SYSTEM_PROPERTY",
-                        "methodSign":"SYSTEM_PROPERTY",
-                        "name":"SYSTEM_PROPERTY",
-                        "type":"SyetemAction"
-                    },
-                    {
-                        "desc":"Identity BD 管理（froze/unfroze）",
-                        "execPermission":"RS",
-                        "execPolicy":"IDENTITY_BD_MANAGE",
-                        "methodSign":"IDENTITY_BD_MANAGE",
-                        "name":"IDENTITY_BD_MANAGE",
-                        "type":"SyetemAction"
-                    },
-                    {
-                        "desc":"identity kyc 设置",
-                        "execPermission":"RS",
-                        "execPolicy":"KYC_SETTING",
-                        "methodSign":"KYC_SETTING",
-                        "name":"KYC_SETTING",
-                        "type":"SyetemAction"
-                    },
-                    {
-                        "desc":"手续费设置：合约地址 & 收取地址",
-                        "execPermission":"RS",
-                        "execPolicy":"SET_FEE_CONFIG",
-                        "methodSign":"SET_FEE_CONFIG",
-                        "name":"SET_FEE_CONFIG",
-                        "type":"SyetemAction"
-                    },
-                    {
-                        "desc":"手续费费率配置",
-                        "execPermission":"RS",
-                        "execPolicy":"SET_FEE_RULE",
-                        "methodSign":"SET_FEE_RULE",
-                        "name":"SET_FEE_RULE",
-                        "type":"SyetemAction"
-                    },
-                    {
-                        "desc":"保存存证",
-                        "execPermission":"RS",
-                        "execPolicy":"SAVE_ATTESTATION",
-                        "methodSign":"SAVE_ATTESTATION",
-                        "name":"SAVE_ATTESTATION",
-                        "type":"SyetemAction"
-                    },
-                    {
-                        "desc":"打快照",
-                        "execPermission":"RS",
-                        "execPolicy":"BUILD_SNAPSHOT",
-                        "methodSign":"BUILD_SNAPSHOT",
-                        "name":"BUILD_SNAPSHOT",
-                        "type":"SyetemAction"
-                    }
-                ]
-            }
-        ],
-        "msg":"SUCCESS"
+      this.loading = true;
+      let params = {
+        bdCode: ''
       }
-      this.dbNameList = [];
-      this.functionNameList = [];
-      this.dbNameList.push(...data.data);
-      this.functionNameList.push(...data.data[0].functions);
-      this.ruleForm.bDName = this.dbNameList[0].bdCode;
-      // this.ruleForm.functionName = this.dbNameList[0].functions[0].name;
-      // console.log(data)
+      let data = await BDOptionInfo(params);
+      this.dbNameList = JSON.parse(JSON.stringify(data.data));
+      this.functionNameList = JSON.parse(JSON.stringify(JSON.parse(data.data[0].functions)));
+      this.ruleForm.code = this.dbNameList[0].code;
+      this.loading = false;
     }
   },
   components: {

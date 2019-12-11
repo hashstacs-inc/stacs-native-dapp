@@ -45,6 +45,10 @@ const routes = [
             path: 'history',
             name: 'History',
             component: () => import('@/pages/bdExecution/detail/history.vue')
+          }, {
+            path: 'publishBDContract',
+            name: 'PublishBDContract',
+            component: () => import('@/pages/bdExecution/detail/publishBDContract.vue')
           }
         ]
       }

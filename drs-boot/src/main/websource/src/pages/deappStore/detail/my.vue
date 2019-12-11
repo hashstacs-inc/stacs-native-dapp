@@ -1,5 +1,5 @@
 <template>
-  <div class="my">
+  <div class="my" v-loading="loading">
     <div class="search">
       <div class="title">Name</div>
       <input type="text" class="search-inp" placeholder="Search the dapp" v-model="myAppInp" @input="searchList">
@@ -21,7 +21,7 @@
             popper-class="my-deapp-tips" :hide-after="0" v-if="v.errorText">
             <p class="error">Failed !</p>
           </el-tooltip>
-          <p class="uninstall" @click="unInstall(v)">Uninstall</p>
+          <p class="uninstall" @click="unInstall(v)">Stop</p>
         </div>
       </div>
     </template>
@@ -32,32 +32,32 @@
       </div>
     </template>
     <el-dialog
-      title="Tips"
+      title="System"
       :visible.sync="configVisible"
       width="520px">
       <p>Do you want to use the default etup?</p>
       <p slot="footer" class="dialog-footer">
-        <el-button type="primary" @click="configConfirm">确 定</el-button>
-        <el-button @click="configCancel">取 消</el-button>
+        <el-button type="primary" @click="configConfirm">YES</el-button>
+        <el-button @click="configCancel">NO</el-button>
       </p>
     </el-dialog>
     <el-dialog
-      title="Tips"
-      :visible.sync="uninstallVisible"
+      title="System"
+      :visible.sync="stopVisible"
       width="520px">
       <p>All configuration and data will be wipe out</p>
-      <p>once the application is uninstall.</p>
+      <p>once the application is stop.</p>
       <p>Please confirm to proceed.</p>
       <p slot="footer" class="dialog-footer">
-        <el-button type="primary" @click="uninstallVisible = false">Back</el-button>
-        <el-button @click="uninstallConfirm">Uninstall</el-button>
+        <el-button type="primary" @click="stopVisible = false">Back</el-button>
+        <el-button @click="stopConfirm">Stop</el-button>
       </p>
     </el-dialog>
   </div>
 </template>
 <script>
 import { getMyAppList, getDeappConfig, postDeappConfig, 
-  startDeapp, installDeapp, unInstallApp } from '@/api/storeApi';
+  startDeapp, installDeapp, stopApp } from '@/api/storeApi';
 import { notify } from '@/common/util';
 
 export default {
@@ -67,10 +67,11 @@ export default {
       appList: [],
       copyAppList: [],
       configVisible: false,
-      uninstallVisible: false,
+      stopVisible: false,
       currentItem: {},
-      currentUninstall: {},
-      myAppInp: ''
+      currentStop: {},
+      myAppInp: '',
+      loading: false
     }
   },
   methods: {
@@ -88,13 +89,13 @@ export default {
       }
     },
     async getList () {
+      this.loading = true;
       let data = await getMyAppList();
-      this.appList = JSON.parse(JSON.stringify(data.data));
-      this.copyAppList = JSON.parse(JSON.stringify(data.data));
-      // this.copyAppList = [];
-      // this.appList.push(...data.data);
-      // this.copyAppList.push(...data.data);
-      // this.appList[0].status = 'INITIALIZED';
+      if (data.data) {
+        this.appList = JSON.parse(JSON.stringify(data.data));
+        this.copyAppList = JSON.parse(JSON.stringify(data.data));
+      }
+      this.loading = false;
     },
     returnStatus (state) {
       /* eslint-disable */
@@ -113,39 +114,32 @@ export default {
           break;
       }
     },
-    async uninstallConfirm () {
-      if (this.currentUninstall.status !== 'RUNNING') {
-        let params = {
-          name: this.currentUninstall.name,
-          data: {
-            appName: this.currentUninstall.name
-          },
-          notify: notify.any,
-          slient: true
-        }
-        let data = await unInstallApp(params);
-        if (data.code === '000000') {
-          this.$alert('Successfully uninstalled!', 'Tips', {
-            confirmButtonText: 'Confirm'
-          }).then(() => {
-            this.getList();
-          });
-        } else {
-          this.$alert('Uninstall failed, please try again!', 'Tips', {
-            confirmButtonText: 'Confirm'
-          });
-        }
-        this.uninstallVisible = false;
+    async stopConfirm () {
+      let params = {
+        name: this.currentStop.name,
+        data: {
+          appName: this.currentStop.name
+        },
+        notify: notify.any,
+        slient: true
+      }
+      let data = await stopApp(params);
+      if (data.code === '000000') {
+        this.$alert('Successfully uninstalled!', 'System', {
+          confirmButtonText: 'Confirm'
+        }).then(() => {
+          this.getList();
+        });
       } else {
-        this.$alert(`<p>Operation Fail.</p><p>There are program running at the moment.</p>`, 'Tips', {
-          confirmButtonText: 'OK',
-          dangerouslyUseHTMLString: true
+        this.$alert('Uninstall failed, please try again!', 'System', {
+          confirmButtonText: 'Confirm'
         });
       }
+      this.stopVisible = false;
     },
     unInstall (v) {
-      this.currentUninstall = v;
-      this.uninstallVisible = true;
+      this.currentStop = v;
+      this.stopVisible = true;
     },
     async configConfirm () {
       // 已下载状态

@@ -1,5 +1,5 @@
 <template>
-  <div class="history">
+  <div class="history" v-loading="loading">
     <div class="search-box">
       <div class="search-date">
         <p class="title">Search by Date</p>
@@ -106,7 +106,8 @@ export default {
           Status: 'Status',
           Action: 'Action'
         }
-      ]
+      ],
+      loading: false
     }
   }
 }
@@ -174,6 +175,7 @@ export default {
         border: 0;
         border-bottom: 1px solid #E0E0E0;
         border-radius: 0;
+        font-size: 12px;
       }
     }
   }

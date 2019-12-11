@@ -1,5 +1,5 @@
 <template>
-  <div class="store">
+  <div class="store" v-loading="loading">
     <div class="search">
       <div class="title">Name</div>
       <input type="text" class="search-inp" placeholder="Search the dapp" @input="searchList" v-model="searchApp">
@@ -48,7 +48,8 @@ export default {
       copyAppList: [],
       searchApp: '',
       configVisible: false,
-      currentItem: {}
+      currentItem: {},
+      loading: false
     }
   },
   created () {
@@ -183,16 +184,14 @@ export default {
       }
     },
     async getAppLists () {
+      this.loading = true;
       let data = await getAppList();
       data.data.forEach(v => {
         v['loading'] = false;
       });
       this.appList = JSON.parse(JSON.stringify(data.data));
       this.copyAppList = JSON.parse(JSON.stringify(data.data));
-      // this.appList = [];
-      // this.copyAppList = [];
-      // this.appList.push(...data.data);
-      // this.copyAppList.push(...data.data);
+      this.loading = false;
     }
   }
 }

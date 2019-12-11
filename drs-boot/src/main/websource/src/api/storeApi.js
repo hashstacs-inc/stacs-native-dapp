@@ -43,14 +43,14 @@ export const postDeappConfig = async config => {
 }
 
 // 卸载deApp
-export const unInstallApp = async config => {
+export const stopApp = async config => {
   const { data } = await requestObj.request(Object.assign({ method: 'GET', url: '/dapp/uninstall/' + config.name }, { data: config }));
   return data;
 }
 
 // BD配置查询
 export const BDOptionInfo = async config => {
-  const { data } = await requestObj.request(Object.assign({ method: 'GET', url: '/drs/bd/query/' + config.name }, { data: config }));
+  const { data } = await requestObj.request(Object.assign({ method: 'GET', url: '/drs/bd/query/' + config.bdCode }, { data: config }));
   return data;
 }
 

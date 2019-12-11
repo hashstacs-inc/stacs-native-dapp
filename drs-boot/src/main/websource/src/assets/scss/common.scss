@@ -5,6 +5,10 @@
     border: 1px solid #E7E7E7 !important;
     border-radius: 0px;
   }
+  .el-textarea__inner {
+    border: 1px solid #E7E7E7 !important;
+    border-radius: 0px;
+  }
   .general-submit {
     margin: 0 !important;
     .el-form-item__content {
@@ -31,6 +35,9 @@
   border-radius: 0;
   .el-range-separator {
     padding: 0;
+  }
+  .el-range-input {
+    font-size: 12px;
   }
 }
 

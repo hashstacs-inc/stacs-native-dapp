@@ -1,42 +1,36 @@
 <template>
   <div class="drs-config">
     <Header />
-    <div class="drs-content">
+    <div class="drs-content"  v-loading="loading">
       <p class="title">DRS Configuration</p>
       <el-form :model="ruleForm" :rules="rules" ref="ruleForm" 
         label-width="190px" label-position="left">
-        <el-form-item label="Dapp-store Address" prop="dappStoreAddress">
-          <el-input v-model="ruleForm.dappStoreAddress" placeholder="Please enter url"></el-input>
+        <el-form-item label="Dapp-store Address" prop="dappStorePath">
+          <el-input v-model="ruleForm.dappStorePath" placeholder="Please enter url"></el-input>
         </el-form-item>
-        <el-form-item label="Domain URL" prop="domainURL">
-          <el-input v-model="ruleForm.domainURL" placeholder="Please enter url"></el-input>
+        <el-form-item label="Domain URL" prop="baseUrl">
+          <el-input v-model="ruleForm.baseUrl" placeholder="Please enter url"></el-input>
         </el-form-item>
-        <el-form-item label="Domain Pubkey" prop="domainPubkey">
-          <el-input v-model="ruleForm.domainPubkey" placeholder="Please enter url"></el-input>
+        <el-form-item label="Domain Pubkey" prop="chainPubKey">
+          <el-input v-model="ruleForm.chainPubKey" placeholder="Please enter url"></el-input>
         </el-form-item>
         <el-form-item label="Merchant PriKey" prop="merchantPriKey">
           <el-input v-model="ruleForm.merchantPriKey" placeholder="Please enter url"></el-input>
         </el-form-item>
-        <el-form-item label="Merchant Pubkey" prop="merchantPubkey">
-          <el-input v-model="ruleForm.merchantPubkey" disabled></el-input>
+        <el-form-item label="Merchant Aeskey" prop="aesKey">
+          <el-input v-model="ruleForm.aesKey"></el-input>
         </el-form-item>
-        <el-form-item label="Merchant Aeskey" prop="merchantAeskey">
-          <el-input v-model="ruleForm.merchantAeskey"></el-input>
+        <el-form-item label="Merchant ID" prop="merchantId">
+          <el-input v-model="ruleForm.merchantId"></el-input>
         </el-form-item>
-        <el-form-item label="Merchant ID" prop="merchantID">
-          <el-input v-model="ruleForm.merchantID"></el-input>
-        </el-form-item>
-        <el-form-item label="Callback URL" prop="callbackURL">
-          <el-input v-model="ruleForm.callbackURL" placeholder="Please enter url"></el-input>
+        <el-form-item label="Callback URL" prop="callbackUrl">
+          <el-input v-model="ruleForm.callbackUrl" placeholder="Please enter url"></el-input>
         </el-form-item>
         <el-form-item label="Download-path" prop="downloadPath">
           <el-input v-model="ruleForm.downloadPath" disabled></el-input>
         </el-form-item>
-        <el-form-item label="Dapp Configuration-path" prop="dappConfigurationPath">
-          <el-input v-model="ruleForm.dappConfigurationPath" disabled></el-input>
-        </el-form-item>
-        <el-form-item label="Base path" prop="basePath">
-          <el-input v-model="ruleForm.basePath" placeholder="Please enter url"></el-input>
+        <el-form-item label="Dapp Configuration-path" prop="configPath">
+          <el-input v-model="ruleForm.configPath" disabled></el-input>
         </el-form-item>
         <div class="foot-btn">
           <el-button @click="$router.push({ name: 'Home'})">Back</el-button>
@@ -54,51 +48,44 @@ export default {
   name: 'DrsConfig',
   data () {
     return {
+      loading: false,
       ruleForm: {
-        dappStoreAddress: '',
-        domainURL: '',
-        domainPubkey: '',
+        aesKey: '',
+        baseUrl: '',
+        callbackUrl: '',
+        chainPubKey: '',
+        merchantId: '',
         merchantPriKey: '',
-        merchantPubkey: '',
-        merchantAeskey: '',
-        merchantID: '',
-        callbackURL: '',
-        downloadPath: '',
-        dappConfigurationPath: '',
-        basePath: ''
+        configPath: '',
+        dappStorePath: '',
+        downloadPath: ''
       },
       rules: {
-        dappStoreAddress: [
+        dappStorePath: [
           { required: true, message: 'This filed is required', trigger: 'blur' }
         ],
-        domainURL: [
+        baseUrl: [
           { required: true, message: 'This filed is required', trigger: 'blur' }
         ],
-        domainPubkey: [
+        chainPubKey: [
           { required: true, message: 'This filed is required', trigger: 'blur' }
         ],
         merchantPriKey: [
           { required: true, message: 'This filed is required', trigger: 'blur' }
         ],
-        merchantPubkey: [
+        aesKey: [
           { required: true, message: 'This filed is required', trigger: 'blur' }
         ],
-        merchantAeskey: [
+        merchantId: [
           { required: true, message: 'This filed is required', trigger: 'blur' }
         ],
-        merchantID: [
-          { required: true, message: 'This filed is required', trigger: 'blur' }
-        ],
-        callbackURL: [
+        callbackUrl: [
           { required: true, message: 'This filed is required', trigger: 'blur' }
         ],
         downloadPath: [
           { required: true, message: 'This filed is required', trigger: 'blur' }
         ],
-        dappConfigurationPath: [
-          { required: true, message: 'This filed is required', trigger: 'blur' }
-        ],
-        basePath: [
+        configPath: [
           { required: true, message: 'This filed is required', trigger: 'blur' }
         ]
       },
@@ -120,25 +107,12 @@ export default {
   },
   methods: {
     async SysConfig () {
+      this.loading = true;
       let data = await getSysConfig();
-      // let data = {
-      //   code: '000000',
-      //   data: {
-      //     dappStoreAddress: 'baidu.comDappAddress',
-      //     domainURL: 'baidu.comDomainURL',
-      //     domainPubkey: 'baidu.comDomainPubkey',
-      //     merchantPriKey: 'baidu.comMerchantPriKey',
-      //     merchantPubkey: 'baidu.comMerchantPubkey',
-      //     merchantAeskey: 'baidu.comMerchantAeskey',
-      //     merchantID: 'baidu.comMerchantID',
-      //     callbackURL: 'baidu.comCallbackURL',
-      //     downloadPath: 'baidu.comDownloadPath',
-      //     dappConfigurationPath: 'baidu.comConfigurationPath',
-      //     basePath: 'baidu.comBasePath'
-      //   },
-      //   msg: 'SUCCESS'
-      // }
-      this.ruleForm = JSON.parse(JSON.stringify(data.data));
+      for(let i in data.data) {
+        this.ruleForm = Object.assign(this.ruleForm, data.data[i]);
+      }
+      this.loading = false;
     },
     changeTab (v) {
       this.$router.push({name: v.pathName});
@@ -146,9 +120,24 @@ export default {
     submitFrom () {
       this.$refs['ruleForm'].validate(async valid => {
         if (valid) {
+          let fromData = {
+            domainConfig: {
+              aesKey: this.ruleForm.aesKey,
+              baseUrl: this.ruleForm.baseUrl,
+              callbackUrl: this.ruleForm.callbackUrl,
+              chainPubKey: this.ruleForm.chainPubKey,
+              merchantId: this.ruleForm.merchantId,
+              merchantPriKey: this.ruleForm.merchantPriKey,
+            },
+            drsConfig: {
+              configPath: this.ruleForm.configPath,
+              dappStorePath: this.ruleForm.dappStorePath,
+              downloadPath: this.ruleForm.downloadPath
+            }
+          }
           let params = {
             slient: true,
-            data: Object.assign({}, this.ruleForm)
+            data: Object.assign({}, fromData)
           };
           let data = await modifySysConfig(params);
           if (data.code === '000000') {
