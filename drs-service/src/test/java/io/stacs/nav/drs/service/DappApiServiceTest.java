@@ -5,6 +5,8 @@ import io.stacs.nav.drs.ConfigWithoutDataSource;
 import io.stacs.nav.drs.api.model.bd.BusinessDefine;
 import io.stacs.nav.drs.api.model.query.QueryBlockVO;
 import io.stacs.nav.drs.api.model.query.QueryTxListVO;
+import io.stacs.nav.drs.service.scheduler.FailoverSchedule;
+import io.stacs.nav.drs.service.service.BlockChainService;
 import io.stacs.nav.drs.service.service.QueryService;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.Test;
@@ -21,6 +23,8 @@ import org.springframework.boot.test.context.SpringBootTest;
 public class DappApiServiceTest {
 
     @Autowired private QueryService queryService;
+    @Autowired private BlockChainService blockChainService;
+    @Autowired private FailoverSchedule failoverSchedule;
 
     @Test public void test1() {
         QueryBlockVO vo = new QueryBlockVO();
@@ -34,6 +38,15 @@ public class DappApiServiceTest {
         vo.setPageSize(10);
         vo.setPageNum(1);
         queryService.queryTx(vo);
+    }
+
+    @Test public void test3() {
+        Integer height = blockChainService.queryCurrentHeight();
+        System.out.println(height);
+    }
+
+    @Test public void test4() {
+        failoverSchedule.exe();
     }
 
     @Test public void test() {

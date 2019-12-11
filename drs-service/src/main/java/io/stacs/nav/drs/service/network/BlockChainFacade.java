@@ -15,7 +15,6 @@ import io.stacs.nav.drs.api.model.query.QueryTxListVO;
 import io.stacs.nav.drs.api.model.query.QueryTxVO;
 import io.stacs.nav.drs.api.model.tx.CoreTransactionVO;
 import io.stacs.nav.drs.service.config.DomainConfig;
-import io.stacs.nav.drs.service.dao.BlockVO;
 import io.stacs.nav.drs.service.utils.CasDecryptResponse;
 import io.stacs.nav.drs.service.utils.DrsHttpClient;
 import io.stacs.nav.drs.service.utils.LambdaExceptionUtil;
@@ -116,7 +115,7 @@ import static io.stacs.nav.drs.service.utils.Pair.of;
         return commonGetApi(BD_QUERY, params);
     }
 
-    public Optional<Long> queryCurrentHeight() {
+    public Optional<Integer> queryCurrentHeight() {
         return commonGetApi(QUERY_MAX_BLOCK_HEIGHT, null);
     }
 
@@ -143,7 +142,7 @@ import static io.stacs.nav.drs.service.utils.Pair.of;
         return commonGetApi(QUERY_ALL_DOMAIN, null);
     }
 
-    public Optional<List<BlockVO>> queryBlocks(long startHeight, long endHeight) {
+    public Optional<List<JSONObject>> queryBlocks(long startHeight, long endHeight) {
         return commonGetApi(QUERY_BLOCK_VO, Lists.newArrayList(Pair.of("startHeight", String.valueOf(startHeight)),
                                                                Pair.of("endHeight", String.valueOf(endHeight))));
     }

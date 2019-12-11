@@ -11,8 +11,8 @@ CREATE TABLE IF NOT EXISTS `tx_request` (
     `block_height` bigint(20) DEFAULT NULL COMMENT 'block height',
     `tx_receipt` TEXT DEFAULT NULL COMMENT 'tx receipt json data',
     `status` varchar(16) NOT NULL COMMENT 'status,INIT、SUBMITTING、PROCESSING、END',
-    `create_time` bigint(16) NOT NULL DEFAULT CURRENT_TIMESTAMP  COMMENT 'create time',
-    `update_time` bigint(16) DEFAULT CURRENT_TIMESTAMP COMMENT 'update time',
+    `create_time` datetime NOT NULL COMMENT 'create time',
+    `update_time` datetime DEFAULT NULL COMMENT 'update time',
     PRIMARY KEY (`id`),
     UNIQUE (`tx_id`)
 ) ;
@@ -22,8 +22,8 @@ CREATE TABLE IF NOT EXISTS `block_callback` (
  `block_height` bigint(20) DEFAULT NULL COMMENT 'block height',
  `block_data` TEXT DEFAULT NULL COMMENT 'block json data',
  `status` varchar(16) NOT NULL COMMENT 'status,INIT、PROCESSED',
- `create_time` bigint(16) NOT NULL DEFAULT CURRENT_TIMESTAMP  COMMENT 'create time',
- `update_time` bigint(16) DEFAULT CURRENT_TIMESTAMP COMMENT 'update time',
+ `create_time` datetime NOT NULL  COMMENT 'create time',
+ `update_time` datetime DEFAULT NULL COMMENT 'update time',
  PRIMARY KEY (`id`),
  UNIQUE (`block_height`)
 );
@@ -39,8 +39,8 @@ CREATE TABLE IF NOT EXISTS `app_info` (
   `icon` varchar(128) DEFAULT NULL COMMENT 'app icon url',
   `author` varchar(64) DEFAULT NULL COMMENT 'author of app ',
   `remark` varchar(128) DEFAULT NULL COMMENT 'the app description',
-  `create_time` bigint(16) NOT NULL DEFAULT CURRENT_TIMESTAMP  COMMENT 'create time',
-  `update_time` bigint(16) DEFAULT CURRENT_TIMESTAMP COMMENT 'update time',
+  `create_time` datetime NOT NULL  COMMENT 'create time',
+  `update_time` datetime DEFAULT NULL COMMENT 'update time',
   PRIMARY KEY (`id`),
   UNIQUE (`name`)
 );
