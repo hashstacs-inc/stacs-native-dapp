@@ -4,7 +4,7 @@
   "data":[
     {
 
-      "showName":"测试App1",
+      "showName":"示例App",
       "name":"dapp-sample",
       "icon":"appstore/img/icon1.png",
       "author":"test",
@@ -12,16 +12,7 @@
       "downloadUrl":"http://cloud.myphoto.top/dapp-sample-1.0.0-SNAPSHOT-dapp.jar"
     },
     {
-
-      "showName":"测试App2",
-      "name":"dapp-sample",
-      "icon":"appstore/img/icon2.png",
-      "author":"test",
-      "remark":"this is a test app",
-      "downloadUrl":"http://cloud.myphoto.top/dapp-sample-1.0.0-SNAPSHOT-dapp.jar"
-    },
-    {
-      "showName":"浏览器",
+      "showName":"区块链浏览器",
       "name":"native-explorer",
       "icon":"appstore/img/icon2.png",
       "author":"test",
