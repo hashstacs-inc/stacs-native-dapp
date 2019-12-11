@@ -12,6 +12,10 @@ import io.stacs.nav.drs.boot.enums.DappStatus;
 import io.stacs.nav.drs.boot.service.IDappLifecycleManage;
 import io.stacs.nav.drs.boot.service.dapp.IDappService;
 import io.stacs.nav.drs.boot.service.dappstore.DappStoreService;
+import io.stacs.nav.drs.service.config.DomainConfig;
+import io.stacs.nav.drs.service.config.DrsConfig;
+import io.stacs.nav.drs.service.utils.config.ConfigurationManager;
+import io.stacs.nav.drs.service.vo.ConfigVO;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -33,6 +37,8 @@ import java.util.stream.Collectors;
     @Autowired IDappService dappService;
 
     @Autowired DappStoreService dappStoreService;
+
+    @Autowired ConfigurationManager manager;
 
     /**
      * install dapp
@@ -193,4 +199,28 @@ import java.util.stream.Collectors;
         return DappStatus.STOPPED;
     }
 
+    /**
+     * querySysConfig
+     *
+     * @return
+     */
+    @GetMapping("/querySysConfig") public RespData<ConfigVO> querySysConfig() throws IOException {
+        log.info("querySysConfig is start");
+        ConfigVO vo = new ConfigVO();
+        vo.setDomainConfig(manager.getConfigByClass(DomainConfig.class));
+        vo.setDrsConfig(manager.getConfigByClass(DrsConfig.class));
+        return RespData.success(vo);
+    }
+
+    /**
+     * querySysConfig
+     *
+     * @return
+     */
+    @PostMapping("/sysConfig")public RespData<Boolean> sysConfig(@RequestBody ConfigVO vo) throws IOException {
+        log.info("sysConfig {}",vo);
+        manager.updateConfig(vo.getDomainConfig());
+        manager.updateConfig(vo.getDrsConfig());
+        return RespData.success(true);
+    }
 }

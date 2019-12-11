@@ -19,6 +19,14 @@
       "author":"test",
       "remark":"this is a test app",
       "downloadUrl":"http://cloud.myphoto.top/dapp-sample-1.0.0-SNAPSHOT-dapp.jar"
+    },
+    {
+      "showName":"浏览器",
+      "name":"dapp-explorer",
+      "icon":"appstore/img/icon2.png",
+      "author":"test",
+      "remark":"this is a brows app",
+      "downloadUrl":"/data/home/admin/stacs.drs/data/back-end-1.0.0-SNAPSHOT-debug.jar"
     }
   ]
 }
