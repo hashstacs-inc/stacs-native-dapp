@@ -146,7 +146,10 @@ import static io.stacs.nav.drs.service.utils.ResourceLoader.getManifest;
         Attributes manifestMainAttributes = bizArchive.getManifest().getMainAttributes();
         dapp.setName(manifestMainAttributes.getValue(ARK_BIZ_NAME));
         dapp.setVersion(manifestMainAttributes.getValue(ARK_BIZ_VERSION));
-        dapp.setContextPath(manifestMainAttributes.getValue(WEB_CONTEXT_PATH));
+        String contextPath = manifestMainAttributes.getValue(WEB_CONTEXT_PATH);
+        log.info("[getInfo]appName:{}",dapp.getName());
+        log.info("[getInfo]contextPath:{}",contextPath);
+        dapp.setContextPath(contextPath);
 
         String usedDrsVersion = manifestMainAttributes.getValue(DRS_VERSION_KEY);
         log.info("[getInfo]dapp usedDrsVersion:{}", usedDrsVersion);

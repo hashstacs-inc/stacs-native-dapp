@@ -22,7 +22,7 @@
     },
     {
       "showName":"浏览器",
-      "name":"explorer",
+      "name":"native-explorer",
       "icon":"appstore/img/icon2.png",
       "author":"test",
       "remark":"this is a brows app",
