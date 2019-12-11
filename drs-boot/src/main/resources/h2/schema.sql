@@ -1,4 +1,5 @@
 
+
 CREATE TABLE IF NOT EXISTS `tx_request` (
     `id` bigint(20) NOT NULL AUTO_INCREMENT,
     `tx_id` varchar(64) NOT NULL COMMENT 'the transaction id',
@@ -10,8 +11,8 @@ CREATE TABLE IF NOT EXISTS `tx_request` (
     `block_height` bigint(20) DEFAULT NULL COMMENT 'block height',
     `tx_receipt` TEXT DEFAULT NULL COMMENT 'tx receipt json data',
     `status` varchar(16) NOT NULL COMMENT 'status,INIT、SUBMITTING、PROCESSING、END',
-    `create_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP  COMMENT 'create time',
-    `update_time` datetime DEFAULT CURRENT_TIMESTAMP COMMENT 'update time',
+    `create_time` bigint(16) NOT NULL DEFAULT CURRENT_TIMESTAMP  COMMENT 'create time',
+    `update_time` bigint(16) DEFAULT CURRENT_TIMESTAMP COMMENT 'update time',
     PRIMARY KEY (`id`),
     UNIQUE (`tx_id`)
 ) ;
@@ -21,8 +22,8 @@ CREATE TABLE IF NOT EXISTS `block_callback` (
  `block_height` bigint(20) DEFAULT NULL COMMENT 'block height',
  `block_data` TEXT DEFAULT NULL COMMENT 'block json data',
  `status` varchar(16) NOT NULL COMMENT 'status,INIT、PROCESSED',
- `create_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP  COMMENT 'create time',
- `update_time` datetime DEFAULT CURRENT_TIMESTAMP COMMENT 'update time',
+ `create_time` bigint(16) NOT NULL DEFAULT CURRENT_TIMESTAMP  COMMENT 'create time',
+ `update_time` bigint(16) DEFAULT CURRENT_TIMESTAMP COMMENT 'update time',
  PRIMARY KEY (`id`),
  UNIQUE (`block_height`)
 );
@@ -38,8 +39,8 @@ CREATE TABLE IF NOT EXISTS `app_info` (
   `icon` varchar(128) DEFAULT NULL COMMENT 'app icon url',
   `author` varchar(64) DEFAULT NULL COMMENT 'author of app ',
   `remark` varchar(128) DEFAULT NULL COMMENT 'the app description',
-  `create_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP  COMMENT 'create time',
-  `update_time` datetime DEFAULT CURRENT_TIMESTAMP COMMENT 'update time',
+  `create_time` bigint(16) NOT NULL DEFAULT CURRENT_TIMESTAMP  COMMENT 'create time',
+  `update_time` bigint(16) DEFAULT CURRENT_TIMESTAMP COMMENT 'update time',
   PRIMARY KEY (`id`),
   UNIQUE (`name`)
 );
@@ -60,7 +61,7 @@ IF NOT EXISTS `block` (
 	`tx_receipt_root_hash` VARCHAR (64) NOT NULL COMMENT 'tx receipt merkel tree root hash',
 	`ca_root_hash` VARCHAR (64) NOT NULL COMMENT 'ca merkel tree root hash',
 	`state_root_hash` VARCHAR (64)  COMMENT 'state root hash',
-	`block_time` datetime (3) NOT NULL COMMENT 'block time',
+	`block_time` bigint(16) NOT NULL COMMENT 'block time',
 	`tx_num` INT NOT NULL DEFAULT 0 COMMENT 'transaction num',
 	`total_tx_num` BIGINT (20) DEFAULT 0 COMMENT 'total transaction num',
 	`total_block_size` DECIMAL(8,2) DEFAULT NULL COMMENT 'total block size,unit:kb',
@@ -104,8 +105,8 @@ IF NOT EXISTS `policy` (
 	`expression` VARCHAR(64) DEFAULT NULL COMMENT 'expression',
 	`require_auth_ids` VARCHAR(1024) DEFAULT NULL COMMENT 'require_auth_ids',
 	`version` int(8) DEFAULT 0 COMMENT 'the policy version',
-	`create_time` datetime (3) NOT NULL COMMENT 'create time',
-	`update_time` datetime (3) DEFAULT NULL COMMENT 'update time',
+	`create_time` bigint(16)  NOT NULL COMMENT 'create time',
+	`update_time` bigint(16)  DEFAULT NULL COMMENT 'update time',
 	PRIMARY KEY (`id`),
 	UNIQUE  (`policy_id`)
 );
@@ -116,12 +117,12 @@ IF NOT EXISTS `transaction` (
 	`tx_id` VARCHAR (64) NOT NULL COMMENT 'transaction id',
 	`biz_model` TEXT DEFAULT NULL COMMENT 'the save data create the biz',
 	`policy_id` VARCHAR (32) NOT NULL COMMENT 'policy id',
-	`lock_time` datetime(3) DEFAULT NULL COMMENT 'the lock time create the tx . use in rs and slave to deal tx',
+	`lock_time` bigint(16) DEFAULT NULL COMMENT 'the lock time create the tx . use in rs and slave to deal tx',
 	`sender` VARCHAR (32) NOT NULL COMMENT 'the rsId if the sender  for the tx',
 	`version` VARCHAR (32) NOT NULL COMMENT 'the version create the tx',
 	`block_height` BIGINT (20) NOT NULL COMMENT 'the block height create the tx',
-	`block_time` datetime (3) NOT NULL COMMENT 'the create time create the block for the tx',
-	`send_time` datetime (3) NOT NULL COMMENT 'the transaction create time',
+	`block_time` bigint(16) NOT NULL COMMENT 'the create time create the block for the tx',
+	`send_time` bigint(16) NOT NULL COMMENT 'the transaction create time',
 	`action_datas` mediumtext DEFAULT NULL COMMENT 'the action list by json',
 	`sign_datas` varchar(4096) DEFAULT NULL COMMENT 'the signatures by json',
 	`execute_result` varchar(24) DEFAULT NULL COMMENT 'tx execute result,0:fail,1:success',
@@ -153,8 +154,8 @@ CREATE TABLE IF NOT EXISTS `business_define` (
   `init_policy` varchar(32) DEFAULT NULL COMMENT 'bd init policy',
   `functions` varchar(10240) NOT NULL COMMENT 'bd functions',
   `bd_version` varchar(4) NOT NULL DEFAULT '' COMMENT 'bd version',
-  `create_time` datetime (3) NOT NULL COMMENT 'create time',
-	`update_time` datetime (3) DEFAULT NULL COMMENT 'update time',
+  `create_time` bigint(16) NOT NULL COMMENT 'create time',
+	`update_time` bigint(16) DEFAULT NULL COMMENT 'update time',
   PRIMARY KEY (`id`),
 	UNIQUE (`code`)
 );

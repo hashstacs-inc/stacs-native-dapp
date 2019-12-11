@@ -1,0 +1,114 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mappers.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="io.stacs.nav.drs.service.dao.BusinessDefineDao">
+    <!-- Result Map -->
+    <resultMap id="baseResultMap" type="io.stacs.nav.drs.service.dao.po.BusinessDefinePO">
+        <result column="id" property="id"/>
+        <result column="code" property="code"/>
+        <result column="name" property="name"/>
+        <result column="bd_type" property="bdType"/>
+        <result column="desc" property="desc"/>
+        <result column="init_permission" property="initPermission"/>
+        <result column="init_policy" property="initPolicy"/>
+        <result column="functions" property="functions"/>
+        <result column="bd_version" property="bdVersion"/>
+    </resultMap>
+    <!-- business_define table all fields -->
+    <sql id="baseColumnList">
+        id,code,`name`,bd_type,`desc`,init_permission,init_policy,functions,bd_version,create_time,update_time
+    </sql>
+    <!-- 查询条件 -->
+    <sql id="baseWhereClause">
+        where 1=1
+        <trim suffixOverrides=",">
+            <if test="id != null">
+                and id=#{id}
+            </if>
+            <if test="code != null and code != ''">
+                and code=#{code}
+            </if>
+            <if test="name != null and name != ''">
+                and name=#{name}
+            </if>
+            <if test="bdType != null and bdType != ''">
+                and bd_type=#{bdType}
+            </if>
+            <if test="desc != null and desc != ''">
+                and `desc`=#{desc}
+            </if>
+            <if test="initPermission != null and initPermission != ''">
+                and init_permission=#{initPermission}
+            </if>
+            <if test="initPolicy != null and initPolicy != ''">
+                and init_policy=#{initPolicy}
+            </if>
+            <if test="functions != null and functions != ''">
+                and functions=#{functions}
+            </if>
+            <if test="bdVersion != null and bdVersion != ''">
+                and bd_version=#{bdVersion}
+            </if>
+            <if test="createTime != null">
+                and create_time=#{createTime}
+            </if>
+            <if test="updateTime != null">
+                and update_time=#{updateTime}
+            </if>
+        </trim>
+    </sql>
+    <!-- 插入记录 -->
+    <insert id="add" parameterType="Object">
+        insert into
+        business_define(code,`name`,bd_type,`desc`,init_permission,init_policy,functions,bd_version,create_time,update_time)
+        values(#{code},#{name},#{bdType},#{desc},#{initPermission},#{initPolicy},#{functions},#{bdVersion},#{createTime},#{updateTime})
+    </insert>
+    <!-- 删除记录 -->
+    <delete id="delete" parameterType="Object">
+        delete from business_define where
+        id=#{id}
+    </delete>
+    <!-- 根据id查询 -->
+    <select id="queryById" resultMap="baseResultMap" parameterType="Object">
+        select
+        <include refid="baseColumnList"/>
+        from business_define where id=#{id}
+    </select>
+    <!-- 列表总数 -->
+    <select id="queryByCount" resultType="java.lang.Integer"
+            parameterType="Object">
+        select count(1) from business_define
+        <include refid="baseWhereClause"/>
+    </select>
+    <!-- 查询列表 -->
+    <select id="queryByList" resultMap="baseResultMap"
+            parameterType="Object">
+        select
+        <include refid="baseColumnList"/>
+        from business_define
+        <include refid="baseWhereClause"/>
+    </select>
+    <!-- 以上为工具自动生成 -->
+
+    <select id="queryByCode" resultMap="baseResultMap" parameterType="string">
+        select
+        <include refid="baseColumnList"/>
+        from business_define where `code` = #{code}
+    </select>
+
+    <select id="isExists" resultType="java.lang.Boolean">
+        select count(1)
+        from business_define
+        where code in
+        <foreach collection="array" item="code" open="(" close=")" separator=",">
+            #{code}
+        </foreach>
+    </select>
+
+    <select id="queryAll" resultMap="baseResultMap">
+        select
+        <include refid="baseColumnList"/>
+        from business_define
+    </select>
+
+</mapper>
+

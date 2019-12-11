@@ -9,6 +9,8 @@ import lombok.Setter;
  */
 @Getter @Setter public class BusinessDefinePO {
 
+    private Long id;
+
     private String code;
 
     private String name;
@@ -24,5 +26,7 @@ import lombok.Setter;
     private String functions;
 
     private String bdVersion;
+
+    private Long createTime;
 
 }

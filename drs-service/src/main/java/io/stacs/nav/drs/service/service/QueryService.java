@@ -5,6 +5,8 @@ import com.alipay.sofa.ark.spi.model.Plugin;
 import com.alipay.sofa.ark.spi.service.ArkInject;
 import com.alipay.sofa.ark.spi.service.plugin.PluginManagerService;
 import com.alipay.sofa.ark.spi.service.registry.RegistryService;
+import com.github.pagehelper.PageHelper;
+import com.github.pagehelper.PageInfo;
 import io.stacs.nav.drs.api.IQueryService;
 import io.stacs.nav.drs.api.exception.DappException;
 import io.stacs.nav.drs.api.model.BaseTxVO;
@@ -74,12 +76,13 @@ import static io.stacs.nav.drs.api.exception.DappError.FUNCTION_NOT_FIND_ERROR;
         return txDao.queryByTxId(vo.getTxId());
     }
 
-    @Override public List<TransactionPO> queryTx(QueryTxListVO vo) {
-        return txDao.queryTxWithCondition(vo);
+    @Override public PageInfo<TransactionPO> queryTx(QueryTxListVO vo) {
+        PageHelper.startPage(vo.getPageNum(), vo.getPageSize());
+        return PageInfo.of(txDao.queryTxWithCondition(vo));
     }
 
-    @Override public List<BlockVO> queryBlocks(QueryBlockVO vo) {
-        return blockDao.queryByCond(vo);
+    @Override public PageInfo<BlockVO> queryBlocks(QueryBlockVO vo) {
+        return PageInfo.of(blockDao.queryByCond(vo));
     }
 
     public BlockHeaderVO queryBlockByHeight(QueryBlockByHeightVO vo) {

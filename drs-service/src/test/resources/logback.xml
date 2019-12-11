@@ -13,9 +13,9 @@
               value="%d [%t] %-5p %c{0} - %m [%X{X-B3-TraceId:-},%X{X-B3-SpanId:-},%X{X-Span-Export:-}]%n%xThrowable{500, FULL, bar}"/>
 
     <!-- 项目名称 -->
-    <property name="APP_NAME" value="drs-service"/>​
+    <property name="APP_NAME" value="stacs.drs"/>​
     <!-- 日志文件目录 -->
-    <property name="LOG_PATH" value="logs/${APP_NAME}}"/>​
+    <property name="LOG_PATH" value="${LOG_PATH:-drs}/${log_host}"/>​
     <!-- 归档文件保留的时间，即只保留几天前的归档文件，单位与fileNamePattern中配置的最小时间单位相同 -->
     <property name="MAX_HISTORY" value="7"/>
 
@@ -29,6 +29,18 @@
                 bar}
             </pattern>
         </encoder>
+    </appender>
+
+    <appender name="BIZ-APPENDER" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <encoder>
+            <pattern>${COMMON_LOG_PATTERN}</pattern>
+        </encoder>
+        <file>${LOG_PATH}/${APP_NAME}-biz.log</file>
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <fileNamePattern>${LOG_PATH}/${APP_NAME}-biz.log.%d{yyyy-MM-dd}.gz</fileNamePattern>
+            <maxHistory>${MAX_HISTORY}</maxHistory>
+            <totalSizeCap>${TOTAL_SIZE_CAP}</totalSizeCap>
+        </rollingPolicy>
     </appender>
 
     <appender name="DEFAULT-APPENDER" class="ch.qos.logback.core.rolling.RollingFileAppender">
@@ -57,6 +69,22 @@
             <!--<totalSizeCap>${TOTAL_SIZE_CAP}</totalSizeCap>-->
         </rollingPolicy>
     </appender>
+
+    <logger name="io.stacs.nav" level="INFO" additivity="false">
+        <appender-ref ref="BIZ-APPENDER"/>
+        <appender-ref ref="ERROR-APPENDER"/>
+        <appender-ref ref="DEFAULT-APPENDER"/>
+    </logger>
+
+
+    <logger name="io.stacs.nav.drs.boot.dao" level="debug" additivity="false">
+        <appender-ref ref="CONSOLE"/>
+    </logger>
+    <logger name="io.stacs.nav.drs.service.dao" level="debug" additivity="false">
+        <appender-ref ref="CONSOLE"/>
+    </logger>
+    <logger name="io.stacs.nav.drs.service.dao.BlockCallbackDao" level="OFF"/>
+
 
     <root level="INFO">
         <appender-ref ref="DEFAULT-APPENDER"/>
