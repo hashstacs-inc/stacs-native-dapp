@@ -14,8 +14,11 @@ import io.stacs.nav.drs.boot.service.dapp.IDappService;
 import io.stacs.nav.drs.boot.service.dappstore.DappStoreService;
 import io.stacs.nav.drs.service.config.DomainConfig;
 import io.stacs.nav.drs.service.config.DrsConfig;
+import io.stacs.nav.drs.service.utils.BeanConvertor;
 import io.stacs.nav.drs.service.utils.config.ConfigurationManager;
 import io.stacs.nav.drs.service.vo.ConfigVO;
+import io.stacs.nav.drs.service.vo.config.DomainConfigVO;
+import io.stacs.nav.drs.service.vo.config.DrsConfigVO;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -119,11 +122,10 @@ import java.util.stream.Collectors;
         try {
             return RespData.success(dappStoreService.queryApps());
         } catch (Exception e) {
-            log.error("has error",e);
+            log.error("has error", e);
             return RespData.fail(DappError.DRS_NETWORK_COMMON_ERROR);
         }
     }
-
 
     @GetMapping("/installList") public RespData installList() {
         return RespData.success(dappLifecycleManage.queryCurrentApps());
@@ -204,11 +206,16 @@ import java.util.stream.Collectors;
      *
      * @return
      */
-    @GetMapping("/querySysConfig") public RespData<ConfigVO> querySysConfig() throws IOException {
+    @GetMapping("/querySysConfig") @ResponseBody public RespData<ConfigVO> querySysConfig() throws IOException {
         log.info("querySysConfig is start");
         ConfigVO vo = new ConfigVO();
-        vo.setDomainConfig(manager.getConfigByClass(DomainConfig.class));
-        vo.setDrsConfig(manager.getConfigByClass(DrsConfig.class));
+        DomainConfig domainConfig = manager.getConfigByClass(DomainConfig.class);
+        DomainConfigVO domainConfigVO = BeanConvertor.convertBean(domainConfig, DomainConfigVO.class);
+        vo.setDomainConfig(domainConfigVO);
+
+        DrsConfig drsConfig = manager.getConfigByClass(DrsConfig.class);
+        DrsConfigVO drsConfigVO = BeanConvertor.convertBean(drsConfig, DrsConfigVO.class);
+        vo.setDrsConfig(drsConfigVO);
         return RespData.success(vo);
     }
 
@@ -217,10 +224,11 @@ import java.util.stream.Collectors;
      *
      * @return
      */
-    @PostMapping("/sysConfig")public RespData<Boolean> sysConfig(@RequestBody ConfigVO vo) throws IOException {
-        log.info("sysConfig {}",vo);
-        manager.updateConfig(vo.getDomainConfig());
-        manager.updateConfig(vo.getDrsConfig());
+    @PostMapping("/sysConfig") @ResponseBody public RespData<Boolean> sysConfig(@RequestBody ConfigVO vo)
+        throws IOException {
+        log.info("sysConfig {}", vo);
+        manager.updateConfig(BeanConvertor.convertBean(vo.getDomainConfig(), DomainConfig.class));
+        manager.updateConfig(BeanConvertor.convertBean(vo.getDrsConfig(), DrsConfig.class));
         return RespData.success(true);
     }
 }

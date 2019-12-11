@@ -1,7 +1,7 @@
 package io.stacs.nav.drs.service.vo;
 
-import io.stacs.nav.drs.service.config.DomainConfig;
-import io.stacs.nav.drs.service.config.DrsConfig;
+import io.stacs.nav.drs.service.vo.config.DomainConfigVO;
+import io.stacs.nav.drs.service.vo.config.DrsConfigVO;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -10,7 +10,7 @@ import lombok.Setter;
  * @description
  * @date 2019-12-11
  */
-@Getter @Setter public class ConfigVO{
-    private DomainConfig domainConfig;
-    private DrsConfig drsConfig;
+@Getter @Setter public class ConfigVO {
+    private DomainConfigVO domainConfig;
+    private DrsConfigVO drsConfig;
 }
