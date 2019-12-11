@@ -31,6 +31,18 @@
         </encoder>
     </appender>
 
+    <appender name="BIZ-APPENDER" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <encoder>
+            <pattern>${COMMON_LOG_PATTERN}</pattern>
+        </encoder>
+        <file>${LOG_PATH}/${APP_NAME}-biz.log</file>
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <fileNamePattern>${LOG_PATH}/${APP_NAME}-biz.log.%d{yyyy-MM-dd}.gz</fileNamePattern>
+            <maxHistory>${MAX_HISTORY}</maxHistory>
+            <totalSizeCap>${TOTAL_SIZE_CAP}</totalSizeCap>
+        </rollingPolicy>
+    </appender>
+
     <appender name="DEFAULT-APPENDER" class="ch.qos.logback.core.rolling.RollingFileAppender">
         <encoder>
             <pattern>${COMMON_LOG_PATTERN}</pattern>
@@ -57,7 +69,13 @@
             <!--<totalSizeCap>${TOTAL_SIZE_CAP}</totalSizeCap>-->
         </rollingPolicy>
     </appender>
-   
+
+    <logger name="io.stacs.nav" level="INFO" additivity="false">
+        <appender-ref ref="BIZ-APPENDER"/>
+        <appender-ref ref="ERROR-APPENDER"/>
+        <appender-ref ref="DEFAULT-APPENDER"/>
+    </logger>
+
     <root level="INFO">
         <appender-ref ref="DEFAULT-APPENDER"/>
         <appender-ref ref="ERROR-APPENDER"/>
