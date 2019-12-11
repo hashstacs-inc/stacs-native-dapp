@@ -145,10 +145,12 @@ import static io.stacs.nav.drs.service.utils.ResourceLoader.getManifest;
         Dapp dapp = new Dapp();
         Attributes manifestMainAttributes = bizArchive.getManifest().getMainAttributes();
         dapp.setName(manifestMainAttributes.getValue(ARK_BIZ_NAME));
-        dapp.setVersion(manifestMainAttributes.getValue(ARK_BIZ_VERSION));
+        String appVersion = manifestMainAttributes.getValue(ARK_BIZ_VERSION);
+        dapp.setVersion(appVersion);
         String contextPath = manifestMainAttributes.getValue(WEB_CONTEXT_PATH);
         log.info("[getInfo]appName:{}",dapp.getName());
         log.info("[getInfo]contextPath:{}",contextPath);
+        log.info("[getInfo]version:{}",appVersion);
         dapp.setContextPath(contextPath);
 
         String usedDrsVersion = manifestMainAttributes.getValue(DRS_VERSION_KEY);
@@ -317,10 +319,12 @@ import static io.stacs.nav.drs.service.utils.ResourceLoader.getManifest;
             log.warn("[unInstall] app is not exists,appName:{}", appName);
             throw new DappException(DappError.DAPP_NOT_EXISTS);
         }
+        DappStatus toStatus = dapp.getStatus();
         String runError = null;
         try {
-            ClientResponse response = ArkClient.uninstallBiz(appName, dapp.getVersion());
+            ClientResponse response = ArkClient.uninstallBiz(dapp.getName(), dapp.getVersion());
             if (ResponseCode.SUCCESS.equals(response.getCode())) {
+                toStatus = DappStatus.STOPPED;
             } else {
                 runError = response.getMessage();
             }
@@ -332,8 +336,12 @@ import static io.stacs.nav.drs.service.utils.ResourceLoader.getManifest;
             log.warn("dapp uninstall is failed,{}", runError);
             throw new DappException(runError);
         }
-        //uninstall from db
-        dappService.unInstall(appName);
+        //update status
+        dappService.updateStatus(appName, toStatus, runError);
+        if (runError != null) {
+            log.warn("dapp install is failed,{}", runError);
+            throw new DappException(runError);
+        }
         return true;
     }
 
