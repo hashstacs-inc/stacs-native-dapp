@@ -23,7 +23,6 @@ import org.springframework.boot.autoconfigure.orm.jpa.HibernateJpaAutoConfigurat
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.FilterType;
-import org.springframework.test.context.TestPropertySource;
 
 /**
  * A sample spring boot web project repackage as ark fat jar.
@@ -31,8 +30,8 @@ import org.springframework.test.context.TestPropertySource;
  * @author suimi
  * @since 1.0.0
  */
-@TestPropertySource(properties = "scheduling.enable=false") @MapperScan({"io.stacs.nav.drs.*.dao"}) @Configuration
-@ComponentScan(excludeFilters = @ComponentScan.Filter(type = FilterType.ASSIGNABLE_TYPE, value = CommandLineRunner.class))
-@EnableAutoConfiguration(exclude = {HibernateJpaAutoConfiguration.class}) public class ConfigWithoutDataSource {
+ @MapperScan({"io.stacs.nav.drs.*.dao"}) @Configuration
+ @ComponentScan(excludeFilters = @ComponentScan.Filter(type = FilterType.ASSIGNABLE_TYPE, value = CommandLineRunner.class))
+ @EnableAutoConfiguration(exclude = {HibernateJpaAutoConfiguration.class}) public class ConfigWithoutDataSource {
 
 }

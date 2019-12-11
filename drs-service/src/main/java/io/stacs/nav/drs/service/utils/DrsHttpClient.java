@@ -47,6 +47,10 @@ import java.util.function.Predicate;
     @Nonnull public static ResponseBody sendGet(String url) throws IOException {
         Response response = client.newCall(newGetRequest(url)).execute();
         assert response.body() != null;
+        if (!response.isSuccessful()) {
+            log.error("request error, response: {}", response.body().string());
+            throw new ResponseStatusException(HttpStatus.valueOf(response.code()));
+        }
         return response.body();
     }
 

@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="io.stacs.nav.drs.service.dao.PolicyDao">
+    <!-- Result Map -->
+    <resultMap id="baseResultMap" type="io.stacs.nav.drs.service.dao.po.PolicyPO">
+        <result column="policy_id" property="policyId"/>
+        <result column="policy_name" property="policyName"/>
+        <result column="decision_type" property="decisionType"/>
+        <result column="vote_pattern" property="votePattern"/>
+        <result column="callback_type" property="callbackType"/>
+        <result column="domain_ids" property="domainIds"/>
+        <result column="verifyNum" property="verifyNum"/>
+        <result column="mustDomainIds" property="mustDomainIds"/>
+        <result column="create_time" property="createTime"/>
+        <result column="expression" property="expression"/>
+        <result column="require_auth_ids" property="requireAuthIds"/>
+        <result column="version" property="version"/>
+        <result column="update_time" property="updateTime"/>
+    </resultMap>
+    <!-- policy table all fields -->
+    <sql id="baseColumnList">
+		policy_id,policy_name,decision_type,vote_pattern,callback_type,domain_ids,verifyNum,mustDomainIds,create_time,expression,require_auth_ids,version,update_time
+	</sql>
+    <!-- 查询条件 -->
+    <sql id="baseWhereClause">
+        where 1=1
+        <trim suffixOverrides=",">
+            <if test="policyId != null and policyId != ''">
+                and policy_id=#{policyId}
+            </if>
+            <if test="policyName != null and policyName != ''">
+                and policy_name=#{policyName}
+            </if>
+            <if test="domainIds != null and domainIds != ''">
+                and domain_ids=#{domainIds}
+            </if>
+            <if test="verifyNum != null and verifyNum != ''">
+                and verifyNum=#{verifyNum}
+            </if>
+            <if test="mustDomainIds != null and mustDomainIds != ''">
+                and mustDomainIds=#{mustDomainIds}
+            </if>
+            <if test="createTime != null">
+                and create_time=#{createTime}
+            </if>
+        </trim>
+    </sql>
+    <!-- 插入记录 -->
+    <insert id="add" parameterType="object">
+		insert into
+		policy(policy_id,policy_name,decision_type,vote_pattern,callback_type,domain_ids,verifyNum,mustDomainIds,create_time,expression,require_auth_ids,version)
+		values(#{policyId},#{policyName},#{decisionType},#{votePattern},#{callbackType},#{domainIds},#{verifyNum},#{mustDomainIds},now(3),expression,requireAuthIds,version)
+	</insert>
+    <!-- 删除记录 -->
+    <delete id="delete" parameterType="object">
+		delete from policy where
+		id=#{id}
+	</delete>
+    <!-- 列表总数 -->
+    <select id="queryByCount" resultType="java.lang.Integer"
+            parameterType="object">
+        select count(1) from policy
+        <include refid="baseWhereClause"/>
+    </select>
+    <!-- 查询列表 -->
+    <select id="queryByList" resultMap="baseResultMap"
+            parameterType="object">
+        select
+        <include refid="baseColumnList"/>
+        from policy
+        <include refid="baseWhereClause"/>
+    </select>
+    <!-- 以上为工具自动生成 -->
+
+    <!-- query by policy id -->
+    <select id="queryByPolicyId" resultMap="baseResultMap" parameterType="object">
+        select
+        <include refid="baseColumnList"/>
+        from policy where policy_id=#{policyId}
+    </select>
+
+    <insert id="batchInsert" parameterType="java.util.List">
+        insert into
+        policy(policy_id,policy_name,decision_type,vote_pattern,callback_type,domain_ids,verifyNum,mustDomainIds,create_time,expression,require_auth_ids,version)
+        VALUES
+        <foreach collection="list" item="item" index="index" separator=",">
+            (#{item.policyId}, #{item.policyName},
+            #{item.decisionType},#{item.votePattern},#{item.callbackType},#{item.domainIds},#{item.verifyNum},#{item.mustDomainIds},now(3),#{item.expression},#{item.requireAuthIds},#{item.version})
+        </foreach>
+    </insert>
+
+    <!--updatePolicy-->
+    <update id="updateByPolicyId" parameterType="Object">
+        update policy
+        set policy_name=#{policyName},domain_ids=#{domainIds},decision_type=#{decisionType},vote_pattern=#{votePattern},callback_type=#{callbackType},
+        verifyNum=#{verifyNum},mustDomainIds=#{mustDomainIds},expression=#{expression},require_auth_ids=#{requireAuthIds},update_time=now(3),
+        version=version+1
+        where policy_id=#{policyId}
+    </update>
+
+    <select id="queryAll" resultMap="baseResultMap">
+        select
+        <include refid="baseColumnList"/>
+        from policy
+    </select>
+</mapper>

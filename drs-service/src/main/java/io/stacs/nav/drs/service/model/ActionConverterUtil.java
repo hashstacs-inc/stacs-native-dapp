@@ -28,7 +28,13 @@ public class ActionConverterUtil {
 
     static final ThreadLocal<TransactionPO> TRANSACTION_LOCAL = new ThreadLocal<>();
 
-    static final Function<JSONObject, Optional<BusinessDefinePO>> BDConverter = CommonConvert(BusinessDefinePO.class);
+    static final Function<JSONObject, Optional<BusinessDefinePO>> BDConverter = json -> JSONHelper.toJavaObject(json,
+                                                                                                                BusinessDefinePO.class)
+        .map(po -> {
+            TransactionPO tx = TRANSACTION_LOCAL.get();
+            po.setCreateTime(tx.getBlockTime());
+            return po;
+        });
     static final Function<JSONObject, Optional<PolicyPO>> PolicyConverter = CommonConvert(PolicyPO.class);
     static final Function<JSONObject, Optional<ContractPO>> ContractConverter = json -> JSONHelper.toJavaObject(json,
                                                                                                                 ContractPO.class)

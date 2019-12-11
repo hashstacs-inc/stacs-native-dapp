@@ -4,6 +4,7 @@ import com.alipay.sofa.ark.springboot.runner.ArkBootRunner;
 import io.stacs.nav.drs.ConfigWithoutDataSource;
 import io.stacs.nav.drs.api.model.bd.BusinessDefine;
 import io.stacs.nav.drs.api.model.query.QueryBlockVO;
+import io.stacs.nav.drs.api.model.query.QueryTxListVO;
 import io.stacs.nav.drs.service.service.QueryService;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.Test;
@@ -25,6 +26,14 @@ public class DappApiServiceTest {
         QueryBlockVO vo = new QueryBlockVO();
         vo.setHeight(1L);
         queryService.queryBlocks(vo);
+
+    }
+
+    @Test public void test2() {
+        QueryTxListVO vo = new QueryTxListVO();
+        vo.setPageSize(10);
+        vo.setPageNum(1);
+        queryService.queryTx(vo);
     }
 
     @Test public void test() {

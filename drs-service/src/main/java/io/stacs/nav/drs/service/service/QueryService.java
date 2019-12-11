@@ -5,6 +5,8 @@ import com.alipay.sofa.ark.spi.model.Plugin;
 import com.alipay.sofa.ark.spi.service.ArkInject;
 import com.alipay.sofa.ark.spi.service.plugin.PluginManagerService;
 import com.alipay.sofa.ark.spi.service.registry.RegistryService;
+import com.github.pagehelper.PageHelper;
+import com.github.pagehelper.PageInfo;
 import io.stacs.nav.drs.api.IQueryService;
 import io.stacs.nav.drs.api.exception.DappException;
 import io.stacs.nav.drs.api.model.BaseTxVO;
@@ -20,6 +22,7 @@ import io.stacs.nav.drs.api.model.query.QueryTxVO;
 import io.stacs.nav.drs.service.constant.Constants;
 import io.stacs.nav.drs.service.dao.BlockDao;
 import io.stacs.nav.drs.service.dao.TransactionDao;
+import io.stacs.nav.drs.service.utils.BeanConvertor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -74,12 +77,21 @@ import static io.stacs.nav.drs.api.exception.DappError.FUNCTION_NOT_FIND_ERROR;
         return txDao.queryByTxId(vo.getTxId());
     }
 
-    @Override public List<TransactionPO> queryTx(QueryTxListVO vo) {
-        return txDao.queryTxWithCondition(vo);
+    @Override public BlockVO queryTxByHeight(Long height) {
+        return BeanConvertor.convertBean(blockDao.queryByHeight(height), BlockVO.class);
     }
 
-    @Override public List<BlockVO> queryBlocks(QueryBlockVO vo) {
-        return blockDao.queryByCond(vo);
+    @Override public io.stacs.nav.drs.api.model.PageInfo<TransactionPO> queryTx(QueryTxListVO vo) {
+        PageHelper.startPage(vo.getPageNum(), vo.getPageSize());
+        io.stacs.nav.drs.api.model.PageInfo<TransactionPO> pageInfo = BeanConvertor.convertBean(
+            PageInfo.of(txDao.queryTxWithCondition(vo)), io.stacs.nav.drs.api.model.PageInfo.class);
+        return pageInfo;
+    }
+
+    @Override public io.stacs.nav.drs.api.model.PageInfo<BlockVO> queryBlocks(QueryBlockVO vo) {
+        io.stacs.nav.drs.api.model.PageInfo<BlockVO> pageInfo = BeanConvertor.convertBean(
+            PageInfo.of(blockDao.queryByCond(vo)), io.stacs.nav.drs.api.model.PageInfo.class);
+        return pageInfo;
     }
 
     public BlockHeaderVO queryBlockByHeight(QueryBlockByHeightVO vo) {
