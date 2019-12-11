@@ -44,4 +44,11 @@ public interface AppInfoDao{
      * @return
      */
     List<AppInfoPO> queryAll();
+
+    /**
+     * uninstall
+     * @param name
+     * @return
+     */
+    int unInstall(@Param("name")String name);
 }

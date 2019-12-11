@@ -77,4 +77,8 @@ import java.util.List;
             throw new DappException(DappError.DAPP_UPDATE_STATUS_ERROR);
         }
     }
+
+    @Override public int unInstall(String name) {
+        return appInfoDao.unInstall(name);
+    }
 }

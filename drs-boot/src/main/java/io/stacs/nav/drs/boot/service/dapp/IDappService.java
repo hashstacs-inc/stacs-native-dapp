@@ -49,4 +49,12 @@ public interface IDappService {
      * @param runError
      */
     void updateStatus(String appName, DappStatus toStatus, String runError);
+
+    /**
+     * uninstall
+     *
+     * @param name
+     * @return
+     */
+    int unInstall(String name);
 }
