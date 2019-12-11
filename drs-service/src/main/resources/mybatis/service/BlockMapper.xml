@@ -23,7 +23,7 @@
 
     <!-- block table all fields -->
     <sql id="baseColumnList">
-		height,version,previous_hash,block_hash,tx_root_hash,account_root_hash,contract_root_hash,policy_root_hash,rs_root_hash,tx_receipt_root_hash,ca_root_hash,state_root_hash,block_time,tx_num,total_tx_num,total_block_size,create_time
+		height,version,previous_hash,block_hash,tx_root_hash,account_root_hash,contract_root_hash,policy_root_hash,rs_root_hash,tx_receipt_root_hash,ca_root_hash,state_root_hash,block_time,tx_num,total_tx_num,total_block_size
 	</sql>
     <!-- 查询条件 -->
     <sql id="baseWhereClause">
@@ -73,8 +73,8 @@
     <!-- 插入记录 -->
     <insert id="add" parameterType="object">
 		insert into
-		block(height,version,previous_hash,block_hash,tx_root_hash,account_root_hash,contract_root_hash,policy_root_hash,rs_root_hash,tx_receipt_root_hash,ca_root_hash,state_root_hash,block_time,tx_num,total_tx_num,total_block_size,create_time)
-		values(#{height},#{version},#{previousHash},#{blockHash},#{txRootHash},#{accountRootHash},#{contractRootHash},#{policyRootHash},#{rsRootHash},#{txReceiptRootHash},#{caRootHash},#{stateRootHash},#{blockTime},#{txNum},#{totalTxNum},#{totalBlockSize},now(3))
+		block(height,version,previous_hash,block_hash,tx_root_hash,account_root_hash,contract_root_hash,policy_root_hash,rs_root_hash,tx_receipt_root_hash,ca_root_hash,state_root_hash,block_time,tx_num,total_tx_num,total_block_size)
+		values(#{height},#{version},#{previousHash},#{blockHash},#{txRootHash},#{accountRootHash},#{contractRootHash},#{policyRootHash},#{rsRootHash},#{txReceiptRootHash},#{caRootHash},#{stateRootHash},#{blockTime},#{txNum},#{totalTxNum},#{totalBlockSize})
 	</insert>
     <!-- 删除记录 -->
     <delete id="delete" parameterType="object">

@@ -128,17 +128,13 @@
         <include refid="baseColumnList"/>
         from transaction
         where 1=1
-        <if test="height != null">
-            and block_height=#{height}
+        <if test="cond.blockHeight != null">
+            and block_height=#{cond.blockHeight}
         </if>
-        <if test="txId != null and txId != ''">
-            and tx_id=#{txId}
+        <if test="cond.submitter != null and cond.submitter != ''">
+            and submitter=#{cond.submitter}
         </if>
-        <if test="sender != null and sender != ''">
-            and sender=#{sender}
-        </if>
-        order by block_height desc
-        limit #{start}, #{end}
+        order by block_height ${cond.order}
     </select>
     <select id="countTxWithCondition" resultType="java.lang.Long">
         select

@@ -16,6 +16,7 @@
  */
 package io.stacs.nav.drs;
 
+import org.mybatis.spring.annotation.MapperScan;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration;
@@ -30,9 +31,8 @@ import org.springframework.context.annotation.FilterType;
  * @author suimi
  * @since 1.0.0
  */
-@Configuration
+@MapperScan({"io.stacs.nav.drs.*.dao"}) @Configuration
 @ComponentScan(excludeFilters = @ComponentScan.Filter(type = FilterType.ASSIGNABLE_TYPE, value = CommandLineRunner.class))
-@EnableAutoConfiguration(exclude = {DataSourceAutoConfiguration.class, HibernateJpaAutoConfiguration.class})
-public class ConfigWithoutDataSource {
+@EnableAutoConfiguration(exclude = {DataSourceAutoConfiguration.class, HibernateJpaAutoConfiguration.class}) public class ConfigWithoutDataSource {
 
 }

@@ -19,8 +19,10 @@ import javax.validation.constraints.Size;
 
     @Size(max = 64) private String txId;
 
-    @Size(max = 32) private String sender;
+    @Size(max = 32) private String submitter;
 
     @NotNull private Integer pageNo;
     @NotNull private Integer pageSize;
+
+    private String order = "desc";
 }

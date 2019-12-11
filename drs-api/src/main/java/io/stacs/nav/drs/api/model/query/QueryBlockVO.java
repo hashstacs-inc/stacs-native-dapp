@@ -17,7 +17,8 @@ import javax.validation.constraints.Size;
 
     @Size(max = 64) private String blockHash;
 
-    @NotNull private Integer pageNo;
+    @NotNull private Integer pageNo = 1;
 
-    @NotNull private Integer pageSize;
+    @NotNull private Integer pageSize = 20;
+
 }
