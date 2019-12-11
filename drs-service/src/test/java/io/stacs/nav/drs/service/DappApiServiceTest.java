@@ -5,6 +5,7 @@ import io.stacs.nav.drs.ConfigWithoutDataSource;
 import io.stacs.nav.drs.api.model.bd.BusinessDefine;
 import io.stacs.nav.drs.api.model.query.QueryBlockVO;
 import io.stacs.nav.drs.api.model.query.QueryTxListVO;
+import io.stacs.nav.drs.service.scheduler.BlockCallbackProcessSchedule;
 import io.stacs.nav.drs.service.scheduler.FailoverSchedule;
 import io.stacs.nav.drs.service.service.BlockChainService;
 import io.stacs.nav.drs.service.service.QueryService;
@@ -25,6 +26,7 @@ public class DappApiServiceTest {
     @Autowired private QueryService queryService;
     @Autowired private BlockChainService blockChainService;
     @Autowired private FailoverSchedule failoverSchedule;
+    @Autowired private BlockCallbackProcessSchedule blockCallbackProcessSchedule;
 
     @Test public void test1() {
         QueryBlockVO vo = new QueryBlockVO();
@@ -47,6 +49,10 @@ public class DappApiServiceTest {
 
     @Test public void test4() {
         failoverSchedule.exe();
+    }
+
+    @Test public void test5() {
+        blockCallbackProcessSchedule.exe();
     }
 
     @Test public void test() {
