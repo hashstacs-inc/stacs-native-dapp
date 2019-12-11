@@ -73,7 +73,7 @@ public class ActionConverterUtil {
             JSONObject json = (JSONObject)obj;
             String actionType = json.getString(ACTION_TYPE_KEY);
             ActionExecTypeEnum.valueOfActionType(actionType).ifPresent(
-                execType -> json2Action(json).ifPresent(action -> actions.add(Pair.of(execType,action))));
+                execType -> json2Action(json).ifPresent(action -> actions.add(Pair.of(execType,(T)action))));
 
         }
         return actions.isEmpty() ? Optional.empty() : Optional.of(actions);
