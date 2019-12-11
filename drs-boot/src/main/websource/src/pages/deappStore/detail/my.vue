@@ -28,7 +28,7 @@
     <template v-else>
       <div class="no-data">
         <img src="../../../assets/img/blank.png" alt="logo">
-        <p>NO data</p>
+        <p @click="$router.push({ name: 'Library' })">DAPP Store</p>
       </div>
     </template>
     <el-dialog
@@ -216,6 +216,7 @@ export default {
   },
   created () {
     this.getList();
+    this.$store.commit('changeStoreMenu', this.$route.meta.menu);
   }
 }
 </script>
@@ -347,8 +348,16 @@ export default {
     text-align: center;
     p {
       text-align: center;
-      color: #999999;
-      font-size: 12px;
+      line-height: 40px;
+      color: #2146A9;
+      font-size: 14px;
+      width: 140px;
+      height: 40px;
+      border-radius:1px;
+      border:1px solid rgba(5,60,140,1);
+      cursor: pointer;
+      margin: 0 auto;
+      margin-top: 10px;
     }
   }
 }

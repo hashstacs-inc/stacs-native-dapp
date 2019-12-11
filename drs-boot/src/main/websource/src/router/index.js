@@ -20,10 +20,12 @@ const routes = [
           {
             path: 'my',
             name: 'My',
+            meta: { menu: 0 },
             component: () => import('@/pages/deappStore/detail/my.vue')
           }, {
             path: 'library',
             name: 'Library',
+            meta: { menu: 1 },
             component: () => import('@/pages/deappStore/detail/store.vue')
           } , {
             path: 'appConfig',
@@ -40,10 +42,12 @@ const routes = [
           {
             path: 'execution',
             name: 'Execution',
+            meta: { menu: 0 },
             component: () => import('@/pages/bdExecution/detail/BD.vue')
           }, {
             path: 'history',
             name: 'History',
+            meta: { menu: 1 },
             component: () => import('@/pages/bdExecution/detail/history.vue')
           }, {
             path: 'publishBDContract',

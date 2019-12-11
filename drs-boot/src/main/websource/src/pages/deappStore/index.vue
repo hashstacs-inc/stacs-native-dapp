@@ -1,7 +1,7 @@
 <template>
   <div class="deapp-store">
     <ul class="menu-box">
-      <li :class="{active: $route.name === v.pathName || menuActive === k}" @click="changeMenu(v, k)" v-for="(v, k) in menuList" :key="k">{{v.name}}</li>
+      <li :class="{active: storeMenu === k}" @click="changeMenu(v, k)" v-for="(v, k) in menuList" :key="k">{{v.name}}</li>
     </ul>
     <div class="store-content">
       <router-view />
@@ -9,12 +9,12 @@
   </div>
 </template>
 <script>
+import { mapGetters } from 'vuex';
 
 export default {
   name: 'DeappStore',
   data () {
     return {
-      menuActive: 0,
       menuList: [
         {
           name: 'My DAPP',
@@ -28,14 +28,12 @@ export default {
       ]
     }
   },
-  created () {
-    if (this.$route.name === 'Library') {
-      this.menuActive = 1;
-    }
+  computed: {
+    ...mapGetters(['storeMenu'])
   },
   methods: {
     changeMenu (v, k) {
-      this.menuActive = k;
+      this.$store.commit('changeStoreMenu', k);
       this.$router.push({ name: v.pathName });
     }
   }

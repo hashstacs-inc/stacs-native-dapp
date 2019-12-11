@@ -1,18 +1,18 @@
 <template>
   <div class="bd-execution">
     <ul class="menu-box">
-      <li :class="{active: $route.name === v.pathName || menuActive === k}" @click="changeMenu(v, k)" v-for="(v, k) in menuList" :key="k">{{v.name}}</li>
+      <li :class="{active: bdMenu === k}" @click="changeMenu(v, k)" v-for="(v, k) in menuList" :key="k">{{v.name}}</li>
     </ul>
     <router-view />
   </div>
 </template>
 <script>
+import { mapGetters } from 'vuex';
 
 export default {
   name: 'DBExecution',
   data () {
     return {
-      menuActive: 0,
       menuList: [
         {
           name: 'BD Execution',
@@ -26,6 +26,9 @@ export default {
       ]
     }
   },
+  computed: {
+    ...mapGetters(['bdMenu'])
+  },
   created () {
     if (this.$route.name === 'History') {
       this.menuActive = 1;
@@ -33,7 +36,7 @@ export default {
   },
   methods: {
     changeMenu (v, k) {
-      this.menuActive = k;
+      this.$store.commit('changeBdMenu', k);
       this.$router.push({ name: v.pathName });
     }
   }

@@ -1,3 +1,4 @@
 export default {
-  storeMenu: state => state.storeMenu
+  storeMenu: state => state.storeMenu,
+  bdMenu: state => state.bdMenu
 }

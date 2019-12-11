@@ -109,6 +109,9 @@ export default {
       ],
       loading: false
     }
+  },
+  created () {
+    this.$store.commit('changeBdMenu', this.$route.meta.menu);
   }
 }
 </script>

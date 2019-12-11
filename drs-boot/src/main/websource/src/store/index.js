@@ -8,7 +8,8 @@ Vue.use(Vuex);
 
 export default new Vuex.Store({
   state: {
-    storeMenu: 0
+    storeMenu: 0,
+    bdMenu: 0
   },
   mutations,
   actions,

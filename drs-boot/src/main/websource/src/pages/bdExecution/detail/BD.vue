@@ -238,6 +238,7 @@ export default {
     }
   },
   created () {
+    this.$store.commit('changeBdMenu', this.$route.meta.menu);
     this.getOption();
     this.getDomain();
     this.getPolicy();

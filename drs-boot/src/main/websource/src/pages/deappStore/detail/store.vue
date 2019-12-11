@@ -54,6 +54,7 @@ export default {
   },
   created () {
     this.getAppLists();
+    this.$store.commit('changeStoreMenu', this.$route.meta.menu);
   },
   methods: {
     searchList () {
