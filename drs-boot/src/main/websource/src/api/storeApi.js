@@ -71,3 +71,15 @@ export const getPermissionList = async config => {
   const { data } = await requestObj.request(Object.assign({ method: 'GET', url: '/drs/queryPermissionList' }, { data: config }));
   return data;
 }
+
+// 查询drs配置
+export const getSysConfig = async config => {
+  const { data } = await requestObj.request(Object.assign({ method: 'GET', url: '/dapp/querySysConfig' }, { data: config }));
+  return data;
+}
+
+// 修改drs配置
+export const modifySysConfig = async config => {
+  const { data } = await requestObj.request(Object.assign({ method: 'POST', url: '/dapp/sysConfig' }, { data: config }));
+  return data;
+}

@@ -2,7 +2,7 @@
   <div class="modify-password">
     <div class="modify-from">
       <div class="logo">
-        <img src="../assets/logo.png" alt="logo">
+        <img src="../assets/img/logo.png" alt="logo">
       </div>
       <div class="from-center name">
         <p class="doc">User Name</p>
@@ -89,7 +89,6 @@ export default {
       width: 180px;
       height: 55px;
       margin: 0 auto;
-      background-color: #ccc;
       img {
         width: 100%;
         height: 100%;

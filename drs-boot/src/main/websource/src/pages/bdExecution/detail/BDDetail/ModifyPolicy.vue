@@ -149,6 +149,16 @@ export default {
     }
   },
   methods: {
+    validateFrom () {
+      let validCode = {
+        valid: false,
+        ruleForm: this.ruleForm
+      };
+      this.$refs['ruleForm'].validate(valid => {
+        validCode.valid = valid;
+      });
+      return validCode;
+    },
     async getPolicy () {
       // let data = await getPolicyList();
       let data = {

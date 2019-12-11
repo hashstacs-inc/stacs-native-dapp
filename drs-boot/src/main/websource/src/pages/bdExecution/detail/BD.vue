@@ -5,7 +5,7 @@
       <el-form :model="ruleForm" :rules="rules" ref="ruleForm" 
         label-width="150px" class="general-form" label-position="left">
         <el-form-item label="BD Name" prop="bDName">
-          <el-select v-model="ruleForm.bDName">
+          <el-select v-model="ruleForm.bDName" @change="changeBDName">
             <el-option :label="v.bdCode" :value="v.bdCode" v-for="(v, k) in dbNameList" :key="k"></el-option>
           </el-select>
         </el-form-item>
@@ -57,6 +57,21 @@
               <el-option :label="v.name" :value="v.name" v-for="(v, k) in decisionTypeList" :key="k"></el-option>
             </el-select>
           </el-form-item>
+          <!-- 投票类型选择Assign Num时 -->
+          <template v-if="ruleForm.decisionType === 'Assign Num'">
+            <p class="title meta">Assig Meta</p>
+            <el-form-item label="Verify Num" prop="verifyNum">
+              <el-input v-model="ruleForm.verifyNum" placeholder="Please enter an integer"></el-input>
+            </el-form-item>
+            <el-form-item label="Must Domain IDs" prop="mustDomainIDs">
+              <el-select v-model="ruleForm.mustDomainIDs" placeholder="Please select from Domain IDs" multiple filterable>
+                <el-option :label="v.name" :value="v.name" v-for="(v, k) in mustList" :key="k"></el-option>
+              </el-select>
+            </el-form-item>
+            <el-form-item label="Expression" prop="expression">
+              <el-input v-model="ruleForm.expression" placeholder="Please fill in the expression. Only support integer、 +、-、x 、/ . as (n+1)/2"></el-input>
+            </el-form-item>
+          </template>
           <el-form-item label="Require Auth IDs" prop="requireAuthIDs">
             <el-select v-model="ruleForm.requireAuthIDs" multiple filterable>
               <el-option :label="v.policyName" :value="v.policyId" v-for="(v, k) in requireAuthIDList" :key="k"></el-option>
@@ -65,20 +80,20 @@
         </template>
       </el-form>
     </div>
-    <RegisterPolicy v-if="ruleForm.functionName === 'REGISTER_POLICY'" />
-    <ModifyPolicy v-if="ruleForm.functionName === 'MODIFY_POLICY'" />
-    <IdentitySetting v-if="ruleForm.functionName === 'IDENTITY_SETTING'" />
-    <PermissionRegister v-if="ruleForm.functionName === 'PERMISSION_REGISTER'" />
-    <AuthorizePermission v-if="ruleForm.functionName === 'AUTHORIZE_PERMISSION'" />
-    <CancelPermission v-if="ruleForm.functionName === 'CANCEL_PERMISSION'" />
-    <KYCSetting v-if="ruleForm.functionName === 'KYC_SETTING'" />
-    <SaveAttestation v-if="ruleForm.functionName === 'SAVE_ATTESTATION'" />
-    <SystemProperty v-if="ruleForm.functionName === 'SYSTEM_PROPERTY'" />
-    <BDSpecification v-if="ruleForm.functionName === 'BD_PUBLISH'" />
-    <SetFeeRule v-if="ruleForm.functionName === 'SET_FEE_RULE'" />
-    <IdentityBDManage v-if="ruleForm.functionName === 'IDENTITY_BD_MANAGE'" />
+    <RegisterPolicy v-if="ruleForm.functionName === 'REGISTER_POLICY'" ref="REGISTER_POLICY"/>
+    <ModifyPolicy v-if="ruleForm.functionName === 'MODIFY_POLICY'" ref="MODIFY_POLICY"/>
+    <IdentitySetting v-if="ruleForm.functionName === 'IDENTITY_SETTING'" ref="IDENTITY_SETTING"/>
+    <PermissionRegister v-if="ruleForm.functionName === 'PERMISSION_REGISTER'" ref="PERMISSION_REGISTER"/>
+    <AuthorizePermission v-if="ruleForm.functionName === 'AUTHORIZE_PERMISSION'" ref="AUTHORIZE_PERMISSION" />
+    <CancelPermission v-if="ruleForm.functionName === 'CANCEL_PERMISSION'" ref="CANCEL_PERMISSION"/>
+    <KYCSetting v-if="ruleForm.functionName === 'KYC_SETTING'" ref="KYC_SETTING"/>
+    <SaveAttestation v-if="ruleForm.functionName === 'SAVE_ATTESTATION'" ref="SAVE_ATTESTATION"/>
+    <SystemProperty v-if="ruleForm.functionName === 'SYSTEM_PROPERTY'" ref="SYSTEM_PROPERTY"/>
+    <BDSpecification v-if="ruleForm.functionName === 'BD_PUBLISH'" ref="BD_PUBLISH"/>
+    <SetFeeRule v-if="ruleForm.functionName === 'SET_FEE_RULE'" ref="SET_FEE_RULE"/>
+    <IdentityBDManage v-if="ruleForm.functionName === 'IDENTITY_BD_MANAGE'" ref="IDENTITY_BD_MANAGE"/>
     <div class="submit-btn">
-      <p>Submit</p>
+      <p @click="submitBD">Submit</p>
     </div>
   </div>
 </template>
@@ -96,6 +111,7 @@ import SystemProperty from './BDDetail/SystemProperty';
 import BDSpecification from './BDDetail/BDSpecification';
 import SetFeeRule from './BDDetail/SetFeeRule';
 import IdentityBDManage from './BDDetail/IdentityBDManage';
+// import mixin from './mixinValidate';
 
 export default {
   name: 'BD',
@@ -131,7 +147,10 @@ export default {
         votePattern: 'SYNC',
         callbackType: 'ALL',
         decisionType: 'Full Vote',
-        requireAuthIDs: ''
+        requireAuthIDs: '',
+        verifyNum: '',
+        mustDomainIDs: '',
+        expression: ''
       },
       rules: {
         bDName: [
@@ -163,6 +182,15 @@ export default {
         ],
         decisionType: [
           { required: true, message: 'This filed is required', trigger: 'change' }
+        ],
+        verifyNum: [
+          { required: true, message: 'This filed is required', trigger: 'blur' }
+        ],
+        mustDomainIDs: [
+          { required: true, message: 'This filed is required', trigger: 'blur' }
+        ],
+        expression: [
+          { required: true, message: 'This filed is required', trigger: 'blur' }
         ]
       },
       dbNameList: [],
@@ -198,7 +226,14 @@ export default {
           name: 'Assign Num'
         }
       ],
-      requireAuthIDList: []
+      requireAuthIDList: [],
+      mustList: [
+        {
+          name: '11111'
+        }, {
+          name: '22222'
+        }
+      ]
     }
   },
   created () {
@@ -207,6 +242,18 @@ export default {
     this.getPolicy();
   },
   methods: {
+    submitBD () {
+      let validChild = this.$refs[this.ruleForm.functionName].validateFrom();
+      console.log(validChild)
+      this.$refs['ruleForm'].validate(valid => {
+        if (valid && validChild.valid) {
+          console.log(validChild)
+        }
+      });
+    },
+    changeBDName () {
+      this.ruleForm.functionName = '';
+    },
     async getPolicy () {
       // let data = await getPolicyList();
       let data = {
@@ -634,6 +681,12 @@ export default {
       color: #333333;
       font-size: 18px;
       font-weight:500;
+      margin-bottom: 25px;
+    }
+    .meta::before {
+      content: '*';
+      color: #F56C6C;
+      margin-right: 4px;
     }
     .general-form {
       margin-top: 25px;

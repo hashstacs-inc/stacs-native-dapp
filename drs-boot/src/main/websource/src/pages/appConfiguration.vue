@@ -14,7 +14,7 @@
   </div>
 </template>
 <script>
-import { getDeappConfig, postDeappConfig } from '@/api/storeApi';
+import { getDeappConfig, postDeappConfig, startDeapp } from '@/api/storeApi';
 import { notify } from '@/common/util';
 
 export default {
@@ -22,9 +22,7 @@ export default {
   data () {
     return {
       deappName: '',
-      configObj: {
-        '1.1.1': '123'
-      }
+      configObj: {}
     }
   },
   created () {
@@ -48,7 +46,7 @@ export default {
         notify: notify.error
       }
       let data = await getDeappConfig(params);
-      // this.configObj = data.data;
+      this.configObj = data.data;
     },
     async submit () {
       for(let i in this.configObj) {
@@ -70,9 +68,18 @@ export default {
           dangerouslyUseHTMLString: true
         });
       } else {
-        this.$alert('Configuration success.', 'Tips', {
-          confirmButtonText: 'YES'
-        });
+        // 配置成功后，初始化deapp
+        let startParams = {
+          name: this.deappName,
+          slient: true,
+          notify: notify.error
+        }
+        let startData = await startDeapp(startParams);
+        if (startData.code === '000000') {
+          this.$alert('Configuration success.', 'Tips', {
+            confirmButtonText: 'YES'
+          });
+        }
       }
     }
   }

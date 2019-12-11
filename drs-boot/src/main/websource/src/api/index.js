@@ -28,6 +28,8 @@ requestObj.interceptors.response.use(response => {
     Vue.prototype.$notify.error({message: response.data.msg});
   }
   return response;
+}, error => {
+  Vue.prototype.$notify.error({message: error});
 });
 
 // 拦截slient = true 不用写catch 否则需要自己处理catch 统一返回 response对象

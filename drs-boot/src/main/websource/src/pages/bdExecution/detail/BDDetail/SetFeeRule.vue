@@ -39,6 +39,16 @@ export default {
     }
   },
   methods: {
+    validateFrom () {
+      let validCode = {
+        valid: false,
+        ruleForm: this.ruleForm
+      };
+      this.$refs['ruleForm'].validate(valid => {
+        validCode.valid = valid;
+      });
+      return validCode;
+    },
     ruleBtn (v, k, from) {
       if (!v.disabled) {
         this.$refs[from].validate(valid => {

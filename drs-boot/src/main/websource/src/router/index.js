@@ -57,6 +57,10 @@ const routes = [
     path: '/modifyPassword',
     name: 'ModifyPassword',
     component: () => import('@/pages/ModifyPassword.vue')
+  }, {
+    path: '/DRSConfig',
+    name: 'DRSConfig',
+    component: () => import('@/pages/DRSConfig.vue')
   }
 ];
 

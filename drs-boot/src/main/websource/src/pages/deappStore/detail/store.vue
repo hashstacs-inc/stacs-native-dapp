@@ -19,8 +19,9 @@
         </el-tooltip>
       </li>
     </ul>
-    <div v-else class="no-list">
-      <span>No data</span>
+    <div v-else class="no-data">
+      <img src="../../../assets/img/blank.png" alt="logo">
+      <p>NO data</p>
     </div>
     <el-dialog
       title="Tips"
@@ -70,7 +71,7 @@ export default {
     returnStaus (str) {
       /* eslint-disable */
       switch (str) {
-        case 'DOWNLOAD':
+        case 'DOWNLOADED':
           return 'Configuration';
           break;
         case 'INITIALIZED':
@@ -136,14 +137,14 @@ export default {
           filePath: v.downloadUrl
         },
         timeout: 0,
-        notify: notify.error,
+        notify: notify.any,
         slient: true
       }
       this.$set(v, 'loading', true);
       let data = await downloadApp(params);
       if (data.code === '000000') {
         // 下载成功
-        this.$set(v, 'status', 'DOWNLOAD');
+        this.$set(v, 'status', 'DOWNLOADED');
       } else {
         this.$set(v, 'errorText', data.msg);
       }
@@ -170,7 +171,7 @@ export default {
       if (!v.status) {
         // 未下载状态
         this.downloadApp(v);
-      } else if (v.status === 'DOWNLOAD') {
+      } else if (v.status === 'DOWNLOADED') {
         // 已下载状态
         this.configVisible = true;
         this.currentItem = v;
@@ -186,16 +187,19 @@ export default {
       data.data.forEach(v => {
         v['loading'] = false;
       });
-      this.appList = [];
-      this.copyAppList = [];
-      this.appList.push(...data.data);
-      this.copyAppList.push(...data.data);
+      this.appList = JSON.parse(JSON.stringify(data.data));
+      this.copyAppList = JSON.parse(JSON.stringify(data.data));
+      // this.appList = [];
+      // this.copyAppList = [];
+      // this.appList.push(...data.data);
+      // this.copyAppList.push(...data.data);
     }
   }
 }
 </script>
 <style scoped lang="scss">
 .store {
+  min-height: 550px;
   .search {
     display: flex;
     height: 30px;
@@ -298,9 +302,14 @@ export default {
       margin-right: 0px;
     }
   }
-  .no-list {
-    min-height: 175px;
-
+  .no-data {
+    padding-top: 60px;
+    text-align: center;
+    p {
+      text-align: center;
+      color: #999999;
+      font-size: 12px;
+    }
   }
 }
 </style>

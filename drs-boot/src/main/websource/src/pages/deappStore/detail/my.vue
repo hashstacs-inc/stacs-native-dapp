@@ -26,7 +26,10 @@
       </div>
     </template>
     <template v-else>
-      <p>no data</p>
+      <div class="no-data">
+        <img src="../../../assets/img/blank.png" alt="logo">
+        <p>NO data</p>
+      </div>
     </template>
     <el-dialog
       title="Tips"
@@ -86,16 +89,17 @@ export default {
     },
     async getList () {
       let data = await getMyAppList();
-      this.appList = [];
-      this.copyAppList = [];
-      this.appList.push(...data.data);
-      this.copyAppList.push(...data.data);
+      this.appList = JSON.parse(JSON.stringify(data.data));
+      this.copyAppList = JSON.parse(JSON.stringify(data.data));
+      // this.copyAppList = [];
+      // this.appList.push(...data.data);
+      // this.copyAppList.push(...data.data);
       // this.appList[0].status = 'INITIALIZED';
     },
     returnStatus (state) {
       /* eslint-disable */
       switch(state) {
-        case 'DOWNLOAD':
+        case 'DOWNLOADED':
           return 'Configuration';
           break;
         case 'INITIALIZED':
@@ -206,7 +210,7 @@ export default {
     operationClick (v) {
       this.currentItem = v;
       this.$set(v, 'errorText', null);
-      if (this.currentItem.status === 'DOWNLOAD') {
+      if (this.currentItem.status === 'DOWNLOADED') {
         this.configVisible = true;
       } else if (this.currentItem.status === 'INITIALIZED' || this.currentItem.status === 'STOPPED') {
         // 已配置,已初始化
@@ -223,6 +227,7 @@ export default {
 </script>
 <style scoped lang="scss">
 .my {
+  min-height: 550px;
   .search {
     display: flex;
     height: 30px;
@@ -342,6 +347,15 @@ export default {
     width: 0;
     display: block;
     clear: both;
+  }
+  .no-data {
+    padding-top: 60px;
+    text-align: center;
+    p {
+      text-align: center;
+      color: #999999;
+      font-size: 12px;
+    }
   }
 }
 </style>

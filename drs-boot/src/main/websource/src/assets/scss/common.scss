@@ -24,6 +24,16 @@
   }
 }
 
+// 时间选择样式
+.el-date-editor {
+  border: 0;
+  border-bottom: 1px solid #E0E0E0;
+  border-radius: 0;
+  .el-range-separator {
+    padding: 0;
+  }
+}
+
 // 表单验证失败提示
 .el-form-item__error {
   padding-left: 10px;
