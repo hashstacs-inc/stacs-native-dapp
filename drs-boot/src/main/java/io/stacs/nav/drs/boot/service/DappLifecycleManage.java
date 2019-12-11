@@ -401,9 +401,11 @@ import static io.stacs.nav.drs.service.utils.ResourceLoader.getManifest;
         list.forEach(v -> {
             try {
                 AppProfileVO vo = dappStoreService.queryAppByName(v.getName());
-                //set status
-                vo.setStatus(v.getStatus().name());
-                appProfileVOList.add(vo);
+                if(vo!=null) {
+                    //set status
+                    vo.setStatus(v.getStatus().name());
+                    appProfileVOList.add(vo);
+                }
             } catch (IOException e) {
                 log.error("has io error", e);
             }
