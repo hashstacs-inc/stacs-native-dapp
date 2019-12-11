@@ -70,7 +70,7 @@ import static io.stacs.nav.drs.api.exception.DappError.FUNCTION_NOT_FIND_ERROR;
     }
 
     public Long queryCurrentHeight() {
-        return bdService.queryCurrentHeight();
+        return Long.valueOf(bdService.queryCurrentHeight().toString());
     }
 
     @Override public TransactionPO queryTxById(QueryTxVO vo) {

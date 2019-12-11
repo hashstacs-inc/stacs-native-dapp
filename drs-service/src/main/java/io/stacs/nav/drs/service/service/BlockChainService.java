@@ -1,5 +1,6 @@
 package io.stacs.nav.drs.service.service;
 
+import com.alibaba.fastjson.JSONObject;
 import io.stacs.nav.drs.api.model.Policy;
 import io.stacs.nav.drs.api.model.RsDomain;
 import io.stacs.nav.drs.api.model.bd.BusinessDefine;
@@ -10,7 +11,6 @@ import io.stacs.nav.drs.api.model.query.QueryBlockVO;
 import io.stacs.nav.drs.api.model.query.QueryTxListVO;
 import io.stacs.nav.drs.api.model.query.QueryTxVO;
 import io.stacs.nav.drs.api.model.tx.CoreTransactionVO;
-import io.stacs.nav.drs.service.dao.BlockVO;
 import io.stacs.nav.drs.service.network.BlockChainFacade;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -63,7 +63,7 @@ import static io.stacs.nav.drs.api.exception.DappException.newError;
         return blockChainFacade.queryPermissionList().orElseThrow(newError(DRS_NETWORK_COMMON_ERROR));
     }
 
-    public Long queryCurrentHeight() {
+    public Integer queryCurrentHeight() {
         return blockChainFacade.queryCurrentHeight().orElseThrow(newError(DRS_NETWORK_COMMON_ERROR));
     }
 
@@ -79,7 +79,7 @@ import static io.stacs.nav.drs.api.exception.DappException.newError;
         return blockChainFacade.queryBlockListByPage(vo).orElseThrow(newError(DRS_NETWORK_COMMON_ERROR));
     }
 
-    public List<BlockVO> queryBlocks(long startHeight, long endHeight) {
+    public List<JSONObject> queryBlocks(long startHeight, long endHeight) {
         return blockChainFacade.queryBlocks(startHeight, endHeight).orElseThrow(newError(DRS_NETWORK_COMMON_ERROR));
     }
 

@@ -5,6 +5,7 @@ import io.stacs.nav.drs.service.dao.BlockCallbackDao;
 import io.stacs.nav.drs.service.dao.BlockVO;
 import io.stacs.nav.drs.service.service.BlockCallbackService;
 import io.stacs.nav.drs.service.service.BlockChainService;
+import io.stacs.nav.drs.service.utils.JSONHelper;
 import io.stacs.nav.drs.service.utils.Pair;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,6 +15,7 @@ import org.springframework.stereotype.Service;
 import javax.annotation.Nullable;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import static io.stacs.nav.drs.service.model.ConvertHelper.*;
 
@@ -34,7 +36,9 @@ import static io.stacs.nav.drs.service.model.ConvertHelper.*;
         Long optCallbackHeight = txCallbackDao.initCallbackMinHeight();
         HeightChecker.of(nextHeight, chainMaxHeight, optCallbackHeight).countMissBlocksInterval().ifPresent(
             interval -> {
-                List<BlockVO> blocks = blockChainService.queryBlocks(interval.left(), interval.right());
+                List<BlockVO> blocks = blockChainService.queryBlocks(interval.left(), interval.right()).stream().map(
+                    json -> JSONHelper.toJavaObject(json, BlockVO.class)).filter(Optional::isPresent).map(Optional::get)
+                    .collect(Collectors.toList());
                 if (blocks.isEmpty())
                     return;
                 // bo -> po & setPO state = INIT
