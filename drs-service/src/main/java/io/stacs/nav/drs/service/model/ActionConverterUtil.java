@@ -65,6 +65,7 @@ public class ActionConverterUtil {
         return parseJSONOArray(json).flatMap(ActionConverterUtil::arrayToActions);
     }
 
+    //@formatter:off
     @SuppressWarnings("unchecked")
     private static <T> Optional<List<Pair<ActionExecTypeEnum, T>>> arrayToActions(JSONArray array) {
         List<Pair<ActionExecTypeEnum, T>> actions = Lists.newArrayList();
@@ -77,6 +78,7 @@ public class ActionConverterUtil {
         }
         return actions.isEmpty() ? Optional.empty() : Optional.of(actions);
     }
+    //@formatter:on
 
     @SuppressWarnings("unchecked") private static <T> Optional<T> json2Action(JSONObject json) {
         Function<JSONObject, Optional<?>> converter = (Function<JSONObject, Optional<?>>)converterMap.get(

@@ -70,16 +70,16 @@ import static io.stacs.nav.drs.api.exception.DappError.FUNCTION_NOT_FIND_ERROR;
         return bdService.queryCurrentHeight();
     }
 
+    @Override public TransactionPO queryTxById(QueryTxVO vo) {
+        return txDao.queryByTxId(vo.getTxId());
+    }
+
     @Override public List<TransactionPO> queryTx(QueryTxListVO vo) {
         return txDao.queryTxWithCondition(vo);
     }
 
     @Override public List<BlockVO> queryBlocks(QueryBlockVO vo) {
         return blockDao.queryByCond(vo);
-    }
-
-    public TransactionPO queryCoreTxById(QueryTxVO vo) {
-        return txDao.queryByTxId(vo.getTxId());
     }
 
     public BlockHeaderVO queryBlockByHeight(QueryBlockByHeightVO vo) {
