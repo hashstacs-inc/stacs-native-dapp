@@ -28,4 +28,5 @@ import javax.validation.constraints.NotNull;
      * the number of transactions recorded by the current block
      */
     private Long totalTxNum;
+    private Integer txNum;
 }

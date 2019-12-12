@@ -116,6 +116,9 @@
             <if test="cond.blockHash != null and cond.blockHash != '' ">
                 and block_hash=#{cond.blockHash}
             </if>
+            <if test="cond.order != null and cond.order != '' ">
+                order by height ${cond.order}
+            </if>
         </where>
     </select>
     <!-- 以上为工具自动生成 -->

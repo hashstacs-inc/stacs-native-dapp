@@ -27,12 +27,22 @@
         <result column="submitter" property="submitter"/>
         <result column="submitter_sign" property="submitterSign"/>
     </resultMap>
+    <resultMap id="queryMap" type="io.stacs.nav.drs.api.model.TransactionVO" extends="baseResultMap">
+        <result column="bd_name" property="bdName"/>
+        <result column="bd_type" property="bdType"/>
+    </resultMap>
 
     <!-- transaction table all fields -->
     <sql id="baseColumnList">
         tx_id,biz_model,policy_id,lock_time,version,block_height,block_time,send_time,sender,execute_result,error_code,
         error_message,sign_datas,action_datas,tx_type,policy_version,deal_count,max_allow_fee,fee_amount,fee_payment_address,
         fee_currency,bd_code,submitter,receipt_data,submitter_sign
+    </sql>
+
+    <sql id="queryList">
+        tx_id,biz_model,policy_id,lock_time,version,block_height,block_time,send_time,sender,execute_result,error_code,
+        error_message,sign_datas,action_datas,tx_type,policy_version,deal_count,max_allow_fee,fee_amount,fee_payment_address,
+        fee_currency,bd_code,submitter,receipt_data,submitter_sign,bd_name, bd_type
     </sql>
     <!-- query  conditions -->
     <sql id="baseWhereClause">
@@ -136,19 +146,19 @@
         </if>
         order by block_height ${cond.order}
     </select>
-    <select id="countTxWithCondition" resultType="java.lang.Long">
-        select
-        count(1)
-        from transaction
-        where 1=1
-        <if test="height != null">
-            and block_height=#{height}
-        </if>
-        <if test="txId != null and txId != ''">
-            and tx_id=#{txId}
-        </if>
-        <if test="sender != null and sender != ''">
-            and sender=#{sender}
-        </if>
-    </select>
+    <!--<select id="countTxWithCondition" resultType="java.lang.Long">-->
+    <!--    select-->
+    <!--    count(1)-->
+    <!--    from transaction-->
+    <!--    where 1=1-->
+    <!--    <if test="height != null">-->
+    <!--        and block_height=#{height}-->
+    <!--    </if>-->
+    <!--    <if test="txId != null and txId != ''">-->
+    <!--        and tx_id=#{txId}-->
+    <!--    </if>-->
+    <!--    <if test="sender != null and sender != ''">-->
+    <!--        and sender=#{sender}-->
+    <!--    </if>-->
+    <!--</select>-->
 </mapper>

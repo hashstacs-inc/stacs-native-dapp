@@ -21,4 +21,6 @@ import javax.validation.constraints.Size;
 
     @NotNull private Integer pageSize = 20;
 
+    private String order = "desc";
+
 }

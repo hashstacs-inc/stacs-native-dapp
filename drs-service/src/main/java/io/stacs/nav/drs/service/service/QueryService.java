@@ -22,6 +22,7 @@ import io.stacs.nav.drs.api.model.query.QueryTxVO;
 import io.stacs.nav.drs.service.constant.Constants;
 import io.stacs.nav.drs.service.dao.BlockDao;
 import io.stacs.nav.drs.service.dao.TransactionDao;
+import io.stacs.nav.drs.service.dao.po.BlockPO;
 import io.stacs.nav.drs.service.utils.BeanConvertor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.InitializingBean;
@@ -78,7 +79,11 @@ import static io.stacs.nav.drs.api.exception.DappError.FUNCTION_NOT_FIND_ERROR;
     }
 
     @Override public BlockVO queryTxByHeight(Long height) {
-        return BeanConvertor.convertBean(blockDao.queryByHeight(height), BlockVO.class);
+        BlockPO po = blockDao.queryByHeight(height);
+        BlockVO blockVO = BeanConvertor.convertBean(po, BlockVO.class);
+        blockVO.setBlockTime(po.getBlockTime().toString());
+        blockVO.setMaxHeight(blockDao.getMaxHeight());
+        return blockVO;
     }
 
     @Override public io.stacs.nav.drs.api.model.PageInfo<TransactionPO> queryTx(QueryTxListVO vo) {
@@ -89,6 +94,7 @@ import static io.stacs.nav.drs.api.exception.DappError.FUNCTION_NOT_FIND_ERROR;
     }
 
     @Override public io.stacs.nav.drs.api.model.PageInfo<BlockVO> queryBlocks(QueryBlockVO vo) {
+        PageHelper.startPage(vo.getPageNum(), vo.getPageSize());
         io.stacs.nav.drs.api.model.PageInfo<BlockVO> pageInfo = BeanConvertor.convertBean(
             PageInfo.of(blockDao.queryByCond(vo)), io.stacs.nav.drs.api.model.PageInfo.class);
         return pageInfo;
