@@ -23,7 +23,7 @@ requestObj.interceptors.request.use(config => {
 // 拦截notify: ANY(全部提示) SUCCESS(成功提示) ERROR(失败提示)
 requestObj.interceptors.response.use(response => {
   if (response.data.code === '000000' && (response.config.notify === notify.any || response.config.notify === notify.success)) {
-    Vue.prototype.$notify.success({message: '操作成功！'});
+    Vue.prototype.$notify.success({message: 'Operation Success'});
   } else if ((response.data.code !== '2005' && response.data.code !== '000000') && (response.config.notify === notify.any || response.config.notify === notify.error)) {
     Vue.prototype.$notify.error({message: response.data.msg});
   }
