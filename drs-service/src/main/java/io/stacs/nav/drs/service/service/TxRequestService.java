@@ -52,6 +52,7 @@ import static io.stacs.nav.drs.api.exception.DappException.newError;
      * @param vo
      */
     public void submitTx(@Valid BaseTxVO vo) throws DappException {
+        log.info("[submitTx]is start,{}",vo);
         //query business define by bdCode
         BusinessDefine bd = blockChainService.queryBDByCode(vo.getBdCode());
         String execPolicyId;
