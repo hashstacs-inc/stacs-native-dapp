@@ -319,12 +319,10 @@ import static io.stacs.nav.drs.service.utils.ResourceLoader.getManifest;
             log.warn("[unInstall] app is not exists,appName:{}", appName);
             throw new DappException(DappError.DAPP_NOT_EXISTS);
         }
-        DappStatus toStatus = dapp.getStatus();
         String runError = null;
         try {
             ClientResponse response = ArkClient.uninstallBiz(dapp.getName(), dapp.getVersion());
             if (ResponseCode.SUCCESS.equals(response.getCode())) {
-                toStatus = DappStatus.STOPPED;
             } else {
                 runError = response.getMessage();
             }
@@ -336,11 +334,13 @@ import static io.stacs.nav.drs.service.utils.ResourceLoader.getManifest;
             log.warn("dapp uninstall is failed,{}", runError);
             throw new DappException(runError);
         }
-        //update status
-        dappService.updateStatus(appName, toStatus, runError);
-        if (runError != null) {
-            log.warn("dapp install is failed,{}", runError);
-            throw new DappException(runError);
+        //unInstall
+        int r = dappService.unInstall(appName);
+        log.info("unInstall dapp:{},result:{}",appName,r);
+        try{
+            new File(drsConfig.getDownloadPath(), dapp.getFileName()).deleteOnExit();
+        }catch (Throwable e){
+            log.error("delete dapp file has error",e);
         }
         return true;
     }
