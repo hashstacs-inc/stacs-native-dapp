@@ -94,8 +94,16 @@ import static io.stacs.nav.drs.api.exception.DappError.FUNCTION_NOT_FIND_ERROR;
         return pageInfo;
     }
 
-    public BlockHeaderVO queryBlockByHeight(QueryBlockByHeightVO vo) {
+    @Override public BlockHeaderVO queryBlockByHeight(QueryBlockByHeightVO vo) {
         return bdService.queryBlockByHeight(vo);
+    }
+
+    @Override public BusinessDefine queryBDByCode(String bdCode) {
+        return bdService.queryBDByCode(bdCode);
+    }
+
+    @Override public List<BusinessDefine> queryAllBDInfo(String bdCode) {
+        return bdService.queryAllBDInfo(bdCode);
     }
 
     // @formatter:off
