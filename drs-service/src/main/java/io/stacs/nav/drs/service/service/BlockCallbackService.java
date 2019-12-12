@@ -5,6 +5,7 @@ import com.google.common.collect.Lists;
 import io.stacs.nav.drs.api.exception.DappError;
 import io.stacs.nav.drs.api.exception.DappException;
 import io.stacs.nav.drs.api.model.TransactionPO;
+import io.stacs.nav.drs.service.action.handler.BDPublishExecHandler;
 import io.stacs.nav.drs.service.dao.*;
 import io.stacs.nav.drs.service.dao.po.BlockCallbackPO;
 import io.stacs.nav.drs.service.dao.po.BlockPO;
@@ -42,6 +43,8 @@ import static io.stacs.nav.drs.service.model.ConvertHelper.blockHeader2BlockPO;
     @Autowired TxNoticeService txNoticeService;
     @Autowired private TransactionTemplate txRequired;
 
+    @Autowired private BDPublishExecHandler bdPublishExecHandler;
+
     private static final String TX_SUCCESS = "1";
 
     /**
@@ -74,17 +77,17 @@ import static io.stacs.nav.drs.service.model.ConvertHelper.blockHeader2BlockPO;
         //      3. BD、policy、contract
         BlockVO block = JSON.parseObject(bo.getBlockData(), BlockVO.class);
         BlockPO blockPO = blockHeader2BlockPO.apply(block.getBlockHeader());
-        Map<ActionExecTypeEnum, List<Object>> actionsMap = new HashMap<>();
+        Map<ActionExecTypeEnum, List<ActionPO>> actionsMap = new HashMap<>();
         List<TransactionPO> txList = block.getTransactionList();
         txList.stream().filter(tx -> TX_SUCCESS.equals(tx.getExecuteResult())).sorted(
-            Comparator.comparing(TransactionPO::getTxId)).map(ActionConverterUtil::doConvert).forEach(optPairs -> {
-            optPairs.ifPresent(pairs -> pairs.forEach(pair -> actionsMap.compute(pair.left(), (k, oldVal) -> {
-                if (oldVal == null)
-                    return Lists.newArrayList(pair.right());
-                oldVal.add(pair.right());
-                return oldVal;
-            })));
-        });
+            Comparator.comparing(TransactionPO::getTxId)).map(ActionConverterUtil::doConvert).forEach(
+            optPairs -> optPairs
+                .ifPresent(pairs -> pairs.forEach(pair -> actionsMap.compute(pair.left(), (k, oldVal) -> {
+                    if (oldVal == null)
+                        return Lists.newArrayList((ActionPO)pair.right());
+                    oldVal.add((ActionPO)pair.right());
+                    return oldVal;
+                }))));
         // order by txid
         txRequired.execute(transactionStatus -> {
             // 1. save block
@@ -92,6 +95,7 @@ import static io.stacs.nav.drs.service.model.ConvertHelper.blockHeader2BlockPO;
             // 2. save txs
             txDao.batchInsert(txList);
             // todo 3. save bd、policy、contract
+            bdPublishExecHandler.doHandler((List)actionsMap.get(bdPublishExecHandler.execType()));
 
             txList.forEach(tx -> {
                 TxRequestPO po = txRequestDao.queryByTxId(tx.getTxId());

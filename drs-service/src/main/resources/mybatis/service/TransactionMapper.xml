@@ -42,7 +42,7 @@
     <sql id="queryList">
         tx_id,biz_model,policy_id,lock_time,version,block_height,block_time,send_time,sender,execute_result,error_code,
         error_message,sign_datas,action_datas,tx_type,policy_version,deal_count,max_allow_fee,fee_amount,fee_payment_address,
-        fee_currency,bd_code,submitter,receipt_data,submitter_sign,bd_name, bd_type
+        fee_currency,bd_code,submitter,receipt_data,submitter_sign,bd.name as bd_name, bd.bd_type as bd_type
     </sql>
     <!-- query  conditions -->
     <sql id="baseWhereClause">
@@ -133,10 +133,26 @@
             #{item}
         </foreach>
     </select>
+
+    <!--<select id="queryTxWithCondition" resultMap="baseResultMap">-->
+    <!--    select-->
+    <!--    <include refid="baseColumnList"/>-->
+    <!--    from transaction-->
+    <!--    where 1=1-->
+    <!--    <if test="cond.blockHeight != null">-->
+    <!--        and block_height=#{cond.blockHeight}-->
+    <!--    </if>-->
+    <!--    <if test="cond.submitter != null and cond.submitter != ''">-->
+    <!--        and submitter=#{cond.submitter}-->
+    <!--    </if>-->
+    <!--    order by block_height ${cond.order}-->
+    <!--</select>-->
+
     <select id="queryTxWithCondition" resultMap="baseResultMap">
         select
-        <include refid="baseColumnList"/>
+        <include refid="queryList"/>
         from transaction
+        inner join BUSINESS_DEFINE bd on transaction.BD_CODE = bd.CODE
         where 1=1
         <if test="cond.blockHeight != null">
             and block_height=#{cond.blockHeight}

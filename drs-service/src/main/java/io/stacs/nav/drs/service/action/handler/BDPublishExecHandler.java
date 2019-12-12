@@ -23,6 +23,8 @@ import static io.stacs.nav.drs.service.enums.ActionExecTypeEnum.BD_ADD;
     }
 
     @Override public void doHandler(List<BusinessDefinePO> actions) {
+        if (actions == null || actions.isEmpty())
+            return;
         actions.forEach(businessDefineDao::add);
     }
 }
