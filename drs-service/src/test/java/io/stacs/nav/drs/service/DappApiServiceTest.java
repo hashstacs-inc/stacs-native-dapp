@@ -2,6 +2,7 @@ package io.stacs.nav.drs.service;
 
 import com.alipay.sofa.ark.springboot.runner.ArkBootRunner;
 import io.stacs.nav.drs.ConfigWithoutDataSource;
+import io.stacs.nav.drs.api.ISignatureService;
 import io.stacs.nav.drs.api.model.PageInfo;
 import io.stacs.nav.drs.api.model.TransactionVO;
 import io.stacs.nav.drs.api.model.bd.BusinessDefine;
@@ -12,6 +13,7 @@ import io.stacs.nav.drs.service.scheduler.BlockCallbackProcessSchedule;
 import io.stacs.nav.drs.service.scheduler.FailoverSchedule;
 import io.stacs.nav.drs.service.service.BlockChainService;
 import io.stacs.nav.drs.service.service.QueryService;
+import io.stacs.nav.drs.service.service.SignatureService;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -67,7 +69,7 @@ public class DappApiServiceTest {
     }
 
     @Test public void test() {
-        QueryService queryService = new QueryService();
+        ISignatureService queryService = new SignatureService();
         BusinessDefine bd = new BusinessDefine();
         bd.setTxId("tx_id");
         bd.setSubmitter("aaa");

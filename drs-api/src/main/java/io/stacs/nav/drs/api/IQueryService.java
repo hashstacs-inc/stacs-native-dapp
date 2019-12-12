@@ -20,11 +20,6 @@ import java.util.List;
  */
 public interface IQueryService {
 
-    /**
-     * generate sign value
-     */
-    String generateSignature(BaseTxVO vo) throws DappException;
-
     Long queryCurrentHeight();
 
     TransactionVO queryTxById(QueryTxVO vo);

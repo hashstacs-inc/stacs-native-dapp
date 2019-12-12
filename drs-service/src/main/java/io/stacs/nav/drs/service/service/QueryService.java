@@ -49,26 +49,7 @@ import static io.stacs.nav.drs.api.exception.DappError.FUNCTION_NOT_FIND_ERROR;
     @Autowired BlockDao blockDao;
     @Autowired TransactionDao txDao;
 
-    @Override public String generateSignature(BaseTxVO vo) throws DappException {
-        String execPolicyId;
-        BusinessDefine bd = bdService.queryBDByCode(vo.getBdCode());
-        if (CREATE_CONTRACT.getFunctionName().equals(vo.getFunctionName())) {
-            execPolicyId = bd.getInitPolicy();
-        } else {
-            List<FunctionDefine> functions = bd.getFunctions();
-            Optional<FunctionDefine> define = functions.stream().filter(a -> a.getName().equals(vo.getFunctionName()))
-                .findFirst();
-            //check function
-            if (!define.isPresent()) {
-                log.warn("function define is not find,functionName:{},txId:{}", vo.getFunctionName(), vo.getTxId());
-                throw new DappException(FUNCTION_NOT_FIND_ERROR);
-            }
-            FunctionDefine fd = define.get();
-            execPolicyId = fd.getExecPolicy();
-        }
-        vo.setExecPolicyId(execPolicyId);
-        return vo.getSignValue();
-    }
+
 
     public Long queryCurrentHeight() {
         return Long.valueOf(bdService.queryCurrentHeight().toString());
