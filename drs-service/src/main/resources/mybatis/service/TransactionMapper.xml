@@ -100,10 +100,13 @@
     </select>
     <!-- below are auto create -->
 
-    <select id="queryByTxId" resultMap="baseResultMap" parameterType="Object">
+    <select id="queryByTxId" resultMap="queryMap" parameterType="Object">
         select
-        <include refid="baseColumnList"/>
-        from transaction where tx_id=#{txId}
+        <include refid="queryList"/>
+        from transaction as t
+        left join business_define as bd
+        on bd.CODE =t.BD_CODE
+        where tx_id=#{txId}
     </select>
 
     <!--batch insert-->

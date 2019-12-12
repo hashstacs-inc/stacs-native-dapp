@@ -10,7 +10,6 @@ import com.github.pagehelper.PageInfo;
 import io.stacs.nav.drs.api.IQueryService;
 import io.stacs.nav.drs.api.exception.DappException;
 import io.stacs.nav.drs.api.model.BaseTxVO;
-import io.stacs.nav.drs.api.model.TransactionPO;
 import io.stacs.nav.drs.api.model.TransactionVO;
 import io.stacs.nav.drs.api.model.bd.BusinessDefine;
 import io.stacs.nav.drs.api.model.bd.FunctionDefine;
@@ -75,7 +74,7 @@ import static io.stacs.nav.drs.api.exception.DappError.FUNCTION_NOT_FIND_ERROR;
         return Long.valueOf(bdService.queryCurrentHeight().toString());
     }
 
-    @Override public TransactionPO queryTxById(QueryTxVO vo) {
+    @Override public TransactionVO queryTxById(QueryTxVO vo) {
         return txDao.queryByTxId(vo.getTxId());
     }
 

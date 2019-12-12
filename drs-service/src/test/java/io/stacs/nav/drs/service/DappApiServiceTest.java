@@ -7,6 +7,7 @@ import io.stacs.nav.drs.api.model.TransactionVO;
 import io.stacs.nav.drs.api.model.bd.BusinessDefine;
 import io.stacs.nav.drs.api.model.query.QueryBlockVO;
 import io.stacs.nav.drs.api.model.query.QueryTxListVO;
+import io.stacs.nav.drs.api.model.query.QueryTxVO;
 import io.stacs.nav.drs.service.scheduler.BlockCallbackProcessSchedule;
 import io.stacs.nav.drs.service.scheduler.FailoverSchedule;
 import io.stacs.nav.drs.service.service.BlockChainService;
@@ -43,6 +44,13 @@ public class DappApiServiceTest {
         vo.setPageNum(1);
         PageInfo<TransactionVO> transactionPOPageInfo = queryService.queryTx(vo);
         System.out.println(transactionPOPageInfo.getTotal());
+    }
+
+    @Test public void testTxd() {
+        QueryTxVO vo = new QueryTxVO();
+        vo.setTxId("1da25d2d-92c9-4544-84e6-735fc7c61d08");
+        TransactionVO resp = queryService.queryTxById(vo);
+        System.out.println(resp);
     }
 
     @Test public void test3() {
