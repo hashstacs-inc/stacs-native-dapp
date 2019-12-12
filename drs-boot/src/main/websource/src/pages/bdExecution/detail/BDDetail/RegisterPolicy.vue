@@ -37,9 +37,10 @@
           <el-input v-model="ruleForm.verifyNum" placeholder="Please enter an integer"></el-input>
         </el-form-item>
         <el-form-item label="Must Domain IDs" prop="mustDomainIDs">
-          <el-select v-model="ruleForm.mustDomainIDs" placeholder="Please select from Domain IDs" multiple filterable>
+          <!-- <el-select v-model="ruleForm.mustDomainIDs" placeholder="Please select from Domain IDs" multiple filterable>
             <el-option :label="v.name" :value="v.name" v-for="(v, k) in mustList" :key="k"></el-option>
-          </el-select>
+          </el-select> -->
+          <el-input v-model="ruleForm.mustDomainIDs" placeholder="Please enter an Domain IDs"></el-input>
         </el-form-item>
         <el-form-item label="Expression" prop="expression">
           <el-input v-model="ruleForm.expression" placeholder="Please fill in the expression. Only support integer、 +、-、x 、/ . as (n+1)/2"></el-input>
@@ -47,14 +48,14 @@
       </template>
       <el-form-item label="Require Auth IDs" prop="requireAuthIDs">
         <el-select v-model="ruleForm.requireAuthIDs" placeholder="Please select from Domain IDs" multiple filterable>
-          <el-option :label="v.name" :value="v.name" v-for="(v, k) in requireList" :key="k"></el-option>
+          <el-option :label="v.policyName" :value="v.policyId" v-for="(v, k) in requireList" :key="k"></el-option>
         </el-select>
       </el-form-item>
     </el-form>
   </div>
 </template>
 <script>
-// import { getPolicyList, getDomainList } from '@/api/storeApi';
+import { getPolicyList, getDomainList } from '@/api/storeApi';
 
 export default {
   name: 'RegisterPolicy',
@@ -71,20 +72,8 @@ export default {
         mustDomainIDs: '',
         expression: ''
       },
-      policyList: [
-        {
-          name: '11111'
-        }, {
-          name: '22222'
-        }
-      ],
-      domainList: [
-        {
-          name: '11111'
-        }, {
-          name: '22222'
-        }
-      ],
+      policyList: [],
+      domainList: [],
       voteList: [
         {
           name: 'Synchronously'
@@ -108,13 +97,7 @@ export default {
           name: 'Assign Num Vote'
         }
       ],
-      requireList: [
-        {
-          name: '2222'
-        }, {
-          name: '1111'
-        }
-      ],
+      requireList: [],
       mustList: [
         {
           name: '11111'
@@ -162,33 +145,13 @@ export default {
       return validCode;
     },
     async getPolicy () {
-      // let data = await getPolicyList();
-      let data = {
-        code: '000000',
-        msg: 'SUCCESS',
-        data: [
-            {"policyId":"policyId-0","policyName":"policy name-0"},
-            {"policyId":"policyId-1","policyName":"policy name-1"},
-            {"policyId":"policyId-2","policyName":"policy name-2"}
-        ]
-      }
-      this.policyList = [];
-      this.policyList.push(...data.data);
-      console.log(this.policyList);
+      let data = await getPolicyList();
+      this.policyList = JSON.parse(JSON.stringify(data.data));
+      this.requireList = JSON.parse(JSON.stringify(data.data));
     },
     async getDomain () {
-      // let data = await getDomainList();
-      let data = {
-        code: '000000',
-        msg: 'SUCCESS',
-        data: [
-            {"desc":"test desc","domainId":"domainId-0"},
-            {"desc":"test desc","domainId":"domainId-1"},
-            {"desc":"test desc","domainId":"domainId-2"}
-        ]
-      }
-      this.domainList = [];
-      this.domainList.push(...data.data);
+      let data = await getDomainList();
+      this.domainList = JSON.parse(JSON.stringify(data.data));
     }
   },
   created () {

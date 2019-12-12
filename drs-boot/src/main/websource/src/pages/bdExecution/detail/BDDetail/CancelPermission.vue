@@ -8,13 +8,15 @@
       </el-form-item>
       <el-form-item label="Permission Names" prop="permissionNames">
         <el-select v-model="ruleForm.permissionNames" placeholder="Please select domian IDs" multiple filterable>
-          <el-option :label="v.name" :value="v.name" v-for="(v, k) in permissionNameList" :key="k"></el-option>
+          <el-option :label="v.permissionName" :value="v.permissionIndex" v-for="(v, k) in permissionNameList" :key="k"></el-option>
         </el-select>
       </el-form-item>
     </el-form>
   </div>
 </template>
 <script>
+import { getPermissionList } from '@/api/storeApi';
+
 export default {
   name: 'CancelPermission',
   data () {
@@ -40,7 +42,14 @@ export default {
       }
     }
   },
+  created () {
+    this.getPermission();
+  },
   methods: {
+    async getPermission () {
+      let data = await getPermissionList();
+      this.permissionNameList = JSON.parse(JSON.stringify(data.data));
+    },
     validateFrom () {
       let validCode = {
         valid: false,

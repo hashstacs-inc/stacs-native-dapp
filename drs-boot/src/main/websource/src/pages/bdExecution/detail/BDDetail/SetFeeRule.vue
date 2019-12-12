@@ -20,7 +20,7 @@
   </div>
 </template>
 <script>
-// import { getPolicyList } from '@/api/storeAip';
+import { getPolicyList } from '@/api/storeApi';
 
 export default {
   name: 'SetFeeRule',
@@ -65,18 +65,8 @@ export default {
       }
     },
     async getPolicy () {
-      // let data = await getPolicyList();
-      let data = {
-        code: '000000',
-        msg: 'SUCCESS',
-        data: [
-          {"policyId":"policyId-0","policyName":"policy name-0"},
-          {"policyId":"policyId-1","policyName":"policy name-1"},
-          {"policyId":"policyId-2","policyName":"policy name-2"}
-        ]
-      }
-      this.policyIDList = [];
-      this.policyIDList.push(...data.data);
+      let data = await getPolicyList();
+      this.policyIDList = JSON.parse(JSON.stringify(data.data));
     }
   },
   created () {

@@ -4,5 +4,8 @@ export default {
   },
   changeBdMenu (state, data) {
     state.bdMenu = data;
+  },
+  changeFunctionNameList (state, data) {
+    state.functionNameList = data;
   }
 }

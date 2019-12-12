@@ -19,7 +19,7 @@
       </el-form-item>
       <el-form-item label="Init Permission" prop="initPermission" ref="initPermission">
         <el-select v-model="ruleForm.initPermission">
-          <el-option :label="v.permissionName" :value="v.permissionName" v-for="(v, k) in initPermissionList" :key="k"></el-option>
+          <el-option :label="v.permissionName" :value="v.permissionIndex" v-for="(v, k) in initPermissionList" :key="k"></el-option>
         </el-select>
       </el-form-item>
       <el-form-item label="Init Policy" prop="initPolicy" ref="initPolicy">
@@ -44,7 +44,7 @@
           <el-form-item label="Function Name" :prop="'newFunction.' + k + '.functionName'"
             :rules="{ required: true, message: 'This filed is required', trigger: 'blur' }">
             <el-select v-model="v.functionName" placeholder="Please select" v-if="v.type === 'System Action' && !v.locking">
-              <el-option :label="v.name" :value="v.name" v-for="(v, k) in v.functionNameList" :key="k"></el-option>
+              <el-option :label="v.desc" :value="v.name" v-for="(v, k) in functionNameList" :key="k"></el-option>
             </el-select>
             <el-input v-model="v.functionName" :maxlength="256" v-else :disabled="v.locking"></el-input>
           </el-form-item>
@@ -58,7 +58,7 @@
           <el-form-item label="Init Permission" :prop="'newFunction.' + k + '.initPermission'"
             :rules="{ required: true, message: 'This filed is required', trigger: 'blur' }">
             <el-select v-model="v.initPermission" v-if="v.type === 'System Action' && !v.locking">
-              <el-option :label="v.permissionName" :value="v.permissionName" v-for="(v, k) in initPermissionList" :key="k"></el-option>
+              <el-option :label="v.permissionName" :value="v.permissionIndex" v-for="(v, k) in initPermissionList" :key="k"></el-option>
             </el-select>
             <el-input v-model="v.initPermission" :maxlength="256" v-else :disabled="v.locking"></el-input>
           </el-form-item>
@@ -79,7 +79,8 @@
   </div>
 </template>
 <script>
-// import { getPermissionList, getPolicyList } from '@/api/storeApi';
+import { getPermissionList, getPolicyList } from '@/api/storeApi';
+import { mapGetters } from 'vuex';
 
 export default {
   name: 'BDSpecification',
@@ -223,33 +224,16 @@ export default {
       }
     },
     async getPermission () {
-      // let data = await getPermissionList();
-      let data = {
-        code: "000000",
-        data: [
-          {"permissionName":"name-0"},
-          {"permissionName":"name-1"},
-          {"permissionName":"name-2"}
-        ],
-        msg: "SUCCESS"
-      }
-      this.initPermissionList = [];
-      this.initPermissionList.push(...data.data);
+      let data = await getPermissionList();
+      this.initPermissionList = JSON.parse(JSON.stringify(data.data));
     },
     async getPolicyList () {
-      // let data = await getPolicyList();
-      let data = {
-        code: "000000",
-        data: [
-          {"policyId":"policyId-0","policyName":"policy name-0"},
-          {"policyId":"policyId-1","policyName":"policy name-1"},
-          {"policyId":"policyId-2","policyName":"policy name-2"}
-        ],
-        msg: "SUCCESS"
-      }
-      this.initPolicyList = [];
-      this.initPolicyList.push(...data.data);
+      let data = await getPolicyList();
+      this.initPolicyList = JSON.parse(JSON.stringify(data.data));
     }
+  },
+  computed: {
+    ...mapGetters(['functionNameList'])
   },
   created () {
     this.getPermission();

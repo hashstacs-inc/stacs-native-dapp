@@ -8,7 +8,7 @@
       </el-form-item>
       <el-form-item label="BD Codes" prop="BDCodes">
         <el-select v-model="ruleForm.BDCodes" multiple filterable placeholder="Please selec BD Code">
-          <el-option :label="v.bdCode" :value="v.bdCode" v-for="(v, k) in BDCodeList" :key="k"></el-option>
+          <el-option :label="v.name" :value="v.code" v-for="(v, k) in BDCodeList" :key="k"></el-option>
         </el-select>
       </el-form-item>
       <el-form-item label="Action Type" prop="actionType">
@@ -20,7 +20,7 @@
   </div>
 </template>
 <script>
-// import { BDOptionInfo } from '@/api/storeApi';
+import { BDOptionInfo } from '@/api/storeApi';
 
 export default {
   name: 'IdentityBDManage',
@@ -64,23 +64,11 @@ export default {
       return validCode;
     },
     async getDBCodes () {
-      // let data = await BDOptionInfo();
-      let data = {
-        code: '000000',
-        msg: 'SUCCESS',
-        data: [
-          {
-            "bdCode":"SysBD",
-            "bdType":"system",
-            "bdVersion":"1.0",
-            "functionName":"BD_PUBLISH",
-            "initPermission":"SLAVE",
-            "initPolicy":"INIT_BD"
-          }
-        ]
+      let params = {
+        bdCode: ''
       }
-      this.BDCodeList = [];
-      this.BDCodeList.push(...data.data);
+      let data = await BDOptionInfo(params);
+      this.BDCodeList = JSON.parse(JSON.stringify(data.data));
     }
   },
   created () {

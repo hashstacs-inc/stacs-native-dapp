@@ -63,7 +63,7 @@ export default {
       }
       let data = await postDeappConfig(params);
       if (data.code !== '000000') {
-        this.$alert(`<p>Configuration failed, please try again.</p><p>Reason: ${data.msg}</p>`, 'Tips', {
+        this.$alert(`<p>Configuration failed, please try again.</p><p>Reason: ${data.msg}</p>`, 'System', {
           confirmButtonText: 'YES',
           dangerouslyUseHTMLString: true
         });
@@ -76,7 +76,7 @@ export default {
         }
         let startData = await startDeapp(startParams);
         if (startData.code === '000000') {
-          this.$alert('Configuration success.', 'Tips', {
+          this.$alert('Configuration success.', 'System', {
             confirmButtonText: 'YES',
             callback: () => {
               this.$router.go(-1);

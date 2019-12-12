@@ -118,6 +118,9 @@ export default {
           let startData = await startDeapp(startParams);
           if (startData.code === '000000') {
             this.$set(this.currentItem, 'status', 'INITIALIZED');
+            this.$alert('Configuration success.', 'System', {
+              confirmButtonText: 'YES'
+            });
           } else {
             this.$set(this.currentItem, 'errorText', startData.msg);
           }

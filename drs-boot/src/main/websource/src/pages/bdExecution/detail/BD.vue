@@ -64,9 +64,10 @@
               <el-input v-model="ruleForm.verifyNum" placeholder="Please enter an integer"></el-input>
             </el-form-item>
             <el-form-item label="Must Domain IDs" prop="mustDomainIDs">
-              <el-select v-model="ruleForm.mustDomainIDs" placeholder="Please select from Domain IDs" multiple filterable>
+              <!-- <el-select v-model="ruleForm.mustDomainIDs" placeholder="Please select from Domain IDs" multiple filterable>
                 <el-option :label="v.name" :value="v.name" v-for="(v, k) in mustList" :key="k"></el-option>
-              </el-select>
+              </el-select> -->
+              <el-input v-model="ruleForm.mustDomainIDs" placeholder="Please enter an Domain IDs"></el-input>
             </el-form-item>
             <el-form-item label="Expression" prop="expression">
               <el-input v-model="ruleForm.expression" placeholder="Please fill in the expression. Only support integer、 +、-、x 、/ . as (n+1)/2"></el-input>
@@ -162,9 +163,6 @@ export default {
         submitter: [
           { required: true, message: 'This filed is required', trigger: 'blur' }
         ],
-        feeMaxAmount: [
-          { required: true, message: 'This filed is required', trigger: 'blur' }
-        ],
         contractName: [
           { required: true, message: 'This filed is required', trigger: 'change' }
         ],
@@ -256,7 +254,9 @@ export default {
         }
       });
     },
-    changeBDName () {
+    changeBDName (code) {
+      let filterFunction = JSON.parse(this.dbNameList.filter(v => v.code === code)[0].functions);
+      this.$store.commit('changeFunctionNameList', filterFunction);
       this.ruleForm.functionName = '';
     },
     async getPolicy () {
@@ -275,6 +275,8 @@ export default {
       let data = await BDOptionInfo(params);
       this.dbNameList = JSON.parse(JSON.stringify(data.data));
       this.functionNameList = JSON.parse(JSON.stringify(JSON.parse(data.data[0].functions)));
+      this.$store.commit('changeFunctionNameList', JSON.parse(JSON.stringify(JSON.parse(data.data[0].functions))));
+      console.log(this.functionNameList)
       this.ruleForm.code = this.dbNameList[0].code;
       this.loading = false;
     }
