@@ -33,7 +33,6 @@ import javax.validation.constraints.NotBlank;
     private String feeMaxAmount;
 
     public abstract String getFunctionName();
-
     /**
      * get sign value
      *
