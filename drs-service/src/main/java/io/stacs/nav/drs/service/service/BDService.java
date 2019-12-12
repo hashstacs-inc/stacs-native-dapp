@@ -53,6 +53,7 @@ import java.util.Set;
             throw new DappException(DappError.FUNCTION_NOT_FIND_ERROR);
         }
         String json = JSON.toJSONString(bdvo.getParam());
+        log.info("[submit]param.json:{}",json);
         BaseTxVO o = (BaseTxVO)JSON.parseObject(json,paramMap.get(funcName));
         if(StringUtils.isEmpty(o.getTxId())){
             o.setTxId(funcName + "-" + System.currentTimeMillis());
