@@ -338,7 +338,7 @@ import static io.stacs.nav.drs.service.utils.ResourceLoader.getManifest;
         int r = dappService.unInstall(appName);
         log.info("unInstall dapp:{},result:{}",appName,r);
         try{
-            new File(drsConfig.getDownloadPath(), dapp.getFileName()).deleteOnExit();
+            new File(drsConfig.getDownloadPath(), dapp.getFileName()).delete();
         }catch (Throwable e){
             log.error("delete dapp file has error",e);
         }
