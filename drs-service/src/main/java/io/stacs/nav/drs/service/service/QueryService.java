@@ -11,6 +11,7 @@ import io.stacs.nav.drs.api.IQueryService;
 import io.stacs.nav.drs.api.exception.DappException;
 import io.stacs.nav.drs.api.model.BaseTxVO;
 import io.stacs.nav.drs.api.model.TransactionPO;
+import io.stacs.nav.drs.api.model.TransactionVO;
 import io.stacs.nav.drs.api.model.bd.BusinessDefine;
 import io.stacs.nav.drs.api.model.bd.FunctionDefine;
 import io.stacs.nav.drs.api.model.block.BlockHeaderVO;
@@ -86,9 +87,9 @@ import static io.stacs.nav.drs.api.exception.DappError.FUNCTION_NOT_FIND_ERROR;
         return blockVO;
     }
 
-    @Override public io.stacs.nav.drs.api.model.PageInfo<TransactionPO> queryTx(QueryTxListVO vo) {
+    @Override public io.stacs.nav.drs.api.model.PageInfo<TransactionVO> queryTx(QueryTxListVO vo) {
         PageHelper.startPage(vo.getPageNum(), vo.getPageSize());
-        io.stacs.nav.drs.api.model.PageInfo<TransactionPO> pageInfo = BeanConvertor.convertBean(
+        io.stacs.nav.drs.api.model.PageInfo<TransactionVO> pageInfo = BeanConvertor.convertBean(
             PageInfo.of(txDao.queryTxWithCondition(vo)), io.stacs.nav.drs.api.model.PageInfo.class);
         return pageInfo;
     }

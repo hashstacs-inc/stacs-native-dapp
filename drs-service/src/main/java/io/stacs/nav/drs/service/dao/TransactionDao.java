@@ -1,6 +1,7 @@
 package io.stacs.nav.drs.service.dao;
 
 import io.stacs.nav.drs.api.model.TransactionPO;
+import io.stacs.nav.drs.api.model.TransactionVO;
 import io.stacs.nav.drs.api.model.query.QueryTxListVO;
 import io.stacs.nav.drs.service.BaseDao;
 import org.apache.ibatis.annotations.Mapper;
@@ -48,6 +49,6 @@ import java.util.List;
      */
     List<String> queryByTxIds(@Param("txIds") List<String> txIds);
 
-    List<TransactionPO> queryTxWithCondition(@Param("cond") QueryTxListVO vo);
+    List<TransactionVO> queryTxWithCondition(@Param("cond") QueryTxListVO vo);
 
 }

@@ -148,7 +148,7 @@
     <!--    order by block_height ${cond.order}-->
     <!--</select>-->
 
-    <select id="queryTxWithCondition" resultMap="baseResultMap">
+    <select id="queryTxWithCondition" resultMap="queryMap">
         select
         <include refid="queryList"/>
         from transaction

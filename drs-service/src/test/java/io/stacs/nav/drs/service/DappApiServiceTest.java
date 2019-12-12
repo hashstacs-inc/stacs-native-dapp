@@ -3,7 +3,7 @@ package io.stacs.nav.drs.service;
 import com.alipay.sofa.ark.springboot.runner.ArkBootRunner;
 import io.stacs.nav.drs.ConfigWithoutDataSource;
 import io.stacs.nav.drs.api.model.PageInfo;
-import io.stacs.nav.drs.api.model.TransactionPO;
+import io.stacs.nav.drs.api.model.TransactionVO;
 import io.stacs.nav.drs.api.model.bd.BusinessDefine;
 import io.stacs.nav.drs.api.model.query.QueryBlockVO;
 import io.stacs.nav.drs.api.model.query.QueryTxListVO;
@@ -41,7 +41,7 @@ public class DappApiServiceTest {
         QueryTxListVO vo = new QueryTxListVO();
         vo.setPageSize(10);
         vo.setPageNum(1);
-        PageInfo<TransactionPO> transactionPOPageInfo = queryService.queryTx(vo);
+        PageInfo<TransactionVO> transactionPOPageInfo = queryService.queryTx(vo);
         System.out.println(transactionPOPageInfo.getTotal());
     }
 
