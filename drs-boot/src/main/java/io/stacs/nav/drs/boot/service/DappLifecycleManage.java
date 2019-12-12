@@ -225,6 +225,7 @@ import static io.stacs.nav.drs.service.utils.ResourceLoader.getManifest;
             is = new FileInputStream(f);
             p.load(is);
             p.put(WEB_SERVER_CONTEXT_PATH, "/" + appName);
+            p.put(SPRING_APP_NAME, appName);
             os = new FileOutputStream(f);
             p.store(os, null);
         } catch (IOException e) {
@@ -361,6 +362,7 @@ import static io.stacs.nav.drs.service.utils.ResourceLoader.getManifest;
             is = new FileInputStream(new File(filePath));
             p.load(is);
             //filter
+            p.remove(SPRING_APP_NAME);
             p.remove(WEB_SERVER_PORT);
             p.remove(WEB_CONTEXT_PATH);
         } catch (IOException e) {
