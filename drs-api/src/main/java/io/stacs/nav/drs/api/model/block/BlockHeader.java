@@ -5,6 +5,7 @@ import lombok.Getter;
 import lombok.Setter;
 
 import javax.validation.constraints.NotNull;
+import java.math.BigDecimal;
 
 /**
  * The type Block header.
@@ -29,4 +30,6 @@ import javax.validation.constraints.NotNull;
      */
     private Long totalTxNum;
     private Integer txNum;
+
+    private BigDecimal totalBlockSize;
 }

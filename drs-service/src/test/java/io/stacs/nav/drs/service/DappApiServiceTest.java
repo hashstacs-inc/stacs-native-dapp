@@ -7,6 +7,7 @@ import io.stacs.nav.drs.api.model.PageInfo;
 import io.stacs.nav.drs.api.model.TransactionVO;
 import io.stacs.nav.drs.api.model.bd.BusinessDefine;
 import io.stacs.nav.drs.api.model.query.*;
+import io.stacs.nav.drs.service.dao.po.BusinessDefinePO;
 import io.stacs.nav.drs.service.scheduler.BlockCallbackProcessSchedule;
 import io.stacs.nav.drs.service.scheduler.FailoverSchedule;
 import io.stacs.nav.drs.service.service.BDService;
@@ -82,7 +83,7 @@ public class DappApiServiceTest {
     }
 
     @Test public void test6() {
-        BusinessDefine systemBD = blockChainService.queryBDByCode("SystemBD");
+        BusinessDefinePO systemBD = blockChainService.queryBDByCode("SystemBD");
         System.out.println(systemBD);
     }
 
