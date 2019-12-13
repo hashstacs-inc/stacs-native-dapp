@@ -101,7 +101,7 @@
   </div>
 </template>
 <script>
-import { BDOptionInfo, getDomainList, getPolicyList } from '@/api/storeApi';
+import { BDOptionInfo, getDomainList, getPolicyList, submitBDConfig } from '@/api/storeApi';
 import RegisterPolicy from './BDDetail/RegisterPolicy';
 import ModifyPolicy from './BDDetail/ModifyPolicy';
 import IdentitySetting from './BDDetail/IdentitySetting';
@@ -208,9 +208,9 @@ export default {
       domainIDList: [],
       votePatternList: [
         {
-          name: 'ASYNC'
-        }, {
           name: 'SYNC'
+        }, {
+          name: 'ASYNC'
         }
       ],
       callbackTypeList: [
@@ -253,7 +253,7 @@ export default {
       }
     },
     submitBD () {
-      this.$refs['ruleForm'].validate(valid => {
+      this.$refs['ruleForm'].validate(async valid => {
         let submitData = {};
         let validChild = this.$refs[this.ruleForm.functionName].validateFrom();
         if (valid && validChild.valid) {
@@ -267,6 +267,9 @@ export default {
             param: submitData
           }
           console.log(params.param)
+          let data = await submitBDConfig();
+
+          
         }
       });
     },
