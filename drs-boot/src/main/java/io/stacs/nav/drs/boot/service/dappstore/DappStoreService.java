@@ -9,6 +9,7 @@ import io.stacs.nav.drs.boot.service.dapp.IDappService;
 import io.stacs.nav.drs.boot.vo.AppProfileVO;
 import io.stacs.nav.drs.service.config.DrsConfig;
 import io.stacs.nav.drs.service.network.BlockChainFacade;
+import io.stacs.nav.drs.service.utils.BeanConvertor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections4.CollectionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -54,7 +55,7 @@ import java.util.concurrent.TimeUnit;
         log.info("[queryApps]storePath:{}", storePath);
         List<AppProfileVO> appProfileVOList = DAPP_CACHE.getIfPresent(storePath);
         if (CollectionUtils.isNotEmpty(appProfileVOList)) {
-            return appProfileVOList;
+            return BeanConvertor.convertList(appProfileVOList,AppProfileVO.class);
         }
         List<AppProfileVO> list = null;
         if (!StringUtil.isEmpty(storePath)) {
@@ -68,8 +69,8 @@ import java.util.concurrent.TimeUnit;
             log.warn("[queryApps]list is empty");
             return null;
         }
-        DAPP_CACHE.put(storePath, list);
-        return list;
+        DAPP_CACHE.put(storePath,list);
+        return BeanConvertor.convertList(list,AppProfileVO.class);
     }
 
     /**
