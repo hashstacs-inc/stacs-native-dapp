@@ -2,6 +2,7 @@ package io.stacs.nav.drs.api.model;
 
 import lombok.Getter;
 import lombok.Setter;
+import lombok.ToString;
 import org.hibernate.validator.constraints.Length;
 
 import javax.validation.constraints.NotBlank;
@@ -12,7 +13,7 @@ import javax.validation.constraints.NotBlank;
  * @author ganxiang
  * @date 10/29/2019
  */
-@Getter @Setter public abstract class BaseTxVO {
+@Getter @Setter @ToString public abstract class BaseTxVO {
 
     @NotBlank @Length(max = 64) private String txId;
 
