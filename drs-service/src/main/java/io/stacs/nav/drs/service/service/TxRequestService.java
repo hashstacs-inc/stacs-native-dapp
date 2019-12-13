@@ -7,14 +7,18 @@ import io.stacs.nav.drs.api.exception.DappException;
 import io.stacs.nav.drs.api.model.BaseTxVO;
 import io.stacs.nav.drs.api.model.bd.BusinessDefine;
 import io.stacs.nav.drs.api.model.bd.FunctionDefine;
+import io.stacs.nav.drs.service.dao.BusinessDefineDao;
 import io.stacs.nav.drs.service.dao.TxRequestDao;
+import io.stacs.nav.drs.service.dao.po.BusinessDefinePO;
 import io.stacs.nav.drs.service.dao.po.TxRequestPO;
 import io.stacs.nav.drs.service.enums.RequestStatus;
 import io.stacs.nav.drs.service.model.TxRequestBO;
 import io.stacs.nav.drs.service.network.BlockChainFacade;
 import io.stacs.nav.drs.service.scheduler.InitTxDisruptor;
+import io.stacs.nav.drs.service.utils.BeanConvertor;
 import io.stacs.nav.drs.service.vo.PermissionCheckVO;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DuplicateKeyException;
@@ -45,6 +49,7 @@ import static io.stacs.nav.drs.api.exception.DappException.newError;
     @Autowired InitTxDisruptor initTxDisruptor;
     @Autowired BlockChainFacade blockChainFacade;
     @Autowired BlockChainService blockChainService;
+    @Autowired BusinessDefineDao businessDefineDao;
 
     /**
      * receive transaction and request to chain
@@ -52,9 +57,15 @@ import static io.stacs.nav.drs.api.exception.DappException.newError;
      * @param vo
      */
     public void submitTx(@Valid BaseTxVO vo) throws DappException {
-        log.info("[submitTx]is start,{}",vo);
+        log.info("[submitTx]is start,{}", vo);
         //query business define by bdCode
-        BusinessDefine bd = blockChainService.queryBDByCode(vo.getBdCode());
+        BusinessDefinePO po = businessDefineDao.queryBDByCode(vo.getBdCode());
+        log.info("[submit]query BD from database:{}",po);
+        BusinessDefine bd = BeanConvertor.convertBean(po, BusinessDefine.class);
+        if (bd != null && StringUtils.isNotEmpty(po.getFunctions())) {
+            List<FunctionDefine> functionDefines = JSON.parseArray(po.getFunctions(), FunctionDefine.class);
+            bd.setFunctions(functionDefines);
+        }
         String execPolicyId;
         String execFuncName;
         String execPermission;
