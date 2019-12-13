@@ -57,7 +57,7 @@ import static io.stacs.nav.drs.api.exception.DappException.newError;
      * @param vo
      */
     public void submitTx(@Valid BaseTxVO vo) throws DappException {
-        log.info("[submitTx]is start,{}", vo);
+        log.info("[submitTx]is start,{}", JSON.toJSONString(vo));
         //query business define by bdCode
         BusinessDefinePO po = businessDefineDao.queryBDByCode(vo.getBdCode());
         log.info("[submit]query BD from database:{}",po);
