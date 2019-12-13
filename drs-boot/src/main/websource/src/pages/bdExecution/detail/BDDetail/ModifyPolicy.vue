@@ -62,6 +62,17 @@ import { getPolicyList, getDomainList } from '@/api/storeApi';
 export default {
   name: 'ModifyPolicy',
   data () {
+    const validatorExpression = (rule, value, callback) => {
+      if (!value) {
+        callback();
+      } else {
+        if (/\(\d*[+|\-|*|/]{1}\d*\)[+|\-|*|/]{1}[1-9]+/.test(value)) {
+          callback();
+        } else {
+          callback(new Error('Please enter the right format, eg: (n+1)/2.'));
+        }
+      }
+    }
     return {
       ruleForm: {
         policyId: '',
@@ -135,6 +146,9 @@ export default {
         ],
         policyId: [
           { required: true, message: 'This filed is required', trigger: 'blur' }
+        ],
+        expression: [
+          { validator: validatorExpression, trigger: 'blur' }
         ]
       }
     }

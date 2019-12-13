@@ -35,14 +35,14 @@
           ref="newFunctionFrom" class="functio-from-box">
           <div class="delete-new-from" v-if="v.locking" @click="deleteNew(k)">Delete</div>
           <el-form-item label="Type" :prop="'newFunction.' + k + '.type'"
-            :rules="{ required: true, message: 'This filed is required', trigger: 'blur' }">
+            :rules="{ required: true, message: 'This filed is required', trigger: 'change' }">
             <el-select v-model="v.type" v-if="!v.locking" @change="changeNewType">
               <el-option :label="v.name" :value="v.name" v-for="(v, k) in v.typeList" :key="k"></el-option>
             </el-select>
             <el-input v-model="v.type" v-else :disabled="v.locking"></el-input>
           </el-form-item>
           <el-form-item label="Function Name" :prop="'newFunction.' + k + '.functionName'"
-            :rules="{ required: true, message: 'This filed is required', trigger: 'blur' }">
+            :rules="{ required: true, message: 'This filed is required' }">
             <el-select v-model="v.functionName" placeholder="Please select" v-if="v.type === 'System Action' && !v.locking">
               <el-option :label="v.desc" :value="v.name" v-for="(v, k) in functionNameList" :key="k"></el-option>
             </el-select>
@@ -52,18 +52,18 @@
             <el-input v-model="v.functionDescision" :maxlength="256" :disabled="v.type === 'System Action' || v.locking"></el-input>
           </el-form-item>
           <el-form-item label="Method Sign" :prop="'newFunction.' + k + '.methodSign'"
-            :rules="{ required: true, message: 'This filed is required', trigger: 'blur' }">
+            :rules="{ required: true, message: 'This filed is required' }">
             <el-input v-model="v.methodSign" :maxlength="256" :disabled="v.type === 'System Action' || v.locking"></el-input>
           </el-form-item>
           <el-form-item label="Init Permission" :prop="'newFunction.' + k + '.initPermission'"
-            :rules="{ required: true, message: 'This filed is required', trigger: 'blur' }">
+            :rules="{ required: true, message: 'This filed is required' }">
             <el-select v-model="v.initPermission" v-if="v.type === 'System Action' && !v.locking">
               <el-option :label="v.permissionName" :value="v.permissionIndex" v-for="(v, k) in initPermissionList" :key="k"></el-option>
             </el-select>
             <el-input v-model="v.initPermission" :maxlength="256" v-else :disabled="v.locking"></el-input>
           </el-form-item>
           <el-form-item label="Exec Policy" :prop="'newFunction.' + k + '.execPolicy'"
-            :rules="{ required: true, message: 'This filed is required', trigger: 'blur' }">
+            :rules="{ required: true, message: 'This filed is required' }">
             <el-select v-model="v.execPolicy" v-if="v.type === 'System Action' && !v.locking">
               <el-option :label="v.policyName" :value="v.policyId" v-for="(v, k) in initPolicyList" :key="k"></el-option>
             </el-select>
@@ -105,8 +105,9 @@ export default {
           {
             type: 'System Action',
             typeList: [
-              { name: 'System Action'},
-              { name: 'Contract'}
+              { name: 'System Action' },
+              { name: 'Contract' },
+              { name: 'Contract Query' }
             ],
             functionName: '',
             functionNameList: [{
@@ -141,13 +142,13 @@ export default {
           { validator: BDCodeValidator, trigger: 'change' }
         ],
         BDType: [
-          { required: true, message: 'This filed is required', trigger: 'blur' }
+          { required: true, message: 'This filed is required', trigger: 'change' }
         ],
         initPermission: [
-          { required: false, message: 'This filed is required', trigger: 'blur' }
+          { required: false, message: 'This filed is required', trigger: 'change' }
         ],
         initPolicy: [
-          { required: false, message: 'This filed is required', trigger: 'blur' }
+          { required: false, message: 'This filed is required', trigger: 'change' }
         ],
         BDVersion: [
           { required: true, message: 'This filed is required', trigger: 'blur' }
@@ -173,7 +174,16 @@ export default {
         ruleForm: this.ruleForm
       };
       this.$refs['ruleForm'].validate(valid => {
-        validCode.valid = valid;
+        let locked = JSON.parse(JSON.stringify(this.ruleForm.newFunction.filter(v => v.locking)));
+        if (locked.length === 0) {
+          this.$refs['newFunctionFrom'][0].validate(validNew => {
+            if (valid && validNew) {
+              validCode.valid = true;
+            }
+          });
+        } else {
+          validCode.valid = valid;
+        }
       });
       return validCode;
     },

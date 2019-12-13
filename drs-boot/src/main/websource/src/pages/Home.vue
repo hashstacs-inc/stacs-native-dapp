@@ -2,15 +2,19 @@
   <div class="home-page">
     <Header />
     <router-view />
+    <div style="height: 60px;"></div>
+    <Footer />
   </div>
 </template>
 <script>
 import Header from './header';
+import Footer from './footer';
 
 export default {
   name: 'Home',
   components: {
-    Header
+    Header,
+    Footer
   }
 }
 </script>
@@ -18,7 +22,7 @@ export default {
 .home-page {
   min-height: 100%;
   background-color: #F2F5FC;
-  padding-bottom: 50px;
+  position: relative;
 }
 </style>
 <style lang="scss">

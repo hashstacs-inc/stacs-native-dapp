@@ -29,8 +29,8 @@
       width="520px">
       <p>Do you want to use the default etup?</p>
       <p slot="footer" class="dialog-footer">
-        <el-button type="primary" @click="configConfirm">确 定</el-button>
-        <el-button @click="configCancel">取 消</el-button>
+        <el-button type="primary" @click="configConfirm">YES</el-button>
+        <el-button @click="configCancel">NO</el-button>
       </p>
     </el-dialog>
   </div>
@@ -91,6 +91,8 @@ export default {
       }
     },
     async configConfirm () {
+      this.configVisible = false;
+      this.loading = true;
       // 使用默认配置，后初始化app
 
       // 查询默认配置
@@ -130,7 +132,7 @@ export default {
       } else {
         this.$set(this.currentItem, 'errorText', defaultConfig.msg);
       }
-      this.configVisible = false;
+      this.loading = false;
     },
     configCancel () {
       this.$store.commit('changeStoreMenu', 3);

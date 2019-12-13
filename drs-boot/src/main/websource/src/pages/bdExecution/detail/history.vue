@@ -18,7 +18,7 @@
         </el-select>
       </div>
       <div class="search-btn">
-        <el-button type="primary" icon="el-icon-search">查询</el-button>
+        <el-button type="primary" icon="el-icon-search">Search</el-button>
       </div>
     </div>
     <div class="table-box">

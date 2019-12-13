@@ -145,6 +145,8 @@ export default {
       this.uninstallVisible = true;
     },
     async configConfirm () {
+      this.configVisible = false;
+      this.loading = true;
       // 已下载状态
       // 使用默认配置，后初始化app
 
@@ -182,7 +184,7 @@ export default {
       } else {
         this.$set(this.currentItem, 'errorText', defaultConfig.msg);
       }
-      this.configVisible = false;
+      this.loading = false;
     },
     configCancel () {
       this.$store.commit('changeStoreMenu', 3);
@@ -193,7 +195,7 @@ export default {
       let params = {
         name: v.name,
         slient: true,
-        notify: notify.success,
+        notify: notify.any,
         timeout: 0
       }
       let data = await installDeapp(params);
