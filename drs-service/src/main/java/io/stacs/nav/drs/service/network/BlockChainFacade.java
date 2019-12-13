@@ -45,18 +45,25 @@ import static io.stacs.nav.drs.service.utils.Pair.of;
 
     @Autowired private DrsHttpClient client;
     private static Predicate<String> encryptSkipFilter = Pattern.compile("[Qq]uery").asPredicate();
-//    private static Predicate<String> encryptSkipFilter = s -> true;
+    //    private static Predicate<String> encryptSkipFilter = s -> true;
 
     private String baseUrl;
 
     private static Function<CasDecryptResponse, RespData<?>> defaultPostConverter() {
-        return decryptResp -> (RespData<?>)decryptResp.getData();
+
+        return decryptResp -> {
+            RespData<Object> respData = new RespData<>();
+            respData.setCode(decryptResp.getRespCode());
+            respData.setMsg(decryptResp.getMsg());
+            respData.setData(decryptResp.getData());
+            return respData;
+        };
     }
 
     @SuppressWarnings("unchecked") private static <T> Function<ResponseBody, RespData<T>> defaultGetConverter()
         throws IOException {
-        return LambdaExceptionUtil.rethrowFunction(
-            body -> (RespData<T>)JSONObject.parseObject(body.string(), RespData.class));
+        return LambdaExceptionUtil
+            .rethrowFunction(body -> (RespData<T>)JSONObject.parseObject(body.string(), RespData.class));
     }
 
     @SuppressWarnings("unchecked") private static <T> Function<RespData<?>, T> getRealData() {
@@ -141,7 +148,7 @@ import static io.stacs.nav.drs.service.utils.Pair.of;
 
     public Optional<List<JSONObject>> queryBlocks(long startHeight, long endHeight) {
         return commonGetApi(QUERY_BLOCK_VO, Lists.newArrayList(Pair.of("startHeight", String.valueOf(startHeight)),
-                                                               Pair.of("endHeight", String.valueOf(endHeight))));
+            Pair.of("endHeight", String.valueOf(endHeight))));
     }
 
     /**
