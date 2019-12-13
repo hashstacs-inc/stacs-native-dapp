@@ -1,7 +1,9 @@
 package io.stacs.nav.drs.service.network;
 
+import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
+import com.alibaba.fastjson.TypeReference;
 import com.google.common.collect.Lists;
 import io.stacs.nav.drs.api.enums.ApiConstants.ApiInterface;
 import io.stacs.nav.drs.api.model.Policy;
@@ -25,6 +27,7 @@ import org.springframework.stereotype.Component;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.io.IOException;
+import java.lang.reflect.Type;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
@@ -49,14 +52,15 @@ import static io.stacs.nav.drs.service.utils.Pair.of;
 
     private String baseUrl;
 
-    private static Function<CasDecryptResponse, RespData<?>> defaultPostConverter() {
-
+    private static <T> Function<CasDecryptResponse, RespData<T>> defaultPostConverter() {
         return decryptResp -> {
             RespData<Object> respData = new RespData<>();
             respData.setCode(decryptResp.getRespCode());
             respData.setMsg(decryptResp.getMsg());
             respData.setData(decryptResp.getData());
-            return respData;
+            Type type = new TypeReference<RespData<T>>() {
+            }.getType();
+            return JSON.parseObject(JSON.toJSONString(respData), type);
         };
     }
 
@@ -170,8 +174,7 @@ import static io.stacs.nav.drs.service.utils.Pair.of;
     }
 
     public Optional<Boolean> checkPermission(PermissionCheckVO vo) {
-        String r = (String)(commonPostApi(CHECK_PERMISSION, vo).get());
-        return Optional.of(Boolean.valueOf(r));
+        return commonPostApi(CHECK_PERMISSION, vo);
     }
 
     @Nonnull
@@ -193,7 +196,7 @@ import static io.stacs.nav.drs.service.utils.Pair.of;
         return DrsHttpClient.get(url, defaultGetConverter().andThen(converter));
     }
 
-    public RespData<?> send(String api, Object txData) throws IOException {
+    public <T> RespData<T> send(String api, Object txData) throws IOException {
         if (encryptSkipFilter.test(api) || ENCRYPT_WHITE_LIST.stream().anyMatch(url -> url.equals(api))) {
             return send(api, txData, json -> JSONObject.parseObject((String)json, RespData.class));
         }
