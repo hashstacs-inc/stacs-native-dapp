@@ -170,7 +170,8 @@ import static io.stacs.nav.drs.service.utils.Pair.of;
     }
 
     public Optional<Boolean> checkPermission(PermissionCheckVO vo) {
-        return commonPostApi(CHECK_PERMISSION, vo);
+        String r = (String)(commonPostApi(CHECK_PERMISSION, vo).get());
+        return Optional.of(Boolean.valueOf(r));
     }
 
     @Nonnull
