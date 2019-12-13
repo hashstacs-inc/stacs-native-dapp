@@ -33,6 +33,7 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.function.Function;
 import java.util.function.Predicate;
+import java.util.regex.Pattern;
 
 import static io.stacs.nav.drs.api.enums.ApiConstants.ENCRYPT_WHITE_LIST;
 import static io.stacs.nav.drs.api.enums.ApiConstants.QueryApiEnum.*;
@@ -46,8 +47,8 @@ import static io.stacs.nav.drs.service.utils.Pair.of;
 @Component @Slf4j public class BlockChainFacade implements ConfigListener {
 
     @Autowired private DrsHttpClient client;
-//    private static Predicate<String> encryptSkipFilter = Pattern.compile("[Qq]uery").asPredicate();
-    private static Predicate<String> encryptSkipFilter = s -> true;
+    private static Predicate<String> encryptSkipFilter = Pattern.compile("[Qq]uery").asPredicate();
+//    private static Predicate<String> encryptSkipFilter = s -> true;
 
     private String baseUrl;
 
