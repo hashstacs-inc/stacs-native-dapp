@@ -1,4 +1,4 @@
-package io.stacs.nav.drs.service.vo.query;
+package io.stacs.nav.drs.api.model.query;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
