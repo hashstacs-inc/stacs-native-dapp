@@ -1,5 +1,6 @@
 package io.stacs.nav.drs.service.network;
 
+import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.google.common.collect.Lists;
 import io.stacs.nav.drs.api.enums.ApiConstants.ApiInterface;
@@ -9,10 +10,7 @@ import io.stacs.nav.drs.api.model.RsDomain;
 import io.stacs.nav.drs.api.model.bd.BusinessDefine;
 import io.stacs.nav.drs.api.model.block.BlockHeaderVO;
 import io.stacs.nav.drs.api.model.permission.PermissionInfoVO;
-import io.stacs.nav.drs.api.model.query.QueryBlockByHeightVO;
-import io.stacs.nav.drs.api.model.query.QueryBlockVO;
-import io.stacs.nav.drs.api.model.query.QueryTxListVO;
-import io.stacs.nav.drs.api.model.query.QueryTxVO;
+import io.stacs.nav.drs.api.model.query.*;
 import io.stacs.nav.drs.api.model.tx.CoreTransactionVO;
 import io.stacs.nav.drs.service.config.DomainConfig;
 import io.stacs.nav.drs.service.utils.CasDecryptResponse;
@@ -162,6 +160,10 @@ import static io.stacs.nav.drs.service.utils.Pair.of;
         return commonGetApi(QUERY_PERMISSION_LIST, null);
     }
 
+    public Optional<JSONArray> queryContract(ContractQueryRequest request) {
+        return commonPostApi(QUERY_CONTRACT, request, resp -> (JSONArray)resp.getData());
+    }
+
     public Optional<Boolean> checkPermission(PermissionCheckVO vo) {
         return commonPostApi(CHECK_PERMISSION, vo);
     }
@@ -186,14 +188,17 @@ import static io.stacs.nav.drs.service.utils.Pair.of;
     }
 
     public RespData<?> send(String api, Object txData) throws IOException {
+        if (encryptSkipFilter.test(api) || ENCRYPT_WHITE_LIST.stream().anyMatch(url -> url.equals(api))) {
+            return send(api, txData, json -> JSONObject.parseObject((String)json, RespData.class));
+        }
         return send(api, txData, defaultPostConverter());
     }
 
-    public <T> T send(String api, Object txData, Function<CasDecryptResponse, T> converter) throws IOException {
+    public <V, T> T send(String api, Object txData, Function<V, T> converter) throws IOException {
         if (encryptSkipFilter.test(api) || ENCRYPT_WHITE_LIST.stream().anyMatch(url -> url.equals(api))) {
-            return client.post(txData, baseUrl + api, converter);
+            return client.post(txData, baseUrl + api, (Function<String, T>)converter);
         }
-        return client.postWithEncrypt(txData, baseUrl + api, converter);
+        return client.postWithEncrypt(txData, baseUrl + api, (Function<CasDecryptResponse, T>)converter);
     }
 
     @Override public <T> void updateNotify(T config) {

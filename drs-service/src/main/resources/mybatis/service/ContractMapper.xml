@@ -18,25 +18,48 @@
         <result column="create_time" property="createTime"/>
     </resultMap>
 
+    <resultMap id="queryMap" type="io.stacs.nav.drs.api.model.ContractVO">
+        <result column="id" property="id"/>
+        <result column="block_height" property="blockHeight"/>
+        <result column="tx_id" property="txId"/>
+        <result column="action_index" property="actionIndex"/>
+        <result column="address" property="address"/>
+        <result column="name" property="name"/>
+        <result column="symbol" property="symbol"/>
+        <result column="extension" property="extension"/>
+        <result column="bd_code" property="bdCode"/>
+        <result column="status" property="status"/>
+        <result column="version" property="version"/>
+        <result column="code" property="code"/>
+        <result column="create_time" property="createTime"/>
+        <result column="bd_type" property="bdType"/>
+    </resultMap>
+
+
     <!-- contract table all fields -->
     <sql id="baseColumnList">
         id, block_height, tx_id, action_index, address,`name`,symbol,extension, bd_code, status, version, code, create_time
     </sql>
 
+    <sql id="queryList">
+        c.id, block_height, tx_id, action_index, address,c.`name`,symbol,extension,
+        bd_code, status, version, c.code, c.create_time, bd.bd_type as bd_type
+    </sql>
+
     <!-- add -->
     <insert id="add">
-        INSERT INTO contract (block_height, tx_id, action_index, address,`name,`symbol,extension, bd_code, bd_code_version, status, version, code, create_time)
-        VALUES (#{blockHeight}, #{txId}, #{actionIndex}, #{address},#{name},#{symbol},#{extension},#{bdCode},#{bdCodeVersion},#{status}, #{version}, #{code}, now(3))
+        INSERT INTO contract (block_height, tx_id, action_index, address,`name`,symbol,extension, bd_code, status, version, code, create_time)
+        VALUES (#{blockHeight}, #{txId}, #{actionIndex}, #{address},#{name},#{symbol},#{extension},#{bdCode},#{status}, #{version}, #{code}, #{createTime})
     </insert>
 
     <insert id="batchInsert" parameterType="java.util.List">
         insert into contract (block_height, tx_id, action_index, address,`name`,symbol,extension, bd_code,
-        bd_code_version, status, version, code, create_time)
+        status, version, code, create_time)
         values
         <foreach collection="list" item="item" index="index" separator=",">
             (#{item.blockHeight}, #{item.txId}, #{item.actionIndex},
             #{item.address},#{item.name},#{item.symbol},#{item.extension},
-            #{item.bdCode},#{item.bdCodeVersion},#{item.status}, #{item.version}, #{item.code}, now(3))
+            #{item.bdCode},#{item.status}, #{item.version}, #{item.code}, #{item.createTime})
         </foreach>
     </insert>
 
@@ -81,9 +104,6 @@
         <if test="bdCode != null and bdCode !=''">
             and bd_code = #{bdCode}
         </if>
-        <if test="bdCodeVersion != null and bdCodeVersion !=''">
-            and bd_code_version = #{bdCodeVersion}
-        </if>
         <if test="name != null and name !=''">
             and name = #{name}
         </if>
@@ -95,6 +115,31 @@
         </if>
         ORDER BY id DESC
         LIMIT #{startIndex}, #{endIndex}
+    </select>
+
+    <select id="queryByCond" resultMap="queryMap" parameterType="io.stacs.nav.drs.api.model.query.QueryContractVO">
+        SELECT
+        <include refid="queryList"/>
+        FROM contract as c
+        inner join `BUSINESS_DEFINE` as bd
+        on bd.CODE = c.BD_CODE
+        <where>
+            <if test="cond.txId != null and cond.txId !=''">
+                and tx_id = #{cond.txId}
+            </if>
+            <if test="cond.bdType != null and cond.bdType !=''">
+                and bd_type = #{cond.bdType}
+            </if>
+            <if test="cond.name != null and cond.name !=''">
+                and name = #{cond.name}
+            </if>
+            <if test="cond.symbol != null and cond.symbol !=''">
+                and symbol = #{cond.symbol}
+            </if>
+            <if test="cond.status != null and cond.status !=''">
+                and status = #{cond.status}
+            </if>
+        </where>
     </select>
 
 

@@ -1,5 +1,6 @@
 package io.stacs.nav.drs.service.service;
 
+import com.alibaba.fastjson.JSONArray;
 import com.alipay.sofa.ark.container.registry.PluginServiceProvider;
 import com.alipay.sofa.ark.spi.model.Plugin;
 import com.alipay.sofa.ark.spi.service.ArkInject;
@@ -10,17 +11,16 @@ import com.github.pagehelper.PageInfo;
 import io.stacs.nav.drs.api.IQueryService;
 import io.stacs.nav.drs.api.exception.DappException;
 import io.stacs.nav.drs.api.model.BaseTxVO;
+import io.stacs.nav.drs.api.model.ContractVO;
 import io.stacs.nav.drs.api.model.TransactionVO;
 import io.stacs.nav.drs.api.model.bd.BusinessDefine;
 import io.stacs.nav.drs.api.model.bd.FunctionDefine;
 import io.stacs.nav.drs.api.model.block.BlockHeaderVO;
 import io.stacs.nav.drs.api.model.block.BlockVO;
-import io.stacs.nav.drs.api.model.query.QueryBlockByHeightVO;
-import io.stacs.nav.drs.api.model.query.QueryBlockVO;
-import io.stacs.nav.drs.api.model.query.QueryTxListVO;
-import io.stacs.nav.drs.api.model.query.QueryTxVO;
+import io.stacs.nav.drs.api.model.query.*;
 import io.stacs.nav.drs.service.constant.Constants;
 import io.stacs.nav.drs.service.dao.BlockDao;
+import io.stacs.nav.drs.service.dao.ContractDao;
 import io.stacs.nav.drs.service.dao.TransactionDao;
 import io.stacs.nav.drs.service.dao.po.BlockPO;
 import io.stacs.nav.drs.service.utils.BeanConvertor;
@@ -45,14 +45,15 @@ import static io.stacs.nav.drs.api.exception.DappError.FUNCTION_NOT_FIND_ERROR;
 
     @ArkInject PluginManagerService pluginManagerService;
 
-    @Autowired BlockChainService bdService;
+    @Autowired BlockChainService blockService;
     @Autowired BlockDao blockDao;
     @Autowired TransactionDao txDao;
+    @Autowired ContractDao contractDao;
 
 
 
     public Long queryCurrentHeight() {
-        return Long.valueOf(bdService.queryCurrentHeight().toString());
+        return Long.valueOf(blockService.queryCurrentHeight().toString());
     }
 
     @Override public TransactionVO queryTxById(QueryTxVO vo) {
@@ -81,16 +82,36 @@ import static io.stacs.nav.drs.api.exception.DappError.FUNCTION_NOT_FIND_ERROR;
         return pageInfo;
     }
 
+    @Override public List<ContractVO> queryContracts(QueryContractVO vo) {
+        return contractDao.queryByCond(vo);
+    }
+
+    @Override public String queryBalance(QueryBalanceVO vo) {
+
+        ContractQueryRequest request = new ContractQueryRequest();
+        request.setAddress(vo.getContract());
+        request.setMethodSignature("(uint256) balanceOf(address)");
+        request.setParameters(new String[] {vo.getIdentity()});
+        if (vo.getHeight() != null && vo.getHeight() != 0L) {
+            request.setBlockHeight(vo.getHeight());
+        }
+        return Optional.ofNullable(blockService.queryContract(request).get(0)).map(Object::toString).orElse("0");
+    }
+
+    @Override public JSONArray queryContract(ContractQueryRequest vo) {
+        return blockService.queryContract(vo);
+    }
+
     @Override public BlockHeaderVO queryBlockByHeight(QueryBlockByHeightVO vo) {
-        return bdService.queryBlockByHeight(vo);
+        return blockService.queryBlockByHeight(vo);
     }
 
     @Override public BusinessDefine queryBDByCode(String bdCode) {
-        return bdService.queryBDByCode(bdCode);
+        return blockService.queryBDByCode(bdCode);
     }
 
     @Override public List<BusinessDefine> queryAllBDInfo(String bdCode) {
-        return bdService.queryAllBDInfo(bdCode);
+        return blockService.queryAllBDInfo(bdCode);
     }
 
     // @formatter:off

@@ -6,9 +6,7 @@ import io.stacs.nav.drs.api.ISignatureService;
 import io.stacs.nav.drs.api.model.PageInfo;
 import io.stacs.nav.drs.api.model.TransactionVO;
 import io.stacs.nav.drs.api.model.bd.BusinessDefine;
-import io.stacs.nav.drs.api.model.query.QueryBlockVO;
-import io.stacs.nav.drs.api.model.query.QueryTxListVO;
-import io.stacs.nav.drs.api.model.query.QueryTxVO;
+import io.stacs.nav.drs.api.model.query.*;
 import io.stacs.nav.drs.service.scheduler.BlockCallbackProcessSchedule;
 import io.stacs.nav.drs.service.scheduler.FailoverSchedule;
 import io.stacs.nav.drs.service.service.BlockChainService;
@@ -53,6 +51,19 @@ public class DappApiServiceTest {
         vo.setTxId("1da25d2d-92c9-4544-84e6-735fc7c61d08");
         TransactionVO resp = queryService.queryTxById(vo);
         System.out.println(resp);
+    }
+
+    @Test public void testBalanace() {
+        QueryBalanceVO vo = new QueryBalanceVO();
+        vo.setIdentity("e7f048dc7dfadb43338b2b292c2a26a1b374bb2c");
+        vo.setContract("4b4679921c2951dab306efaa15e16bac97e80556");
+        System.out.println(queryService.queryBalance(vo));
+    }
+
+    @Test public void testContract() {
+        QueryContractVO vo = new QueryContractVO();
+        vo.setBdType("asserts");
+        System.out.println(queryService.queryContracts(vo));
     }
 
     @Test public void test3() {
