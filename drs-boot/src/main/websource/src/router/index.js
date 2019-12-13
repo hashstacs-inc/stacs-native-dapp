@@ -52,6 +52,7 @@ const routes = [
           }, {
             path: 'publishBDContract',
             name: 'PublishBDContract',
+            meta: { menu: 1 },
             component: () => import('@/pages/bdExecution/detail/publishBDContract.vue')
           }
         ]

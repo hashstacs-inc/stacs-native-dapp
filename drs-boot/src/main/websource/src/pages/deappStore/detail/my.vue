@@ -21,7 +21,7 @@
             popper-class="my-deapp-tips" :hide-after="0" v-if="v.errorText">
             <p class="error">Failed !</p>
           </el-tooltip>
-          <p class="uninstall" @click="unInstall(v)">Uninstall</p>
+          <p class="uninstall" @click="unInstall(v)" v-if="v.status === 'RUNNING'">Uninstall</p>
         </div>
       </div>
     </template>

@@ -70,6 +70,9 @@ export default {
       }
     }
   },
+  created () {
+    this.$store.commit('changeBdMenu', this.$route.meta.menu);
+  },
   methods: {
     submitContract () {
 

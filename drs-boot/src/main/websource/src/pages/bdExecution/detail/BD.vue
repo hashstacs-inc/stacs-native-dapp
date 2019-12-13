@@ -10,9 +10,6 @@
           </el-select>
         </el-form-item>
         <el-form-item label="Contract Address" prop="contractName" v-if="ruleForm.code !== 'SystemBD' && ruleForm.code !== ''">
-          <!-- <el-select v-model="ruleForm.contractName">
-            <el-option :label="v.name" :value="v.name" v-for="(v, k) in contractNameList" :key="k"></el-option>
-          </el-select> -->
           <el-input v-model="ruleForm.contractName" placeholder="Please enter address" :maxlength="40"></el-input>
         </el-form-item>
         <el-form-item label="Function Name" prop="functionName">
@@ -30,57 +27,6 @@
         <el-form-item label="Fee Max Amount" prop="feeMaxAmount">
           <el-input v-model="ruleForm.feeMaxAmount" placeholder="Please enter fee max amount" :maxlength="18"></el-input>
         </el-form-item>
-        <template v-if="ruleForm.code !== 'SystemBD' && ruleForm.code !== ''">
-          <el-form :model="contractForm" :rules="rules" ref="contractForm" 
-            label-width="150px" class="general-form" label-position="left">
-            <p class="title" style="margin-bottom: 25px;">Special Information</p>
-            <el-form-item label="Policy Name" prop="policyName">
-              <el-input v-model="contractForm.policyName" placeholder="Please enter policy name" :maxlength="64"></el-input>
-            </el-form-item>
-            <el-form-item label="Domain IDs" prop="domainIds">
-              <el-select v-model="contractForm.domainIds" placeholder="Please select domian IDs" multiple filterable @change="changeDomain">
-                <el-option :label="v.desc" :value="v.domainId" v-for="(v, k) in domainIDList" :key="k"></el-option>
-              </el-select>
-            </el-form-item>
-            <el-form-item label="Vote Pattern" prop="votePattern">
-              <el-select v-model="contractForm.votePattern" placeholder="Please select domian IDs">
-                <el-option :label="v.name" :value="v.id" v-for="(v, k) in votePatternList" :key="k"></el-option>
-              </el-select>
-              <p class="vote-pattern-tips" v-if="contractForm.votePattern === 'SYNC'">SYNC: The vote is processed</p>
-              <p class="vote-pattern-tips" v-else-if="contractForm.votePattern === 'ASYNC'">ASYNC: The vote is processed asynchronously.</p>
-            </el-form-item>
-            <el-form-item label="Callback Type" prop="callbackType">
-              <el-select v-model="contractForm.callbackType">
-                <el-option :label="v.name" :value="v.id" v-for="(v, k) in callbackTypeList" :key="k"></el-option>
-              </el-select>
-            </el-form-item>
-            <el-form-item label="Decision Type" prop="decisionType">
-              <el-select v-model="contractForm.decisionType">
-                <el-option :label="v.name" :value="v.id" v-for="(v, k) in decisionTypeList" :key="k"></el-option>
-              </el-select>
-            </el-form-item>
-            <!-- 投票类型选择Assign Num时 -->
-            <template v-if="contractForm.decisionType === 'ASSIGN_NUM'">
-              <p class="title meta">Assig Meta</p>
-              <el-form-item label="Verify Num" prop="verifyNum">
-                <el-input v-model="contractForm.verifyNum" placeholder="Please enter an integer"></el-input>
-              </el-form-item>
-              <el-form-item label="Must Domain IDs" prop="mustDomainIds">
-                <el-select v-model="contractForm.mustDomainIds" placeholder="Please select from Domain IDs" multiple filterable>
-                  <el-option :label="v" :value="v" v-for="(v, k) in contractForm.domainIds" :key="k"></el-option>
-                </el-select>
-              </el-form-item>
-              <el-form-item label="Expression" prop="expression">
-                <el-input v-model="contractForm.expression" placeholder="Please fill in the expression. Only support integer、 +、-、x 、/ . as (n+1)/2"></el-input>
-              </el-form-item>
-            </template>
-            <el-form-item label="Require Auth IDs" prop="requireAuthIds">
-              <el-select v-model="contractForm.requireAuthIds" multiple filterable>
-                <el-option :label="v" :value="v" v-for="(v, k) in contractForm.domainIds" :key="k"></el-option>
-              </el-select>
-            </el-form-item>
-          </el-form>
-        </template>
       </el-form>
     </div>
     <RegisterPolicy v-if="ruleForm.functionName === 'REGISTER_POLICY'" ref="REGISTER_POLICY"/>
@@ -115,6 +61,7 @@ import BDSpecification from './BDDetail/BDSpecification';
 import SetFeeRule from './BDDetail/SetFeeRule';
 import IdentityBDManage from './BDDetail/IdentityBDManage';
 import { notify } from '@/common/util';
+import { mapGetters } from 'vuex';
 
 export default {
   name: 'BD',
@@ -138,17 +85,6 @@ export default {
     }
   },
   data () {
-    const validatorExpression = (rule, value, callback) => {
-      if (!value) {
-        callback();
-      } else {
-        if (/\(\d*[+|\-|*|/]{1}\d*\)[+|\-|*|/]{1}[1-9]+/.test(value)) {
-          callback();
-        } else {
-          callback(new Error('Please enter the right format, eg: (n+1)/2.'));
-        }
-      }
-    }
     return {
       ruleForm: {
         code: '',
@@ -158,19 +94,8 @@ export default {
         feeMaxAmount: '',
         contractName: ''
       },
-      contractForm: {
-        policyName: '',
-        domainIds: [],
-        votePattern: 'SYNC',
-        callbackType: 'ALL',
-        decisionType: 'FULL_VOTE',
-        requireAuthIds: [],
-        verifyNum: '',
-        mustDomainIds: [],
-        expression: ''
-      },
       rules: {
-        bDName: [
+        code: [
           { required: true, message: 'This filed is required', trigger: 'blur' }
         ],
         functionName: [
@@ -181,38 +106,10 @@ export default {
         ],
         contractName: [
           { required: true, message: 'This filed is required', trigger: 'blur' }
-        ],
-        policyName: [
-          { required: true, message: 'This filed is required', trigger: 'blur' }
-        ],
-        domainIds: [
-          { required: true, message: 'This filed is required', trigger: 'change' }
-        ],
-        votePattern: [
-          { required: true, message: 'This filed is required', trigger: 'change' }
-        ],
-        callbackType: [
-          { required: true, message: 'This filed is required', trigger: 'change' }
-        ],
-        decisionType: [
-          { required: true, message: 'This filed is required', trigger: 'change' }
-        ],
-        verifyNum: [
-          { required: true, message: 'This filed is required', trigger: 'blur' }
-        ],
-        mustDomainIds: [
-          { required: true, message: 'This filed is required', trigger: 'change' }
-        ],
-        requireAuthIds: [
-          { required: true, message: 'This filed is required', trigger: 'change' }
-        ],
-        expression: [
-          { validator: validatorExpression, trigger: 'blur' }
         ]
       },
       loading: false,
       dbNameList: [],
-      functionNameList: [],
       contractNameList: [
         {
           name: 'qewe'
@@ -254,6 +151,9 @@ export default {
       requireAuthIDList: []
     }
   },
+  computed: {
+    ...mapGetters(['functionNameList'])
+  },
   created () {
     this.$store.commit('changeBdMenu', this.$route.meta.menu);
     this.getOption();
@@ -261,27 +161,11 @@ export default {
     this.getPolicy();
   },
   methods: {
-    changeDomain () {
-      if (this.contractForm.domainIds.length === 0) {
-        this.contractForm.requireAuthIds = [];
-        this.contractForm.mustDomainIds = [];
-      }
-    },
     async submitBD (valid, validChild) {
       if (valid) {
-        let submitData = {};
-        if (this.ruleForm.code === 'SystemBD') {
-          submitData = Object.assign(validChild.ruleForm, this.ruleForm);
-        } else {
-          submitData = Object.assign(validChild.ruleForm, Object.assign(Object.assign({}, this.ruleForm), this.contractForm));
-        }
+        let submitData = Object.assign(validChild.ruleForm, this.ruleForm);
         delete submitData.functionName;
         if (this.ruleForm.code === 'SystemBD') delete submitData.contractName;
-        if (this.ruleForm.code !== 'SystemBD' && this.contractForm.decisionType !== 'ASSIGN_NUM') {
-          delete submitData.verifyNum;
-          delete submitData.expression;
-          delete submitData.mustDomainIds;
-        }
         let params = {
           notify: notify.error,
           data: {
@@ -295,15 +179,8 @@ export default {
     },
     validateBD () {
       this.$refs['ruleForm'].validate(valid => {
-        if (this.ruleForm.code !== 'SystemBD') {
-          this.$refs['contractForm'].validate(contractValid => {
-            let validChild = this.$refs[this.ruleForm.functionName].validateFrom();
-            this.submitBD(valid && validChild.valid && contractValid, validChild);
-          });
-        } else {
-          let validChild = this.$refs[this.ruleForm.functionName].validateFrom();
-          this.submitBD(valid && validChild.valid, validChild);
-        }
+        let validChild = this.$refs[this.ruleForm.functionName].validateFrom();
+        this.submitBD(valid && validChild.valid, validChild);
       });
     },
     changeBDName (code) {
@@ -311,6 +188,7 @@ export default {
       let filterFunction = JSON.parse(this.dbNameList.filter(v => v.code === code)[0].functions);
       this.$store.commit('changeFunctionNameList', filterFunction);
       this.ruleForm.functionName = '';
+      console.log(filterFunction)
     },
     async getPolicy () {
       let data = await getPolicyList();
@@ -327,7 +205,6 @@ export default {
       }
       let data = await BDOptionInfo(params);
       this.dbNameList = JSON.parse(JSON.stringify(data.data));
-      this.functionNameList = JSON.parse(JSON.stringify(JSON.parse(data.data[0].functions)));
       this.$store.commit('changeFunctionNameList', JSON.parse(JSON.stringify(JSON.parse(data.data[0].functions))));
       this.ruleForm.code = this.dbNameList[0].code;
       this.loading = false;

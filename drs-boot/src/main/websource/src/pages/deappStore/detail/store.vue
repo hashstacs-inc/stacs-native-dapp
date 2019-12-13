@@ -10,7 +10,9 @@
         <p class="logo">
           <img :src="v.icon | formatIcon" alt="logo">
         </p>
-        <p class="name">{{v.showName}}</p>
+        <el-tooltip effect="dark" :content="v.showName" placement="top-start">
+          <p class="name">{{v.showName}}</p>
+        </el-tooltip>
         <p class="operation" @click="handleClick(v)" v-loading="v.loading">
           <span class="text">{{returnStaus(v.status)}}</span>
         </p>
@@ -259,6 +261,7 @@ export default {
       align-items: center;
       justify-content: space-between;
       position: relative;
+      text-align: center;
       .logo {
         width: 75px;
         height: 75px;
@@ -273,6 +276,10 @@ export default {
       .name {
         color: #333333;
         font-size: 12px;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        width: 100px;
+        white-space: nowrap;
       }
       .operation {
         // width: 100%;
