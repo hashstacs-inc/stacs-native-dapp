@@ -16,10 +16,12 @@ import org.apache.commons.collections4.CollectionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import javax.annotation.Nonnull;
 import java.io.IOException;
 import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.TimeUnit;
+import java.util.function.Predicate;
 
 /**
  * @author suimi
@@ -56,22 +58,21 @@ import java.util.concurrent.TimeUnit;
         log.info("[queryApps]storePath:{}", storePath);
         List<AppProfileVO> appProfileVOList = DAPP_CACHE.getIfPresent(storePath);
         if (CollectionUtils.isNotEmpty(appProfileVOList)) {
-            return BeanConvertor.convertList(appProfileVOList,AppProfileVO.class);
+            return BeanConvertor.convertList(appProfileVOList, AppProfileVO.class);
         }
         List<AppProfileVO> list = null;
         if (!StringUtil.isEmpty(storePath)) {
             Optional<String> optional = blockChainFacade.sendGet(storePath,
-                resp -> resp.isSuccessful() ? Optional.of(String.valueOf(resp.getData())) :
-                    Optional.empty());
+                resp -> resp.isSuccessful() ? Optional.of(String.valueOf(resp.getData())) : Optional.empty());
             String json = optional.orElse(null);
-            list = JSON.parseArray(json,AppProfileVO.class);
+            list = JSON.parseArray(json, AppProfileVO.class);
         }
         if (CollectionUtils.isEmpty(list)) {
             log.warn("[queryApps]list is empty");
             return null;
         }
-        DAPP_CACHE.put(storePath,list);
-        return BeanConvertor.convertList(list,AppProfileVO.class);
+        DAPP_CACHE.put(storePath, list);
+        return BeanConvertor.convertList(list, AppProfileVO.class);
     }
 
     /**
@@ -98,6 +99,12 @@ import java.util.concurrent.TimeUnit;
     }
 
     @Override public <T> void updateNotify(T config) {
-        this.drsConfig = (DrsConfig)config;
+        if (config instanceof DrsConfig) {
+            this.drsConfig = (DrsConfig)config;
+        }
+    }
+
+    @Nonnull @Override public Predicate<Object> filter() {
+        return obj -> obj instanceof DrsConfig;
     }
 }

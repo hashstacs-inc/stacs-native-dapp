@@ -30,9 +30,11 @@ import org.springframework.context.ApplicationListener;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 
+import javax.annotation.Nonnull;
 import java.io.*;
 import java.net.URL;
 import java.util.*;
+import java.util.function.Predicate;
 import java.util.jar.Attributes;
 import java.util.jar.Manifest;
 
@@ -426,6 +428,11 @@ import static io.stacs.nav.drs.service.utils.ResourceLoader.getManifest;
     }
 
     @Override public <T> void updateNotify(T config) {
-        this.drsConfig = (DrsConfig)config;
+        if(config instanceof DrsConfig){
+            this.drsConfig = (DrsConfig)config;
+        }
+    }
+    @Nonnull @Override public Predicate<Object> filter() {
+        return obj -> obj instanceof DrsConfig;
     }
 }
