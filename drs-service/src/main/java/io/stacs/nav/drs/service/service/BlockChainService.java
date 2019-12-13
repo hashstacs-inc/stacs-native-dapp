@@ -1,15 +1,13 @@
 package io.stacs.nav.drs.service.service;
 
+import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import io.stacs.nav.drs.api.model.Policy;
 import io.stacs.nav.drs.api.model.RsDomain;
 import io.stacs.nav.drs.api.model.bd.BusinessDefine;
 import io.stacs.nav.drs.api.model.block.BlockHeaderVO;
 import io.stacs.nav.drs.api.model.permission.PermissionInfoVO;
-import io.stacs.nav.drs.api.model.query.QueryBlockByHeightVO;
-import io.stacs.nav.drs.api.model.query.QueryBlockVO;
-import io.stacs.nav.drs.api.model.query.QueryTxListVO;
-import io.stacs.nav.drs.api.model.query.QueryTxVO;
+import io.stacs.nav.drs.api.model.query.*;
 import io.stacs.nav.drs.api.model.tx.CoreTransactionVO;
 import io.stacs.nav.drs.service.network.BlockChainFacade;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -85,5 +83,9 @@ import static io.stacs.nav.drs.api.exception.DappException.newError;
 
     public BlockHeaderVO queryBlockByHeight(QueryBlockByHeightVO vo) {
         return blockChainFacade.queryBlockByHeight(vo).orElseThrow(newError(DRS_NETWORK_COMMON_ERROR));
+    }
+
+    public JSONArray queryContract(ContractQueryRequest vo) {
+        return blockChainFacade.queryContract(vo).orElseThrow(newError(DRS_NETWORK_COMMON_ERROR));
     }
 }

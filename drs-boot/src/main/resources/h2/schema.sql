@@ -84,6 +84,7 @@ IF NOT EXISTS `contract` (
   `action_index` int(11) NOT NULL COMMENT 'the index create action',
   `version` varchar(5) NOT NULL,
   `code` text NOT NULL COMMENT 'contract code',
+  `create_time` bigint(16) NOT NULL COMMENT 'create time',
   PRIMARY KEY (`id`),
   UNIQUE  (`address`),
   UNIQUE (`tx_id`,`action_index`)

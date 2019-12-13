@@ -77,18 +77,18 @@ import java.util.function.Predicate;
             Objects.requireNonNull(param, "post request body can't be null");
             Pair<CasEncryptRequest, Optional<DomainConfig>> pair = encrypt().apply(param);
             Response resp = buildRequest().andThen(LambdaExceptionUtil.rethrowFunction(execute())).apply(url, pair);
-            return parseResponse().apply(resp, pair.getRight());
+            return (CasDecryptResponse)parseResponse().apply(resp, pair.getRight());
         };
     }
 
-    @Nonnull public LambdaExceptionUtil.BiFunctionWithExceptions<Object, String, CasDecryptResponse, IOException> post() {
+    @Nonnull public LambdaExceptionUtil.BiFunctionWithExceptions<Object, String, String, IOException> post() {
         return (param, url) -> {
             Objects.requireNonNull(param, "post request body can't be null");
             Response resp = buildRequest().andThen(LambdaExceptionUtil.rethrowFunction(execute())).apply(url,
                                                                                                          Pair.of(param,
                                                                                                                  Optional
                                                                                                                      .empty()));
-            return parseResponse().apply(resp, Optional.empty());
+            return (String)parseResponse().apply(resp, Optional.empty());
         };
     }
 
@@ -116,7 +116,8 @@ import java.util.function.Predicate;
         return request -> client.newCall(request).execute();
     }
 
-    public LambdaExceptionUtil.BiFunctionWithExceptions<Response, Optional<DomainConfig>, CasDecryptResponse, IOException> parseResponse() {
+    @SuppressWarnings("unchecked")
+    public <T> LambdaExceptionUtil.BiFunctionWithExceptions<Response, Optional<DomainConfig>, T, IOException> parseResponse() {
         return (response, optional) -> {
             ResponseBody responseBody = response.body();
             assert responseBody != null;
@@ -128,9 +129,9 @@ import java.util.function.Predicate;
             log.debug("response body:{}", responseStr);
             if (optional.isPresent()) {
                 DomainConfig config = optional.get();
-                return CasCryptoUtil.decrypt(responseStr, config.getChainPubKey(), config.getAesKey());
+                return (T)CasCryptoUtil.decrypt(responseStr, config.getChainPubKey(), config.getAesKey());
             }
-            return JSON.parseObject(responseStr, CasDecryptResponse.class);
+            return (T)responseStr;
         };
     }
 
@@ -139,7 +140,7 @@ import java.util.function.Predicate;
         return postWithEncrypt().andThen(respConverter).apply(requestParam, url);
     }
 
-    public <T> T post(Object requestParam, String url, Function<CasDecryptResponse, T> respConverter)
+    public <T> T post(Object requestParam, String url, Function<String, T> respConverter)
         throws IOException, ResponseStatusException {
         return post().andThen(respConverter).apply(requestParam, url);
     }

@@ -70,6 +70,7 @@ public interface ApiConstants {
         QUERY_ALL_DOMAIN("queryDomainAll", "/domain/queryAll"),
         QUERY_POLICY_LIST("queryPolicyList", "/policy/queryAll"),
         QUERY_PERMISSION_LIST("queryPermissionList", "/permission/queryAll"),
+        QUERY_CONTRACT("queryContract", "/contract/query"),
         ;
         //@formatter:on
 

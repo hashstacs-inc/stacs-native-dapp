@@ -6,6 +6,7 @@ import io.stacs.nav.drs.api.exception.DappError;
 import io.stacs.nav.drs.api.exception.DappException;
 import io.stacs.nav.drs.api.model.TransactionPO;
 import io.stacs.nav.drs.service.action.handler.BDPublishExecHandler;
+import io.stacs.nav.drs.service.action.handler.ContractCreateExecHandler;
 import io.stacs.nav.drs.service.dao.*;
 import io.stacs.nav.drs.service.dao.po.BlockCallbackPO;
 import io.stacs.nav.drs.service.dao.po.BlockPO;
@@ -44,6 +45,7 @@ import static io.stacs.nav.drs.service.model.ConvertHelper.blockHeader2BlockPO;
     @Autowired private TransactionTemplate txRequired;
 
     @Autowired private BDPublishExecHandler bdPublishExecHandler;
+    @Autowired private ContractCreateExecHandler contractCreateExecHandler;
 
     private static final String TX_SUCCESS = "1";
 
@@ -96,6 +98,7 @@ import static io.stacs.nav.drs.service.model.ConvertHelper.blockHeader2BlockPO;
             txDao.batchInsert(txList);
             // todo 3. save bd、policy、contract
             bdPublishExecHandler.doHandler((List)actionsMap.get(bdPublishExecHandler.execType()));
+            contractCreateExecHandler.doHandler((List)actionsMap.get(contractCreateExecHandler.execType()));
 
             txList.forEach(tx -> {
                 TxRequestPO po = txRequestDao.queryByTxId(tx.getTxId());

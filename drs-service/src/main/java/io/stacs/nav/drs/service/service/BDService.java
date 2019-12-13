@@ -1,9 +1,9 @@
 package io.stacs.nav.drs.service.service;
 
-import com.alibaba.fastjson.JSON;
 import io.stacs.nav.drs.api.exception.DappError;
 import io.stacs.nav.drs.api.exception.DappException;
 import io.stacs.nav.drs.api.model.BaseTxVO;
+import io.stacs.nav.drs.service.utils.JSONHelper;
 import io.stacs.nav.drs.service.utils.ReflectionUtil;
 import io.stacs.nav.drs.service.vo.BDVO;
 import io.stacs.nav.drs.service.vo.SignVO;
@@ -18,6 +18,9 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 
+import static io.stacs.nav.drs.api.exception.DappError.DAPP_COMMON_ERROR;
+import static io.stacs.nav.drs.api.exception.DappException.newError;
+
 /**
  * @author liuyu
  * @description
@@ -26,7 +29,7 @@ import java.util.Set;
 @Service @Slf4j public class BDService implements InitializingBean {
     @Autowired private TxRequestService txRequestService;
     @Autowired private SignatureService signatureService;
-    private Map<String, Class> paramMap = new HashMap<>();
+    private Map<String, Class<?>> paramMap = new HashMap<>();
 
     @Override public void afterPropertiesSet() throws Exception {
         Reflections reflections = ReflectionUtil.getDefaultReflections();
@@ -48,16 +51,17 @@ import java.util.Set;
      * @param bdvo
      * @return
      */
-    private BaseTxVO getBaseTxVo(BDVO bdvo) {
+    public BaseTxVO getBaseTxVo(BDVO bdvo) {
         log.info("[getBaseTxVo]param:{}", bdvo);
         String funcName = bdvo.getFunctionName();
         if (!paramMap.containsKey(funcName)) {
             log.error("[getBaseTxVo]can`t find functionName:{}", funcName);
             throw new DappException(DappError.FUNCTION_NOT_FIND_ERROR);
         }
-        String json = JSON.toJSONString(bdvo.getParam());
-        log.info("[getBaseTxVo]param.json:{}", json);
-        BaseTxVO o = (BaseTxVO)JSON.parseObject(json, paramMap.get(funcName));
+        log.info("[getBaseTxVo]param.json:{}", bdvo.getParam());
+
+        BaseTxVO o = JSONHelper.toJavaObject(bdvo.getParam(), (Class<BaseTxVO>)paramMap.get(funcName)).orElseThrow(
+            newError(DAPP_COMMON_ERROR));
         if (StringUtils.isEmpty(o.getTxId())) {
             o.setTxId(funcName + "-" + System.currentTimeMillis());
         }

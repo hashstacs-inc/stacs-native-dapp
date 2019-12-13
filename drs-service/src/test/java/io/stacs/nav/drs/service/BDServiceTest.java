@@ -1,11 +1,16 @@
 package io.stacs.nav.drs.service;
 
 import com.alibaba.fastjson.JSON;
+import com.alipay.sofa.ark.springboot.runner.ArkBootRunner;
 import com.google.common.collect.Lists;
+import io.stacs.nav.drs.ConfigWithoutDataSource;
 import io.stacs.nav.drs.api.model.RespData;
 import io.stacs.nav.drs.api.model.bd.BusinessDefine;
 import io.stacs.nav.drs.api.model.bd.FunctionDefine;
+import lombok.extern.slf4j.Slf4j;
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.springframework.boot.test.context.SpringBootTest;
 
 import java.util.List;
 
@@ -14,7 +19,9 @@ import java.util.List;
  * @description
  * @date 2019-11-28
  */
+@Slf4j @RunWith(ArkBootRunner.class) @SpringBootTest(classes = ConfigWithoutDataSource.class)
 public class BDServiceTest {
+
     @Test public void test() {
         RespData<List<BusinessDefine>> respData = new RespData<>();
         BusinessDefine bd = new BusinessDefine();
