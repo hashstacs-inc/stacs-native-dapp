@@ -43,11 +43,11 @@ import javax.validation.constraints.NotBlank;
      */
     public String getSignValue() {
         String signValue = txId + bdCode + execPolicyId;
-        if (StringUtils.isBlank(feeCurrency)) {
+        if (!StringUtils.isBlank(feeCurrency)) {
             signValue += feeCurrency;
         }
 
-        if (StringUtils.isBlank(feeMaxAmount)) {
+        if (!StringUtils.isBlank(feeMaxAmount)) {
             signValue += feeMaxAmount;
         }
         return signValue;
