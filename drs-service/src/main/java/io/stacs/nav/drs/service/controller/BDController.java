@@ -26,7 +26,7 @@ import org.springframework.web.bind.annotation.RestController;
 
     @PostMapping("/sign") public RespData sign(@RequestBody GenSignVO vo) {
         try {
-            SignVO signVO = bdService.generateSignature(vo.getBdvo());
+            SignVO signVO = bdService.getSignValue(vo.getBdvo());
             String s = StacsECKey.fromPrivate(Hex.decode(vo.getPriKey())).signMessage(signVO.getSign());
             return RespData.success(s);
         } catch (DappException e) {
@@ -41,7 +41,7 @@ import org.springframework.web.bind.annotation.RestController;
 
     @PostMapping("/getSignValue") public RespData genSign(@RequestBody BDVO bdvo) {
         try {
-            SignVO sign = bdService.generateSignature(bdvo);
+            SignVO sign = bdService.getSignValue(bdvo);
             return RespData.success(sign);
         } catch (DappException e) {
             log.error("[genSign]has dapp error", e);

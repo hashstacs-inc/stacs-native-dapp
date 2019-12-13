@@ -74,11 +74,11 @@ import static io.stacs.nav.drs.api.exception.DappException.newError;
      *
      * @param bdvo
      */
-    public SignVO generateSignature(BDVO bdvo) {
+    public SignVO getSignValue(BDVO bdvo) {
         BaseTxVO o = getBaseTxVo(bdvo);
-        String sign = signatureService.generateSignature(o);
-        log.info("[generateSignature] is success,funcName:{},txId:{}", o.getFunctionName(), o.getTxId());
-        return new SignVO(o.getTxId(), sign);
+        String signValue = signatureService.generateSignature(o);
+        log.info("[getSignValue] is success,funcName:{},txId:{},signValue:{}", o.getFunctionName(), o.getTxId(),signValue);
+        return new SignVO(o.getTxId(), signValue);
     }
 
     /**
