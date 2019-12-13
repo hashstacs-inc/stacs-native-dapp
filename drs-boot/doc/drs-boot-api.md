@@ -297,6 +297,48 @@
     {"desc":"test desc","domainId":"domainId-2"}
 ]
 ```
+
+#### 合约 信息查询
+##### 接口地址：/drs/queryContract
+请求方式：GET
+##### 参数列表
+
+无
+
+###### 请求参数样例:
+```
+无
+```
+##### 返回值：
+| 属性            | 类型            | 最大长度 | 必填 | 说明                           |
+| -------------  | -------------   | -------- | ---- | -------------------------------- |
+| code           | `int`           | 6        | Y    | 返回码 '000000'表示成功
+| msg            | `String`        | 64       | Y    | 消息信息
+| data           | `Object`        |          | N    | 返回数据，List<RsDomain>
+#####RsDomain
+| 属性            | 类型            | 最大长度 | 必填 | 说明                           |
+| -------------  | -------------   | -------- | ---- | -------------------------------- |
+| address        | `String`        | 64       | Y    | 合约地址
+| name           | `String`        | 1024     | N    | 合约名称
+| symbol         | `String`        | 1024     | N    | token
+| extension      | `String`        | 1024     | N    | 扩展字段
+| bdCode         | `String`        | 1024     | N    | bd code
+| status         | `String`        | 1024     | N    | 状态
+| blockHeight    | `String`        | 1024     | N    | 区块高度
+| txId           | `String`        | 1024     | N    | 交易id
+| actionIndex    | `String`        | 1024     | N    | action index
+| version        | `String`        | 1024     | N    | 版本号
+| code           | `String`        | 1024     | N    | 源码
+| createTime     | `String`        | 1024     | N    | 时间
+| bdType         | `String`        | 1024     | N    | bd type
+
+###### 返回参数样例:
+```
+[
+    {"address":"test desc","name":"domainId-0"},
+    {"address":"test desc","name":"domainId-0"},
+]
+```
 #### BD(Business Define) 查询
 ##### 接口地址：/drs/bd/query
 请求方式：GET

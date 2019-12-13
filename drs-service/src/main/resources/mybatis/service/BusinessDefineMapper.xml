@@ -110,5 +110,11 @@
         from business_define
     </select>
 
+    <!--queryBDByCode-->
+    <select id="queryBDByCode" resultMap="baseResultMap">
+        select
+        <include refid="baseColumnList"/>
+        from business_define where code=#{bdCode}
+    </select>
 </mapper>
 

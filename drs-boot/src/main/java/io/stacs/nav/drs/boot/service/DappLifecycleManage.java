@@ -18,6 +18,7 @@ import io.stacs.nav.drs.boot.service.dapp.IDappService;
 import io.stacs.nav.drs.boot.service.dappstore.DappStoreService;
 import io.stacs.nav.drs.boot.vo.AppProfileVO;
 import io.stacs.nav.drs.service.config.DrsConfig;
+import io.stacs.nav.drs.service.utils.config.ConfigListener;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.FilenameUtils;
@@ -29,9 +30,11 @@ import org.springframework.context.ApplicationListener;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 
+import javax.annotation.Nonnull;
 import java.io.*;
 import java.net.URL;
 import java.util.*;
+import java.util.function.Predicate;
 import java.util.jar.Attributes;
 import java.util.jar.Manifest;
 
@@ -44,7 +47,7 @@ import static io.stacs.nav.drs.service.utils.ResourceLoader.getManifest;
  * @date 2019/10/31
  */
 @Slf4j @Service public class DappLifecycleManage
-    implements IDappLifecycleManage, ApplicationListener<ApplicationReadyEvent> {
+    implements ConfigListener,IDappLifecycleManage, ApplicationListener<ApplicationReadyEvent> {
     /**
      * app config file name
      */
@@ -422,5 +425,14 @@ import static io.stacs.nav.drs.service.utils.ResourceLoader.getManifest;
             }
         });
         return appProfileVOList;
+    }
+
+    @Override public <T> void updateNotify(T config) {
+        if(config instanceof DrsConfig){
+            this.drsConfig = (DrsConfig)config;
+        }
+    }
+    @Nonnull @Override public Predicate<Object> filter() {
+        return obj -> obj instanceof DrsConfig;
     }
 }

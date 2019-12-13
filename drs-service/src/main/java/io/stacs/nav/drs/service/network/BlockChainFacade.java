@@ -7,16 +7,13 @@ import io.stacs.nav.drs.api.enums.ApiConstants.ApiInterface;
 import io.stacs.nav.drs.api.model.Policy;
 import io.stacs.nav.drs.api.model.RespData;
 import io.stacs.nav.drs.api.model.RsDomain;
-import io.stacs.nav.drs.api.model.bd.BusinessDefine;
 import io.stacs.nav.drs.api.model.block.BlockHeaderVO;
 import io.stacs.nav.drs.api.model.permission.PermissionInfoVO;
 import io.stacs.nav.drs.api.model.query.*;
 import io.stacs.nav.drs.api.model.tx.CoreTransactionVO;
 import io.stacs.nav.drs.service.config.DomainConfig;
-import io.stacs.nav.drs.service.utils.CasDecryptResponse;
-import io.stacs.nav.drs.service.utils.DrsHttpClient;
-import io.stacs.nav.drs.service.utils.LambdaExceptionUtil;
-import io.stacs.nav.drs.service.utils.Pair;
+import io.stacs.nav.drs.service.dao.po.BusinessDefinePO;
+import io.stacs.nav.drs.service.utils.*;
 import io.stacs.nav.drs.service.utils.config.ConfigListener;
 import io.stacs.nav.drs.service.vo.PermissionCheckVO;
 import lombok.extern.slf4j.Slf4j;
@@ -33,6 +30,7 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.function.Function;
 import java.util.function.Predicate;
+import java.util.regex.Pattern;
 
 import static io.stacs.nav.drs.api.enums.ApiConstants.ENCRYPT_WHITE_LIST;
 import static io.stacs.nav.drs.api.enums.ApiConstants.QueryApiEnum.*;
@@ -46,8 +44,8 @@ import static io.stacs.nav.drs.service.utils.Pair.of;
 @Component @Slf4j public class BlockChainFacade implements ConfigListener {
 
     @Autowired private DrsHttpClient client;
-//    private static Predicate<String> encryptSkipFilter = Pattern.compile("[Qq]uery").asPredicate();
-    private static Predicate<String> encryptSkipFilter = s -> true;
+    private static Predicate<String> encryptSkipFilter = Pattern.compile("[Qq]uery").asPredicate();
+//    private static Predicate<String> encryptSkipFilter = s -> true;
 
     private String baseUrl;
 
@@ -96,9 +94,9 @@ import static io.stacs.nav.drs.service.utils.Pair.of;
         }
     }
 
-    public Optional<BusinessDefine> queryBDInfoByCode(String bdCode) {
+    public Optional<BusinessDefinePO> queryBDInfoByCode(String bdCode) {
         try {
-            Optional<List<BusinessDefine>> result = queryBDInfo(bdCode);
+            Optional<List<BusinessDefinePO>> result = queryBDInfo(bdCode);
             return result.map(list -> list.get(0));
         } catch (Exception e) {
             log.error("[queryBDInfoByCode]has unknown error", e);
@@ -106,12 +104,13 @@ import static io.stacs.nav.drs.service.utils.Pair.of;
         }
     }
 
-    public Optional<List<BusinessDefine>> queryBDInfo(String bdCode) {
+    public Optional<List<BusinessDefinePO>> queryBDInfo(String bdCode) {
         List<Pair<String, String>> params = null;
         if (StringUtils.isNotEmpty(bdCode)) {
             params = Lists.newArrayList(of("bdCode", bdCode));
         }
-        return commonGetApi(BD_QUERY, params);
+        Optional<JSONArray> opt = commonGetApi(BD_QUERY, params);
+        return opt.flatMap(array -> JSONHelper.toJavaList(array, BusinessDefinePO.class));
     }
 
     public Optional<Integer> queryCurrentHeight() {

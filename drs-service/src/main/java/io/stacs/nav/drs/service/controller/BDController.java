@@ -39,7 +39,7 @@ import org.springframework.web.bind.annotation.RestController;
     }
 
 
-    @PostMapping("/genSign") public RespData genSign(@RequestBody BDVO bdvo) {
+    @PostMapping("/getSignValue") public RespData genSign(@RequestBody BDVO bdvo) {
         try {
             SignVO sign = bdService.generateSignature(bdvo);
             return RespData.success(sign);

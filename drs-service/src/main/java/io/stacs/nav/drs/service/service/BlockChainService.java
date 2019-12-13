@@ -4,11 +4,11 @@ import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import io.stacs.nav.drs.api.model.Policy;
 import io.stacs.nav.drs.api.model.RsDomain;
-import io.stacs.nav.drs.api.model.bd.BusinessDefine;
 import io.stacs.nav.drs.api.model.block.BlockHeaderVO;
 import io.stacs.nav.drs.api.model.permission.PermissionInfoVO;
 import io.stacs.nav.drs.api.model.query.*;
 import io.stacs.nav.drs.api.model.tx.CoreTransactionVO;
+import io.stacs.nav.drs.service.dao.po.BusinessDefinePO;
 import io.stacs.nav.drs.service.network.BlockChainFacade;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -29,14 +29,14 @@ import static io.stacs.nav.drs.api.exception.DappException.newError;
     /**
      * query bd info by code
      */
-    public BusinessDefine queryBDByCode(String bdCode) {
+    public BusinessDefinePO queryBDByCode(String bdCode) {
         return blockChainFacade.queryBDInfoByCode(bdCode).orElseThrow(newError(DRS_NETWORK_COMMON_ERROR));
     }
 
     /**
      * query all bd info
      */
-    public List<BusinessDefine> queryAllBDInfo(String bdCode) {
+    public List<BusinessDefinePO> queryAllBDInfo(String bdCode) {
         return blockChainFacade.queryBDInfo(bdCode).orElseThrow(newError(DRS_NETWORK_COMMON_ERROR));
     }
 

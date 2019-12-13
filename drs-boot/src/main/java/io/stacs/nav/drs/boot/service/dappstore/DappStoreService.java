@@ -10,22 +10,25 @@ import io.stacs.nav.drs.boot.vo.AppProfileVO;
 import io.stacs.nav.drs.service.config.DrsConfig;
 import io.stacs.nav.drs.service.network.BlockChainFacade;
 import io.stacs.nav.drs.service.utils.BeanConvertor;
+import io.stacs.nav.drs.service.utils.config.ConfigListener;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections4.CollectionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import javax.annotation.Nonnull;
 import java.io.IOException;
 import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.TimeUnit;
+import java.util.function.Predicate;
 
 /**
  * @author suimi
  * @date 2019/11/1
  */
-@Service @Slf4j public class DappStoreService {
-    @Autowired private DrsConfig drsConfig;
+@Service @Slf4j public class DappStoreService implements ConfigListener {
+    private DrsConfig drsConfig;
     @Autowired private BlockChainFacade blockChainFacade;
     @Autowired private IDappService dappService;
 
@@ -55,22 +58,21 @@ import java.util.concurrent.TimeUnit;
         log.info("[queryApps]storePath:{}", storePath);
         List<AppProfileVO> appProfileVOList = DAPP_CACHE.getIfPresent(storePath);
         if (CollectionUtils.isNotEmpty(appProfileVOList)) {
-            return BeanConvertor.convertList(appProfileVOList,AppProfileVO.class);
+            return BeanConvertor.convertList(appProfileVOList, AppProfileVO.class);
         }
         List<AppProfileVO> list = null;
         if (!StringUtil.isEmpty(storePath)) {
             Optional<String> optional = blockChainFacade.sendGet(storePath,
-                resp -> resp.isSuccessful() ? Optional.of(String.valueOf(resp.getData())) :
-                    Optional.empty());
+                resp -> resp.isSuccessful() ? Optional.of(String.valueOf(resp.getData())) : Optional.empty());
             String json = optional.orElse(null);
-            list = JSON.parseArray(json,AppProfileVO.class);
+            list = JSON.parseArray(json, AppProfileVO.class);
         }
         if (CollectionUtils.isEmpty(list)) {
             log.warn("[queryApps]list is empty");
             return null;
         }
-        DAPP_CACHE.put(storePath,list);
-        return BeanConvertor.convertList(list,AppProfileVO.class);
+        DAPP_CACHE.put(storePath, list);
+        return BeanConvertor.convertList(list, AppProfileVO.class);
     }
 
     /**
@@ -94,5 +96,15 @@ import java.util.concurrent.TimeUnit;
             }
         }
         return null;
+    }
+
+    @Override public <T> void updateNotify(T config) {
+        if (config instanceof DrsConfig) {
+            this.drsConfig = (DrsConfig)config;
+        }
+    }
+
+    @Nonnull @Override public Predicate<Object> filter() {
+        return obj -> obj instanceof DrsConfig;
     }
 }
