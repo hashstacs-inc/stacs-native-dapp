@@ -112,10 +112,15 @@
     <!--batch insert-->
     <insert id="batchInsert" parameterType="java.util.List">
         insert into transaction
-        (tx_id,biz_model,policy_id,lock_time,version,block_height,block_time,send_time,sender,sign_datas,action_datas,execute_result,error_code,policy_version,deal_count,max_allow_fee,fee_payment_address,fee_currency,bd_code,submitter,receipt_data,submitter_sign)
+        (tx_id,biz_model,policy_id,lock_time,version,block_height,block_time,send_time,sender,
+        sign_datas,action_datas,execute_result,error_code,error_message,policy_version,deal_count,max_allow_fee,
+        fee_payment_address,fee_currency,bd_code,submitter,receipt_data,submitter_sign)
         values
         <foreach collection="list" item="item" index="index" separator=",">
-            (#{item.txId},#{item.bizModel},#{item.policyId},#{item.lockTime},#{item.version},#{item.blockHeight},#{item.blockTime},#{item.sendTime},#{item.sender},#{item.signDatas},#{item.actionDatas},#{item.executeResult},#{item.errorCode},#{item.policyVersion},#{item.dealCount},#{item.maxAllowFee},#{item.feePaymentAddress},#{item.feeCurrency},
+            (#{item.txId},#{item.bizModel},#{item.policyId},#{item.lockTime},#{item.version},
+            #{item.blockHeight},#{item.blockTime},#{item.sendTime},#{item.sender},#{item.signDatas},
+            #{item.actionDatas},#{item.executeResult},#{item.errorCode},#{item.errorMessage},#{item.policyVersion},
+            #{item.dealCount},#{item.maxAllowFee},#{item.feePaymentAddress},#{item.feeCurrency},
             #{item.bdCode},#{item.submitter},#{item.receiptData},#{item.submitterSign})
         </foreach>
     </insert>

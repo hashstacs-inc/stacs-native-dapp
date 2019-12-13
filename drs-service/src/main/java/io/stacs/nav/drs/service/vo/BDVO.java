@@ -1,5 +1,6 @@
 package io.stacs.nav.drs.service.vo;
 
+import com.alibaba.fastjson.JSONObject;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
@@ -11,5 +12,5 @@ import lombok.ToString;
  */
 @Getter @Setter @ToString public class BDVO {
     private String functionName;
-    private String param;
+    private JSONObject param;
 }

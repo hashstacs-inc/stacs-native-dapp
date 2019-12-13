@@ -1,9 +1,9 @@
 package io.stacs.nav.drs.service.service;
 
-import com.alibaba.fastjson.JSON;
 import io.stacs.nav.drs.api.exception.DappError;
 import io.stacs.nav.drs.api.exception.DappException;
 import io.stacs.nav.drs.api.model.BaseTxVO;
+import io.stacs.nav.drs.service.utils.JSONHelper;
 import io.stacs.nav.drs.service.utils.ReflectionUtil;
 import io.stacs.nav.drs.service.vo.BDVO;
 import io.stacs.nav.drs.service.vo.SignVO;
@@ -17,6 +17,9 @@ import org.springframework.stereotype.Service;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
+
+import static io.stacs.nav.drs.api.exception.DappError.DAPP_COMMON_ERROR;
+import static io.stacs.nav.drs.api.exception.DappException.newError;
 
 /**
  * @author liuyu
@@ -56,7 +59,9 @@ import java.util.Set;
             throw new DappException(DappError.FUNCTION_NOT_FIND_ERROR);
         }
         log.info("[getBaseTxVo]param.json:{}", bdvo.getParam());
-        BaseTxVO o = (BaseTxVO)JSON.parseObject(bdvo.getParam(), paramMap.get(funcName));
+
+        BaseTxVO o = JSONHelper.toJavaObject(bdvo.getParam(), (Class<BaseTxVO>)paramMap.get(funcName)).orElseThrow(
+            newError(DAPP_COMMON_ERROR));
         if (StringUtils.isEmpty(o.getTxId())) {
             o.setTxId(funcName + "-" + System.currentTimeMillis());
         }
