@@ -51,7 +51,7 @@ public class BDServiceTest {
             fd.setDesc(descs[i]);
             functionDefineList.add(fd);
         }
-        bd.setFunctions(functionDefineList);
+        // bd.setFunctions(functionDefineList);
         List<BusinessDefine> list = Lists.newArrayList(bd);
         respData.setData(list);
         System.out.println(JSON.toJSONString(respData));

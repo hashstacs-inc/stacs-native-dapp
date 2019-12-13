@@ -5,6 +5,7 @@ import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONException;
 import com.alibaba.fastjson.JSONObject;
 
+import java.util.List;
 import java.util.Optional;
 
 /**
@@ -25,6 +26,15 @@ public class JSONHelper {
         try {
 
             return Optional.of(JSON.toJavaObject(json, clazz));
+        } catch (JSONException e) {
+            return Optional.empty();
+        }
+    }
+
+    public static <T> Optional<List<T>> toJavaList(JSONArray array, Class<T> clazz) {
+        try {
+            // JSONArray.parseArray()
+            return Optional.of(JSON.parseArray(array.toJSONString(), clazz));
         } catch (JSONException e) {
             return Optional.empty();
         }

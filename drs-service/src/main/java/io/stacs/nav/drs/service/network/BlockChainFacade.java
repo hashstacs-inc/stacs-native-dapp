@@ -13,10 +13,7 @@ import io.stacs.nav.drs.api.model.permission.PermissionInfoVO;
 import io.stacs.nav.drs.api.model.query.*;
 import io.stacs.nav.drs.api.model.tx.CoreTransactionVO;
 import io.stacs.nav.drs.service.config.DomainConfig;
-import io.stacs.nav.drs.service.utils.CasDecryptResponse;
-import io.stacs.nav.drs.service.utils.DrsHttpClient;
-import io.stacs.nav.drs.service.utils.LambdaExceptionUtil;
-import io.stacs.nav.drs.service.utils.Pair;
+import io.stacs.nav.drs.service.utils.*;
 import io.stacs.nav.drs.service.utils.config.ConfigListener;
 import io.stacs.nav.drs.service.vo.PermissionCheckVO;
 import lombok.extern.slf4j.Slf4j;
@@ -112,7 +109,8 @@ import static io.stacs.nav.drs.service.utils.Pair.of;
         if (StringUtils.isNotEmpty(bdCode)) {
             params = Lists.newArrayList(of("bdCode", bdCode));
         }
-        return commonGetApi(BD_QUERY, params);
+        Optional<JSONArray> opt = commonGetApi(BD_QUERY, params);
+        return opt.flatMap(array -> JSONHelper.toJavaList(array, BusinessDefine.class));
     }
 
     public Optional<Integer> queryCurrentHeight() {

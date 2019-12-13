@@ -9,6 +9,7 @@ import io.stacs.nav.drs.api.model.bd.FunctionDefine;
 import io.stacs.nav.drs.service.dao.BusinessDefineDao;
 import io.stacs.nav.drs.service.dao.po.BusinessDefinePO;
 import io.stacs.nav.drs.service.utils.BeanConvertor;
+import io.stacs.nav.drs.service.utils.JSONHelper;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,7 +19,9 @@ import java.util.List;
 import java.util.Optional;
 
 import static io.stacs.nav.drs.api.enums.ApiConstants.TransactionApiEnum.CREATE_CONTRACT;
+import static io.stacs.nav.drs.api.exception.DappError.DAPP_COMMON_ERROR;
 import static io.stacs.nav.drs.api.exception.DappError.FUNCTION_NOT_FIND_ERROR;
+import static io.stacs.nav.drs.api.exception.DappException.newError;
 
 /**
  * @author suimi
@@ -41,9 +44,10 @@ import static io.stacs.nav.drs.api.exception.DappError.FUNCTION_NOT_FIND_ERROR;
         if (CREATE_CONTRACT.getFunctionName().equals(vo.getFunctionName())) {
             execPolicyId = bd.getInitPolicy();
         } else {
-            List<FunctionDefine> functions = bd.getFunctions();
-            Optional<FunctionDefine> define =
-                functions.stream().filter(a -> a.getName().equals(vo.getFunctionName())).findFirst();
+            List<FunctionDefine> functions = JSONHelper.parseJSONOArray(bd.getFunctions()).flatMap(
+                arr -> JSONHelper.toJavaList(arr, FunctionDefine.class)).orElseThrow(newError(DAPP_COMMON_ERROR));
+            Optional<FunctionDefine> define = functions.stream().filter(a -> a.getName().equals(vo.getFunctionName()))
+                .findFirst();
             //check function
             if (!define.isPresent()) {
                 log.warn("function define is not find,functionName:{},txId:{}", vo.getFunctionName(), vo.getTxId());
