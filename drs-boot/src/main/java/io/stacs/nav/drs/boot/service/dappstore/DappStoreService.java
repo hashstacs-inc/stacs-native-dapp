@@ -10,6 +10,7 @@ import io.stacs.nav.drs.boot.vo.AppProfileVO;
 import io.stacs.nav.drs.service.config.DrsConfig;
 import io.stacs.nav.drs.service.network.BlockChainFacade;
 import io.stacs.nav.drs.service.utils.BeanConvertor;
+import io.stacs.nav.drs.service.utils.config.ConfigListener;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections4.CollectionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,8 +25,8 @@ import java.util.concurrent.TimeUnit;
  * @author suimi
  * @date 2019/11/1
  */
-@Service @Slf4j public class DappStoreService {
-    @Autowired private DrsConfig drsConfig;
+@Service @Slf4j public class DappStoreService implements ConfigListener {
+    private DrsConfig drsConfig;
     @Autowired private BlockChainFacade blockChainFacade;
     @Autowired private IDappService dappService;
 
@@ -94,5 +95,9 @@ import java.util.concurrent.TimeUnit;
             }
         }
         return null;
+    }
+
+    @Override public <T> void updateNotify(T config) {
+        this.drsConfig = (DrsConfig)config;
     }
 }

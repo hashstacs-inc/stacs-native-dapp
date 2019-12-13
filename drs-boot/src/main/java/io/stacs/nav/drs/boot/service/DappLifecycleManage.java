@@ -18,6 +18,7 @@ import io.stacs.nav.drs.boot.service.dapp.IDappService;
 import io.stacs.nav.drs.boot.service.dappstore.DappStoreService;
 import io.stacs.nav.drs.boot.vo.AppProfileVO;
 import io.stacs.nav.drs.service.config.DrsConfig;
+import io.stacs.nav.drs.service.utils.config.ConfigListener;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.FilenameUtils;
@@ -44,7 +45,7 @@ import static io.stacs.nav.drs.service.utils.ResourceLoader.getManifest;
  * @date 2019/10/31
  */
 @Slf4j @Service public class DappLifecycleManage
-    implements IDappLifecycleManage, ApplicationListener<ApplicationReadyEvent> {
+    implements ConfigListener,IDappLifecycleManage, ApplicationListener<ApplicationReadyEvent> {
     /**
      * app config file name
      */
@@ -422,5 +423,9 @@ import static io.stacs.nav.drs.service.utils.ResourceLoader.getManifest;
             }
         });
         return appProfileVOList;
+    }
+
+    @Override public <T> void updateNotify(T config) {
+        this.drsConfig = (DrsConfig)config;
     }
 }
