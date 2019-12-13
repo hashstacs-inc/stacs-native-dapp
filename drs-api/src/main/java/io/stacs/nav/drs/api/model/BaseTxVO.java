@@ -40,6 +40,6 @@ import javax.validation.constraints.NotBlank;
      * @return
      */
     public String getSignValue(){
-        return txId + bdCode + submitter + execPolicyId + feeCurrency + feeMaxAmount;
+        return txId + bdCode + execPolicyId + feeCurrency + feeMaxAmount;
     }
 }
