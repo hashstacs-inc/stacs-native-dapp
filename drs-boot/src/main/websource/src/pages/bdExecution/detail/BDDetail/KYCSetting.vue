@@ -9,12 +9,12 @@
     </el-form>
     <p class="title">KYC</p>
     <el-form :model="ruleForm" ref="ruleKycForm">
-      <div v-for="(v, k) in ruleForm.kyc" :key="k" class="kyc-box">
-        <el-form-item label="key" :prop="'kyc.' + k + '.key'" :inline="true" label-width="50px"
+      <div v-for="(v, k) in ruleForm.KYC" :key="k" class="kyc-box">
+        <el-form-item label="key" :prop="'KYC.' + k + '.key'" :inline="true" label-width="50px"
           :rules="{ required: true, message: 'This filed is required', trigger: 'blur' }">
           <el-input v-model="v.key" placeholder="Please enter Key" :maxlength="1024" :disabled="v.disabled"></el-input>
         </el-form-item>
-        <el-form-item label="value" :prop="'kyc.' + k + '.value'" :inline="true" label-width="50px"
+        <el-form-item label="value" :prop="'KYC.' + k + '.value'" :inline="true" label-width="50px"
           :rules="{ required: true, message: 'This filed is required', trigger: 'blur' }">
           <el-input v-model="v.value" placeholder="Please enter Key word" :maxlength="1024" :disabled="v.disabled"></el-input>
         </el-form-item>
@@ -30,7 +30,7 @@ export default {
     return {
       ruleForm: {
         identityAddress: '',
-        kyc: [
+        KYC: [
           {
             key: '',
             value: '',
@@ -47,13 +47,33 @@ export default {
   },
   methods: {
     validateFrom () {
+      let params = {
+        identityAddress: this.ruleForm.identityAddress,
+        KYC: {}
+      };
+      let edited = this.ruleForm.KYC.filter(v => v.disabled);
+      edited.forEach(v => {
+        params.KYC[v.key] = v.value;
+      });
+      params.KYC = JSON.stringify(params.KYC);
       let validCode = {
         valid: false,
-        ruleForm: this.ruleForm
+        ruleForm: params
       };
       this.$refs['ruleForm'].validate(valid => {
-        validCode.valid = valid;
+        if (edited.length === 0) {
+          this.$refs['ruleKycForm'].validate(validKyc => {
+            if (valid && validKyc) {
+              validCode.valid = true;
+            }
+          });
+        } else {
+          if (valid) {
+            validCode.valid = true;
+          }
+        }
       });
+      
       return validCode;
     },
     kycBtn (v, k, from) {
@@ -62,13 +82,13 @@ export default {
           if (valid) {
             let obj = JSON.parse(JSON.stringify(v));
             obj.disabled = true;
-            this.ruleForm.kyc.push(obj);
+            this.ruleForm.KYC.push(obj);
             v.key = '';
             v.value = '';
           }
         });
       } else {
-        this.ruleForm.kyc.splice(k, 1);
+        this.ruleForm.KYC.splice(k, 1);
       }
     }
   }

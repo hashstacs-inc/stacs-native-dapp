@@ -3,14 +3,14 @@
     <p class="title">Special Information</p>
     <el-form :model="ruleForm" :rules="rules" ref="ruleForm" 
       label-width="150px" class="general-form" label-position="left">
-      <el-form-item label="Proprty Name" prop="proprtyName">
-        <el-input v-model="ruleForm.proprtyName" placeholder="Please enter proprty name"></el-input>
+      <el-form-item label="Proprty Name" prop="key">
+        <el-input v-model="ruleForm.key" placeholder="Please enter proprty name"></el-input>
       </el-form-item>
-      <el-form-item label="Proprty Information" prop="proprtyInformation">
-        <el-input v-model="ruleForm.proprtyInformation" placeholder="Please enter property information"></el-input>
+      <el-form-item label="Proprty Information" prop="value">
+        <el-input v-model="ruleForm.value" placeholder="Please enter property information"></el-input>
       </el-form-item>
-      <el-form-item label="Descision" prop="descision">
-        <el-input v-model="ruleForm.descision" placeholder="Please enter property descision"></el-input>
+      <el-form-item label="Descision" prop="desc">
+        <el-input v-model="ruleForm.desc" placeholder="Please enter property descision"></el-input>
       </el-form-item>
     </el-form>
   </div>
@@ -21,18 +21,18 @@ export default {
   data () {
     return {
       ruleForm: {
-        proprtyName: '',
-        proprtyInformation: '',
-        descision: ''
+        key: '',
+        value: '',
+        desc: ''
       },
       rules: {
-        proprtyName: [
+        key: [
           { required: true, message: 'This filed is required', trigger: 'blur' }
         ],
-        proprtyInformation: [
+        value: [
           { required: true, message: 'This filed is required', trigger: 'blur' }
         ],
-        descision: [
+        desc: [
           { required: true, message: 'This filed is required', trigger: 'blur' }
         ]
       }

@@ -21,7 +21,7 @@
     </ul>
     <div v-else class="no-data">
       <img src="../../../assets/img/blank.png" alt="logo">
-      <p>NO data</p>
+      <p>No Data</p>
     </div>
     <el-dialog
       title="Tips"
@@ -260,8 +260,9 @@ export default {
       .logo {
         width: 75px;
         height: 75px;
-        border-radius: 8px;
         background-color: #DADFF1;
+        border-radius: 8px;
+        overflow: hidden;
         img {
           width: 100%;
           height: 100%;

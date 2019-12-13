@@ -8,7 +8,12 @@
       </el-form-item>
       <el-form-item label="Permission Names" prop="permissionNames">
         <el-select v-model="ruleForm.permissionNames" placeholder="Please select domian IDs" multiple filterable>
-          <el-option :label="v.permissionName" :value="v.permissionIndex" v-for="(v, k) in permissionNameList" :key="k"></el-option>
+          <el-option :label="v.permissionName" :value="v.permissionName" v-for="(v, k) in permissionNameList" :key="k"></el-option>
+        </el-select>
+      </el-form-item>
+      <el-form-item label="Identity Type" prop="identityType">
+        <el-select v-model="ruleForm.identityType">
+          <el-option :label="v.name" :value="v.name" v-for="(v, k) in identityTypeList" :key="k"></el-option>
         </el-select>
       </el-form-item>
     </el-form>
@@ -23,20 +28,25 @@ export default {
     return {
       ruleForm: {
         identityAddress: '',
-        permissionNames: ''
+        permissionNames: [],
+        identityType: ''
       },
-      permissionNameList: [
-        {
-          name: '11111'
-        }, {
-          name: '22222'
-        }
-      ],
+      identityTypeList: [{
+        name: 'node'
+      }, {
+        name: 'user'
+      }, {
+        name: 'domain'
+      }],
+      permissionNameList: [],
       rules: {
         identityAddress: [
           { required: true, message: 'This filed is required', trigger: 'blur' }
         ],
         permissionNames: [
+          { required: true, message: 'This filed is required', trigger: 'change' }
+        ],
+        identityType: [
           { required: true, message: 'This filed is required', trigger: 'change' }
         ]
       }

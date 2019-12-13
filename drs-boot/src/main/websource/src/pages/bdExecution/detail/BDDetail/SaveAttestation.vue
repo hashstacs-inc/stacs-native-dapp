@@ -3,8 +3,14 @@
     <p class="title">Special Information</p>
     <el-form :model="ruleForm" :rules="rules" ref="ruleForm" 
       label-width="150px" class="general-form" label-position="left">
+      <el-form-item label="Version" prop="attestationVersion">
+        <el-input v-model="ruleForm.attestationVersion"></el-input>
+      </el-form-item>
       <el-form-item label="Attestation" prop="attestation">
         <el-input v-model="ruleForm.attestation" placeholder="Please enter attestation information"></el-input>
+      </el-form-item>
+      <el-form-item label="Remark" prop="remark">
+        <el-input v-model="ruleForm.remark"></el-input>
       </el-form-item>
     </el-form>
   </div>
@@ -15,10 +21,15 @@ export default {
   data () {
     return {
       ruleForm: {
-        attestation: ''
+        attestationVersion: '',
+        attestation: '',
+        remark: ''
       },
       rules: {
         attestation: [
+          { required: true, message: 'This filed is required', trigger: 'blur' }
+        ],
+        attestationVersion: [
           { required: true, message: 'This filed is required', trigger: 'blur' }
         ]
       }

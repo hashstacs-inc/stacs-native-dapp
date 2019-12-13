@@ -31,53 +31,55 @@
           <el-input v-model="ruleForm.feeMaxAmount" placeholder="Please enter fee max amount" :maxlength="18"></el-input>
         </el-form-item>
         <template v-if="ruleForm.code !== 'SystemBD' && ruleForm.code !== ''">
-          <p class="title" style="margin-bottom: 25px;">Special Information</p>
-          <el-form-item label="Policy Name" prop="policyName">
-            <el-input v-model="ruleForm.policyName" placeholder="Please enter policy name" :maxlength="64"></el-input>
-          </el-form-item>
-          <el-form-item label="Domain IDs" prop="domainIDs">
-            <el-select v-model="ruleForm.domainIDs" placeholder="Please select domian IDs" multiple filterable>
-              <el-option :label="v.desc" :value="v.domainId" v-for="(v, k) in domainIDList" :key="k"></el-option>
-            </el-select>
-          </el-form-item>
-          <el-form-item label="Vote Pattern" prop="votePattern">
-            <el-select v-model="ruleForm.votePattern" placeholder="Please select domian IDs">
-              <el-option :label="v.name" :value="v.name" v-for="(v, k) in votePatternList" :key="k"></el-option>
-            </el-select>
-            <p class="vote-pattern-tips" v-if="ruleForm.votePattern === 'SYNC'">SYNC: The vote is processed</p>
-            <p class="vote-pattern-tips" v-else>ASYNC: The vote is processed asynchronously.</p>
-          </el-form-item>
-          <el-form-item label="Callback Type" prop="callbackType">
-            <el-select v-model="ruleForm.callbackType">
-              <el-option :label="v.name" :value="v.name" v-for="(v, k) in callbackTypeList" :key="k"></el-option>
-            </el-select>
-          </el-form-item>
-          <el-form-item label="Decision Type" prop="decisionType">
-            <el-select v-model="ruleForm.decisionType">
-              <el-option :label="v.name" :value="v.name" v-for="(v, k) in decisionTypeList" :key="k"></el-option>
-            </el-select>
-          </el-form-item>
-          <!-- 投票类型选择Assign Num时 -->
-          <template v-if="ruleForm.decisionType === 'Assign Num'">
-            <p class="title meta">Assig Meta</p>
-            <el-form-item label="Verify Num" prop="verifyNum">
-              <el-input v-model="ruleForm.verifyNum" placeholder="Please enter an integer"></el-input>
+          <el-form :model="contractForm" :rules="rules" ref="contractForm" 
+            label-width="150px" class="general-form" label-position="left">
+            <p class="title" style="margin-bottom: 25px;">Special Information</p>
+            <el-form-item label="Policy Name" prop="policyName">
+              <el-input v-model="contractForm.policyName" placeholder="Please enter policy name" :maxlength="64"></el-input>
             </el-form-item>
-            <el-form-item label="Must Domain IDs" prop="mustDomainIDs">
-              <!-- <el-select v-model="ruleForm.mustDomainIDs" placeholder="Please select from Domain IDs" multiple filterable>
-                <el-option :label="v.name" :value="v.name" v-for="(v, k) in mustList" :key="k"></el-option>
-              </el-select> -->
-              <el-input v-model="ruleForm.mustDomainIDs" placeholder="Please enter an Domain IDs"></el-input>
+            <el-form-item label="Domain IDs" prop="domainIDs">
+              <el-select v-model="contractForm.domainIDs" placeholder="Please select domian IDs" multiple filterable @change="changeDomain">
+                <el-option :label="v.desc" :value="v.domainId" v-for="(v, k) in domainIDList" :key="k"></el-option>
+              </el-select>
             </el-form-item>
-            <el-form-item label="Expression" prop="expression">
-              <el-input v-model="ruleForm.expression" placeholder="Please fill in the expression. Only support integer、 +、-、x 、/ . as (n+1)/2"></el-input>
+            <el-form-item label="Vote Pattern" prop="votePattern">
+              <el-select v-model="contractForm.votePattern" placeholder="Please select domian IDs">
+                <el-option :label="v.name" :value="v.name" v-for="(v, k) in votePatternList" :key="k"></el-option>
+              </el-select>
+              <p class="vote-pattern-tips" v-if="contractForm.votePattern === 'SYNC'">SYNC: The vote is processed</p>
+              <p class="vote-pattern-tips" v-else-if="contractForm.votePattern === 'ASYNC'">ASYNC: The vote is processed asynchronously.</p>
             </el-form-item>
-          </template>
-          <el-form-item label="Require Auth IDs" prop="requireAuthIDs">
-            <el-select v-model="ruleForm.requireAuthIDs" multiple filterable>
-              <el-option :label="v.policyName" :value="v.policyId" v-for="(v, k) in requireAuthIDList" :key="k"></el-option>
-            </el-select>
-          </el-form-item>
+            <el-form-item label="Callback Type" prop="callbackType">
+              <el-select v-model="contractForm.callbackType">
+                <el-option :label="v.name" :value="v.name" v-for="(v, k) in callbackTypeList" :key="k"></el-option>
+              </el-select>
+            </el-form-item>
+            <el-form-item label="Decision Type" prop="decisionType">
+              <el-select v-model="contractForm.decisionType">
+                <el-option :label="v.name" :value="v.name" v-for="(v, k) in decisionTypeList" :key="k"></el-option>
+              </el-select>
+            </el-form-item>
+            <!-- 投票类型选择Assign Num时 -->
+            <template v-if="contractForm.decisionType === 'Assign Num'">
+              <p class="title meta">Assig Meta</p>
+              <el-form-item label="Verify Num" prop="verifyNum">
+                <el-input v-model="contractForm.verifyNum" placeholder="Please enter an integer"></el-input>
+              </el-form-item>
+              <el-form-item label="Must Domain IDs" prop="mustDomainIDs">
+                <el-select v-model="contractForm.mustDomainIDs" placeholder="Please select from Domain IDs" multiple filterable>
+                  <el-option :label="v" :value="v" v-for="(v, k) in contractForm.domainIDs" :key="k"></el-option>
+                </el-select>
+              </el-form-item>
+              <el-form-item label="Expression" prop="expression">
+                <el-input v-model="contractForm.expression" placeholder="Please fill in the expression. Only support integer、 +、-、x 、/ . as (n+1)/2"></el-input>
+              </el-form-item>
+            </template>
+            <el-form-item label="Require Auth IDs" prop="requireAuthIDs">
+              <el-select v-model="contractForm.requireAuthIDs" multiple filterable>
+                <el-option :label="v" :value="v" v-for="(v, k) in contractForm.domainIDs" :key="k"></el-option>
+              </el-select>
+            </el-form-item>
+          </el-form>
         </template>
       </el-form>
     </div>
@@ -142,15 +144,17 @@ export default {
         submitter: '',
         feeCurrency: '',
         feeMaxAmount: '',
-
-        contractName: '',
+        contractName: ''
+      },
+      contractForm: {
         policyName: '',
+        domainIDs: [],
         votePattern: 'SYNC',
         callbackType: 'ALL',
         decisionType: 'Full Vote',
-        requireAuthIDs: '',
+        requireAuthIDs: [],
         verifyNum: '',
-        mustDomainIDs: '',
+        mustDomainIDs: [],
         expression: ''
       },
       rules: {
@@ -164,7 +168,7 @@ export default {
           { required: true, message: 'This filed is required', trigger: 'blur' }
         ],
         contractName: [
-          { required: true, message: 'This filed is required', trigger: 'change' }
+          { required: true, message: 'This filed is required', trigger: 'blur' }
         ],
         policyName: [
           { required: true, message: 'This filed is required', trigger: 'blur' }
@@ -185,10 +189,10 @@ export default {
           { required: true, message: 'This filed is required', trigger: 'blur' }
         ],
         mustDomainIDs: [
-          { required: true, message: 'This filed is required', trigger: 'blur' }
+          { required: true, message: 'This filed is required', trigger: 'change' }
         ],
-        expression: [
-          { required: true, message: 'This filed is required', trigger: 'blur' }
+        requireAuthIDs: [
+          { required: true, message: 'This filed is required', trigger: 'change' }
         ]
       },
       loading: false,
@@ -242,15 +246,27 @@ export default {
     this.getPolicy();
   },
   methods: {
+    changeDomain () {
+      if (this.contractForm.domainIDs.length === 0) {
+        this.contractForm.requireAuthIDs = [];
+        this.contractForm.mustDomainIDs = [];
+      }
+    },
     submitBD () {
       this.$refs['ruleForm'].validate(valid => {
+        let submitData = {};
         let validChild = this.$refs[this.ruleForm.functionName].validateFrom();
         if (valid && validChild.valid) {
+          if (this.ruleForm.code === 'SystemBD') {
+            submitData = Object.assign(this.ruleForm, validChild.ruleForm);
+          } else {
+            submitData = Object.assign(Object.assign(this.ruleForm, this.contractForm), validChild.ruleForm);
+          }
           let params = {
             functionName: this.ruleForm.functionName,
-            param: this.ruleForm
+            param: submitData
           }
-          console.log(params)
+          console.log(params.param)
         }
       });
     },
@@ -276,7 +292,6 @@ export default {
       this.dbNameList = JSON.parse(JSON.stringify(data.data));
       this.functionNameList = JSON.parse(JSON.stringify(JSON.parse(data.data[0].functions)));
       this.$store.commit('changeFunctionNameList', JSON.parse(JSON.stringify(JSON.parse(data.data[0].functions))));
-      console.log(this.functionNameList)
       this.ruleForm.code = this.dbNameList[0].code;
       this.loading = false;
     }

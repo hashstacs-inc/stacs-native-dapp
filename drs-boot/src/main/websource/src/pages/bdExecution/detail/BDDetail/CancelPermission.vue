@@ -8,7 +8,7 @@
       </el-form-item>
       <el-form-item label="Permission Names" prop="permissionNames">
         <el-select v-model="ruleForm.permissionNames" placeholder="Please select domian IDs" multiple filterable>
-          <el-option :label="v.permissionName" :value="v.permissionIndex" v-for="(v, k) in permissionNameList" :key="k"></el-option>
+          <el-option :label="v.permissionName" :value="v.permissionName" v-for="(v, k) in permissionNameList" :key="k"></el-option>
         </el-select>
       </el-form-item>
     </el-form>
@@ -23,7 +23,7 @@ export default {
     return {
       ruleForm: {
         identityAddress: '',
-        permissionNames: ''
+        permissionNames: []
       },
       permissionNameList: [
         {

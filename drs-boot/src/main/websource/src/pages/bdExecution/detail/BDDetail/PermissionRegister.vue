@@ -3,10 +3,11 @@
     <p class="title">Special Information</p>
     <el-form :model="ruleForm" :rules="rules" ref="ruleForm" 
       label-width="150px" class="general-form" label-position="left">
-      <el-form-item label="Permission Names" prop="permissionNames">
-        <el-select v-model="ruleForm.permissionNames" placeholder="Please select domian IDs" multiple filterable>
+      <el-form-item label="Permission Name" prop="permissionName">
+        <!-- <el-select v-model="ruleForm.permissionName" placeholder="Please select domian IDs" multiple filterable>
           <el-option :label="v.permissionName" :value="v.permissionIndex" v-for="(v, k) in permissionNameList" :key="k"></el-option>
-        </el-select>
+        </el-select> -->
+        <el-input v-model="ruleForm.permissionName"></el-input>
       </el-form-item>
     </el-form>
   </div>
@@ -26,10 +27,10 @@ export default {
         }
       ],
       ruleForm: {
-        permissionNames: ''
+        permissionName: ''
       },
       rules: {
-        permissionNames: [
+        permissionName: [
           { required: true, message: 'This filed is required', trigger: 'change' }
         ]
       }

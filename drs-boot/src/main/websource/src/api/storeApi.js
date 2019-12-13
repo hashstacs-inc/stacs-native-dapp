@@ -43,7 +43,7 @@ export const postDeappConfig = async config => {
 }
 
 // 卸载deApp
-export const stopApp = async config => {
+export const uninstallApp = async config => {
   const { data } = await requestObj.request(Object.assign({ method: 'GET', url: '/dapp/uninstall/' + config.name }, { data: config }));
   return data;
 }
@@ -83,3 +83,15 @@ export const modifySysConfig = async config => {
   const { data } = await requestObj.request(Object.assign({ method: 'POST', url: '/dapp/sysConfig' }, { data: config }));
   return data;
 }
+
+// 提交BD配置
+export const submitBDConfig = async config => {
+  const { data } = await requestObj.request(Object.assign({ method: 'POST', url: '/bd/submit' }, { data: config }));
+  return data;
+}
+
+// 获取BD配置历史
+// export const getBDConfigHistory = async config => {
+//   const { data } = await requestObj.request(Object.assign({ method: 'POST', url: '/bd/submit' }, { data: config }));
+//   return data;
+// }

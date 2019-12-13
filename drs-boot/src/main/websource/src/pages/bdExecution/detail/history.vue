@@ -6,14 +6,14 @@
         <el-date-picker
           v-model="dataValue"
           type="daterange"
-          range-separator="至"
-          start-placeholder="开始日期"
-          end-placeholder="结束日期">
+          range-separator="To"
+          start-placeholder="Start Date"
+          end-placeholder="End Date">
         </el-date-picker>
       </div>
       <div class="search-name">
         <p class="title">Search by Function Name</p>
-        <el-select v-model="nameValue" placeholder="请选择" clearable>
+        <el-select v-model="nameValue" placeholder="Please select" clearable>
           <el-option label="123" value="123"></el-option>
         </el-select>
       </div>
@@ -46,7 +46,7 @@
         </template>
         <div slot="empty" class="no-data">
           <img src="../../../assets/img/blank.png" alt="logo">
-          <p>NO data</p>
+          <p>No Data</p>
         </div>
       </el-table>
     </div>
@@ -96,16 +96,16 @@ export default {
         }
       ],
       tableData: [
-        {
-          TXID: '21382938402138293840',
-          BDName: 'BDName',
-          BDType: 'BDType',
-          FunctionName: 'FunctionName',
-          OperationAddress: 'OperationAddress',
-          IssueDate: 'IssueDate',
-          Status: 'Status',
-          Action: 'Action'
-        }
+        // {
+        //   TXID: '21382938402138293840',
+        //   BDName: 'BDName',
+        //   BDType: 'BDType',
+        //   FunctionName: 'FunctionName',
+        //   OperationAddress: 'OperationAddress',
+        //   IssueDate: 'IssueDate',
+        //   Status: 'Status',
+        //   Action: 'Action'
+        // }
       ],
       loading: false
     }
@@ -161,6 +161,7 @@ export default {
     margin-top: 25px;
     .no-data {
       text-align: center;
+      padding: 30px 0;
       p {
         text-align: center;
         color: #999999;

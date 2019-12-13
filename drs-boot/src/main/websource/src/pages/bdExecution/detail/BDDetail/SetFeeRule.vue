@@ -2,15 +2,15 @@
   <div class="set-fee-rule">
     <p class="title">Special Information</p>
     <el-form :model="ruleForm" ref="ruleForm">
-      <div v-for="(v, k) in ruleForm.rule" :key="k" class="rule-box">
-        <el-form-item label="Policy ID" :prop="'rule.' + k + '.policyID'" :inline="true" label-width="80px"
+      <div v-for="(v, k) in ruleForm.rules" :key="k" class="rule-box">
+        <el-form-item label="Policy ID" :prop="'rules.' + k + '.policyId'" :inline="true" label-width="80px"
           :rules="{ required: true, message: 'This filed is required', trigger: 'blur' }">
-          <el-select v-model="v.policyID" v-if="!v.disabled" placeholder="Please select">
+          <el-select v-model="v.policyId" v-if="!v.disabled" placeholder="Please select">
             <el-option :label="v.policyName" :value="v.policyId" v-for="(v, k) in policyIDList" :key="k"></el-option>
           </el-select>
-          <el-input v-model="v.policyID" :disabled="v.disabled" v-else></el-input>
+          <el-input v-model="v.policyId" :disabled="v.disabled" v-else></el-input>
         </el-form-item>
-        <el-form-item label="Amount" :prop="'rule.' + k + '.amount'" :inline="true" label-width="80px"
+        <el-form-item label="Amount" :prop="'rules.' + k + '.amount'" :inline="true" label-width="80px"
           :rules="{ required: true, message: 'This filed is required', trigger: 'blur' }">
           <el-input v-model="v.amount" placeholder="Please enter fee amount" :maxlength="18" :disabled="v.disabled"></el-input>
         </el-form-item>
@@ -27,9 +27,9 @@ export default {
   data () {
     return {
       ruleForm: {
-        rule: [
+        rules: [
           {
-            policyID: '',
+            policyId: '',
             amount: '',
             disabled: false
           }
@@ -40,13 +40,23 @@ export default {
   },
   methods: {
     validateFrom () {
+      let cloneRules = JSON.parse(JSON.stringify(this.ruleForm.rules));
+      let edited = cloneRules.filter(v => v.disabled);
+      let params = edited.map(v => {
+        delete v.disabled;
+        return v;
+      });
       let validCode = {
         valid: false,
-        ruleForm: this.ruleForm
+        ruleForm: { rules: params }
       };
-      this.$refs['ruleForm'].validate(valid => {
-        validCode.valid = valid;
-      });
+      if (edited.length === 0) {
+        this.$refs['ruleForm'].validate(valid => {
+          validCode.valid = valid;
+        });
+      } else {
+        validCode.valid = true;
+      }
       return validCode;
     },
     ruleBtn (v, k, from) {
@@ -55,13 +65,13 @@ export default {
           if (valid) {
             let obj = JSON.parse(JSON.stringify(v));
             obj.disabled = true;
-            this.ruleForm.rule.push(obj);
-            v.policyID = '';
+            this.ruleForm.rules.push(obj);
+            v.policyId = '';
             v.amount = '';
           }
         });
       } else {
-        this.ruleForm.rule.splice(k, 1);
+        this.ruleForm.rules.splice(k, 1);
       }
     },
     async getPolicy () {

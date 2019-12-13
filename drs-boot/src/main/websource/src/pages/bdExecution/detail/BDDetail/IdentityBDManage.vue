@@ -13,7 +13,7 @@
       </el-form-item>
       <el-form-item label="Action Type" prop="actionType">
         <el-select v-model="ruleForm.actionType">
-          <el-option :label="v.name" :value="v.name" v-for="(v, k) in actionTypeList" :key="k"></el-option>
+          <el-option :label="v.name" :value="v.id" v-for="(v, k) in actionTypeList" :key="k"></el-option>
         </el-select>
       </el-form-item>
     </el-form>
@@ -44,9 +44,11 @@ export default {
       },
       actionTypeList: [
         {
-          name: 'Froze'
+          name: 'Froze',
+          id: 'froze'
         }, {
-          name: 'Unfroze'
+          name: 'Unfroze',
+          id: 'unfroze'
         }
       ],
       BDCodeList: []

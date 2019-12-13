@@ -35,6 +35,7 @@
   border-radius: 0;
   .el-range-separator {
     padding: 0;
+    width: 10%;
   }
   .el-range-input {
     font-size: 12px;
@@ -132,4 +133,9 @@
       color: #fff;
     }
   }
+}
+
+// 多选下拉选中
+.el-select-dropdown.is-multiple .el-select-dropdown__item.selected {
+  color: #053C8C !important;
 }
