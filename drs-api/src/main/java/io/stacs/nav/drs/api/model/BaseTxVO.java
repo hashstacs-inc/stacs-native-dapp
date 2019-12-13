@@ -3,6 +3,7 @@ package io.stacs.nav.drs.api.model;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
+import org.apache.commons.lang3.StringUtils;
 import org.hibernate.validator.constraints.Length;
 
 import javax.validation.constraints.NotBlank;
@@ -34,12 +35,21 @@ import javax.validation.constraints.NotBlank;
     private String feeMaxAmount;
 
     public abstract String getFunctionName();
+
     /**
      * get sign value
      *
      * @return
      */
-    public String getSignValue(){
-        return txId + bdCode + execPolicyId + feeCurrency + feeMaxAmount;
+    public String getSignValue() {
+        String signValue = txId + bdCode + execPolicyId;
+        if (StringUtils.isBlank(feeCurrency)) {
+            signValue += feeCurrency;
+        }
+
+        if (StringUtils.isBlank(feeMaxAmount)) {
+            signValue += feeMaxAmount;
+        }
+        return signValue;
     }
 }
