@@ -4,6 +4,8 @@ import io.stacs.nav.drs.api.model.BaseTxVO;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.util.List;
+
 import static io.stacs.nav.drs.api.enums.ApiConstants.TransactionApiEnum.BD_PUBLISH;
 
 /**
@@ -24,7 +26,7 @@ import static io.stacs.nav.drs.api.enums.ApiConstants.TransactionApiEnum.BD_PUBL
 
     private String initPolicy;
 
-    private String functions;
+    private List<FunctionDefine> functions;
 
     private String bdVersion;
 

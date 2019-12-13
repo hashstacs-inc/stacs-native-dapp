@@ -1,5 +1,6 @@
 package io.stacs.nav.drs.service.service;
 
+import com.alibaba.fastjson.JSONArray;
 import com.alipay.sofa.ark.container.registry.PluginServiceProvider;
 import com.alipay.sofa.ark.spi.model.Plugin;
 import com.alipay.sofa.ark.spi.service.ArkInject;
@@ -11,6 +12,7 @@ import io.stacs.nav.drs.api.IQueryService;
 import io.stacs.nav.drs.api.model.ContractVO;
 import io.stacs.nav.drs.api.model.TransactionVO;
 import io.stacs.nav.drs.api.model.bd.BusinessDefine;
+import io.stacs.nav.drs.api.model.bd.FunctionDefine;
 import io.stacs.nav.drs.api.model.block.BlockHeaderVO;
 import io.stacs.nav.drs.api.model.block.BlockVO;
 import io.stacs.nav.drs.api.model.query.*;
@@ -19,6 +21,7 @@ import io.stacs.nav.drs.service.dao.BlockDao;
 import io.stacs.nav.drs.service.dao.ContractDao;
 import io.stacs.nav.drs.service.dao.TransactionDao;
 import io.stacs.nav.drs.service.dao.po.BlockPO;
+import io.stacs.nav.drs.service.dao.po.BusinessDefinePO;
 import io.stacs.nav.drs.service.utils.BeanConvertor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.InitializingBean;
@@ -27,6 +30,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 /**
  * @author suimi
@@ -100,11 +104,20 @@ import java.util.Optional;
     }
 
     @Override public BusinessDefine queryBDByCode(String bdCode) {
-        return blockService.queryBDByCode(bdCode);
+        BusinessDefinePO po = blockService.queryBDByCode(bdCode);
+        BusinessDefine bd = BeanConvertor.convertBean(po, BusinessDefine.class);
+        bd.setFunctions(JSONArray.parseArray(po.getFunctions(), FunctionDefine.class));
+        return bd;
     }
 
     @Override public List<BusinessDefine> queryAllBDInfo(String bdCode) {
-        return blockService.queryAllBDInfo(bdCode);
+        List<BusinessDefinePO> businessDefinePOS = blockService.queryAllBDInfo(bdCode);
+        List<BusinessDefine> collect = businessDefinePOS.stream().map(e -> {
+            BusinessDefine vo = BeanConvertor.convertBean(e, BusinessDefine.class);
+            vo.setFunctions(JSONArray.parseArray(e.getFunctions(), FunctionDefine.class));
+            return vo;
+        }).collect(Collectors.toList());
+        return collect;
     }
 
     // @formatter:off

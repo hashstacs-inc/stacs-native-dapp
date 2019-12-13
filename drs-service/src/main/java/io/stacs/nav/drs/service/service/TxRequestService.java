@@ -16,7 +16,6 @@ import io.stacs.nav.drs.service.model.TxRequestBO;
 import io.stacs.nav.drs.service.network.BlockChainFacade;
 import io.stacs.nav.drs.service.scheduler.InitTxDisruptor;
 import io.stacs.nav.drs.service.utils.BeanConvertor;
-import io.stacs.nav.drs.service.utils.JSONHelper;
 import io.stacs.nav.drs.service.vo.PermissionCheckVO;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
@@ -32,7 +31,6 @@ import java.util.Optional;
 
 import static io.stacs.nav.drs.api.enums.ApiConstants.TransactionApiEnum.CONTRACT_INVOKER;
 import static io.stacs.nav.drs.api.enums.ApiConstants.TransactionApiEnum.CREATE_CONTRACT;
-import static io.stacs.nav.drs.api.exception.DappError.DAPP_COMMON_ERROR;
 import static io.stacs.nav.drs.api.exception.DappError.DAPP_NETWORK_COMMON_ERROR;
 import static io.stacs.nav.drs.api.exception.DappException.newError;
 
@@ -76,9 +74,7 @@ import static io.stacs.nav.drs.api.exception.DappException.newError;
             execFuncName = CREATE_CONTRACT.getFunctionName();
             execPermission = bd.getInitPermission();
         } else {
-
-            List<FunctionDefine> functions = JSONHelper.parseJSONOArray(bd.getFunctions()).flatMap(
-                arr -> JSONHelper.toJavaList(arr, FunctionDefine.class)).orElseThrow(newError(DAPP_COMMON_ERROR));
+            List<FunctionDefine> functions = bd.getFunctions();
             Optional<FunctionDefine> define = functions.stream().filter(a -> a.getName().equals(vo.getFunctionName()))
                 .findFirst();
             //check function

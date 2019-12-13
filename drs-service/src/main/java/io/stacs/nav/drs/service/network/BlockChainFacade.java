@@ -7,12 +7,12 @@ import io.stacs.nav.drs.api.enums.ApiConstants.ApiInterface;
 import io.stacs.nav.drs.api.model.Policy;
 import io.stacs.nav.drs.api.model.RespData;
 import io.stacs.nav.drs.api.model.RsDomain;
-import io.stacs.nav.drs.api.model.bd.BusinessDefine;
 import io.stacs.nav.drs.api.model.block.BlockHeaderVO;
 import io.stacs.nav.drs.api.model.permission.PermissionInfoVO;
 import io.stacs.nav.drs.api.model.query.*;
 import io.stacs.nav.drs.api.model.tx.CoreTransactionVO;
 import io.stacs.nav.drs.service.config.DomainConfig;
+import io.stacs.nav.drs.service.dao.po.BusinessDefinePO;
 import io.stacs.nav.drs.service.utils.*;
 import io.stacs.nav.drs.service.utils.config.ConfigListener;
 import io.stacs.nav.drs.service.vo.PermissionCheckVO;
@@ -94,9 +94,9 @@ import static io.stacs.nav.drs.service.utils.Pair.of;
         }
     }
 
-    public Optional<BusinessDefine> queryBDInfoByCode(String bdCode) {
+    public Optional<BusinessDefinePO> queryBDInfoByCode(String bdCode) {
         try {
-            Optional<List<BusinessDefine>> result = queryBDInfo(bdCode);
+            Optional<List<BusinessDefinePO>> result = queryBDInfo(bdCode);
             return result.map(list -> list.get(0));
         } catch (Exception e) {
             log.error("[queryBDInfoByCode]has unknown error", e);
@@ -104,13 +104,13 @@ import static io.stacs.nav.drs.service.utils.Pair.of;
         }
     }
 
-    public Optional<List<BusinessDefine>> queryBDInfo(String bdCode) {
+    public Optional<List<BusinessDefinePO>> queryBDInfo(String bdCode) {
         List<Pair<String, String>> params = null;
         if (StringUtils.isNotEmpty(bdCode)) {
             params = Lists.newArrayList(of("bdCode", bdCode));
         }
         Optional<JSONArray> opt = commonGetApi(BD_QUERY, params);
-        return opt.flatMap(array -> JSONHelper.toJavaList(array, BusinessDefine.class));
+        return opt.flatMap(array -> JSONHelper.toJavaList(array, BusinessDefinePO.class));
     }
 
     public Optional<Integer> queryCurrentHeight() {
