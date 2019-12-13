@@ -50,8 +50,7 @@ import static io.stacs.nav.drs.service.utils.Pair.of;
     private String baseUrl;
 
     private static Function<CasDecryptResponse, RespData<?>> defaultPostConverter() {
-        // todo 通过json 对象先获取 respData.data 再根据 class 转
-        return decryptResp -> JSONObject.parseObject(decryptResp.getData().toString(), RespData.class);
+        return decryptResp -> (RespData<?>)decryptResp.getData();
     }
 
     @SuppressWarnings("unchecked") private static <T> Function<ResponseBody, RespData<T>> defaultGetConverter()
