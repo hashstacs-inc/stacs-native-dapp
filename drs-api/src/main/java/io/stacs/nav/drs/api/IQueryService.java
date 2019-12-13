@@ -1,8 +1,5 @@
 package io.stacs.nav.drs.api;
 
-import com.alibaba.fastjson.JSONArray;
-import io.stacs.nav.drs.api.exception.DappException;
-import io.stacs.nav.drs.api.model.BaseTxVO;
 import io.stacs.nav.drs.api.model.ContractVO;
 import io.stacs.nav.drs.api.model.PageInfo;
 import io.stacs.nav.drs.api.model.TransactionVO;
@@ -33,7 +30,7 @@ public interface IQueryService {
 
     String queryBalance(QueryBalanceVO vo);
 
-    JSONArray queryContract(ContractQueryRequest vo);
+    String queryContract(ContractQueryRequest vo);
 
     BlockHeaderVO queryBlockByHeight(QueryBlockByHeightVO vo);
 

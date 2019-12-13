@@ -3,15 +3,18 @@ package io.stacs.nav.drs.service;
 import com.alipay.sofa.ark.springboot.runner.ArkBootRunner;
 import io.stacs.nav.drs.ConfigWithoutDataSource;
 import io.stacs.nav.drs.api.ISignatureService;
+import io.stacs.nav.drs.api.model.BaseTxVO;
 import io.stacs.nav.drs.api.model.PageInfo;
 import io.stacs.nav.drs.api.model.TransactionVO;
 import io.stacs.nav.drs.api.model.bd.BusinessDefine;
 import io.stacs.nav.drs.api.model.query.*;
 import io.stacs.nav.drs.service.scheduler.BlockCallbackProcessSchedule;
 import io.stacs.nav.drs.service.scheduler.FailoverSchedule;
+import io.stacs.nav.drs.service.service.BDService;
 import io.stacs.nav.drs.service.service.BlockChainService;
 import io.stacs.nav.drs.service.service.QueryService;
 import io.stacs.nav.drs.service.service.SignatureService;
+import io.stacs.nav.drs.service.vo.BDVO;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -27,6 +30,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 public class DappApiServiceTest {
 
     @Autowired private QueryService queryService;
+    @Autowired private BDService bdService;
     @Autowired private BlockChainService blockChainService;
     @Autowired private FailoverSchedule failoverSchedule;
     @Autowired private BlockCallbackProcessSchedule blockCallbackProcessSchedule;
@@ -77,6 +81,22 @@ public class DappApiServiceTest {
 
     @Test public void test5() {
         blockCallbackProcessSchedule.exe();
+    }
+
+    @Test public void test6() {
+        BDVO bdvo = new BDVO();
+        bdvo.setFunctionName("BD_PUBLISH");
+        bdvo.setParam(
+            "{\n" + "  \t\"txId\":\"\",\n" + "  \t\"bdCode\":\"SystemBD\",\n" + "  \t\"submitterSign\":\"\",\n"
+                + "  \t\"execPolicyId\":\"\",\n" + "  \t\"feeCurrency\":\"\",\n" + "  \t\"feeMaxAmount\":\"\",\n" + "\n"
+                + "  \t\"code\":\"BDcode01\",\n" + "  \t\"name\":\"BDcode01\",\n" + "  \t\"bdType\":\"asserts\",\n"
+                + "  \t\"desc\":\"111\",\n" + "  \t\"initPermission\":\"permission_83123\",\n"
+                + "  \t\"initPolicy\":\"SET_FEE_RULE\",\n" + "  \t\"functions\":[{\n" + "  \t\t\"name\":\"\",\n"
+                + "  \t\t\"type\":\"\",\n" + "  \t\t\"desc\":\"\",\n" + "  \t\t\"methodSign\":\"\",\n"
+                + "  \t\t\"execPermission\":\"\",\n" + "  \t\t\"execPolicy\":\"\"\n" + "  \t}],\n"
+                + "  \t\"bdVersion\":\"1.0.0\"\n" + "   }");
+        BaseTxVO vo = bdService.getBaseTxVo(bdvo);
+        System.out.println(vo);
     }
 
     @Test public void test() {

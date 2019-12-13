@@ -1,6 +1,5 @@
 package io.stacs.nav.drs.service.service;
 
-import com.alibaba.fastjson.JSONArray;
 import com.alipay.sofa.ark.container.registry.PluginServiceProvider;
 import com.alipay.sofa.ark.spi.model.Plugin;
 import com.alipay.sofa.ark.spi.service.ArkInject;
@@ -9,12 +8,9 @@ import com.alipay.sofa.ark.spi.service.registry.RegistryService;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import io.stacs.nav.drs.api.IQueryService;
-import io.stacs.nav.drs.api.exception.DappException;
-import io.stacs.nav.drs.api.model.BaseTxVO;
 import io.stacs.nav.drs.api.model.ContractVO;
 import io.stacs.nav.drs.api.model.TransactionVO;
 import io.stacs.nav.drs.api.model.bd.BusinessDefine;
-import io.stacs.nav.drs.api.model.bd.FunctionDefine;
 import io.stacs.nav.drs.api.model.block.BlockHeaderVO;
 import io.stacs.nav.drs.api.model.block.BlockVO;
 import io.stacs.nav.drs.api.model.query.*;
@@ -31,9 +27,6 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
-
-import static io.stacs.nav.drs.api.enums.ApiConstants.TransactionApiEnum.CREATE_CONTRACT;
-import static io.stacs.nav.drs.api.exception.DappError.FUNCTION_NOT_FIND_ERROR;
 
 /**
  * @author suimi
@@ -98,8 +91,8 @@ import static io.stacs.nav.drs.api.exception.DappError.FUNCTION_NOT_FIND_ERROR;
         return Optional.ofNullable(blockService.queryContract(request).get(0)).map(Object::toString).orElse("0");
     }
 
-    @Override public JSONArray queryContract(ContractQueryRequest vo) {
-        return blockService.queryContract(vo);
+    @Override public String queryContract(ContractQueryRequest vo) {
+        return blockService.queryContract(vo).toJSONString();
     }
 
     @Override public BlockHeaderVO queryBlockByHeight(QueryBlockByHeightVO vo) {

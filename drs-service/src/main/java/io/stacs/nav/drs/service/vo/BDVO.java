@@ -11,5 +11,5 @@ import lombok.ToString;
  */
 @Getter @Setter @ToString public class BDVO {
     private String functionName;
-    private Object param;
+    private String param;
 }

@@ -26,7 +26,7 @@ import java.util.Set;
 @Service @Slf4j public class BDService implements InitializingBean {
     @Autowired private TxRequestService txRequestService;
     @Autowired private SignatureService signatureService;
-    private Map<String, Class> paramMap = new HashMap<>();
+    private Map<String, Class<?>> paramMap = new HashMap<>();
 
     @Override public void afterPropertiesSet() throws Exception {
         Reflections reflections = ReflectionUtil.getDefaultReflections();
@@ -48,16 +48,15 @@ import java.util.Set;
      * @param bdvo
      * @return
      */
-    private BaseTxVO getBaseTxVo(BDVO bdvo) {
+    public BaseTxVO getBaseTxVo(BDVO bdvo) {
         log.info("[getBaseTxVo]param:{}", bdvo);
         String funcName = bdvo.getFunctionName();
         if (!paramMap.containsKey(funcName)) {
             log.error("[getBaseTxVo]can`t find functionName:{}", funcName);
             throw new DappException(DappError.FUNCTION_NOT_FIND_ERROR);
         }
-        String json = JSON.toJSONString(bdvo.getParam());
-        log.info("[getBaseTxVo]param.json:{}", json);
-        BaseTxVO o = (BaseTxVO)JSON.parseObject(json, paramMap.get(funcName));
+        log.info("[getBaseTxVo]param.json:{}", bdvo.getParam());
+        BaseTxVO o = (BaseTxVO)JSON.parseObject(bdvo.getParam(), paramMap.get(funcName));
         if (StringUtils.isEmpty(o.getTxId())) {
             o.setTxId(funcName + "-" + System.currentTimeMillis());
         }
