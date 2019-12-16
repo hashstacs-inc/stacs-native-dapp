@@ -1,6 +1,7 @@
 package io.stacs.nav.dapp.sample.callback;
 
 import io.stacs.nav.dapp.core.callback.ITxCallbackHandler;
+import io.stacs.nav.drs.api.model.TransactionPO;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
@@ -10,7 +11,8 @@ import org.springframework.stereotype.Component;
  * @date 2019-10-28
  */
 @Component @Slf4j public class CallbackProcessor implements ITxCallbackHandler {
-    @Override public void handle(String topic) {
-        log.info("CallbackProcessor is handle topic:{},threadName:{}", topic, Thread.currentThread().getName());
+
+    @Override public void handle(TransactionPO po) {
+        log.info("handle callback msg from block chain,po:{}",po);
     }
 }
