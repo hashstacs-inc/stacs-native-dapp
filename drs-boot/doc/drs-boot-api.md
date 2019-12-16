@@ -343,7 +343,7 @@
 
 #### 合约中的方法信息查询
 ##### 接口地址：/drs/queryMethodParam
-请求方式：GET
+请求方式：POST
 ##### 参数列表
 
 ##### 返回值：
@@ -409,6 +409,50 @@
 }
 ```
 
+ private Long blockHeight;
+
+    @Size(max = 64) private String txId;
+
+    @Size(max = 32) private String submitter;
+
+    @NotNull private Integer pageNum;
+    @NotNull private Integer pageSize;
+
+#### 获取交易信息
+
+##### 接口地址：/bd/queryTxs
+请求方式：POST
+##### 参数列表
+
+##### 返回值：
+| 属性               | 类型            | 最大长度 | 必填 | 说明                           |
+| ------------------| -------------   | -------- | ---- | -------------------------------- |
+| blockHeight       | `Long`          | 20       | N    | 高度
+| txId              | `String`        | 64       | N    | 交易id
+| submitter         | `String`        | 32       | N    | 交易提交者
+| pageNum           | `int`           | 10       | Y    | 页数
+| pageSize          | `int`           | 104      | Y    | 每页条数
+
+###### 请求参数样例:
+```
+{
+"pageNum":1,
+"pageSize":10
+}
+```
+##### 返回值：
+| 属性            | 类型            | 最大长度 | 必填 | 说明                           |
+| -------------  | -------------   | -------- | ---- | -------------------------------- |
+| code           | `int`           | 6        | Y    | 返回码 '000000'表示成功
+| msg            | `String`        | 64       | Y    | 消息信息
+| data           | `PageInfo`      |          | N    | 返回数据
+
+
+###### 返回参数样例:
+```
+无
+
+```
 
 #### BD(Business Define) 查询
 ##### 接口地址：/drs/bd/query

@@ -6,6 +6,7 @@ import io.stacs.nav.drs.api.model.RespData;
 import io.stacs.nav.drs.api.model.bd.BusinessDefine;
 import io.stacs.nav.drs.api.model.bd.FunctionDefine;
 import io.stacs.nav.drs.api.model.query.QueryContractVO;
+import io.stacs.nav.drs.api.model.query.QueryTxListVO;
 import io.stacs.nav.drs.service.dao.po.BusinessDefinePO;
 import io.stacs.nav.drs.service.event.EventPublisher;
 import io.stacs.nav.drs.service.service.BlockChainService;
@@ -115,11 +116,25 @@ import java.util.stream.Collectors;
      *
      * @return
      */
-    @GetMapping("/queryMethodParam") @ResponseBody public RespData<?> queryMethodParam(@RequestBody MethodParamVO vo) {
+    @PostMapping("/queryMethodParam") @ResponseBody public RespData<?> queryMethodParam(@RequestBody MethodParamVO vo) {
         try {
             return RespData.success(blockChainService.queryMethodParam(vo));
         } catch (Throwable e) {
             log.error("[queryMethodParam]has error", e);
+            return RespData.fail(DappError.DAPP_COMMON_ERROR);
+        }
+    }
+
+    /**
+     * query txs
+     *
+     * @return
+     */
+    @PostMapping ("/queryTxs") @ResponseBody public RespData<?> queryTxs(@RequestBody QueryTxListVO vo) {
+        try {
+            return RespData.success(queryService.queryTx(vo));
+        } catch (Throwable e) {
+            log.error("[queryTxs]has error", e);
             return RespData.fail(DappError.DAPP_COMMON_ERROR);
         }
     }
