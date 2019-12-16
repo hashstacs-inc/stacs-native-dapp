@@ -111,23 +111,6 @@
                 <version>1.4.0</version>
                 <executions>
                     <execution>
-                        <id>exec-npm-install</id>
-                        <goals>
-                            <goal>exec</goal>
-                        </goals>
-                        <phase>initialize</phase>
-                        <configuration>
-                            <executable>npm</executable>
-                            <arguments>
-                                <argument>install</argument>
-                                <argument>--registry=https://registry.npm.taobao.org</argument>
-                                <argument>npm</argument>
-                                <argument>sass-loader</argument>
-                                <argument>node-sass</argument>
-                            </arguments>
-                        </configuration>
-                    </execution>
-                    <execution>
                         <id>exec-npm-run-build</id>
                         <goals>
                             <goal>exec</goal>
