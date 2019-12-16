@@ -11,6 +11,7 @@ import io.stacs.nav.drs.service.event.EventPublisher;
 import io.stacs.nav.drs.service.service.BlockChainService;
 import io.stacs.nav.drs.service.service.QueryService;
 import io.stacs.nav.drs.service.utils.BeanConvertor;
+import io.stacs.nav.drs.service.vo.MethodParamVO;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -106,6 +107,19 @@ import java.util.stream.Collectors;
             return RespData.success(queryService.queryContracts(new QueryContractVO()));
         } catch (Throwable e) {
             log.error("[queryContract]has error", e);
+            return RespData.fail(DappError.DAPP_COMMON_ERROR);
+        }
+    }
+    /**
+     * query method param from contract
+     *
+     * @return
+     */
+    @GetMapping("/queryMethodParam") @ResponseBody public RespData<?> queryMethodParam(@RequestBody MethodParamVO vo) {
+        try {
+            return RespData.success(blockChainService.queryMethodParam(vo));
+        } catch (Throwable e) {
+            log.error("[queryMethodParam]has error", e);
             return RespData.fail(DappError.DAPP_COMMON_ERROR);
         }
     }

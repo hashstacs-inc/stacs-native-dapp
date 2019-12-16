@@ -10,6 +10,7 @@ import io.stacs.nav.drs.api.model.query.*;
 import io.stacs.nav.drs.api.model.tx.CoreTransactionVO;
 import io.stacs.nav.drs.service.dao.po.BusinessDefinePO;
 import io.stacs.nav.drs.service.network.BlockChainFacade;
+import io.stacs.nav.drs.service.vo.MethodParamVO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -87,5 +88,8 @@ import static io.stacs.nav.drs.api.exception.DappException.newError;
 
     public JSONArray queryContract(ContractQueryRequest vo) {
         return blockChainFacade.queryContract(vo).orElseThrow(newError(DRS_NETWORK_COMMON_ERROR));
+    }
+    public JSONObject queryMethodParam(MethodParamVO vo) {
+        return blockChainFacade.queryMethodParam(vo).orElseThrow(newError(DRS_NETWORK_COMMON_ERROR));
     }
 }
