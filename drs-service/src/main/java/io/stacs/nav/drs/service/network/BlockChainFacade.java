@@ -46,7 +46,7 @@ import static io.stacs.nav.drs.service.utils.Pair.of;
 
     @Autowired private DrsHttpClient client;
     private static Predicate<String> encryptSkipFilter = Pattern.compile("[Qq]uery").asPredicate();
-    //    private static Predicate<String> encryptSkipFilter = s -> true;
+       // private static Predicate<String> encryptSkipFilter = s -> true;
 
     private String baseUrl;
 
@@ -174,8 +174,7 @@ import static io.stacs.nav.drs.service.utils.Pair.of;
     }
 
     public Optional<Boolean> checkPermission(PermissionCheckVO vo) {
-        String r = (String)(commonPostApi(CHECK_PERMISSION, vo).get());
-        return Optional.of(Boolean.valueOf(r));
+        return commonPostApi(CHECK_PERMISSION, vo);
     }
 
     @Nonnull
