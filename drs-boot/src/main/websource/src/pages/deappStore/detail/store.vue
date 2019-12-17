@@ -25,6 +25,7 @@
       <img src="../../../assets/img/blank.png" alt="logo">
       <p>No Data</p>
     </div>
+    <!-- 默认配置弹窗 -->
     <el-dialog
       title="Tips"
       :visible.sync="configVisible"
@@ -59,6 +60,7 @@ export default {
     this.$store.commit('changeStoreMenu', this.$route.meta.menu);
   },
   methods: {
+    // 搜索列表
     searchList () {
       if (!this.searchApp) {
         this.appList = this.copyAppList;
@@ -72,6 +74,7 @@ export default {
         this.appList = filter;
       }
     },
+    // 返回对应状态
     returnStaus (str) {
       /* eslint-disable */
       switch (str) {
@@ -92,6 +95,7 @@ export default {
           break;
       }
     },
+    // 使用默认配置
     async configConfirm () {
       this.configVisible = false;
       this.loading = true;
@@ -136,10 +140,12 @@ export default {
       }
       this.loading = false;
     },
+    // 不使用默认配置 跳转页面
     configCancel () {
       this.$store.commit('changeStoreMenu', 3);
       this.$router.push({name: 'AppConfig', query: { name: this.currentItem.name }});
     },
+    // 下载app
     async downloadApp (v) {
       let params = {
         params: {
@@ -159,6 +165,7 @@ export default {
       }
       this.$set(v, 'loading', false);
     },
+    // 安装app
     async installApp (v) {
       this.$set(v, 'loading', true);
       let params = {
@@ -191,6 +198,7 @@ export default {
         window.open(window.location.origin + '/' + v.name);
       }
     },
+    // 获取列表
     async getAppLists () {
       this.loading = true;
       let data = await getAppList({ slient: true });

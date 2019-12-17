@@ -36,6 +36,7 @@
     <div class="submit-btn">
       <p @click="validateFrom">Submit</p>
     </div>
+    <!-- 签名dialog-->
     <el-dialog
       title="System"
       :visible.sync="signVisible"
@@ -79,6 +80,7 @@ export default {
   name: 'PublishBDContract',
   data () {
     return {
+      // 表单绑定数据
       ruleForm: {
         bdName: '',
         submitter: '',
@@ -90,6 +92,7 @@ export default {
         initArgs: []
       },
       loading: false,
+      // args表单数据
       argsForm: {
         argsList: [
           {
@@ -98,6 +101,7 @@ export default {
           }
         ]
       },
+      // 表单规则
       rules: {
         bdName: [
           { required: true, message: 'This filed is required', trigger: 'blur' }
@@ -116,6 +120,7 @@ export default {
         ]
       },
       signVisible: false,
+      // 签名数据
       signData: {
         txId: '',
         sign: '',
@@ -124,23 +129,29 @@ export default {
     }
   },
   created () {
+    // 控制左边菜单active
     this.$store.commit('changeBdMenu', this.$route.meta.menu);
     this.ruleForm.bdName = this.$route.query.name;
   },
   methods: {
+    // 复制待签名字段成功
     onCopySign () {
       this.$notify.success({message: 'Operation Success'});
     },
+    // 提交签名内容
     confirmSign () {
       this.$refs['contractFrom'].validateField('submitterSign', error => {
         if (!error) {
+          // 提交表单内容
           this.submitContract(false);
         }
       });
     },
+    // 打开签名页面
     goSingLink () {
       window.open('https://www.myetherwallet.com/access-my-wallet', '_blank');
     },
+    // 效验表单
     validateFrom () {
       let isValid = false;
       this.$refs['ruleForm'].validate(async valid => {
@@ -157,6 +168,7 @@ export default {
         }
       });
     },
+    // 提交表单
     async submitContract (flag, valid) {
       if (valid) {
         let subData = Object.assign({}, this.ruleForm);
@@ -178,6 +190,7 @@ export default {
         }
         reqData.data.param = Object.assign(reqData.data.param, subData);
         if (flag) {
+          // 获取签名
           this.loading = true;
           let sign = await getSignValue(reqData);
           if (sign.code === '000000') {
@@ -187,19 +200,23 @@ export default {
           this.loading = false;
         } else {
           let loadingInstance = Loading.service();
+          // 合并签名数据
           reqData.data.param = Object.assign(reqData.data.param, this.signData);
           reqData.data.param.txId = this.signData.txId;
           reqData.data.param.submitterSign = this.signData.submitterSign;
           reqData.notify = notify.any;
+          // 提交
           let subResult = await submitBDConfig(reqData);
           loadingInstance.close();
           if (subResult.code === '000000') {
             this.signVisible = false;
+            // 返回
             this.$router.push({ name: 'History' });
           }
         }
       }
     },
+    // 添加一条Args
     addArgs(v, k) {
       if (!v.disabled) {
         this.$refs['argsForm'].validateField(`argsList.${k}.value`, error => {
@@ -212,6 +229,7 @@ export default {
           }
         });
       } else {
+        // 删除
         this.argsForm.argsList.splice(k ,1);
       }
     }
@@ -266,6 +284,58 @@ export default {
       background-color: #DC7171;
     }
   }
-  
+  .sign-item {
+    position: relative;
+    .copy-sign {
+      position: absolute;
+      right: 10px;
+      top: 0px;
+      cursor: pointer;
+      img {
+        width: 14px;
+        height: 14px;
+      }
+    }
+  }
+  .sign-icon-box {
+    margin-bottom: 60px;
+    .sign-icon {
+      width: 40px;
+      height: 40px;
+      cursor: pointer;
+      img {
+        width: 100%;
+        height: 100%;
+      }
+    }
+  }
+  .sign-tips {
+    width: 400px;
+    margin: 0 auto;
+    background-color: #F1FFF5;
+    height: 150px;
+    position: relative;
+    padding: 30px 14px 0 14px;
+    .tips-icon {
+      width: 48px;
+      height: 48px;
+      position: absolute;
+      left: 50%;
+      top: -50%;
+      transform: translate(-50%, 100%);
+    }
+    .sign-title {
+      margin-bottom: 10px;
+      color: #333333;
+      font-size: 12px;
+    }
+    .sign-doc {
+      color: #66AE79;
+      font-size: 14px;
+      word-wrap: break-word;
+      word-break: normal;
+      text-align: left;
+    }
+  }
 }
 </style>

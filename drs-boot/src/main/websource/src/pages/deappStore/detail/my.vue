@@ -75,6 +75,7 @@ export default {
     }
   },
   methods: {
+    // 搜索列表
     searchList () {
       if (!this.myAppInp) {
         this.appList = this.copyAppList;
@@ -88,6 +89,7 @@ export default {
         this.appList = filter;
       }
     },
+    // 获取列表
     async getList () {
       this.loading = true;
       let data = await getMyAppList({ slient: true });
@@ -100,6 +102,7 @@ export default {
       }
       this.loading = false;
     },
+    // 返回状态
     returnStatus (state) {
       /* eslint-disable */
       switch(state) {
@@ -117,6 +120,7 @@ export default {
           break;
       }
     },
+    // 卸载确认
     async uninstallConfirm () {
       let params = {
         name: this.currentUninstall.name,
@@ -144,6 +148,7 @@ export default {
       this.currentUninstall = v;
       this.uninstallVisible = true;
     },
+    // 使用默认配置
     async configConfirm () {
       this.configVisible = false;
       this.loading = true;
@@ -186,10 +191,12 @@ export default {
       }
       this.loading = false;
     },
+    // 使用自定义配置 跳转
     configCancel () {
       this.$store.commit('changeStoreMenu', 3);
       this.$router.push({name: 'AppConfig', query: { name: this.currentItem.name }});
     },
+    // 安装
     async installApp (v) {
       this.$set(v, 'loading', true);
       let params = {

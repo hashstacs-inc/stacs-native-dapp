@@ -40,6 +40,7 @@ export default {
         this.$refs[k][0].style.opacity = '0';
       }
     },
+    // 获取自定义配置列表
     async getAppConfig () {
       let params = {
         name: this.deappName,
@@ -48,6 +49,7 @@ export default {
       let data = await getDeappConfig(params);
       this.configObj = data.data;
     },
+    // 提交
     async submit () {
       for(let i in this.configObj) {
         if (!this.configObj[i]) {
