@@ -193,12 +193,14 @@ export default {
     },
     async getAppLists () {
       this.loading = true;
-      let data = await getAppList();
-      data.data.forEach(v => {
-        v['loading'] = false;
-      });
-      this.appList = JSON.parse(JSON.stringify(data.data));
-      this.copyAppList = JSON.parse(JSON.stringify(data.data));
+      let data = await getAppList({ slient: true });
+      if (data.code === '000000') {
+        data.data.forEach(v => {
+          v['loading'] = false;
+        });
+        this.appList = JSON.parse(JSON.stringify(data.data));
+        this.copyAppList = JSON.parse(JSON.stringify(data.data));
+      }
       this.loading = false;
     }
   }

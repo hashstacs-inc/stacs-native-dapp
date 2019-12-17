@@ -9,11 +9,13 @@ import { sync } from 'vuex-router-sync';
 import i18n from './lang';
 import '@/assets/scss/common.scss';
 import mixin from '@/common/mixin';
+import VueClipboard from 'vue-clipboard2';
 
 Vue.config.productionTip = false;
 // console.log(process.env)
 Vue.mixin(mixin);
 Vue.use(Element, { locale: getLang() });
+Vue.use(VueClipboard);
 sync(store, router);
 
 new Vue({

@@ -90,8 +90,8 @@ export default {
     },
     async getList () {
       this.loading = true;
-      let data = await getMyAppList();
-      if (data.data) {
+      let data = await getMyAppList({ slient: true });
+      if (data.code === '000000' && data.data) {
         this.appList = JSON.parse(JSON.stringify(data.data));
         this.copyAppList = JSON.parse(JSON.stringify(data.data));
       } else {

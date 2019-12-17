@@ -90,8 +90,26 @@ export const submitBDConfig = async config => {
   return data;
 }
 
-// 获取BD配置历史
-// export const getBDConfigHistory = async config => {
-//   const { data } = await requestObj.request(Object.assign({ method: 'POST', url: '/bd/submit' }, { data: config }));
-//   return data;
-// }
+// 查询合约
+export const getContractList = async config => {
+  const { data } = await requestObj.request(Object.assign({ method: 'GET', url: '/drs/queryContract' }, { data: config }));
+  return data;
+}
+
+// 查询合约内方法
+export const getContractParam = async config => {
+  const { data } = await requestObj.request(Object.assign({ method: 'POST', url: '/drs/queryMethodParam' }, { data: config }));
+  return data;
+}
+
+// 获取交易信息
+export const getBDConfigHistory = async config => {
+  const { data } = await requestObj.request(Object.assign({ method: 'POST', url: '/drs/queryTxs' }, { data: config }));
+  return data;
+}
+
+// 获取签名原值
+export const getSignValue = async config => {
+  const { data } = await requestObj.request(Object.assign({ method: 'POST', url: '/bd/getSignValue' }, { data: config }));
+  return data;
+}
