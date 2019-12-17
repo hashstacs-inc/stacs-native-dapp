@@ -121,9 +121,6 @@
                             <arguments>
                                 <argument>install</argument>
                                 <argument>--registry=https://registry.npm.taobao.org</argument>
-                                <argument>npm</argument>
-                                <argument>sass-loader</argument>
-                                <argument>node-sass</argument>
                             </arguments>
                         </configuration>
                     </execution>
