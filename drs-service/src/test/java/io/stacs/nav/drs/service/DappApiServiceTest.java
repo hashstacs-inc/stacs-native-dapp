@@ -1,24 +1,32 @@
 package io.stacs.nav.drs.service;
 
 import com.alipay.sofa.ark.springboot.runner.ArkBootRunner;
+import com.google.common.collect.Lists;
 import io.stacs.nav.drs.ConfigWithoutDataSource;
 import io.stacs.nav.drs.api.ISignatureService;
+import io.stacs.nav.drs.api.exception.DappException;
 import io.stacs.nav.drs.api.model.PageInfo;
 import io.stacs.nav.drs.api.model.TransactionVO;
 import io.stacs.nav.drs.api.model.bd.BusinessDefine;
 import io.stacs.nav.drs.api.model.query.*;
 import io.stacs.nav.drs.service.dao.po.BusinessDefinePO;
+import io.stacs.nav.drs.service.network.BlockChainFacade;
 import io.stacs.nav.drs.service.scheduler.BlockCallbackProcessSchedule;
 import io.stacs.nav.drs.service.scheduler.FailoverSchedule;
 import io.stacs.nav.drs.service.service.BDService;
 import io.stacs.nav.drs.service.service.BlockChainService;
 import io.stacs.nav.drs.service.service.QueryService;
 import io.stacs.nav.drs.service.service.SignatureService;
+import io.stacs.nav.drs.service.vo.PermissionCheckVO;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+
+import java.util.Optional;
+
+import static io.stacs.nav.drs.api.exception.DappError.DAPP_COMMON_ERROR;
 
 /**
  * @author liuyu
@@ -31,6 +39,7 @@ public class DappApiServiceTest {
     @Autowired private QueryService queryService;
     @Autowired private BDService bdService;
     @Autowired private BlockChainService blockChainService;
+    @Autowired private BlockChainFacade facade;
     @Autowired private FailoverSchedule failoverSchedule;
     @Autowired private BlockCallbackProcessSchedule blockCallbackProcessSchedule;
 
@@ -88,13 +97,23 @@ public class DappApiServiceTest {
     }
 
     @Test public void test7() {
-        // String str = "[\n" + "  {\n" + "    \"code\": \"SystemBD\",\n"
-        //     + "    \"functions\": \"[{\\\"desc\\\":\\\"Identity Setting\\\",\\\"execPermission\\\":\\\"DEFAULT\\\",\\\"execPolicy\\\":\\\"IDENTITY_SETTING\\\",\\\"methodSign\\\":\\\"IDENTITY_SETTING\\\",\\\"name\\\":\\\"IDENTITY_SETTING\\\",\\\"signValue\\\":\\\"IDENTITY_SETTINGSystemActionIdentity SettingIDENTITY_SETTINGDEFAULTIDENTITY_SETTING\\\",\\\"type\\\":\\\"SystemAction\\\"},{\\\"desc\\\":\\\"BD Specification\\\",\\\"execPermission\\\":\\\"RS\\\",\\\"execPolicy\\\":\\\"BD_PUBLISH\\\",\\\"methodSign\\\":\\\"BD_PUBLISH\\\",\\\"name\\\":\\\"BD_PUBLISH\\\",\\\"signValue\\\":\\\"BD_PUBLISHSystemActionBD SpecificationBD_PUBLISHRSBD_PUBLISH\\\",\\\"type\\\":\\\"SystemAction\\\"},{\\\"desc\\\":\\\"Permission Register\\\",\\\"execPermission\\\":\\\"RS\\\",\\\"execPolicy\\\":\\\"PERMISSION_REGISTER\\\",\\\"methodSign\\\":\\\"PERMISSION_REGISTER\\\",\\\"name\\\":\\\"PERMISSION_REGISTER\\\",\\\"signValue\\\":\\\"PERMISSION_REGISTERSystemActionPermission RegisterPERMISSION_REGISTERRSPERMISSION_REGISTER\\\",\\\"type\\\":\\\"SystemAction\\\"},{\\\"desc\\\":\\\"Authorize Permission\\\",\\\"execPermission\\\":\\\"RS\\\",\\\"execPolicy\\\":\\\"AUTHORIZE_PERMISSION\\\",\\\"methodSign\\\":\\\"AUTHORIZE_PERMISSION\\\",\\\"name\\\":\\\"AUTHORIZE_PERMISSION\\\",\\\"signValue\\\":\\\"AUTHORIZE_PERMISSIONSystemActionAuthorize PermissionAUTHORIZE_PERMISSIONRSAUTHORIZE_PERMISSION\\\",\\\"type\\\":\\\"SystemAction\\\"},{\\\"desc\\\":\\\"Cancel Permission\\\",\\\"execPermission\\\":\\\"RS\\\",\\\"execPolicy\\\":\\\"CANCEL_PERMISSION\\\",\\\"methodSign\\\":\\\"CANCEL_PERMISSION\\\",\\\"name\\\":\\\"CANCEL_PERMISSION\\\",\\\"signValue\\\":\\\"CANCEL_PERMISSIONSystemActionCancel PermissionCANCEL_PERMISSIONRSCANCEL_PERMISSION\\\",\\\"type\\\":\\\"SystemAction\\\"},{\\\"desc\\\":\\\"Register Policy\\\",\\\"execPermission\\\":\\\"RS\\\",\\\"execPolicy\\\":\\\"REGISTER_POLICY\\\",\\\"methodSign\\\":\\\"REGISTER_POLICY\\\",\\\"name\\\":\\\"REGISTER_POLICY\\\",\\\"signValue\\\":\\\"REGISTER_POLICYSystemActionRegister PolicyREGISTER_POLICYRSREGISTER_POLICY\\\",\\\"type\\\":\\\"SystemAction\\\"},{\\\"desc\\\":\\\"Modify Policy\\\",\\\"execPermission\\\":\\\"RS\\\",\\\"execPolicy\\\":\\\"MODIFY_POLICY\\\",\\\"methodSign\\\":\\\"MODIFY_POLICY\\\",\\\"name\\\":\\\"MODIFY_POLICY\\\",\\\"signValue\\\":\\\"MODIFY_POLICYSystemActionModify PolicyMODIFY_POLICYRSMODIFY_POLICY\\\",\\\"type\\\":\\\"SystemAction\\\"},{\\\"desc\\\":\\\"Register Rs\\\",\\\"execPermission\\\":\\\"RS\\\",\\\"execPolicy\\\":\\\"REGISTER_RS\\\",\\\"methodSign\\\":\\\"REGISTER_RS\\\",\\\"name\\\":\\\"REGISTER_RS\\\",\\\"signValue\\\":\\\"REGISTER_RSSystemActionRegister RsREGISTER_RSRSREGISTER_RS\\\",\\\"type\\\":\\\"SystemAction\\\"},{\\\"desc\\\":\\\"Cancel Rs\\\",\\\"execPermission\\\":\\\"RS\\\",\\\"execPolicy\\\":\\\"CANCEL_RS\\\",\\\"methodSign\\\":\\\"RS_CANCEL\\\",\\\"name\\\":\\\"CANCEL_RS\\\",\\\"signValue\\\":\\\"CANCEL_RSSystemActionCancel RsRS_CANCELRSCANCEL_RS\\\",\\\"type\\\":\\\"SystemAction\\\"},{\\\"desc\\\":\\\"CA Auth\\\",\\\"execPermission\\\":\\\"DEFAULT\\\",\\\"execPolicy\\\":\\\"CA_AUTH\\\",\\\"methodSign\\\":\\\"CA_AUTH\\\",\\\"name\\\":\\\"CA_AUTH\\\",\\\"signValue\\\":\\\"CA_AUTHSystemActionCA AuthCA_AUTHDEFAULTCA_AUTH\\\",\\\"type\\\":\\\"SystemAction\\\"},{\\\"desc\\\":\\\"CA Cancel\\\",\\\"execPermission\\\":\\\"RS\\\",\\\"execPolicy\\\":\\\"CA_CANCEL\\\",\\\"methodSign\\\":\\\"CA_CANCEL\\\",\\\"name\\\":\\\"CA_CANCEL\\\",\\\"signValue\\\":\\\"CA_CANCELSystemActionCA CancelCA_CANCELRSCA_CANCEL\\\",\\\"type\\\":\\\"SystemAction\\\"},{\\\"desc\\\":\\\"CA Update\\\",\\\"execPermission\\\":\\\"RS\\\",\\\"execPolicy\\\":\\\"CA_UPDATE\\\",\\\"methodSign\\\":\\\"CA_UPDATE\\\",\\\"name\\\":\\\"CA_UPDATE\\\",\\\"signValue\\\":\\\"CA_UPDATESystemActionCA UpdateCA_UPDATERSCA_UPDATE\\\",\\\"type\\\":\\\"SystemAction\\\"},{\\\"desc\\\":\\\"Node Join\\\",\\\"execPermission\\\":\\\"DEFAULT\\\",\\\"execPolicy\\\":\\\"NODE_JOIN\\\",\\\"methodSign\\\":\\\"NODE_JOIN\\\",\\\"name\\\":\\\"NODE_JOIN\\\",\\\"signValue\\\":\\\"NODE_JOINSystemActionNode JoinNODE_JOINDEFAULTNODE_JOIN\\\",\\\"type\\\":\\\"SystemAction\\\"},{\\\"desc\\\":\\\"Node Leave\\\",\\\"execPermission\\\":\\\"RS\\\",\\\"execPolicy\\\":\\\"NODE_LEAVE\\\",\\\"methodSign\\\":\\\"NODE_LEAVE\\\",\\\"name\\\":\\\"NODE_LEAVE\\\",\\\"signValue\\\":\\\"NODE_LEAVESystemActionNode LeaveNODE_LEAVERSNODE_LEAVE\\\",\\\"type\\\":\\\"SystemAction\\\"},{\\\"desc\\\":\\\"System Property\\\",\\\"execPermission\\\":\\\"RS\\\",\\\"execPolicy\\\":\\\"SYSTEM_PROPERTY\\\",\\\"methodSign\\\":\\\"SYSTEM_PROPERTY\\\",\\\"name\\\":\\\"SYSTEM_PROPERTY\\\",\\\"signValue\\\":\\\"SYSTEM_PROPERTYSystemActionSystem PropertySYSTEM_PROPERTYRSSYSTEM_PROPERTY\\\",\\\"type\\\":\\\"SystemAction\\\"},{\\\"desc\\\":\\\"Identity BD Management\\\",\\\"execPermission\\\":\\\"RS\\\",\\\"execPolicy\\\":\\\"IDENTITY_BD_MANAGE\\\",\\\"methodSign\\\":\\\"IDENTITY_BD_MANAGE\\\",\\\"name\\\":\\\"IDENTITY_BD_MANAGE\\\",\\\"signValue\\\":\\\"IDENTITY_BD_MANAGESystemActionIdentity BD ManagementIDENTITY_BD_MANAGERSIDENTITY_BD_MANAGE\\\",\\\"type\\\":\\\"SystemAction\\\"},{\\\"desc\\\":\\\"KYC Setting\\\",\\\"execPermission\\\":\\\"RS\\\",\\\"execPolicy\\\":\\\"KYC_SETTING\\\",\\\"methodSign\\\":\\\"KYC_SETTING\\\",\\\"name\\\":\\\"KYC_SETTING\\\",\\\"signValue\\\":\\\"KYC_SETTINGSystemActionKYC SettingKYC_SETTINGRSKYC_SETTING\\\",\\\"type\\\":\\\"SystemAction\\\"},{\\\"desc\\\":\\\"Config Fee\\\",\\\"execPermission\\\":\\\"RS\\\",\\\"execPolicy\\\":\\\"SET_FEE_CONFIG\\\",\\\"methodSign\\\":\\\"SET_FEE_CONFIG\\\",\\\"name\\\":\\\"SET_FEE_CONFIG\\\",\\\"signValue\\\":\\\"SET_FEE_CONFIGSystemActionConfig FeeSET_FEE_CONFIGRSSET_FEE_CONFIG\\\",\\\"type\\\":\\\"SystemAction\\\"},{\\\"desc\\\":\\\"Set Fee Rule\\\",\\\"execPermission\\\":\\\"RS\\\",\\\"execPolicy\\\":\\\"SET_FEE_RULE\\\",\\\"methodSign\\\":\\\"SET_FEE_RULE\\\",\\\"name\\\":\\\"SET_FEE_RULE\\\",\\\"signValue\\\":\\\"SET_FEE_RULESystemActionSet Fee RuleSET_FEE_RULERSSET_FEE_RULE\\\",\\\"type\\\":\\\"SystemAction\\\"},{\\\"desc\\\":\\\"Save Attestation\\\",\\\"execPermission\\\":\\\"RS\\\",\\\"execPolicy\\\":\\\"SAVE_ATTESTATION\\\",\\\"methodSign\\\":\\\"SAVE_ATTESTATION\\\",\\\"name\\\":\\\"SAVE_ATTESTATION\\\",\\\"signValue\\\":\\\"SAVE_ATTESTATIONSystemActionSave AttestationSAVE_ATTESTATIONRSSAVE_ATTESTATION\\\",\\\"type\\\":\\\"SystemAction\\\"},{\\\"desc\\\":\\\"Build Snapshot\\\",\\\"execPermission\\\":\\\"RS\\\",\\\"execPolicy\\\":\\\"BUILD_SNAPSHOT\\\",\\\"methodSign\\\":\\\"BUILD_SNAPSHOT\\\",\\\"name\\\":\\\"BUILD_SNAPSHOT\\\",\\\"signValue\\\":\\\"BUILD_SNAPSHOTSystemActionBuild SnapshotBUILD_SNAPSHOTRSBUILD_SNAPSHOT\\\",\\\"type\\\":\\\"SystemAction\\\"}]\",\n"
-        //     + "    \"createTime\": 1576142728967,\n" + "    \"bdType\": \"system\",\n" + "    \"name\": \"SystemBD\"\n"
-        //     + "  }\n" + "]\n";
-        // Gson gson = new Gson();
-        // List<Object> objects = gson.fromJson(str, new TypeToken<List<BusinessDefine>>(){}.getType());
-        // System.out.println(objects);
+        PermissionCheckVO vo = new PermissionCheckVO();
+        vo.setAddress("8b14f82c76daadda3d1ef973359360609019bd7f");
+        vo.setPermissionNames(Lists.newArrayList("DEFAULT"));
+        Optional<Boolean> opt = facade.checkPermission(vo);
+        if (opt.isPresent()) {
+            System.out.println(opt.get());
+        } else {
+            throw new DappException(DAPP_COMMON_ERROR);
+        }
+    }
+
+    @Test public void test8() {
+        // /identity/balance?contract=2dae5e494f9c03c1eabab392364ce74ed526ca78&identity=8b14f82c76daadda3d1ef973359360609019bd7f
+        QueryBalanceVO vo = new QueryBalanceVO();
+        vo.setContract("81d0496a2098a5b1b22dcb9e3b4dfc58c9efced6");
+        vo.setIdentity("b0b78db11f51e450259e1d4b76d090e561a55a5d");
+        System.out.println(queryService.queryBalance(vo));
     }
 
     @Test public void test() {
