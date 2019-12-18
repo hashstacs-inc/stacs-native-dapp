@@ -4,10 +4,12 @@ import com.alipay.sofa.ark.springboot.runner.ArkBootRunner;
 import com.google.common.collect.Lists;
 import io.stacs.nav.drs.ConfigWithoutDataSource;
 import io.stacs.nav.drs.api.ISignatureService;
+import io.stacs.nav.drs.api.ISubmitterService;
 import io.stacs.nav.drs.api.exception.DappException;
 import io.stacs.nav.drs.api.model.PageInfo;
 import io.stacs.nav.drs.api.model.TransactionVO;
 import io.stacs.nav.drs.api.model.bd.BusinessDefine;
+import io.stacs.nav.drs.api.model.identity.KYCSettingVO;
 import io.stacs.nav.drs.api.model.query.*;
 import io.stacs.nav.drs.service.dao.po.BusinessDefinePO;
 import io.stacs.nav.drs.service.network.BlockChainFacade;
@@ -106,6 +108,13 @@ public class DappApiServiceTest {
         } else {
             throw new DappException(DAPP_COMMON_ERROR);
         }
+    }
+
+    @Autowired private ISubmitterService submitterService;
+
+    @Test public void test10() {
+        KYCSettingVO k = new KYCSettingVO();
+        submitterService.settingKYC(k);
     }
 
     @Test public void test8() {
