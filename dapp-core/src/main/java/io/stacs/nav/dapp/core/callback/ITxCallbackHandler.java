@@ -1,5 +1,7 @@
 package io.stacs.nav.dapp.core.callback;
 
+import io.stacs.nav.drs.api.enums.ActionTypeEnum;
+import io.stacs.nav.drs.api.enums.VersionEnum;
 import io.stacs.nav.drs.api.model.TransactionPO;
 
 /**
@@ -8,6 +10,20 @@ import io.stacs.nav.drs.api.model.TransactionPO;
  * @date 2019-10-23
  */
 public interface ITxCallbackHandler {
+    /**
+     * action handler supported type
+     *
+     * @return
+     */
+    ActionTypeEnum supportType();
+    /**
+     * supported version
+     *
+     * @return
+     */
+    default String supportVersion() {
+        return VersionEnum.V1.getCode();
+    }
     /**
      *
      * @param po
