@@ -33,7 +33,7 @@ import java.util.function.Predicate;
     @Autowired private IDappService dappService;
 
     private static final Cache<String, List<AppProfileVO>> DAPP_CACHE =
-        CacheBuilder.newBuilder().initialCapacity(100).maximumSize(10000).expireAfterWrite(60 * 60, TimeUnit.SECONDS)
+        CacheBuilder.newBuilder().initialCapacity(100).maximumSize(10000).expireAfterWrite(5 * 60, TimeUnit.SECONDS)
             .build();
 
     /**
