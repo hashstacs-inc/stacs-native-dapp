@@ -36,7 +36,7 @@ public class DRSBootApplication {
     public static void main(String[] args) {
         String[] params = new String[args.length + 2];
         params[0] = "--spring.config.name=boot";
-        params[args.length + 1] = "--spring.config.location=classpath:*";
+        params[args.length + 1] = "--spring.config.location=classpath:/";
         System.arraycopy(args, 0, params, 1, args.length);
 
         SpringApplication.run(DRSBootApplication.class, params);
