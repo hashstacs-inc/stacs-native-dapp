@@ -22,7 +22,7 @@ public interface ITxCallbackHandler {
      * @return
      */
     default String supportVersion() {
-        return VersionEnum.V4.getCode();
+        return VersionEnum.V1.getCode();
     }
     /**
      *
