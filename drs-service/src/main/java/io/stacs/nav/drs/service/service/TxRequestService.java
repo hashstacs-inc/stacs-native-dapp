@@ -156,9 +156,10 @@ import static io.stacs.nav.drs.api.exception.DappException.newError;
         RespData<Boolean> res = blockChainHelper.post(CHECK_PERMISSION.getApi(), vo,
             Boolean.class);// blockChainFacade.checkPermission(vo).orElseThrow(newError(DAPP_NETWORK_COMMON_ERROR));
 
-        if (!res.isSuccessful() || !res.getData()) {
-            log.warn("address:{} not has permission:{}", address, permission);
-            throw new DappException(DappError.NO_PERMISSION_ERROR);
-        }
+        //TODO:liuyu
+//        if (!res.isSuccessful() || !res.getData()) {
+//            log.warn("address:{} not has permission:{}", address, permission);
+//            throw new DappException(DappError.NO_PERMISSION_ERROR);
+//        }
     }
 }
