@@ -14,6 +14,7 @@ import io.stacs.nav.drs.service.dao.po.TxRequestPO;
 import io.stacs.nav.drs.service.enums.RequestStatus;
 import io.stacs.nav.drs.service.model.TxRequestBO;
 import io.stacs.nav.drs.service.network.BlockChainFacade;
+import io.stacs.nav.drs.service.network.BlockChainHelper;
 import io.stacs.nav.drs.service.scheduler.InitTxDisruptor;
 import io.stacs.nav.drs.service.vo.PermissionCheckVO;
 import lombok.extern.slf4j.Slf4j;
@@ -41,6 +42,8 @@ import static io.stacs.nav.drs.api.exception.DappException.newError;
     @Autowired TxRequestDao txRequestDao;
     @Autowired BlockChainFacade blockChainFacade;
     @Autowired BlockChainService blockChainService;
+    @Autowired BlockChainHelper blockChainHelper;
+
     /**
      * process tx request
      *
@@ -59,15 +62,27 @@ import static io.stacs.nav.drs.api.exception.DappException.newError;
         }
         try {
             //send to block chain
-            RespData response = blockChainFacade
-                .send(ApiConstants.TransactionApiEnum.fromTxName(bo.getFuncName()).getApi(), bo.getTxData());
+            RespData respData = blockChainHelper
+                .post(ApiConstants.TransactionApiEnum.fromTxName(bo.getFuncName()).getApi(), bo.getTxData(),
+                    Object.class);
+            //            RespData response = blockChainFacade
+            //                .send(ApiConstants.TransactionApiEnum.fromTxName(bo.getFuncName()).getApi(), bo.getTxData());
             //update to END status
-            r = txRequestDao
-                .updateStatusAndReceipt(bo.getTxId(), RequestStatus.SUBMITTING.name(), RequestStatus.PROCESSING.name(),
-                    response != null ? JSON.toJSONString(response) : null);
-            if (r != 1) {
-                log.error("[processInit] update status and receipt is error,txId:{}", bo.getTxId());
-                throw new DappException(DappError.DAPP_UPDATE_STATUS_ERROR);
+            if (respData.isSuccessful()) {
+                r = txRequestDao.updateStatusAndReceipt(bo.getTxId(), RequestStatus.SUBMITTING.name(),
+                    RequestStatus.PROCESSING.name(), JSON.toJSONString(respData));
+                if (r != 1) {
+                    log.error("[processInit] update status and receipt is error,txId:{}", bo.getTxId());
+                    throw new DappException(DappError.DAPP_UPDATE_STATUS_ERROR);
+                }
+            } else {
+                r = txRequestDao
+                    .updateStatusAndReceipt(bo.getTxId(), RequestStatus.SUBMITTING.name(), RequestStatus.END.name(),
+                        respData.getMsg());
+                if (r != 1) {
+                    log.error("[processInit] update status and receipt is error,txId:{}", bo.getTxId());
+                    throw new DappException(DappError.DAPP_UPDATE_STATUS_ERROR);
+                }
             }
         } catch (Throwable e) {
             log.error("[processInit]send to block chain has error", e);
