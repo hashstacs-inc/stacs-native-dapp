@@ -40,10 +40,11 @@ import static io.stacs.nav.drs.service.utils.HttpHelper.buildGetRequestParam;
         try {
             String url = domainConfig.getBaseUrl() + api;
             log.info("[post]url:{}", url);
+            log.info("[post]requestJSON:{}", JSON.toJSONString(param));
             CasEncryptRequest request =
                 CasCryptoUtil.encrypt(param, domainConfig.getMerchantPriKey(), domainConfig.getAesKey());
             String requestJSON = JSON.toJSONString(request);
-            log.info("[post]requestJSON:{}", requestJSON);
+            log.info("[post]requestJSONEncrypt:{}", requestJSON);
             String res = OkHttpClientManager.postAsString(url, requestJSON, TIME_OUT);
             if (StringUtils.isEmpty(res)) {
                 log.error("[post]response is null");
