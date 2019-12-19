@@ -61,7 +61,7 @@
             <plugin>
                 <groupId>io.stacs.nav</groupId>
                 <artifactId>dapp-maven-plugin</artifactId>
-                <version>1.0.0-SNAPSHOT</version>
+                <version>${project.version}</version>
                 <executions>
                     <execution>
                         <id>default-cli</id>
