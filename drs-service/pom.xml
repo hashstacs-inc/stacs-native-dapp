@@ -163,6 +163,7 @@
                                 <!-- configure package-level exported class-->
                                 <packages>
                                     <package>io.stacs.nav.drs.api.*</package>
+                                    <package>io.stacs.nav.crypto.*</package>
                                 </packages>
                             </exported>
                         </configuration>
