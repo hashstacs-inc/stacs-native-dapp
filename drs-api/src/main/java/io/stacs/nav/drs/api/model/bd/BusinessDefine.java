@@ -5,6 +5,7 @@ import lombok.Getter;
 import lombok.Setter;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 import static io.stacs.nav.drs.api.enums.ApiConstants.TransactionApiEnum.BD_PUBLISH;
 
@@ -34,4 +35,18 @@ import static io.stacs.nav.drs.api.enums.ApiConstants.TransactionApiEnum.BD_PUBL
         return BD_PUBLISH.getFunctionName();
     }
 
+    @Override public String getSignValue() {
+        String signValue = super.getSignValue();
+        signValue = signValue
+            + getCode()
+            + getName()
+            + getBdType()
+            + getDesc()
+            + getInitPermission()
+            + getInitPolicy()
+            + getBdVersion()
+            + String.join(",",getFunctions().stream().map(FunctionDefine::getSignValue).collect(Collectors.toList()))
+            + getFunctionName();
+        return signValue;
+    }
 }
