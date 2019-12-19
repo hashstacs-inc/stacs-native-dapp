@@ -34,10 +34,10 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
 public class DRSBootApplication {
 
     public static void main(String[] args) {
-        String[] params = new String[args.length + 2];
+        String[] params = new String[args.length + 1];
         params[0] = "--spring.config.name=boot";
-        params[1] = "--spring.config.location=classpath:/";
-        System.arraycopy(args, 0, params, 2, args.length);
+//        params[1] = "--spring.config.location=classpath:/";
+        System.arraycopy(args, 0, params, 1, args.length);
 
         SpringApplication.run(DRSBootApplication.class, params);
     }
