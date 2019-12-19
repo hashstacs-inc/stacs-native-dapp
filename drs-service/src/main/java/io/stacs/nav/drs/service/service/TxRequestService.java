@@ -102,6 +102,9 @@ import static io.stacs.nav.drs.api.exception.DappException.newError;
                 execFuncName = fd.getName();
             }
         }
+        log.info("[submit]txId:{},execPolicyId:{}", vo.getTxId(), execPolicyId);
+        log.info("[submit]txId:{},execFuncName:{}", vo.getTxId(), execFuncName);
+        log.info("[submit]txId:{},execPermission:{}", vo.getTxId(), execPermission);
         //check permission
         checkPermission(vo.getSubmitter(), execPermission);
         //set policy id
@@ -157,9 +160,9 @@ import static io.stacs.nav.drs.api.exception.DappException.newError;
             Boolean.class);// blockChainFacade.checkPermission(vo).orElseThrow(newError(DAPP_NETWORK_COMMON_ERROR));
 
         //TODO:liuyu
-//        if (!res.isSuccessful() || !res.getData()) {
-//            log.warn("address:{} not has permission:{}", address, permission);
-//            throw new DappException(DappError.NO_PERMISSION_ERROR);
-//        }
+        //        if (!res.isSuccessful() || !res.getData()) {
+        //            log.warn("address:{} not has permission:{}", address, permission);
+        //            throw new DappException(DappError.NO_PERMISSION_ERROR);
+        //        }
     }
 }
