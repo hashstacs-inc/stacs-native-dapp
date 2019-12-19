@@ -31,6 +31,7 @@ import java.util.Optional;
 
 import static io.stacs.nav.drs.api.enums.ApiConstants.TransactionApiEnum.CONTRACT_INVOKER;
 import static io.stacs.nav.drs.api.enums.ApiConstants.TransactionApiEnum.CREATE_CONTRACT;
+import static io.stacs.nav.drs.api.exception.DappError.BD_NOT_FIND_ERROR;
 import static io.stacs.nav.drs.api.exception.DappError.DAPP_NETWORK_COMMON_ERROR;
 import static io.stacs.nav.drs.api.exception.DappException.newError;
 
@@ -61,6 +62,10 @@ import static io.stacs.nav.drs.api.exception.DappException.newError;
         //query business define by bdCode
         BusinessDefinePO po = businessDefineDao.queryBDByCode(vo.getBdCode());
         log.info("[submit]query BD from database:{}",po);
+        if(po == null){
+            log.warn("[submit]bd is not exists,bdCode:{}",vo.getBdCode());
+            throw new DappException(BD_NOT_FIND_ERROR);
+        }
         BusinessDefine bd = BeanConvertor.convertBean(po, BusinessDefine.class);
         if (bd != null && StringUtils.isNotEmpty(po.getFunctions())) {
             List<FunctionDefine> functionDefines = JSON.parseArray(po.getFunctions(), FunctionDefine.class);

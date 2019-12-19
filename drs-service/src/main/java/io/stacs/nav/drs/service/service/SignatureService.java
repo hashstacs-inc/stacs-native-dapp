@@ -26,6 +26,7 @@ import java.util.List;
 import java.util.Optional;
 
 import static io.stacs.nav.drs.api.enums.ApiConstants.TransactionApiEnum.CREATE_CONTRACT;
+import static io.stacs.nav.drs.api.exception.DappError.BD_NOT_FIND_ERROR;
 import static io.stacs.nav.drs.api.exception.DappError.FUNCTION_NOT_FIND_ERROR;
 
 /**
@@ -45,6 +46,10 @@ import static io.stacs.nav.drs.api.exception.DappError.FUNCTION_NOT_FIND_ERROR;
         String execPolicyId;
         BusinessDefinePO po = businessDefineDao.queryBDByCode(vo.getBdCode());
         log.info("[generateSignature]query BD from database:{}",po);
+        if(po == null){
+            log.warn("[generateSignature]bd is not exists,bdCode:{}",vo.getBdCode());
+            throw new DappException(BD_NOT_FIND_ERROR);
+        }
         BusinessDefine bd = BeanConvertor.convertBean(po, BusinessDefine.class);
         if (bd != null && StringUtils.isNotEmpty(po.getFunctions())) {
             List<FunctionDefine> functionDefines = JSON.parseArray(po.getFunctions(), FunctionDefine.class);
