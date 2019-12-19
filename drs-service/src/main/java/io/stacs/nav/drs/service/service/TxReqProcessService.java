@@ -83,6 +83,7 @@ import static io.stacs.nav.drs.api.exception.DappException.newError;
                     log.error("[processInit] update status and receipt is error,txId:{}", bo.getTxId());
                     throw new DappException(DappError.DAPP_UPDATE_STATUS_ERROR);
                 }
+                //TODO:should notify wait
             }
         } catch (Throwable e) {
             log.error("[processInit]send to block chain has error", e);
