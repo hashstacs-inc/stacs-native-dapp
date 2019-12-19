@@ -27,7 +27,10 @@ import static io.stacs.nav.drs.api.enums.ApiConstants.TransactionApiEnum.CREATE_
      * 合约构造器
      */
     private String contractor;
-
+    /**
+     *
+     */
+    private String symbol;
     /**
      * 合约代码
      */
