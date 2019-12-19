@@ -66,7 +66,7 @@ import static io.stacs.nav.drs.api.exception.DappException.newError;
         log.info("[submitTx]is start,{}", JSON.toJSONString(vo));
         //query business define by bdCode
         BusinessDefinePO po = businessDefineDao.queryBDByCode(vo.getBdCode());
-        log.info("[submit]query BD from database:{}", po);
+        log.info("[submit]query BD from database:{}", JSON.toJSONString(po));
         if (po == null) {
             log.warn("[submit]bd is not exists,bdCode:{}", vo.getBdCode());
             throw new DappException(BD_NOT_FIND_ERROR);
