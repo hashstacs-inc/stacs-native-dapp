@@ -48,7 +48,7 @@ import static io.stacs.nav.drs.api.enums.ApiConstants.TransactionApiEnum.CREATE_
      */
     @Override
     public String getSignValue(){
-        return getSignValue()
+        return super.getSignValue()
                     + fromAddr
                     + contractAddress
                     + name
