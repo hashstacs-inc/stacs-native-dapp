@@ -103,11 +103,4 @@ import static io.stacs.nav.drs.service.utils.HttpHelper.buildGetRequestParam;
             this.domainConfig = (DomainConfig)config;
         }
     }
-
-    public static void main(String[] args) {
-        String s = "{\"data\":\"true\"}";
-//        String json = JSON.toJSONString(s);
-//        System.out.println(json);
-        System.out.println(JSON.parseObject(s, RespData.class).getData());
-    }
 }
