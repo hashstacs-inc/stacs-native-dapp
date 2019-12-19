@@ -45,7 +45,7 @@ import static io.stacs.nav.drs.api.exception.DappError.FUNCTION_NOT_FIND_ERROR;
     @Override public String generateSignature(BaseTxVO vo) throws DappException {
         String execPolicyId;
         BusinessDefinePO po = businessDefineDao.queryBDByCode(vo.getBdCode());
-        log.info("[generateSignature]query BD from database:{}",po);
+        log.info("[generateSignature]query BD from database:{}",JSON.toJSONString(po));
         if(po == null){
             log.warn("[generateSignature]bd is not exists,bdCode:{}",vo.getBdCode());
             throw new DappException(BD_NOT_FIND_ERROR);
