@@ -46,7 +46,10 @@ import java.math.BigDecimal;
      * BD functionName
      */
     @NotBlank private String functionName;
-
+    /**
+     * remark of contract
+     */
+    private String remark;
     @Override
     public String getSignValue(){
         return super.getSignValue()

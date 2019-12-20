@@ -15,29 +15,31 @@ public interface ApiConstants {
 
     @Getter enum TransactionApiEnum implements ApiInterface {
         //@formatter:off
-        IDENTITY_SETTING("IDENTITY_SETTING", "/identity/setting"),
-        IDENTITY_BD_MANAGE("IDENTITY_BD_MANAGE", "/identity/bdManage"),
-        BD_PUBLISH("BD_PUBLISH", "/bd/publish"),
-        PERMISSION_REGISTER("PERMISSION_REGISTER", "/permission/register"),
-        AUTHORIZE_PERMISSION("AUTHORIZE_PERMISSION", "/permission/authorize"),
-        CANCEL_PERMISSION("CANCEL_PERMISSION", "/permission/cancel"),
-        REGISTER_POLICY("REGISTER_POLICY", "/policy/register"),
-        MODIFY_POLICY("MODIFY_POLICY", "/policy/modify"),
-        SYSTEM_PROPERTY("SYSTEM_PROPERTY", "/systemProperty/config"),
-        KYC_SETTING("KYC_SETTING", "/kyc/setting"),
-        SET_FEE_RULE("SET_FEE_RULE", "/fee/setRule"),
-        SAVE_ATTESTATION("SAVE_ATTESTATION", "/attestation/save"),
-        BUILD_SNAPSHOT("BUILD_SNAPSHOT", "/snapshot/build"),
-        CREATE_CONTRACT("CREATE_CONTRACT", "/contract/deploy"),
-        CONTRACT_INVOKER("CONTRACT_INVOKER", "/contract/invoke"),
+        IDENTITY_SETTING("IDENTITY_SETTING", "/identity/setting",ActionTypeEnum.IDENTITY_SETTING),
+        IDENTITY_BD_MANAGE("IDENTITY_BD_MANAGE", "/identity/bdManage",ActionTypeEnum.IDENTITY_BD_MANAGE),
+        BD_PUBLISH("BD_PUBLISH", "/bd/publish",ActionTypeEnum.BD_PUBLISH),
+        PERMISSION_REGISTER("PERMISSION_REGISTER", "/permission/register",ActionTypeEnum.PERMISSION_REGISTER),
+        AUTHORIZE_PERMISSION("AUTHORIZE_PERMISSION", "/permission/authorize",ActionTypeEnum.AUTHORIZE_PERMISSION),
+        CANCEL_PERMISSION("CANCEL_PERMISSION", "/permission/cancel",ActionTypeEnum.CANCEL_PERMISSION),
+        REGISTER_POLICY("REGISTER_POLICY", "/policy/register",ActionTypeEnum.REGISTER_POLICY),
+        MODIFY_POLICY("MODIFY_POLICY", "/policy/modify",ActionTypeEnum.MODIFY_POLICY),
+        SYSTEM_PROPERTY("SYSTEM_PROPERTY", "/systemProperty/config",ActionTypeEnum.SYSTEM_PROPERTY),
+        KYC_SETTING("KYC_SETTING", "/kyc/setting",ActionTypeEnum.KYC_SETTING),
+        SET_FEE_RULE("SET_FEE_RULE", "/fee/setRule",ActionTypeEnum.FEE_RULE),
+        SAVE_ATTESTATION("SAVE_ATTESTATION", "/attestation/save",ActionTypeEnum.SAVE_ATTESTATION),
+        BUILD_SNAPSHOT("BUILD_SNAPSHOT", "/snapshot/build",ActionTypeEnum.SAVE_ATTESTATION),
+        CREATE_CONTRACT("CREATE_CONTRACT", "/contract/deploy",ActionTypeEnum.CONTRACT_CREATION),
+        CONTRACT_INVOKER("CONTRACT_INVOKER", "/contract/invoke",ActionTypeEnum.CONTRACT_INVOKED),
         ;
         //@formatter:on
         private String functionName;
         private String api;
+        private ActionTypeEnum actionTypeEnum;
 
-        TransactionApiEnum(String funcName, String api) {
+        TransactionApiEnum(String funcName, String api, ActionTypeEnum actionTypeEnum) {
             this.functionName = funcName;
             this.api = api;
+            this.actionTypeEnum = actionTypeEnum;
         }
 
         public static TransactionApiEnum fromTxName(String txName) {

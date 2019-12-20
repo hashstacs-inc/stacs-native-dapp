@@ -1,0 +1,31 @@
+language: java
+
+branches:
+  only:
+    - master
+    - /^release(-|_).*$/
+    - /^dev(-|_).*$/
+    - /^v(\d+.){1,2}\d+.*$/
+
+services:
+  - docker
+
+jdk:
+# - oraclejdk8
+  - openjdk8
+
+cache:
+  directories:
+    - $HOME/.m2
+    - $HOME/.sonar
+addons:
+  sonarcloud:
+    organization: "aurorasic-github"
+
+install: mvn clean install -DskipTests=true -Ddockerfile.skip -Dmaven.javadoc.skip=true -B -V
+
+script: skip
+
+after_success:
+  - mvn jacoco:report  sonar:sonar
+  - bin/deploy-snapshot.sh

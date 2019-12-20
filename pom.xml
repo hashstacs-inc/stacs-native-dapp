@@ -11,7 +11,7 @@
     <packaging>pom</packaging>
     <name>stacs-native-dapp</name>
     <description>stacs-native-dapp</description>
-    <url>https://github.com/HASHSTACS-admin/stacs-native-dapp</url>
+    <url>https://github.com/hashstacs-inc/stacs-native-dapp</url>
     <licenses>
         <license>
             <name>MIT License</name>
@@ -19,9 +19,9 @@
         </license>
     </licenses>
     <scm>
-        <connection>scm:git:git@github.com:HASHSTACS-admin/stacs-native-dapp.git</connection>
-        <developerConnection>scm:git:git@github.com:HASHSTACS-admin/stacs-native-dapp.git</developerConnection>
-        <url>http://github.com/HASHSTACS-admin/stacs-native-dapp/tree/master</url>
+        <connection>scm:git:git@github.com:hashstacs-inc/stacs-native-dapp.git</connection>
+        <developerConnection>scm:git:git@github.com:hashstacs-inc/stacs-native-dapp.git</developerConnection>
+        <url>http://github.com/hashstacs-inc/stacs-native-dapp/tree/master</url>
         <tag>HEAD</tag>
     </scm>
     <developers>
@@ -423,6 +423,19 @@
             </build>
         </profile>
     </profiles>
+
+    <distributionManagement>
+        <repository>
+            <id>ossrh</id>
+            <name>snapshots repository</name>
+            <url>https://oss.sonatype.org/service/local/staging/deploy/maven2</url>
+        </repository>
+        <snapshotRepository>
+            <id>ossrh</id>
+            <name>Nexus Snapshot Repository</name>
+            <url>https://oss.sonatype.org/content/repositories/snapshots</url>
+        </snapshotRepository>
+    </distributionManagement>
 
     <repositories>
         <repository>
