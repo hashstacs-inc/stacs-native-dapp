@@ -29,6 +29,7 @@ import static io.stacs.nav.drs.service.utils.HttpHelper.buildGetRequestParam;
     private final static long TIME_OUT = 60 * 1000;
     @Autowired DrsConfig drsConfig;
     @Autowired DomainConfig domainConfig;
+
     /**
      * post request
      *
@@ -45,7 +46,7 @@ import static io.stacs.nav.drs.service.utils.HttpHelper.buildGetRequestParam;
                 CasCryptoUtil.encrypt(param, domainConfig.getMerchantPriKey(), domainConfig.getAesKey());
             String requestJSON = JSON.toJSONString(request);
             log.info("[post]requestJSONEncrypt:{}", requestJSON);
-            String res = OkHttpClientManager.postAsString(url, requestJSON, TIME_OUT);
+            String res = OkHttpClientManager.postAsString(url, requestJSON, domainConfig.getMerchantId(), TIME_OUT);
             if (StringUtils.isEmpty(res)) {
                 log.error("[post]response is null");
                 return RespData.fail(DappError.DAPP_COMMON_ERROR);
@@ -84,7 +85,7 @@ import static io.stacs.nav.drs.service.utils.HttpHelper.buildGetRequestParam;
                 }
             }
             log.info("[get]url:{}", url);
-            String res = OkHttpClientManager.getAsString(url, TIME_OUT);
+            String res = OkHttpClientManager.getAsString(url, domainConfig.getMerchantId(), TIME_OUT);
             if (StringUtils.isEmpty(res)) {
                 log.error("[get]response is null");
                 return RespData.fail(DappError.DAPP_COMMON_ERROR);

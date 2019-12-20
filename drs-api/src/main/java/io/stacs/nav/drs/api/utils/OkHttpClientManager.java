@@ -30,6 +30,9 @@ public class OkHttpClientManager {
     private static OkHttpClientManager mInstanceTimeout;
     private OkHttpClient mOkHttpClient;
 
+    private final static String MERCHANT_ID_KEY = "merchantId";
+
+    private String merchantId = "DEFAULT";
 
     private static final String TAG = "OkHttpClientManager";
     public static final MediaType JSON = MediaType.parse("application/json; charset=utf-8");
@@ -90,6 +93,10 @@ public class OkHttpClientManager {
                 readTimeout(timeoutMs, TimeUnit.MILLISECONDS).
                 writeTimeout(timeoutMs, TimeUnit.MILLISECONDS).build();
     }
+    private OkHttpClientManager(Long timeoutMs,String merchantId) {
+       this(timeoutMs);
+       this.merchantId = merchantId;
+    }
 
 
     public synchronized static OkHttpClientManager getInstance() {
@@ -106,6 +113,13 @@ public class OkHttpClientManager {
         return mInstanceTimeout;
     }
 
+    public synchronized static OkHttpClientManager getInstance(Long timeoutMs,String merchantId) {
+        if (mInstanceTimeout == null) {
+            mInstanceTimeout = new OkHttpClientManager(timeoutMs,merchantId);
+        }
+        return mInstanceTimeout;
+    }
+
     /**
      * 同步的Get请求
      *
@@ -115,6 +129,7 @@ public class OkHttpClientManager {
     private Response _getAsyn(String url) throws IOException {
         final Request request = new Request.Builder()
                 .url(url)
+                .addHeader(MERCHANT_ID_KEY,merchantId)
                 .build();
         Call call = mOkHttpClient.newCall(request);
         Response execute = call.execute();
@@ -170,7 +185,9 @@ public class OkHttpClientManager {
     public static String getAsString(String url, Long timeoutMs) throws IOException {
         return getInstance(timeoutMs)._getAsString(url);
     }
-
+    public static String getAsString(String url,String merchantId, Long timeoutMs) throws IOException {
+        return getInstance(timeoutMs,merchantId)._getAsString(url);
+    }
     public static Response post(String url, String json) throws IOException {
         return getInstance()._post(url, json);
     }
@@ -192,6 +209,10 @@ public class OkHttpClientManager {
         return getInstance(timeoutMs)._postAsString(url, json);
     }
 
+    public static String postAsString(String url, String json, String merchantId,Long timeoutMs) throws IOException {
+        return getInstance(timeoutMs,merchantId)._postAsString(url, json);
+    }
+
     private String guessMimeType(String path) {
         FileNameMap fileNameMap = URLConnection.getFileNameMap();
         String contentTypeFor = fileNameMap.getContentTypeFor(path);
@@ -210,6 +231,7 @@ public class OkHttpClientManager {
         RequestBody body = RequestBody.create(JSON, json);
         Request request = new Request.Builder()
                 .url(url)
+                .addHeader(MERCHANT_ID_KEY,merchantId)
                 .post(body)
                 .build();
         return request;
