@@ -48,6 +48,7 @@ import org.springframework.validation.annotation.Validated;
             log.error("[processInit] update status is error,txId:{}", bo.getTxId());
             throw new DappException(DappError.DAPP_UPDATE_STATUS_ERROR);
         }
+        log.info("[processInit]funcName:{}",bo.getFuncName());
         try {
             //send to block chain
             RespData respData = blockChainHelper

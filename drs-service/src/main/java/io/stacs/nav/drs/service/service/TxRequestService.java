@@ -48,7 +48,7 @@ import static io.stacs.nav.drs.api.exception.DappException.newError;
     /**
      * contract type of BD
      */
-    private final static String BD_TYPE_CONTRACT = "contract";
+    private final static String BD_TYPE_CONTRACT = "Contract";
 
     @Autowired TxRequestDao txRequestDao;
     @Autowired InitTxDisruptor initTxDisruptor;
