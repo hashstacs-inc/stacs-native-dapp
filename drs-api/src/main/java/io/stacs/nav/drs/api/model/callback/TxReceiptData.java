@@ -2,6 +2,7 @@ package io.stacs.nav.drs.api.model.callback;
 
 import lombok.Getter;
 import lombok.Setter;
+import lombok.ToString;
 
 import java.util.List;
 
@@ -12,6 +13,7 @@ import java.util.List;
  */
 @Getter
 @Setter
+@ToString(callSuper = true)
 public class TxReceiptData{
     /**
      * fee info

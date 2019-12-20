@@ -4,6 +4,7 @@ package io.stacs.nav.drs.api.model.identity;
 import io.stacs.nav.drs.api.model.BaseTxVO;
 import lombok.Getter;
 import lombok.Setter;
+import lombok.ToString;
 import org.hibernate.validator.constraints.Length;
 import org.hibernate.validator.constraints.NotBlank;
 import org.hibernate.validator.constraints.NotEmpty;
@@ -16,7 +17,7 @@ import static io.stacs.nav.drs.api.enums.ApiConstants.TransactionApiEnum.IDENTIT
  * @author ganxiang
  * @date 2019/10/16
  */
-@Setter @Getter public class IdentityBDManageVO extends BaseTxVO {
+@Setter @Getter @ToString(callSuper = true) public class IdentityBDManageVO extends BaseTxVO {
 
     @NotBlank @Length(max = 40) private String targetAddress;
 

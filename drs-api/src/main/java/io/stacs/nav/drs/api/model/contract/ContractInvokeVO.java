@@ -4,6 +4,7 @@ import com.alipay.sofa.common.utils.StringUtil;
 import io.stacs.nav.drs.api.model.BaseTxVO;
 import lombok.Getter;
 import lombok.Setter;
+import lombok.ToString;
 import org.hibernate.validator.constraints.Length;
 import org.hibernate.validator.constraints.NotBlank;
 
@@ -15,7 +16,7 @@ import java.math.BigDecimal;
  * @author kongyu
  * @date 2018 /12/10
  */
-@Getter @Setter public class ContractInvokeVO extends BaseTxVO {
+@Getter @Setter @ToString(callSuper = true) public class ContractInvokeVO extends BaseTxVO {
 
     /**
      * if transfer，which is transfering amount

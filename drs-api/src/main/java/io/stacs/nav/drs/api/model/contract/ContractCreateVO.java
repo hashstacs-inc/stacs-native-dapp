@@ -3,6 +3,7 @@ package io.stacs.nav.drs.api.model.contract;
 import io.stacs.nav.drs.api.model.BaseTxVO;
 import lombok.Getter;
 import lombok.Setter;
+import lombok.ToString;
 
 import static io.stacs.nav.drs.api.enums.ApiConstants.TransactionApiEnum.CREATE_CONTRACT;
 
@@ -12,7 +13,7 @@ import static io.stacs.nav.drs.api.enums.ApiConstants.TransactionApiEnum.CREATE_
  * @author duhongming
  * @date 2018 /6/24
  */
-@Getter @Setter public class ContractCreateVO extends BaseTxVO {
+@Getter @Setter @ToString(callSuper = true) public class ContractCreateVO extends BaseTxVO {
 
     private String fromAddr;
     /**
