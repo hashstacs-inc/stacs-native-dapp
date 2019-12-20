@@ -3,13 +3,13 @@
     <p class="title">Special Information</p>
     <el-form :model="ruleForm" :rules="rules" ref="ruleForm" 
       label-width="150px" class="general-form" label-position="left">
-      <el-form-item label="Policy Id" prop="policyId">
+      <el-form-item label="Policy ID" prop="policyId">
         <el-select v-model="ruleForm.policyId" placeholder="Please select" @change="changePolicyId">
           <el-option :label="v.policyName" :value="v.policyId" v-for="(v, k) in policyList" :key="k"></el-option>
         </el-select>
       </el-form-item>
       <el-form-item label="Policy Name" prop="policyId">
-        <el-input v-model="ruleForm.policyId" placeholder="Please enter an Policy Id"></el-input>
+        <el-input v-model="ruleForm.policyId" disabled></el-input>
       </el-form-item>
       <el-form-item label="Domain IDs" prop="domainIds">
         <el-select v-model="ruleForm.domainIds" placeholder="Please select domian IDs" multiple filterable @change="changeDomain">
@@ -143,9 +143,6 @@ export default {
         ],
         mustDomainIds: [
           { required: true, message: 'This filed is required', trigger: 'change' }
-        ],
-        policyId: [
-          { required: true, message: 'This filed is required', trigger: 'blur' }
         ],
         expression: [
           { validator: validatorExpression, trigger: 'blur' }

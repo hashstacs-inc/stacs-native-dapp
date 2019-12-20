@@ -3,11 +3,11 @@
     <p class="title">Special Information</p>
     <el-form :model="ruleForm" :rules="rules" ref="ruleForm" 
       label-width="150px" class="general-form" label-position="left">
-      <el-form-item label="Policy Id" prop="policyId">
-        <el-input v-model="ruleForm.policyId" placeholder="Please enter an Policy Id"></el-input>
+      <el-form-item label="Policy ID" prop="policyId">
+        <el-input v-model="ruleForm.policyId" placeholder="Please enter an Policy ID" :maxLength="32"></el-input>
       </el-form-item>
       <el-form-item label="Policy Name" prop="policyName">
-        <el-input v-model="ruleForm.policyName" placeholder="Please enter an Policy Name"></el-input>
+        <el-input v-model="ruleForm.policyName" placeholder="Please enter an Policy Name" :maxLength="64"></el-input>
       </el-form-item>
       <el-form-item label="Domain IDs" prop="domainIds">
         <el-select v-model="ruleForm.domainIds" placeholder="Please select domian IDs" multiple filterable @change="changeDomain">
