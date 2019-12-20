@@ -46,7 +46,9 @@ import static io.stacs.nav.drs.service.utils.HttpHelper.buildGetRequestParam;
                 CasCryptoUtil.encrypt(param, domainConfig.getMerchantPriKey(), domainConfig.getAesKey());
             String requestJSON = JSON.toJSONString(request);
             log.info("[post]requestJSONEncrypt:{}", requestJSON);
-            String res = OkHttpClientManager.postAsString(url, requestJSON, domainConfig.getMerchantId(), TIME_OUT);
+            String merchantId = domainConfig.getMerchantId();
+            log.info("[post]merchantId:{}", merchantId);
+            String res = OkHttpClientManager.postAsString(url, requestJSON,merchantId , TIME_OUT);
             if (StringUtils.isEmpty(res)) {
                 log.error("[post]response is null");
                 return RespData.fail(DappError.DAPP_COMMON_ERROR);
@@ -85,7 +87,9 @@ import static io.stacs.nav.drs.service.utils.HttpHelper.buildGetRequestParam;
                 }
             }
             log.info("[get]url:{}", url);
-            String res = OkHttpClientManager.getAsString(url, domainConfig.getMerchantId(), TIME_OUT);
+            String merchantId = domainConfig.getMerchantId();
+            log.info("[post]merchantId:{}", merchantId);
+            String res = OkHttpClientManager.getAsString(url, merchantId, TIME_OUT);
             if (StringUtils.isEmpty(res)) {
                 log.error("[get]response is null");
                 return RespData.fail(DappError.DAPP_COMMON_ERROR);

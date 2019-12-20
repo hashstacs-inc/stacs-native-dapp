@@ -117,6 +117,7 @@ public class OkHttpClientManager {
         if (mInstanceTimeout == null) {
             mInstanceTimeout = new OkHttpClientManager(timeoutMs,merchantId);
         }
+        mInstanceTimeout.merchantId = merchantId;
         return mInstanceTimeout;
     }
 
@@ -228,6 +229,7 @@ public class OkHttpClientManager {
             LOGGER.info(json + " is blank");
             return null;
         }
+        LOGGER.info("[buildJsonPostRequest]merchantId:" + merchantId);
         RequestBody body = RequestBody.create(JSON, json);
         Request request = new Request.Builder()
                 .url(url)
