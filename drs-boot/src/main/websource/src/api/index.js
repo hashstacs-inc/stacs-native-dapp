@@ -24,12 +24,14 @@ requestObj.interceptors.request.use(config => {
 requestObj.interceptors.response.use(response => {
   if (response.data.code === '000000' && (response.config.notify === notify.any || response.config.notify === notify.success)) {
     Vue.prototype.$notify.success({message: 'Operation Success'});
-  } else if ((response.data.code !== '2005' && response.data.code !== '000000') && (response.config.notify === notify.any || response.config.notify === notify.error)) {
+  } else if ((response.data.code !== '000000') && (response.config.notify === notify.any || response.config.notify === notify.error)) {
+    Vue.prototype.$notify.error({message: response.data.msg});
+  } else if ((response.data.code !== '000000') && !response.config.notify) {
     Vue.prototype.$notify.error({message: response.data.msg});
   }
   return response;
 }, error => {
-  Vue.prototype.$notify.error({message: error});
+  Vue.prototype.$notify.error({ message: error });
 });
 
 // 拦截slient = true 不用写catch 否则需要自己处理catch 统一返回 response对象
