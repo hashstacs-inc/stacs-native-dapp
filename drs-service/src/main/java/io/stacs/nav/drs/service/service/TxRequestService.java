@@ -158,7 +158,7 @@ import static io.stacs.nav.drs.api.exception.DappException.newError;
         vo.setPermissionNames(Lists.newArrayList(permission));
         //permission check
         RespData<Boolean> res = blockChainHelper.post(CHECK_PERMISSION.getApi(), vo,
-            Boolean.class);// blockChainFacade.checkPermission(vo).orElseThrow(newError(DAPP_NETWORK_COMMON_ERROR));
+            Boolean.class);
 
         //TODO:liuyu
         //        if (!res.isSuccessful() || !res.getData()) {
