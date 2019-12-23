@@ -2,7 +2,6 @@ package io.stacs.nav.drs.service.service;
 
 import com.alibaba.fastjson.JSON;
 import com.google.common.collect.Lists;
-import io.stacs.nav.drs.api.enums.ApiConstants;
 import io.stacs.nav.drs.api.exception.DappError;
 import io.stacs.nav.drs.api.exception.DappException;
 import io.stacs.nav.drs.api.model.BaseTxVO;
@@ -36,8 +35,6 @@ import static io.stacs.nav.drs.api.enums.ApiConstants.QueryApiEnum.CHECK_PERMISS
 import static io.stacs.nav.drs.api.enums.ApiConstants.TransactionApiEnum.CONTRACT_INVOKER;
 import static io.stacs.nav.drs.api.enums.ApiConstants.TransactionApiEnum.CREATE_CONTRACT;
 import static io.stacs.nav.drs.api.exception.DappError.BD_NOT_FIND_ERROR;
-import static io.stacs.nav.drs.api.exception.DappError.DAPP_NETWORK_COMMON_ERROR;
-import static io.stacs.nav.drs.api.exception.DappException.newError;
 
 /**
  * @author liuyu
@@ -159,11 +156,9 @@ import static io.stacs.nav.drs.api.exception.DappException.newError;
         //permission check
         RespData<Boolean> res = blockChainHelper.post(CHECK_PERMISSION.getApi(), vo,
             Boolean.class);
-
-        //TODO:liuyu
-        //        if (!res.isSuccessful() || !res.getData()) {
-        //            log.warn("address:{} not has permission:{}", address, permission);
-        //            throw new DappException(DappError.NO_PERMISSION_ERROR);
-        //        }
+        if (!res.isSuccessful() || !res.getData()) {
+            log.warn("address:{} not has permission:{}", address, permission);
+            throw new DappException(DappError.NO_PERMISSION_ERROR);
+        }
     }
 }
