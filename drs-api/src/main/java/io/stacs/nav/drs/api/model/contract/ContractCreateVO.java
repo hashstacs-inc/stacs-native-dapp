@@ -56,6 +56,7 @@ import static io.stacs.nav.drs.api.enums.ApiConstants.TransactionApiEnum.CREATE_
                     + fromAddr
                     + contractAddress
                     + name
+                    + symbol
                     + extension
                     + getFunctionName();
     }
