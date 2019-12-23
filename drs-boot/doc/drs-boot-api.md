@@ -409,14 +409,42 @@
 }
 ```
 
- private Long blockHeight;
 
-    @Size(max = 64) private String txId;
 
-    @Size(max = 32) private String submitter;
+#### 根据私钥获取签名
+##### 接口地址：/bd/getSignature
+请求方式：POST
+##### 参数列表
 
-    @NotNull private Integer pageNum;
-    @NotNull private Integer pageSize;
+##### 返回值：
+| 属性               | 类型            | 最大长度 | 必填 | 说明                           |
+| ------------------| -------------   | -------- | ---- | -------------------------------- |
+| priKey            | `String`        | 64       | Y    | 私钥
+| signValue         | `String`        | 1024     | Y    | 待签名值
+
+###### 请求参数样例:
+```
+{
+"priKey":"xxx",
+"signValue":"xxxxSystemBD"
+}
+```
+##### 返回值：
+| 属性            | 类型            | 最大长度 | 必填 | 说明                           |
+| -------------  | -------------   | -------- | ---- | -------------------------------- |
+| code           | `int`           | 6        | Y    | 返回码 '000000'表示成功
+| msg            | `String`        | 64       | Y    | 消息信息
+| data           | `String`        |          | N    | 返回签名数据
+
+###### 返回参数样例:
+```
+{
+"data":"xxxxxxxxxxx"
+"code":"000000"
+"msg":"SUCCESS"
+}
+```
+
 
 #### 获取交易信息
 
