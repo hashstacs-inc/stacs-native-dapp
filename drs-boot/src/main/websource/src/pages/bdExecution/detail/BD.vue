@@ -79,7 +79,7 @@
         <el-form-item label="" class="sign-icon-box">
           <div class="sign-icon" @click="goSingLink">
             <img src="../../../assets/img/sign-icon.png" alt="logo">
-          </div>          
+          </div>
         </el-form-item>
         <div class="sign-tips">
           <img src="../../../assets/img/tips.png" alt="logo" class="tips-icon">
@@ -209,7 +209,9 @@ export default {
         txId: '',
         sign: '',
         submitterSign: ''
-      }
+      },
+      saveFunctionArr: ['IDENTITY_SETTING', 'BD_PUBLISH', 'PERMISSION_REGISTER', 'AUTHORIZE_PERMISSION', 'CANCEL_PERMISSION', 'REGISTER_POLICY', 
+      'MODIFY_POLICY', 'SYSTEM_PROPERTY', 'IDENTITY_BD_MANAGE', 'KYC_SETTING', 'SET_FEE_RULE', 'SAVE_ATTESTATION', 'BUILD_SNAPSHOT']
     }
   },
   computed: {
@@ -323,8 +325,21 @@ export default {
     changeBDName (code) {
       if (code === 'SystemBD') this.ruleForm.contractName = ''; this.contractParamData = {}; this.contractSubmit = {};
       let filterFunction = this.dbNameList.filter(v => v.code === code)[0].functions;
+      let tempArr = filterFunction;
+      if (code === 'SystemBD') {
+        // 过滤不需要的FunctionName
+        tempArr = filterFunction.filter(v => {
+          let data;
+          this.saveFunctionArr.forEach(va => {
+            if (v.name === va) {
+              data = v;
+            }
+          });
+          return data;
+        });
+      }
       // 把对应的functionName存入store，多组件需用
-      this.$store.commit('changeFunctionNameList', filterFunction);
+      this.$store.commit('changeFunctionNameList', tempArr);
       this.ruleForm.functionName = '';
     },
     // 获取Domain
@@ -343,8 +358,18 @@ export default {
       if (data.code === '000000' && data.data) {
         this.dbNameList = JSON.parse(JSON.stringify(data.data));
         // 默认第一个是系统BD
-        this.$store.commit('changeFunctionNameList', JSON.parse(JSON.stringify(data.data[0].functions)));
         this.ruleForm.bdCode = this.dbNameList[0].code;
+        // 过滤不需要的FunctionName
+        let tempArr = data.data[0].functions.filter(v => {
+          let data;
+          this.saveFunctionArr.forEach(va => {
+            if (v.name === va) {
+              data = v;
+            }
+          });
+          return data;
+        });
+        this.$store.commit('changeFunctionNameList', tempArr);
       }
       this.loading = false;
     }

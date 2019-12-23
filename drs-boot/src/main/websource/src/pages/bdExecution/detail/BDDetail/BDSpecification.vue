@@ -10,22 +10,38 @@
         <el-input v-model="ruleForm.code" placeholder="Please enter" :maxlength="32"></el-input>
       </el-form-item>
       <el-form-item label="BD Type" prop="bdType">
-        <el-select v-model="ruleForm.bdType" @change="changeBDType">
+        <el-select v-model="ruleForm.bdType">
           <el-option :label="v.name" :value="v.name" v-for="(v, k) in BDTypeList" :key="k"></el-option>
         </el-select>
       </el-form-item>
       <el-form-item label="Descision" prop="desc">
         <el-input v-model="ruleForm.desc" :maxlength="1024"></el-input>
       </el-form-item>
-      <el-form-item label="Init Permission" prop="initPermission" ref="initPermission">
+      <el-form-item label="Permission Name" prop="initPermission" ref="initPermission" class="permission-name">
         <el-select v-model="ruleForm.initPermission">
           <el-option :label="v.permissionName" :value="v.permissionName" v-for="(v, k) in initPermissionList" :key="k"></el-option>
         </el-select>
+        <el-popover
+          placement="top-start"
+          width="200"
+          popper-class="bd-create-tips"
+          trigger="hover"
+          content="The Permission name that is used to define the BD related contract.">
+          <div class="bd-tips" slot="reference">?</div>
+        </el-popover>
       </el-form-item>
-      <el-form-item label="Init Policy" prop="initPolicy" ref="initPolicy">
+      <el-form-item label="Policy ID" prop="initPolicy" ref="initPolicy" class="policy-id">
         <el-select v-model="ruleForm.initPolicy">
           <el-option :label="v.policyName" :value="v.policyId" v-for="(v, k) in initPolicyList" :key="k"></el-option>
         </el-select>
+        <el-popover
+          placement="top-start"
+          width="200"
+          popper-class="bd-create-tips"
+          trigger="hover"
+          content="The Policy ID that is used to define the BD related contract.">
+          <div class="bd-tips policy-tips" slot="reference">?</div>
+        </el-popover>
       </el-form-item>
       <el-form-item label="BD Version" prop="BDVersion">
         <el-input v-model="ruleForm.BDVersion" :maxlength="4"></el-input>
@@ -55,19 +71,35 @@
             :rules="{ required: true, message: 'This filed is required' }">
             <el-input v-model="v.methodSign" :maxlength="256" :disabled="v.type === 'SystemAction' || v.locking"></el-input>
           </el-form-item>
-          <el-form-item label="Init Permission" :prop="'functions.' + k + '.execPermission'"
+          <el-form-item label="Permission Name" :prop="'functions.' + k + '.execPermission'"
             :rules="{ required: true, message: 'This filed is required' }">
             <el-select v-model="v.execPermission" v-if="v.type === 'SystemAction' && !v.locking">
               <el-option :label="v.permissionName" :value="v.permissionIndex" v-for="(v, k) in initPermissionList" :key="k"></el-option>
             </el-select>
             <el-input v-model="v.execPermission" :maxlength="256" v-else :disabled="v.locking"></el-input>
+            <el-popover
+              placement="top-start"
+              width="200"
+              popper-class="bd-create-tips"
+              trigger="hover"
+              content="The Policy ID that is used when BD executes the function.">
+              <div class="bd-tips" slot="reference">?</div>
+            </el-popover>
           </el-form-item>
-          <el-form-item label="Exec Policy" :prop="'functions.' + k + '.execPolicy'"
+          <el-form-item label="Policy ID" :prop="'functions.' + k + '.execPolicy'"
             :rules="{ required: true, message: 'This filed is required' }">
             <el-select v-model="v.execPolicy" v-if="v.type === 'SystemAction' && !v.locking">
               <el-option :label="v.policyName" :value="v.policyId" v-for="(v, k) in initPolicyList" :key="k"></el-option>
             </el-select>
             <el-input v-model="v.execPolicy" :maxlength="256" v-else :disabled="v.locking"></el-input>
+            <el-popover
+              placement="top-start"
+              width="200"
+              popper-class="bd-create-tips"
+              trigger="hover"
+              content="The Policy ID that is used when BD executes the function.">
+              <div class="bd-tips policy-tips" slot="reference">?</div>
+            </el-popover>
           </el-form-item>
         </el-form>
         <p class="add-new-btn" @click="addNewFunction('newFunctionFrom')">
@@ -131,10 +163,10 @@ export default {
           { required: true, message: 'This filed is required', trigger: 'change' }
         ],
         initPermission: [
-          { required: false, message: 'This filed is required', trigger: 'change' }
+          { required: true, message: 'This filed is required', trigger: 'change' }
         ],
         initPolicy: [
-          { required: false, message: 'This filed is required', trigger: 'change' }
+          { required: true, message: 'This filed is required', trigger: 'change' }
         ],
         BDVersion: [
           { required: true, message: 'This filed is required', trigger: 'blur' }
@@ -218,17 +250,17 @@ export default {
         }
       });
     },
-    changeBDType (v) {
-      if (v !== 'System') {
-        this.rules.initPermission[0].required = true;
-        this.rules.initPolicy[0].required = true;
-      } else {
-        this.rules.initPermission[0].required = false;
-        this.rules.initPolicy[0].required = false;
-        this.$refs['initPermission'].clearValidate();
-        this.$refs['initPolicy'].clearValidate();
-      }
-    },
+    // changeBDType (v) {
+    //   if (v !== 'System') {
+    //     this.rules.initPermission[0].required = true;
+    //     this.rules.initPolicy[0].required = true;
+    //   } else {
+    //     this.rules.initPermission[0].required = false;
+    //     this.rules.initPolicy[0].required = false;
+    //     this.$refs['initPermission'].clearValidate();
+    //     this.$refs['initPolicy'].clearValidate();
+    //   }
+    // },
     async getPermission () {
       let data = await getPermissionList();
       this.initPermissionList = JSON.parse(JSON.stringify(data.data));
@@ -290,5 +322,28 @@ export default {
       }
     }
   }
+  .bd-tips {
+    position: absolute;
+    font-size: 12px;
+    color: #fff;
+    width: 16px;
+    height: 16px;
+    border-radius: 50%;
+    left: -22px;
+    top: 5px;
+    background-color: #9BA1A8;
+    text-align: center;
+    line-height: 16px;
+    cursor: pointer;
+  }
+  .policy-tips {
+    left: -70px;
+  }
+}
+</style>
+<style lang="scss">
+.bd-create-tips {
+  word-wrap: break-word;
+  word-break: break-word;
 }
 </style>
