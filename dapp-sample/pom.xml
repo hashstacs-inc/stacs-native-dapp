@@ -71,9 +71,9 @@
                     </execution>
                 </executions>
                 <configuration>
-                    <skip>true</skip>
+                    <skip>false</skip>
                     <!--need to set the web context-->
-                    <webContextPath>sample</webContextPath>
+                    <webContextPath>dapp-sample</webContextPath>
                 </configuration>
             </plugin>
         </plugins>

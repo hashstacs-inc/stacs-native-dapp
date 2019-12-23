@@ -3,6 +3,7 @@ package io.stacs.nav.drs.api.model.callback;
 import com.alibaba.fastjson.JSONObject;
 import lombok.Getter;
 import lombok.Setter;
+import lombok.ToString;
 
 /**
  * @author liuyu
@@ -11,6 +12,7 @@ import lombok.Setter;
  */
 @Getter
 @Setter
+@ToString(callSuper = true)
 public class ActionResult{
     /**
      * the action index

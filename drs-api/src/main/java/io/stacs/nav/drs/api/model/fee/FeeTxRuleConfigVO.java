@@ -3,6 +3,7 @@ package io.stacs.nav.drs.api.model.fee;
 import io.stacs.nav.drs.api.model.BaseTxVO;
 import lombok.Getter;
 import lombok.Setter;
+import lombok.ToString;
 import org.hibernate.validator.constraints.NotEmpty;
 
 import javax.validation.Valid;
@@ -15,7 +16,7 @@ import static io.stacs.nav.drs.api.enums.ApiConstants.TransactionApiEnum.SET_FEE
  * @author liuyu
  * @date 2019-09-05
  */
-@Getter @Setter public class FeeTxRuleConfigVO extends BaseTxVO {
+@Getter @Setter @ToString(callSuper = true) public class FeeTxRuleConfigVO extends BaseTxVO {
     /**
      * fee tx rules
      */

@@ -1,5 +1,6 @@
 package io.stacs.nav.drs.service.service;
 
+import io.stacs.nav.crypto.utils.IdGenerator;
 import io.stacs.nav.drs.api.exception.DappError;
 import io.stacs.nav.drs.api.exception.DappException;
 import io.stacs.nav.drs.api.model.BaseTxVO;
@@ -63,7 +64,7 @@ import static io.stacs.nav.drs.api.exception.DappException.newError;
         BaseTxVO o = JSONHelper.toJavaObject(bdvo.getParam(), (Class<BaseTxVO>)paramMap.get(funcName)).orElseThrow(
             newError(DAPP_COMMON_ERROR));
         if (StringUtils.isEmpty(o.getTxId())) {
-            o.setTxId(funcName + "-" + System.currentTimeMillis());
+            o.setTxId(IdGenerator.generate64TxId(funcName + "-" + System.currentTimeMillis()));
         }
         log.info("getBaseTxVo success {}", o);
         return o;

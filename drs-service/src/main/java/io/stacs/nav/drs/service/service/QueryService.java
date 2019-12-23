@@ -1,6 +1,7 @@
 package io.stacs.nav.drs.service.service;
 
 import com.alibaba.fastjson.JSONArray;
+import com.alibaba.fastjson.JSONObject;
 import com.alipay.sofa.ark.container.registry.PluginServiceProvider;
 import com.alipay.sofa.ark.spi.model.Plugin;
 import com.alipay.sofa.ark.spi.service.ArkInject;
@@ -69,6 +70,12 @@ import java.util.stream.Collectors;
         PageHelper.startPage(vo.getPageNum(), vo.getPageSize());
         io.stacs.nav.drs.api.model.PageInfo<TransactionVO> pageInfo = BeanConvertor.convertBean(
             PageInfo.of(txDao.queryTxWithCondition(vo)), io.stacs.nav.drs.api.model.PageInfo.class);
+        //handler functionNames
+        pageInfo.getList().forEach(item -> {
+            List<JSONObject> actionList = JSONArray.parseArray(item.getActionDatas(),JSONObject.class);
+            List<String> fns = actionList.stream().map(action -> action.getString("functionName")).collect(Collectors.toList());
+            item.setFunctionNames(fns);
+        });
         return pageInfo;
     }
 

@@ -1,23 +1,29 @@
 {
-  "code":"000000",
-  "mas":"SUCCESS",
-  "data":[
+  "code": "000000",
+  "mas": "SUCCESS",
+  "data": [
     {
-
-      "showName":"示例App",
-      "name":"dapp-sample",
-      "icon":"appstore/img/icon1.png",
-      "author":"test",
-      "remark":"this is a test app",
-      "downloadUrl":"http://cloud.myphoto.top/dapp-sample-1.0.0-SNAPSHOT-dapp.jar"
+      "showName": "Demo APP",
+      "name": "dapp-sample",
+      "icon": "appstore/img/icon1.png",
+      "author": "stacs",
+      "remark": "This is a demo app",
+      "downloadUrl": "https://stacs-dappstore.oss-cn-zhangjiakou.aliyuncs.com/dapp-sample-1.0.0-SNAPSHOT-dapp.jar"
     },
     {
-      "showName":"区块链浏览器",
-      "name":"native-explorer",
-      "icon":"appstore/img/icon2.png",
-      "author":"test",
-      "remark":"this is a brows app",
-      "downloadUrl":"http://cloud.myphoto.top/back-end-1.0.0-SNAPSHOT-dapp.jar"
+      "showName": "STACS Explorer",
+      "name": "native-explorer",
+      "icon": "appstore/img/icon2.png",
+      "author": "stacs",
+      "remark": "This is a explorer app",
+      "downloadUrl": "https://stacs-dappstore.oss-cn-zhangjiakou.aliyuncs.com/native-explorer-dapp.jar"
+    },{
+      "showName": "发行&转账",
+      "name": "dapp-transfer",
+      "icon": "appstore/img/transfer.jpg",
+      "author": "stacs",
+      "remark": "This is a transfer demo app",
+      "downloadUrl": "https://stacs-dappstore.oss-cn-zhangjiakou.aliyuncs.com/dapp-transfer-1.0.0-SNAPSHOT-dapp.jar"
     }
   ]
 }

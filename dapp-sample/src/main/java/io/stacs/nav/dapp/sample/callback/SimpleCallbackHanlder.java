@@ -11,7 +11,7 @@ import org.springframework.stereotype.Component;
  * @description
  * @date 2019-10-28
  */
-@Component @Slf4j public class CallbackProcessor implements ITxCallbackHandler {
+@Component @Slf4j public class SimpleCallbackHanlder implements ITxCallbackHandler {
 
     @Override public ActionTypeEnum supportType() {
         return ActionTypeEnum.REGISTER_POLICY;

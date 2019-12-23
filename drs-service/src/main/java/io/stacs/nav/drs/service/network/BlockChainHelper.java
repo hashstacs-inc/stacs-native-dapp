@@ -26,9 +26,10 @@ import static io.stacs.nav.drs.service.utils.HttpHelper.buildGetRequestParam;
  * @date 2019-12-19
  */
 @Component @Slf4j public class BlockChainHelper implements ConfigListener {
-    private final static long TIME_OUT = 60 * 1000;
+    private final static long TIME_OUT = 1 * 60 * 1000;
     @Autowired DrsConfig drsConfig;
     @Autowired DomainConfig domainConfig;
+
     /**
      * post request
      *
@@ -45,7 +46,9 @@ import static io.stacs.nav.drs.service.utils.HttpHelper.buildGetRequestParam;
                 CasCryptoUtil.encrypt(param, domainConfig.getMerchantPriKey(), domainConfig.getAesKey());
             String requestJSON = JSON.toJSONString(request);
             log.info("[post]requestJSONEncrypt:{}", requestJSON);
-            String res = OkHttpClientManager.postAsString(url, requestJSON, TIME_OUT);
+            String merchantId = domainConfig.getMerchantId();
+            log.info("[post]merchantId:{}", merchantId);
+            String res = OkHttpClientManager.postAsString(url, requestJSON,merchantId , TIME_OUT);
             if (StringUtils.isEmpty(res)) {
                 log.error("[post]response is null");
                 return RespData.fail(DappError.DAPP_COMMON_ERROR);
@@ -56,15 +59,23 @@ import static io.stacs.nav.drs.service.utils.HttpHelper.buildGetRequestParam;
             RespData respData = new RespData();
             respData.setCode(response.getRespCode());
             respData.setMsg(response.getMsg());
-            String dataJSON = JSON.toJSONString(response.getData());
-            log.info("[post]dataJSON:{}", dataJSON);
-            respData.setData(JSON.parseObject(dataJSON, clazz));
+            if(response.getData() != null) {
+                String dataJSON = JSON.toJSONString(response.getData());
+                log.info("[post]dataJSON:{}", dataJSON);
+                respData.setData(JSON.parseObject(dataJSON, clazz));
+            }
+            return respData;
         } catch (Exception e) {
             log.error("post has error", e);
         }
         return RespData.fail(DappError.DAPP_COMMON_ERROR);
     }
-
+public static void main(String[] args){
+        String a = "xxx";
+    String dataJSON = JSON.toJSONString(a);
+    log.info("[post]dataJSON:{}", dataJSON);
+    System.out.println(JSON.parseObject(dataJSON, Object.class));
+}
     /**
      * get request
      *
@@ -84,7 +95,9 @@ import static io.stacs.nav.drs.service.utils.HttpHelper.buildGetRequestParam;
                 }
             }
             log.info("[get]url:{}", url);
-            String res = OkHttpClientManager.getAsString(url, TIME_OUT);
+            String merchantId = domainConfig.getMerchantId();
+            log.info("[post]merchantId:{}", merchantId);
+            String res = OkHttpClientManager.getAsString(url, merchantId, TIME_OUT);
             if (StringUtils.isEmpty(res)) {
                 log.error("[get]response is null");
                 return RespData.fail(DappError.DAPP_COMMON_ERROR);

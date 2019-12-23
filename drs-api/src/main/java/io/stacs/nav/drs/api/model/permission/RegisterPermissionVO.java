@@ -4,6 +4,7 @@ package io.stacs.nav.drs.api.model.permission;
 import io.stacs.nav.drs.api.model.BaseTxVO;
 import lombok.Getter;
 import lombok.Setter;
+import lombok.ToString;
 import org.hibernate.validator.constraints.Length;
 import org.hibernate.validator.constraints.NotBlank;
 
@@ -13,7 +14,7 @@ import static io.stacs.nav.drs.api.enums.ApiConstants.TransactionApiEnum.PERMISS
  * @author ganxiang
  * @date 2019/10/16
  */
-@Setter @Getter public class RegisterPermissionVO extends BaseTxVO {
+@Setter @Getter @ToString(callSuper = true) public class RegisterPermissionVO extends BaseTxVO {
 
     @NotBlank @Length(max = 64) private String permissionName;
 
