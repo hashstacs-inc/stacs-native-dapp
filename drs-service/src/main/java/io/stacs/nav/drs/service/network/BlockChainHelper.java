@@ -59,15 +59,22 @@ import static io.stacs.nav.drs.service.utils.HttpHelper.buildGetRequestParam;
             RespData respData = new RespData();
             respData.setCode(response.getRespCode());
             respData.setMsg(response.getMsg());
-            String dataJSON = JSON.toJSONString(response.getData());
-            log.info("[post]dataJSON:{}", dataJSON);
-            respData.setData(JSON.parseObject(dataJSON, clazz));
+            if(response.getData() != null) {
+                String dataJSON = JSON.toJSONString(response.getData());
+                log.info("[post]dataJSON:{}", dataJSON);
+                respData.setData(JSON.parseObject(dataJSON, clazz));
+            }
         } catch (Exception e) {
             log.error("post has error", e);
         }
         return RespData.fail(DappError.DAPP_COMMON_ERROR);
     }
-
+public static void main(String[] args){
+        String a = "xxx";
+    String dataJSON = JSON.toJSONString(a);
+    log.info("[post]dataJSON:{}", dataJSON);
+    System.out.println(JSON.parseObject(dataJSON, Object.class));
+}
     /**
      * get request
      *
