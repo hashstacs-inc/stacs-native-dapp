@@ -26,7 +26,7 @@ import static io.stacs.nav.drs.service.utils.HttpHelper.buildGetRequestParam;
  * @date 2019-12-19
  */
 @Component @Slf4j public class BlockChainHelper implements ConfigListener {
-    private final static long TIME_OUT = 60 * 1000;
+    private final static long TIME_OUT = 2 * 60 * 1000;
     @Autowired DrsConfig drsConfig;
     @Autowired DomainConfig domainConfig;
 
