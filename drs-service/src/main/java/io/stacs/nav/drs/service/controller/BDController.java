@@ -7,6 +7,7 @@ import io.stacs.nav.drs.api.model.RespData;
 import io.stacs.nav.drs.service.service.BDService;
 import io.stacs.nav.drs.service.vo.BDVO;
 import io.stacs.nav.drs.service.vo.GenSignVO;
+import io.stacs.nav.drs.service.vo.GetSignVO;
 import io.stacs.nav.drs.service.vo.SignVO;
 import lombok.extern.slf4j.Slf4j;
 import org.spongycastle.util.encoders.Hex;
@@ -34,6 +35,20 @@ import org.springframework.web.bind.annotation.RestController;
             return RespData.fail(e);
         } catch (Throwable e) {
             log.error("[sign]has unknown error", e);
+            return RespData.fail(DappError.DAPP_COMMON_ERROR);
+        }
+    }
+
+    @PostMapping("/getSignature") public RespData getSignature(@RequestBody GetSignVO vo) {
+        log.info("[getSignature]vo:{}",vo);
+        try {
+            String s = StacsECKey.fromPrivate(Hex.decode(vo.getPriKey())).signMessage(vo.getSignValue());
+            return RespData.success(s);
+        } catch (DappException e) {
+            log.error("[getSignature]has dapp error", e);
+            return RespData.fail(e);
+        } catch (Throwable e) {
+            log.error("[getSignature]has unknown error", e);
             return RespData.fail(DappError.DAPP_COMMON_ERROR);
         }
     }
