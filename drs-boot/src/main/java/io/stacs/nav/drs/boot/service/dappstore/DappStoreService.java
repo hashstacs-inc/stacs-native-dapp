@@ -1,6 +1,7 @@
 package io.stacs.nav.drs.boot.service.dappstore;
 
 import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONObject;
 import com.alipay.sofa.common.utils.StringUtil;
 import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilder;
@@ -74,7 +75,8 @@ import java.util.function.Predicate;
                 File f = new File(storePath);
                 String json = FileUtils.readFileToString(f,"utf-8");
                 log.info("json of file:{}",json);
-                list = JSON.parseArray(json, AppProfileVO.class);
+                JSONObject jsonObject = JSONObject.parseObject(json);
+                list = JSON.parseArray(jsonObject.getJSONArray("data").toJSONString(), AppProfileVO.class);
             }
         }
         if (CollectionUtils.isEmpty(list)) {
