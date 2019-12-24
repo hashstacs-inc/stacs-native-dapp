@@ -13,10 +13,12 @@ import io.stacs.nav.drs.service.utils.BeanConvertor;
 import io.stacs.nav.drs.service.utils.config.ConfigListener;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections4.CollectionUtils;
+import org.apache.commons.io.FileUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Nonnull;
+import java.io.File;
 import java.io.IOException;
 import java.util.List;
 import java.util.Optional;
@@ -62,10 +64,18 @@ import java.util.function.Predicate;
         }
         List<AppProfileVO> list = null;
         if (!StringUtil.isEmpty(storePath)) {
-            Optional<String> optional = blockChainFacade.sendGet(storePath,
-                resp -> resp.isSuccessful() ? Optional.of(String.valueOf(resp.getData())) : Optional.empty());
-            String json = optional.orElse(null);
-            list = JSON.parseArray(json, AppProfileVO.class);
+            if(storePath.contains("http")) {
+                Optional<String> optional = blockChainFacade.sendGet(storePath,
+                    resp -> resp.isSuccessful() ? Optional.of(String.valueOf(resp.getData())) : Optional.empty());
+                String json = optional.orElse(null);
+                list = JSON.parseArray(json, AppProfileVO.class);
+            }else{
+                //from file
+                File f = new File(storePath);
+                String json = FileUtils.readFileToString(f,"utf-8");
+                log.info("json of file:{}",json);
+                list = JSON.parseArray(json, AppProfileVO.class);
+            }
         }
         if (CollectionUtils.isEmpty(list)) {
             log.warn("[queryApps]list is empty");
