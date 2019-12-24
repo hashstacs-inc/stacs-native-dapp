@@ -22,7 +22,10 @@ import static io.stacs.nav.drs.api.enums.ApiConstants.TransactionApiEnum.IDENTIT
      * user customer property json
      */
     @Length(max = 1024) private String property;
-
+    /**
+     * 1:hidden,0:show
+     */
+    private int hidden;
     /**
      * address of identity
      */
