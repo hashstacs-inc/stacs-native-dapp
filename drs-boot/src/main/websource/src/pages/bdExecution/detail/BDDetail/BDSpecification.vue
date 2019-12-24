@@ -82,7 +82,7 @@
               width="200"
               popper-class="bd-create-tips"
               trigger="hover"
-              content="The Policy ID that is used when BD executes the function.">
+              content="The Permission name that is used when BD executes the function.">
               <div class="bd-tips" slot="reference">?</div>
             </el-popover>
           </el-form-item>
