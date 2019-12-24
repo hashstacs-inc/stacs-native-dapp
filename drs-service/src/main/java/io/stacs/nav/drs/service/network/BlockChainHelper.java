@@ -2,6 +2,7 @@ package io.stacs.nav.drs.service.network;
 
 import com.alibaba.fastjson.JSON;
 import io.stacs.nav.drs.api.exception.DappError;
+import io.stacs.nav.drs.api.exception.DappException;
 import io.stacs.nav.drs.api.model.RespData;
 import io.stacs.nav.drs.api.utils.OkHttpClientManager;
 import io.stacs.nav.drs.service.config.DomainConfig;
@@ -48,7 +49,7 @@ import static io.stacs.nav.drs.service.utils.HttpHelper.buildGetRequestParam;
             log.info("[post]requestJSONEncrypt:{}", requestJSON);
             String merchantId = domainConfig.getMerchantId();
             log.info("[post]merchantId:{}", merchantId);
-            String res = OkHttpClientManager.postAsString(url, requestJSON,merchantId , TIME_OUT);
+            String res = OkHttpClientManager.postAsString(url, requestJSON, merchantId, TIME_OUT);
             if (StringUtils.isEmpty(res)) {
                 log.error("[post]response is null");
                 return RespData.fail(DappError.DAPP_COMMON_ERROR);
@@ -59,7 +60,7 @@ import static io.stacs.nav.drs.service.utils.HttpHelper.buildGetRequestParam;
             RespData respData = new RespData();
             respData.setCode(response.getRespCode());
             respData.setMsg(response.getMsg());
-            if(response.getData() != null) {
+            if (response.getData() != null) {
                 String dataJSON = JSON.toJSONString(response.getData());
                 log.info("[post]dataJSON:{}", dataJSON);
                 respData.setData(JSON.parseObject(dataJSON, clazz));
@@ -67,15 +68,17 @@ import static io.stacs.nav.drs.service.utils.HttpHelper.buildGetRequestParam;
             return respData;
         } catch (Exception e) {
             log.error("post has error", e);
+            throw new DappException(DappError.DAPP_NETWORK_COMMON_ERROR);
         }
-        return RespData.fail(DappError.DAPP_COMMON_ERROR);
     }
-public static void main(String[] args){
+
+    public static void main(String[] args) {
         String a = "xxx";
-    String dataJSON = JSON.toJSONString(a);
-    log.info("[post]dataJSON:{}", dataJSON);
-    System.out.println(JSON.parseObject(dataJSON, Object.class));
-}
+        String dataJSON = JSON.toJSONString(a);
+        log.info("[post]dataJSON:{}", dataJSON);
+        System.out.println(JSON.parseObject(dataJSON, Object.class));
+    }
+
     /**
      * get request
      *
