@@ -2,7 +2,7 @@ package io.stacs.nav.drs.service.scheduler;
 
 import com.alibaba.fastjson.JSONObject;
 import io.stacs.nav.drs.service.config.DomainConfig;
-import io.stacs.nav.drs.service.network.BlockChainFacade;
+import io.stacs.nav.drs.service.network.BlockChainHelper;
 import io.stacs.nav.drs.service.utils.config.ConfigListener;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,7 +20,7 @@ import java.util.function.Predicate;
     private static final long REGISTER_RATE = 1 * 60 * 1_000;
     private String callbackUrl;
 
-    @Autowired private BlockChainFacade facade;
+    @Autowired private BlockChainHelper blockChainHelper;
 
     @Scheduled(fixedRate = REGISTER_RATE) public void exe() {
         register();
@@ -35,11 +35,11 @@ import java.util.function.Predicate;
         return obj -> obj instanceof DomainConfig;
     }
 
-    public void register(){
+    public void register() {
         try {
             JSONObject message = new JSONObject();
             message.put("callbackUrl", callbackUrl);
-            facade.send("callback/register", message);
+            blockChainHelper.post("callback/register", message, Object.class);
             log.info("register callback is end callbackUrl:{}", callbackUrl);
         } catch (Exception e) {
             log.error("register callback url has error", e);
