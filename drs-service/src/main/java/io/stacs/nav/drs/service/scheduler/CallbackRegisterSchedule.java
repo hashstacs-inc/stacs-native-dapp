@@ -23,6 +23,20 @@ import java.util.function.Predicate;
     @Autowired private BlockChainFacade facade;
 
     @Scheduled(fixedRate = REGISTER_RATE) public void exe() {
+        register();
+    }
+
+    @Override public <T> void updateNotify(T config) {
+        this.callbackUrl = ((DomainConfig)config).getCallbackUrl();
+        register();
+
+    }
+
+    @Nonnull @Override public Predicate<Object> filter() {
+        return obj -> obj instanceof DomainConfig;
+    }
+
+    public void register(){
         try {
             JSONObject message = new JSONObject();
             message.put("callbackUrl", callbackUrl);
@@ -31,13 +45,5 @@ import java.util.function.Predicate;
         } catch (Exception e) {
             log.error("register callback url has error", e);
         }
-    }
-
-    @Override public <T> void updateNotify(T config) {
-        this.callbackUrl = ((DomainConfig)config).getCallbackUrl();
-    }
-
-    @Nonnull @Override public Predicate<Object> filter() {
-        return obj -> obj instanceof DomainConfig;
     }
 }
