@@ -10,7 +10,6 @@ import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.Nonnull;
-import java.io.IOException;
 import java.util.function.Predicate;
 
 /**
@@ -28,8 +27,9 @@ import java.util.function.Predicate;
             JSONObject message = new JSONObject();
             message.put("callbackUrl", callbackUrl);
             facade.send("callback/register", message);
-        } catch (IOException e) {
-            e.printStackTrace();
+            log.info("register callback is end callbackUrl:{}", callbackUrl);
+        } catch (Exception e) {
+            log.error("register callback url has error", e);
         }
     }
 
