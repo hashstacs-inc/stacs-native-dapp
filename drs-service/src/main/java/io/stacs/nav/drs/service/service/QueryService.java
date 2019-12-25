@@ -61,7 +61,9 @@ import static io.stacs.nav.drs.service.utils.AmountUtil.transContractAmount2RSAm
     }
 
     @Override public TransactionVO queryTxById(QueryTxVO vo) {
-        return txDao.queryByTxId(vo.getTxId());
+        TransactionVO po = txDao.queryByTxId(vo.getTxId());
+        convertFunctionNames(po);
+        return po;
     }
 
     @Override public BlockVO queryTxByHeight(Long height) {
@@ -78,13 +80,15 @@ import static io.stacs.nav.drs.service.utils.AmountUtil.transContractAmount2RSAm
             PageInfo.of(txDao.queryTxWithCondition(vo)), io.stacs.nav.drs.api.model.PageInfo.class);
         //handler functionNames
         pageInfo.getList().forEach(item -> {
-            List<JSONObject> actionList = JSONArray.parseArray(item.getActionDatas(),JSONObject.class);
-            List<String> fns = actionList.stream().map(action -> action.getString("functionName")).collect(Collectors.toList());
-            item.setFunctionNames(fns);
+            convertFunctionNames(item);
         });
         return pageInfo;
     }
-
+    private void convertFunctionNames(TransactionVO po){
+        List<JSONObject> actionList = JSONArray.parseArray(po.getActionDatas(),JSONObject.class);
+        List<String> fns = actionList.stream().map(action -> action.getString("functionName")).collect(Collectors.toList());
+        po.setFunctionNames(fns);
+    }
     @Override public io.stacs.nav.drs.api.model.PageInfo<BlockVO> queryBlocks(QueryBlockVO vo) {
         PageHelper.startPage(vo.getPageNum(), vo.getPageSize());
         io.stacs.nav.drs.api.model.PageInfo<BlockVO> pageInfo = BeanConvertor.convertBean(
