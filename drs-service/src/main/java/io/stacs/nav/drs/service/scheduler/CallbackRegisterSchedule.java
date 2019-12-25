@@ -17,7 +17,7 @@ import java.util.function.Predicate;
  * @date 2019-11-12 <br>
  */
 @Component @Slf4j public class CallbackRegisterSchedule implements ConfigListener {
-    private static final long REGISTER_RATE = 5 * 60 * 1_000;
+    private static final long REGISTER_RATE = 1 * 60 * 1_000;
     private String callbackUrl;
 
     @Autowired private BlockChainFacade facade;
@@ -29,7 +29,6 @@ import java.util.function.Predicate;
     @Override public <T> void updateNotify(T config) {
         this.callbackUrl = ((DomainConfig)config).getCallbackUrl();
         register();
-
     }
 
     @Nonnull @Override public Predicate<Object> filter() {
