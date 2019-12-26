@@ -49,7 +49,11 @@ import org.springframework.stereotype.Service;
         BlockCallbackBO bo = new BlockCallbackBO();
         BeanUtils.copyProperties(po, bo);
         bo.setStatus(CallbackStatus.INIT);
-        blockCallbackService.processCallbackBlock(bo);
-        runtimeData.setNextHeight(nextHeight + 1);
+        try {
+            blockCallbackService.processCallbackBlock(bo);
+            runtimeData.setNextHeight(nextHeight + 1);
+        } catch (Throwable e) {
+            log.error("process callback has error", e);
+        }
     }
 }

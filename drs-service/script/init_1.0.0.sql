@@ -44,7 +44,7 @@ IF NOT EXISTS `block` (
 	`ca_root_hash` VARCHAR (64) NOT NULL COMMENT 'ca merkel tree root hash',
 	`state_root_hash` VARCHAR (64)  COMMENT 'state root hash',
 	`block_time` datetime (3) NOT NULL COMMENT 'block time',
-	`tx_num` INT NOT NULL DEFAULT 0 COMMENT 'transaction num',
+	`tx_num` INT(8) DEFAULT 0 COMMENT 'transaction num',
 	`total_tx_num` BIGINT (20) DEFAULT 0 COMMENT 'total transaction num',
 	`total_block_size` DECIMAL(8,2) DEFAULT NULL COMMENT 'total block size,unit:kb',
 	PRIMARY KEY (`id`),
