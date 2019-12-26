@@ -35,7 +35,7 @@
       title="System"
       :visible.sync="configVisible"
       width="520px">
-      <p>Do you want to use the default etup?</p>
+      <p>Do you want to use the default setup?</p>
       <p slot="footer" class="dialog-footer">
         <el-button type="primary" @click="configConfirm">YES</el-button>
         <el-button @click="configCancel">NO</el-button>
