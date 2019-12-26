@@ -69,6 +69,10 @@ import org.springframework.web.bind.annotation.RestController;
 
     @PostMapping("/submit") public RespData submit(@RequestBody BDVO bdvo) {
         try {
+            SignVO sign = bdService.getSignValue(bdvo);
+            String s = StacsECKey.fromPrivate(Hex.decode(bdvo.getPrivateKey())).signMessage(sign.getSign());
+            bdvo.getParam().put("txId",sign.getTxId());
+            bdvo.getParam().put("submitterSign",s);
             bdService.submit(bdvo);
             return RespData.success();
         } catch (DappException e) {
