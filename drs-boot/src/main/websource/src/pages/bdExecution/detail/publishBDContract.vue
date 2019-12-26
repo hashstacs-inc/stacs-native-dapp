@@ -43,17 +43,17 @@
       width="600px">
       <el-form ref="contractFrom" :model="signData"
         label-width="150px" class="general-form" label-position="left">
-        <el-form-item label="Signature Data" prop="signatureData" class="sign-item">
+        <!-- <el-form-item label="Signature Data" prop="signatureData" class="sign-item">
           <el-input v-model="signData.sign" placeholder="Please enter signature value" :disabled="true"></el-input>
           <div class="copy-sign" v-clipboard:copy="signData.sign" v-clipboard:success="onCopySign">
             <img src="../../../assets/img/copy.png" alt="logo">
           </div>
-        </el-form-item>
-        <el-form-item label="Signature value" prop="submitterSign"
+        </el-form-item> -->
+        <el-form-item label="Private Key" prop="privateKey"
           :rules="{ required: true, message: 'This filed is required', trigger: 'blur' }">
-          <el-input v-model="signData.submitterSign" placeholder="Please enter signature value"></el-input>
+          <el-input v-model="signData.privateKey" placeholder="Please enter your private key" type="textarea" :rows="3"></el-input>
         </el-form-item>
-        <el-form-item label="" class="sign-icon-box">
+        <!-- <el-form-item label="" class="sign-icon-box">
           <div class="sign-icon" @click="goSingLink">
             <img src="../../../assets/img/sign-icon.png" alt="logo">
           </div>          
@@ -62,7 +62,7 @@
           <img src="../../../assets/img/tips.png" alt="logo" class="tips-icon">
           <p class="sign-title">Note</p>
           <p class="sign-doc">For the security of your wallet, copy the value of Signature Data to sign other wallets, and then fill the returned signature value into the Signature Value box to complete the signature.</p>
-        </div>
+        </div> -->
       </el-form>
       <p slot="footer" class="dialog-footer">
         <el-button type="primary" @click="confirmSign">Confirm</el-button>
@@ -72,7 +72,7 @@
   </div>
 </template>
 <script>
-import { submitBDConfig, getSignValue } from '@/api/storeApi';
+import { submitBDConfig } from '@/api/storeApi';
 import { notify } from '@/common/util';
 import { Loading } from 'element-ui';
 
@@ -122,9 +122,9 @@ export default {
       signVisible: false,
       // 签名数据
       signData: {
-        txId: '',
-        sign: '',
-        submitterSign: ''
+        // txId: '',
+        // sign: '',
+        privateKey: ''
       }
     }
   },
@@ -140,10 +140,10 @@ export default {
     },
     // 提交签名内容
     confirmSign () {
-      this.$refs['contractFrom'].validateField('submitterSign', error => {
+      this.$refs['contractFrom'].validateField('privateKey', error => {
         if (!error) {
           // 提交表单内容
-          this.submitContract(false);
+          this.submitContract(false, true);
         }
       });
     },
@@ -191,19 +191,21 @@ export default {
         reqData.data.param = Object.assign(reqData.data.param, subData);
         if (flag) {
           // 获取签名
-          this.loading = true;
-          let sign = await getSignValue(reqData);
-          if (sign.code === '000000') {
-            this.signData = JSON.parse(JSON.stringify(sign.data));
-            this.signVisible = true;
-          }
-          this.loading = false;
+          // this.loading = true;
+          // let sign = await getSignValue(reqData);
+          // if (sign.code === '000000') {
+          //   this.signData = JSON.parse(JSON.stringify(sign.data));
+          this.signVisible = true;
+          // }
+          // this.loading = false;
         } else {
           let loadingInstance = Loading.service();
           // 合并签名数据
-          reqData.data.param = Object.assign(reqData.data.param, this.signData);
-          reqData.data.param.txId = this.signData.txId;
-          reqData.data.param.submitterSign = this.signData.submitterSign;
+          // reqData.data.param = Object.assign(reqData.data.param, this.signData);
+          // reqData.data.param.txId = this.signData.txId;
+          // reqData.data.param.privateKey = this.signData.privateKey;
+
+          reqData.data = Object.assign(reqData.data, this.signData)
           reqData.notify = notify.any;
           // 提交
           let subResult = await submitBDConfig(reqData);
