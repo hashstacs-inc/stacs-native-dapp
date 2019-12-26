@@ -66,17 +66,17 @@
       width="600px">
       <el-form ref="contractFrom" :model="signData"
         label-width="150px" class="general-form" label-position="left">
-        <el-form-item label="Signature Data" prop="signatureData" class="sign-item">
+        <!-- <el-form-item label="Signature Data" prop="signatureData" class="sign-item">
           <el-input v-model="signData.sign" placeholder="Please enter signature value" :disabled="true"></el-input>
           <div class="copy-sign" v-clipboard:copy="signData.sign" v-clipboard:success="onCopySign">
             <img src="../../../assets/img/copy.png" alt="logo">
           </div>
-        </el-form-item>
-        <el-form-item label="Signature value" prop="submitterSign"
+        </el-form-item> -->
+        <el-form-item label="Private Key" prop="privateKey"
           :rules="{ required: true, message: 'This filed is required', trigger: 'blur' }">
-          <el-input v-model="signData.submitterSign" placeholder="Please enter signature value"></el-input>
+          <el-input v-model="signData.privateKey" placeholder="Please enter your private key" type="textarea" :rows="3"></el-input>
         </el-form-item>
-        <el-form-item label="" class="sign-icon-box">
+        <!-- <el-form-item label="" class="sign-icon-box">
           <div class="sign-icon" @click="goSingLink">
             <img src="../../../assets/img/sign-icon.png" alt="logo">
           </div>
@@ -85,18 +85,18 @@
           <img src="../../../assets/img/tips.png" alt="logo" class="tips-icon">
           <p class="sign-title">Note</p>
           <p class="sign-doc">For the security of your wallet, copy the value of Signature Data to sign other wallets, and then fill the returned signature value into the Signature Value box to complete the signature.</p>
-        </div>
+        </div> -->
       </el-form>
       <p slot="footer" class="dialog-footer">
-        <el-button type="primary" @click="confirmSign">Confirm</el-button>
         <el-button @click="signVisible = false">Return</el-button>
+        <el-button type="primary" @click="confirmSign">Confirm</el-button>
       </p>
     </el-dialog>
   </div>
 </template>
 <script>
 import { BDOptionInfo, getDomainList, submitBDConfig, 
-  getContractList, getContractParam, getSignValue } from '@/api/storeApi';
+  getContractList, getContractParam } from '@/api/storeApi';
 import RegisterPolicy from './BDDetail/RegisterPolicy';
 import ModifyPolicy from './BDDetail/ModifyPolicy';
 import IdentitySetting from './BDDetail/IdentitySetting';
@@ -206,9 +206,9 @@ export default {
       signVisible: false,
       // 签名参数
       signData: {
-        txId: '',
-        sign: '',
-        submitterSign: ''
+        // txId: '',
+        // sign: '',
+        privateKey: ''
       },
       saveFunctionArr: ['IDENTITY_SETTING', 'BD_PUBLISH', 'PERMISSION_REGISTER', 'AUTHORIZE_PERMISSION', 'CANCEL_PERMISSION', 'REGISTER_POLICY', 
       'MODIFY_POLICY', 'SYSTEM_PROPERTY', 'IDENTITY_BD_MANAGE', 'KYC_SETTING', 'SET_FEE_RULE', 'SAVE_ATTESTATION', 'BUILD_SNAPSHOT']
@@ -236,7 +236,7 @@ export default {
     // 提交签名内容
     confirmSign () {
       // 效验表单
-      this.$refs['contractFrom'].validateField('submitterSign', error => {
+      this.$refs['contractFrom'].validateField('privateKey', error => {
         if (!error) {
           // 提交BD
           this.validateBD(false);
@@ -285,18 +285,20 @@ export default {
         }
         if (showDialog) {
           // 获取签名值
-          let sign = await getSignValue(params);
-          if (sign.code === '000000') {
-            this.signData = JSON.parse(JSON.stringify(sign.data));
-            // 打开签名dialog
-            this.signVisible = true;
-          }
+          // let sign = await getSignValue(params);
+          // if (sign.code === '000000') {
+          //   this.signData = JSON.parse(JSON.stringify(sign.data));
+          // 打开签名dialog
+          this.signVisible = true;
+          // }
         } else {
           let loadingInstance = Loading.service();
           // 合并签名字段
-          params.data.param = Object.assign(submitData, this.signData);
-          submitData.submitterSign = this.signData.submitterSign;
-          submitData.txId = this.signData.txId;
+          // params.data.param = Object.assign(submitData, this.signData);
+          // submitData.privateKey = this.signData.privateKey;
+          // submitData.txId = this.signData.txId;
+
+          params.data = Object.assign(params.data, this.signData);
           params.notify = notify.any;
           // 提交BD内容
           let subResult = await submitBDConfig(params);
