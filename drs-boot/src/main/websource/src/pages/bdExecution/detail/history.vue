@@ -150,24 +150,7 @@ export default {
         }
       ],
       // 表格数据
-      tableData: [
-        // {
-        //   txId: 'txId',
-        //   bdName: 'bdName',
-        //   bdType: 'bdType',
-        //   actionDatas: [
-        //     {
-        //       functionName: 'BD_PUBLISH',
-        //       name: 'bdname',
-        //       bdCode: 'bdCode'
-        //     }
-        //   ],
-        //   submitter: 'submitter',
-        //   blockTime: 1576495103615,
-        //   executeResult: 0,
-        //   errorMessage: 'errorMessage'
-        // }
-      ],
+      tableData: [],
       loading: false,
       // 通用数据
       params: {

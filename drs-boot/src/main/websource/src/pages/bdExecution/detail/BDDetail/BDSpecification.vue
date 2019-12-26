@@ -157,7 +157,8 @@ export default {
         ],
         code: [
           { required: true, message: 'This filed is required', trigger: 'blur' },
-          { validator: BDCodeValidator, trigger: 'change' }
+          { validator: BDCodeValidator, trigger: 'change' },
+          { validator: BDCodeValidator, trigger: 'blur' }
         ],
         bdType: [
           { required: true, message: 'This filed is required', trigger: 'change' }
