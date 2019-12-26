@@ -20,10 +20,9 @@ import java.util.concurrent.ThreadPoolExecutor;
     @Autowired CallbackProcessor callbackProcessor;
 
     @Override public void handleEvent(ArkEvent event) {
-        log.info("received dapp event:{}", JSON.toJSONString(event));
         if (event instanceof DappEvent) {
             DappEvent dappEvent = (DappEvent)event;
-            log.info("process dapp event:{}", dappEvent);
+            log.info("process dapp event:{}", JSON.toJSONString(dappEvent));
             callbackThreadPool.execute(() -> callbackProcessor.process(dappEvent.getValue()));
         }
     }
