@@ -1,5 +1,6 @@
 package io.stacs.nav.dapp.core.event;
 
+import com.alibaba.fastjson.JSON;
 import com.alipay.sofa.ark.spi.event.ArkEvent;
 import com.alipay.sofa.ark.spi.service.event.EventHandler;
 import io.stacs.nav.dapp.core.callback.CallbackProcessor;
@@ -19,7 +20,7 @@ import java.util.concurrent.ThreadPoolExecutor;
     @Autowired CallbackProcessor callbackProcessor;
 
     @Override public void handleEvent(ArkEvent event) {
-        log.info("received dapp event:{}", event);
+        log.info("received dapp event:{}", JSON.toJSONString(event));
         if (event instanceof DappEvent) {
             DappEvent dappEvent = (DappEvent)event;
             log.info("process dapp event:{}", dappEvent);
