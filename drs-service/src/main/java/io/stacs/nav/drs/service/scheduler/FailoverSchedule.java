@@ -30,7 +30,7 @@ import static io.stacs.nav.drs.service.model.ConvertHelper.*;
     @Autowired BlockChainService blockChainService;
     @Autowired private DrsRuntimeData runtimeData;
 
-    @Scheduled(fixedDelayString = "${drs.schedule.failover:15000}") public void exe() {
+    @Scheduled(fixedDelayString = "${drs.schedule.failover:60000}") public void exe() {
         long nextHeight = runtimeData.getNextHeight();
         long chainMaxHeight = blockChainService.queryCurrentHeight();
         Long optCallbackHeight = txCallbackDao.initCallbackMinHeight();
