@@ -46,7 +46,7 @@
             :label="v.label"
             :width="v.width">
             <template slot-scope="scope">
-              <span>{{JSON.parse(scope.row[v.prop])[0].functionName}}</span>
+              <span>{{scope.row.functionNames[0]}}</span>
             </template>
           </el-table-column>
           <el-table-column
@@ -57,7 +57,7 @@
             :width="v.width">
             <template slot-scope="scope">
               <span class="action-btn" @click="goPublish(scope.row)" 
-                v-if="scope.row.executeResult == 0 && JSON.parse(scope.row.actionDatas)[0].functionName === 'BD_PUBLISH'">Publish</span>
+                v-if="scope.row.executeResult == 1 && JSON.parse(scope.row.actionDatas)[0].functionName === 'BD_PUBLISH'">Publish</span>
             </template>
           </el-table-column>
           <el-table-column
@@ -66,9 +66,9 @@
             :label="v.label"
             :width="v.width">
             <template slot-scope="scope">
-              <span>{{scope.row[v.prop] == 0 ? 'Success' : 'Fail'}}</span>
-              <el-tooltip class="item" effect="dark" :content="scope.row.errorMessage" placement="top-start"
-                v-if="scope.row[v.prop] == 1">
+              <span>{{scope.row[v.prop] == 1 ? 'Success' : 'Fail'}}</span>
+              <el-tooltip class="item" effect="dark" :content="scope.row.errorMessage" placement="top"
+                v-if="scope.row[v.prop] == 0">
                 <i class="el-icon-view status"></i>
               </el-tooltip>
             </template>
@@ -183,7 +183,7 @@ export default {
   },
   methods: {
     test (t) {
-      console.log(JSON.parse(t))
+      console.log(t)
     },
     // 格式化时间
     dateFormat (date) {
@@ -204,7 +204,7 @@ export default {
     },
     // 跳转初始化BD页面
     goPublish (row) {
-      this.$router.push({ name: 'PublishBDContract', query: { name: row.actionDatas[0].name, bdCode: row.actionDatas[0].bdCode } });
+      this.$router.push({ name: 'PublishBDContract', query: { name: JSON.parse(row.actionDatas)[0].name, bdCode: row.bdCode } });
     }
   }
 }
