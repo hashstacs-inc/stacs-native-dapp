@@ -30,8 +30,8 @@ import static io.stacs.nav.drs.service.model.ConvertHelper.block2CallbackBOConve
      */
     @PostMapping("/callback") public RespData callback(@RequestBody BlockVO vo) {
         log.info("received callback data:{}", JSON.toJSONString(vo));
-        BlockCallbackBO bo = block2CallbackBOConvert.apply(vo);
         try {
+            BlockCallbackBO bo = block2CallbackBOConvert.apply(vo);
             txCallbackService.receivedBlock(bo);
             return RespData.success();
         } catch (DappException e) {
