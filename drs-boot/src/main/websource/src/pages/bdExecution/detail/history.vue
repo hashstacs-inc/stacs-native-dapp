@@ -35,7 +35,9 @@
             :prop="v.prop"
             :label="v.label"
             :width="v.width">
-            <span>{{k + 1}}</span>
+            <template slot-scope="scope">
+              <span>{{scope.row[v.prop]}}</span>
+            </template>
           </el-table-column>
           <el-table-column
             :show-overflow-tooltip="true"
@@ -44,7 +46,7 @@
             :label="v.label"
             :width="v.width">
             <template slot-scope="scope">
-              <span>{{scope.row[v.prop][0].functionName}}</span>
+              <span>{{JSON.parse(scope.row[v.prop])[0].functionName}}</span>
             </template>
           </el-table-column>
           <el-table-column
@@ -55,7 +57,7 @@
             :width="v.width">
             <template slot-scope="scope">
               <span class="action-btn" @click="goPublish(scope.row)" 
-                v-if="scope.row.executeResult == 0 && scope.row.actionDatas[0].functionName === 'BD_PUBLISH'">Publish</span>
+                v-if="scope.row.executeResult == 0 && JSON.parse(scope.row.actionDatas)[0].functionName === 'BD_PUBLISH'">Publish</span>
             </template>
           </el-table-column>
           <el-table-column
@@ -180,6 +182,9 @@ export default {
     this.getTableList();
   },
   methods: {
+    test (t) {
+      console.log(JSON.parse(t))
+    },
     // 格式化时间
     dateFormat (date) {
       return moment(date).format('YYYY/MM/DD HH:mm')
@@ -187,9 +192,13 @@ export default {
     // 获取表格列表
     async getTableList () {
       this.loading = true;
-      let data = await getBDConfigHistory({ slient: true });
+      let data = await getBDConfigHistory({ slient: true, data: this.params });
       if (data.code === '000000') {
-        this.tableData = JSON.parse(JSON.stringify(data.data));
+        this.tableData = JSON.parse(JSON.stringify(data.data.list));
+        this.tableData.map((v, k) => {
+          v['sort'] = k + 1;
+          return v;
+        });
       }
       this.loading = false;
     },
