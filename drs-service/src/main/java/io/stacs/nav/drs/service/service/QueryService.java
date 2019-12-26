@@ -23,15 +23,20 @@ import io.stacs.nav.drs.service.dao.ContractDao;
 import io.stacs.nav.drs.service.dao.TransactionDao;
 import io.stacs.nav.drs.service.dao.po.BlockPO;
 import io.stacs.nav.drs.service.dao.po.BusinessDefinePO;
+import io.stacs.nav.drs.service.utils.AmountUtil;
 import io.stacs.nav.drs.service.utils.BeanConvertor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
+
+import static io.stacs.nav.drs.service.utils.AmountUtil.clearNoUseZeroForBigDecimal;
+import static io.stacs.nav.drs.service.utils.AmountUtil.transContractAmount2RSAmount;
 
 /**
  * @author suimi
@@ -44,18 +49,21 @@ import java.util.stream.Collectors;
     @ArkInject PluginManagerService pluginManagerService;
 
     @Autowired BlockChainService blockService;
-    @Autowired BlockDao blockDao;
-    @Autowired TransactionDao txDao;
-    @Autowired ContractDao contractDao;
+
+    @Autowired(required = false) BlockDao blockDao;
+    @Autowired(required = false) TransactionDao txDao;
+    @Autowired(required = false) ContractDao contractDao;
 
 
 
-    public Long queryCurrentHeight() {
+    @Override public Long queryCurrentHeight() {
         return Long.valueOf(blockService.queryCurrentHeight().toString());
     }
 
     @Override public TransactionVO queryTxById(QueryTxVO vo) {
-        return txDao.queryByTxId(vo.getTxId());
+        TransactionVO po = txDao.queryByTxId(vo.getTxId());
+        convertFunctionNames(po);
+        return po;
     }
 
     @Override public BlockVO queryTxByHeight(Long height) {
@@ -72,13 +80,15 @@ import java.util.stream.Collectors;
             PageInfo.of(txDao.queryTxWithCondition(vo)), io.stacs.nav.drs.api.model.PageInfo.class);
         //handler functionNames
         pageInfo.getList().forEach(item -> {
-            List<JSONObject> actionList = JSONArray.parseArray(item.getActionDatas(),JSONObject.class);
-            List<String> fns = actionList.stream().map(action -> action.getString("functionName")).collect(Collectors.toList());
-            item.setFunctionNames(fns);
+            convertFunctionNames(item);
         });
         return pageInfo;
     }
-
+    private void convertFunctionNames(TransactionVO po){
+        List<JSONObject> actionList = JSONArray.parseArray(po.getActionDatas(),JSONObject.class);
+        List<String> fns = actionList.stream().map(action -> action.getString("functionName")).collect(Collectors.toList());
+        po.setFunctionNames(fns);
+    }
     @Override public io.stacs.nav.drs.api.model.PageInfo<BlockVO> queryBlocks(QueryBlockVO vo) {
         PageHelper.startPage(vo.getPageNum(), vo.getPageSize());
         io.stacs.nav.drs.api.model.PageInfo<BlockVO> pageInfo = BeanConvertor.convertBean(
@@ -99,7 +109,11 @@ import java.util.stream.Collectors;
         if (vo.getHeight() != null && vo.getHeight() != 0L) {
             request.setBlockHeight(vo.getHeight());
         }
-        return Optional.ofNullable(blockService.queryContract(request).get(0)).map(Object::toString).orElse("0");
+        Object balance = blockService.queryContract(request).get(0);
+        return Optional.ofNullable(balance).map(b ->{
+            BigDecimal amount = clearNoUseZeroForBigDecimal(transContractAmount2RSAmount(b.toString(),AmountUtil.DEFAULT_DECIMALS)) ;
+            return amount.toPlainString();
+        }).orElse("0");
     }
 
     @Override public String queryContract(ContractQueryRequest vo) {

@@ -1,5 +1,6 @@
 package io.stacs.nav.drs.service.controller;
 
+import com.alibaba.fastjson.JSON;
 import io.stacs.nav.drs.api.exception.DappError;
 import io.stacs.nav.drs.api.exception.DappException;
 import io.stacs.nav.drs.api.model.RespData;
@@ -28,8 +29,9 @@ import static io.stacs.nav.drs.service.model.ConvertHelper.block2CallbackBOConve
      * @return
      */
     @PostMapping("/callback") public RespData callback(@RequestBody BlockVO vo) {
-        BlockCallbackBO bo = block2CallbackBOConvert.apply(vo);
+        log.info("received callback data:{}", JSON.toJSONString(vo));
         try {
+            BlockCallbackBO bo = block2CallbackBOConvert.apply(vo);
             txCallbackService.receivedBlock(bo);
             return RespData.success();
         } catch (DappException e) {
