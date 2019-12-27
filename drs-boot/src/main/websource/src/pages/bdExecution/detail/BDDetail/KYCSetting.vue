@@ -46,7 +46,7 @@ export default {
     }
   },
   methods: {
-    validateFrom () {
+    validateForm () {
       let params = {
         identityAddress: this.ruleForm.identityAddress,
         KYC: {}
@@ -73,7 +73,6 @@ export default {
           }
         }
       });
-      
       return validCode;
     },
     kycBtn (v, k, from) {

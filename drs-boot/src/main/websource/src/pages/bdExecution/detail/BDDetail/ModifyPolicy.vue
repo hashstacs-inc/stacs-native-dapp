@@ -29,23 +29,23 @@
         </el-select>
       </el-form-item>
       <el-form-item label="Decision Type" prop="decisionType">
-        <el-select v-model="ruleForm.decisionType">
+        <el-select v-model="ruleForm.decisionType" @change="changeDecision">
           <el-option :label="v.name" :value="v.id" v-for="(v, k) in decisionList" :key="k"></el-option>
         </el-select>
       </el-form-item>
-      <!-- 投票类型选择Assign Num时 -->
+      <!-- decisionType = Assign Num -->
       <template v-if="ruleForm.decisionType === 'ASSIGN_NUM'">
         <p class="title meta">Assig Meta</p>
-        <el-form-item label="Verify Num" prop="verifyNum">
-          <el-input v-model="ruleForm.verifyNum" placeholder="Please enter an integer"></el-input>
+        <el-form-item label="Verify Num" prop="assignMeta.verifyNum">
+          <el-input v-model="ruleForm.assignMeta.verifyNum" placeholder="Please enter an integer"></el-input>
         </el-form-item>
-        <el-form-item label="Must Domain IDs" prop="mustDomainIds">
-          <el-select v-model="ruleForm.mustDomainIds" placeholder="Please select from Domain IDs" multiple filterable>
+        <el-form-item label="Must Domain IDs" prop="assignMeta.mustDomainIds">
+          <el-select v-model="ruleForm.assignMeta.mustDomainIds" placeholder="Please select from Domain IDs" multiple filterable>
             <el-option :label="v" :value="v" v-for="(v, k) in ruleForm.domainIds" :key="k"></el-option>
           </el-select>
         </el-form-item>
-        <el-form-item label="Expression" prop="expression">
-          <el-input v-model="ruleForm.expression" placeholder="Please fill in the expression. Only support integer、 +、-、x 、/ . as (n+1)/2"></el-input>
+        <el-form-item label="Expression" prop="assignMeta.expression">
+          <el-input v-model="ruleForm.assignMeta.expression" placeholder="Please fill in the expression. Only support integer、 +、-、x 、/ . as (n+1)/2"></el-input>
         </el-form-item>
       </template>
       <el-form-item label="Require Auth IDs" prop="requireAuthIds">
@@ -82,9 +82,11 @@ export default {
         callbackType: '',
         decisionType: '',
         requireAuthIds: [],
-        verifyNum: '',
-        mustDomainIds: [],
-        expression: ''
+        assignMeta: {
+          verifyNum: '',
+          mustDomainIds: [],
+          expression: ''
+        }
       },
       policyList: [],
       domainList: [],
@@ -138,19 +140,26 @@ export default {
         requireAuthIds: [
           { required: true, message: 'This filed is required', trigger: 'change' }
         ],
-        verifyNum: [
+        'assignMeta.verifyNum': [
           { required: true, message: 'This filed is required', trigger: 'blur' }
         ],
-        mustDomainIds: [
+        'assignMeta.mustDomainIds': [
           { required: true, message: 'This filed is required', trigger: 'change' }
         ],
-        expression: [
+        'assignMeta.expression': [
           { validator: validatorExpression, trigger: 'blur' }
         ]
       }
     }
   },
   methods: {
+    changeDecision (name) {
+      if (name !== 'ASSIGN_NUM') {
+        this.ruleForm.assignMeta.verifyNum = '';
+        this.ruleForm.assignMeta.mustDomainIds = [];
+        this.ruleForm.assignMeta.expression = '';
+      }
+    },
     changePolicyId (id) {
       let filterArr = this.policyList.filter(v => v.policyId === id);
       this.ruleForm = Object.assign(this.ruleForm, filterArr[0]);
@@ -161,7 +170,7 @@ export default {
         this.ruleForm.mustDomainIds = [];
       }
     },
-    validateFrom () {
+    validateForm () {
       let validCode = {
         valid: false,
         ruleForm: this.ruleForm

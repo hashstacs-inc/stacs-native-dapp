@@ -25,7 +25,6 @@
       <img src="../../../assets/img/blank.png" alt="logo">
       <p>No Data</p>
     </div>
-    <!-- 默认配置弹窗 -->
     <el-dialog
       title="Tips"
       :visible.sync="configVisible"
@@ -60,7 +59,6 @@ export default {
     this.$store.commit('changeStoreMenu', this.$route.meta.menu);
   },
   methods: {
-    // 搜索列表
     searchList () {
       if (!this.searchApp) {
         this.appList = this.copyAppList;
@@ -74,7 +72,7 @@ export default {
         this.appList = filter;
       }
     },
-    // 返回对应状态
+    // return status
     returnStaus (str) {
       /* eslint-disable */
       switch (str) {
@@ -95,13 +93,13 @@ export default {
           break;
       }
     },
-    // 使用默认配置
+    // default configuration
     async configConfirm () {
       this.configVisible = false;
       this.loading = true;
-      // 使用默认配置，后初始化app
+      // Initialize after configuration
 
-      // 查询默认配置
+      // Query default configuration
       let getConfig = {
         name: this.currentItem.name,
         notify: notify.error,
@@ -109,7 +107,7 @@ export default {
       }
       let defaultConfig = await getDeappConfig(getConfig);
       if (defaultConfig.code === '000000') {
-        // 使用默认配置
+        // Use default configuration
         let params = {
           name: this.currentItem.name,
           notify: notify.any,
@@ -118,7 +116,7 @@ export default {
         }
         let postData = await postDeappConfig(params);
         if (postData.code === '000000') {
-          // 配置成功后，初始化deapp
+          // After successful configuration, initialize deapp
           let startParams = {
             name: this.currentItem.name,
             slient: true
@@ -140,12 +138,12 @@ export default {
       }
       this.loading = false;
     },
-    // 不使用默认配置 跳转页面
+    // Custom configuration jump
     configCancel () {
       this.$store.commit('changeStoreMenu', 3);
       this.$router.push({name: 'AppConfig', query: { name: this.currentItem.name }});
     },
-    // 下载app
+    // download
     async downloadApp (v) {
       let params = {
         params: {
@@ -158,14 +156,14 @@ export default {
       this.$set(v, 'loading', true);
       let data = await downloadApp(params);
       if (data.code === '000000') {
-        // 下载成功
+        // success
         this.$set(v, 'status', 'DOWNLOADED');
       } else {
         this.$set(v, 'errorText', data.msg);
       }
       this.$set(v, 'loading', false);
     },
-    // 安装app
+    // install app
     async installApp (v) {
       this.$set(v, 'loading', true);
       let params = {
@@ -185,20 +183,20 @@ export default {
     async handleClick (v) {
       this.$set(v, 'errorText', null);
       if (!v.status) {
-        // 未下载状态
+        // Status not downloaded
         this.downloadApp(v);
       } else if (v.status === 'DOWNLOADED') {
-        // 已下载状态
+        // Downloaded status
         this.configVisible = true;
         this.currentItem = v;
       } else if (v.status === 'INITIALIZED' || v.status === 'STOPPED') {
-        // 已配置,已初始化
+        // Configured, initialized
         this.installApp(v);
       } else if (v.status === 'RUNNING') {
         window.open(window.location.origin + '/' + v.name);
       }
     },
-    // 获取列表
+    // getList
     async getAppLists () {
       this.loading = true;
       let data = await getAppList({ slient: true });

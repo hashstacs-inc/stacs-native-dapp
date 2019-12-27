@@ -55,7 +55,7 @@ export default {
     }
   },
   methods: {
-    validateFrom () {
+    validateForm () {
       let validCode = {
         valid: false,
         ruleForm: this.ruleForm

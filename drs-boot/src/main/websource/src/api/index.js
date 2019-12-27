@@ -10,7 +10,7 @@ const requestObj = axios.create({
   }
 });
 
-// 请求拦截
+// Request interception
 requestObj.interceptors.request.use(config => {
   let lang = getLang();
   config.data = Object.assign({ lang }, config.data);
@@ -20,7 +20,7 @@ requestObj.interceptors.request.use(config => {
   return Promise.reject(error);
 });
 
-// 拦截notify: ANY(全部提示) SUCCESS(成功提示) ERROR(失败提示)
+// intercept notify: ANY(All hints) SUCCESS(Successful hints) ERROR(Failure prompt)
 requestObj.interceptors.response.use(response => {
   if (response.data.code === '000000' && (response.config.notify === notify.any || response.config.notify === notify.success)) {
     Vue.prototype.$notify.success({message: 'Operation Success'});
@@ -34,7 +34,7 @@ requestObj.interceptors.response.use(response => {
   Vue.prototype.$notify.error({ message: error });
 });
 
-// 拦截slient = true 不用写catch 否则需要自己处理catch 统一返回 response对象
+// intercept slient = true
 requestObj.interceptors.response.use(response => {
   if (response.data.code !== '000000' && !response.config.slient) {
     return Promise.reject(response);

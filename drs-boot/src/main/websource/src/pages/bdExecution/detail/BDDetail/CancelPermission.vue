@@ -50,7 +50,7 @@ export default {
       let data = await getPermissionList();
       this.permissionNameList = JSON.parse(JSON.stringify(data.data));
     },
-    validateFrom () {
+    validateForm () {
       let validCode = {
         valid: false,
         ruleForm: this.ruleForm

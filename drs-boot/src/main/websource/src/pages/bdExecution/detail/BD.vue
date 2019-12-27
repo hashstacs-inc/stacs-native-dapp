@@ -31,7 +31,7 @@
         </el-form-item>
       </el-form>
     </div>
-    <!-- 根据选择的functionName展示对应的表单组件 -->
+    <!-- Display according to the selected FunctioNname -->
     <div v-if="ruleForm.bdCode === 'SystemBD'">
       <RegisterPolicy v-if="ruleForm.functionName === 'REGISTER_POLICY'" ref="REGISTER_POLICY"/>
       <ModifyPolicy v-if="ruleForm.functionName === 'MODIFY_POLICY'" ref="MODIFY_POLICY"/>
@@ -46,7 +46,7 @@
       <SetFeeRule v-if="ruleForm.functionName === 'SET_FEE_RULE'" ref="SET_FEE_RULE"/>
       <IdentityBDManage v-if="ruleForm.functionName === 'IDENTITY_BD_MANAGE'" ref="IDENTITY_BD_MANAGE"/>
     </div>
-    <!-- 非系统BD展示 -->
+    <!-- No SystemBD Show -->
     <div v-else-if="Object.keys(contractSubmit).length > 0" class="general-information" style="margin-top:40px;">
       <p class="title">Special Information</p>
       <el-form ref="contractFrom" 
@@ -59,7 +59,7 @@
     <div class="submit-btn">
       <p @click="validateBD(true)">Submit</p>
     </div>
-    <!-- 签名弹窗 -->
+    <!-- sign -->
     <el-dialog
       title="System"
       :visible.sync="signVisible"
@@ -136,7 +136,7 @@ export default {
   },
   data () {
     return {
-      // 通用参数表单
+      // General parameter form
       ruleForm: {
         bdCode: 'SystemBD',
         functionName: '',
@@ -145,7 +145,6 @@ export default {
         feeMaxAmount: '',
         contractName: ''
       },
-      // 通用参数表单效验规则
       rules: {
         bdCode: [
           { required: true, message: 'This filed is required', trigger: 'blur' }
@@ -161,11 +160,10 @@ export default {
         ]
       },
       loading: false,
-      // BD列表
+      // BDList
       dbNameList: [],
-      // domain列表
+      // domainList
       domainIDList: [],
-      // 写死
       votePatternList: [
         {
           name: 'SYNC',
@@ -175,7 +173,6 @@ export default {
           id: 'ASYNC'
         }
       ],
-      // 写死
       callbackTypeList: [
         {
           name: 'ALL',
@@ -185,7 +182,6 @@ export default {
           id: 'SELF'
         }
       ],
-      // 写死
       decisionTypeList: [
         {
           name: 'Full Vote',
@@ -198,13 +194,11 @@ export default {
           id: 'ASSIGN_NUM'
         }
       ],
-      // 合约列表
       contractList: [],
-      // 自定义参数
       contractParamData: {},
       contractSubmit: {},
       signVisible: false,
-      // 签名参数
+      // sign
       signData: {
         // txId: '',
         // sign: '',
@@ -218,34 +212,32 @@ export default {
     ...mapGetters(['functionNameList'])
   },
   created () {
-    // 控制左边菜单active
     this.$store.commit('changeBdMenu', this.$route.meta.menu);
     this.getOption();
     this.getDomain();
     this.getContract();
   },
   methods: {
-    // 打开签名页面
+    // open pagr
     goSingLink () {
       window.open('https://www.myetherwallet.com/access-my-wallet', '_blank');
     },
-    // 复制待签名字段成功
     onCopySign () {
       this.$notify.success({message: 'Operation Success'});
     },
-    // 提交签名内容
+    // submit sign
     confirmSign () {
-      // 效验表单
+      // validate form
       this.$refs['contractFrom'].validateField('privateKey', error => {
         if (!error) {
-          // 提交BD
+          // submit BD
           this.validateBD(false);
         }
       });
     },
-    // 改变functionName
+    // changge functionName
     async changeFunction (name) {
-      // 选择非系统BD
+      // Select non system BD
       if (this.ruleForm.bdCode !== 'SystemBD') {
         let currentFunction = this.functionNameList.filter(v => name === v.name);
         let params = {
@@ -254,7 +246,7 @@ export default {
             methodSign: currentFunction[0].methodSign
           }
         }
-        // 获取需展示的key，value
+        // get key，value
         let data = await getContractParam(params);
         this.contractParamData = JSON.parse(JSON.stringify(data.data));
         this.contractSubmit = JSON.parse(JSON.stringify(data.data));
@@ -263,14 +255,13 @@ export default {
         }
       }
     },
-    // 获取合约列表
     async getContract () {
       let data = await getContractList();
       this.contractList = JSON.parse(JSON.stringify(data.data));
     },
-    // 提交DB
+    // submit DB
     async submitBD (valid, validChild, showDialog) {
-      // 表单效验通过
+      // form validate
       if (valid) {
         let submitData = Object.assign(validChild.ruleForm, this.ruleForm);
         delete submitData.functionName;
@@ -284,23 +275,20 @@ export default {
           slient: true
         }
         if (showDialog) {
-          // 获取签名值
           // let sign = await getSignValue(params);
           // if (sign.code === '000000') {
           //   this.signData = JSON.parse(JSON.stringify(sign.data));
-          // 打开签名dialog
           this.signVisible = true;
           // }
         } else {
           let loadingInstance = Loading.service();
-          // 合并签名字段
           // params.data.param = Object.assign(submitData, this.signData);
           // submitData.privateKey = this.signData.privateKey;
           // submitData.txId = this.signData.txId;
 
           params.data = Object.assign(params.data, this.signData);
           params.notify = notify.any;
-          // 提交BD内容
+          // submit BD
           let subResult = await submitBDConfig(params);
           loadingInstance.close();
           if (subResult.code === '000000') {
@@ -309,27 +297,26 @@ export default {
         }
       }
     },
-    // 效验BD表单
     validateBD (flag) {
       this.$refs['ruleForm'].validate(async valid => {
-        // 选择系统BD 还需要效验对应的子表单
+        // Selecting BD system also needs to validate the corresponding subform
         if (this.ruleForm.bdCode === 'SystemBD') {
-          let validChild = this.$refs[this.ruleForm.functionName].validateFrom();
+          let validChild = this.$refs[this.ruleForm.functionName].validateForm();
           this.submitBD(valid && validChild.valid, validChild, flag);
         } else {
-          // 非系统BD
+          // Non system BD
           let args = Object.assign({}, { args: this.contractSubmit });
           this.submitBD(valid, { ruleForm: args }, flag);
         }
       });
     },
-    // 改变BDName
+    // change BDName
     changeBDName (code) {
       if (code === 'SystemBD') this.ruleForm.contractName = ''; this.contractParamData = {}; this.contractSubmit = {};
       let filterFunction = this.dbNameList.filter(v => v.code === code)[0].functions;
       let tempArr = filterFunction;
       if (code === 'SystemBD') {
-        // 过滤不需要的FunctionName
+        // Filter unnecessary FunctionNames
         tempArr = filterFunction.filter(v => {
           let data;
           this.saveFunctionArr.forEach(va => {
@@ -340,16 +327,16 @@ export default {
           return data;
         });
       }
-      // 把对应的functionName存入store，多组件需用
+      // Store the corresponding FunctionNameList in the store, which is required by multi-component
       this.$store.commit('changeFunctionNameList', tempArr);
       this.ruleForm.functionName = '';
     },
-    // 获取Domain
+    // getDomainList
     async getDomain () {
       let data = await getDomainList();
       this.domainIDList = JSON.parse(JSON.stringify(data.data));
     },
-    // 获取BD列表
+    // getBDList
     async getOption () {
       this.loading = true;
       let params = {
@@ -359,9 +346,9 @@ export default {
       let data = await BDOptionInfo(params);
       if (data.code === '000000' && data.data) {
         this.dbNameList = JSON.parse(JSON.stringify(data.data));
-        // 默认第一个是系统BD
+        // The first one by default is system BD
         this.ruleForm.bdCode = this.dbNameList[0].code;
-        // 过滤不需要的FunctionName
+        // Filter unnecessary functionnames
         let tempArr = data.data[0].functions.filter(v => {
           let data;
           this.saveFunctionArr.forEach(va => {

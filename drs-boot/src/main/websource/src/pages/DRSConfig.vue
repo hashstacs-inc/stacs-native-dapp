@@ -106,7 +106,7 @@ export default {
     this.SysConfig();
   },
   methods: {
-    // 获取默认配置
+    // Get default configuration
     async SysConfig () {
       this.loading = true;
       let data = await getSysConfig();
@@ -118,7 +118,7 @@ export default {
     changeTab (v) {
       this.$router.push({name: v.pathName});
     },
-    // 提交
+    // submit
     submitFrom () {
       this.$refs['ruleForm'].validate(async valid => {
         if (valid) {

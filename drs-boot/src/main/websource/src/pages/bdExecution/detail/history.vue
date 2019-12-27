@@ -1,6 +1,6 @@
 <template>
   <div class="history" v-loading="loading">
-    <!-- 查询条件 暂时注释 -->
+    <!-- Query criteria temporary comment -->
     <!-- <div class="search-box">
       <div class="search-date">
         <p class="title">Search by Date</p>
@@ -108,11 +108,8 @@ export default {
   name: 'History',
   data () {
     return {
-      // 绑定查询时间
       dataValue: '',
-      // 绑定Name
       nameValue: '',
-      // 表格表头
       tableColumn: [
         {
           label: '#',
@@ -149,10 +146,8 @@ export default {
           prop: 'action'
         }
       ],
-      // 表格数据
       tableData: [],
       loading: false,
-      // 通用数据
       params: {
         pageNum: '1',
         pageSize: '10'
@@ -160,19 +155,15 @@ export default {
     }
   },
   created () {
-    // 控制左边菜单active
+    // left menu active
     this.$store.commit('changeBdMenu', this.$route.meta.menu);
     this.getTableList();
   },
   methods: {
-    test (t) {
-      console.log(t)
-    },
-    // 格式化时间
     dateFormat (date) {
       return moment(date).format('YYYY/MM/DD HH:mm')
     },
-    // 获取表格列表
+    // getDataList
     async getTableList () {
       this.loading = true;
       let data = await getBDConfigHistory({ slient: true, data: this.params });
@@ -185,7 +176,7 @@ export default {
       }
       this.loading = false;
     },
-    // 跳转初始化BD页面
+    // jump PublishBDContract
     goPublish (row) {
       this.$router.push({ name: 'PublishBDContract', query: { name: JSON.parse(row.actionDatas)[0].name, bdCode: row.bdCode } });
     }

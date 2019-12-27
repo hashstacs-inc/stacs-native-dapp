@@ -34,9 +34,9 @@
       </el-form>
     </el-form>
     <div class="submit-btn">
-      <p @click="validateFrom">Submit</p>
+      <p @click="validateForm">Submit</p>
     </div>
-    <!-- 签名dialog-->
+    <!-- sign -->
     <el-dialog
       title="System"
       :visible.sync="signVisible"
@@ -80,7 +80,6 @@ export default {
   name: 'PublishBDContract',
   data () {
     return {
-      // 表单绑定数据
       ruleForm: {
         bdName: '',
         submitter: '',
@@ -92,7 +91,6 @@ export default {
         initArgs: []
       },
       loading: false,
-      // args表单数据
       argsForm: {
         argsList: [
           {
@@ -101,7 +99,6 @@ export default {
           }
         ]
       },
-      // 表单规则
       rules: {
         bdName: [
           { required: true, message: 'This filed is required', trigger: 'blur' }
@@ -120,7 +117,6 @@ export default {
         ]
       },
       signVisible: false,
-      // 签名数据
       signData: {
         // txId: '',
         // sign: '',
@@ -129,30 +125,27 @@ export default {
     }
   },
   created () {
-    // 控制左边菜单active
     this.$store.commit('changeBdMenu', this.$route.meta.menu);
     this.ruleForm.bdName = this.$route.query.name;
   },
   methods: {
-    // 复制待签名字段成功
+    // copy
     onCopySign () {
       this.$notify.success({message: 'Operation Success'});
     },
-    // 提交签名内容
     confirmSign () {
       this.$refs['contractFrom'].validateField('privateKey', error => {
         if (!error) {
-          // 提交表单内容
           this.submitContract(false, true);
         }
       });
     },
-    // 打开签名页面
-    goSingLink () {
-      window.open('https://www.myetherwallet.com/access-my-wallet', '_blank');
-    },
-    // 效验表单
-    validateFrom () {
+    // open page
+    // goSingLink () {
+    //   window.open('https://www.myetherwallet.com/access-my-wallet', '_blank');
+    // },
+    // validate
+    validateForm () {
       let isValid = false;
       this.$refs['ruleForm'].validate(async valid => {
         if (this.argsForm.argsList.length === 1) {
@@ -168,7 +161,7 @@ export default {
         }
       });
     },
-    // 提交表单
+    // submit form
     async submitContract (flag, valid) {
       if (valid) {
         let subData = Object.assign({}, this.ruleForm);
@@ -190,7 +183,6 @@ export default {
         }
         reqData.data.param = Object.assign(reqData.data.param, subData);
         if (flag) {
-          // 获取签名
           // this.loading = true;
           // let sign = await getSignValue(reqData);
           // if (sign.code === '000000') {
@@ -200,25 +192,24 @@ export default {
           // this.loading = false;
         } else {
           let loadingInstance = Loading.service();
-          // 合并签名数据
           // reqData.data.param = Object.assign(reqData.data.param, this.signData);
           // reqData.data.param.txId = this.signData.txId;
           // reqData.data.param.privateKey = this.signData.privateKey;
 
           reqData.data = Object.assign(reqData.data, this.signData)
           reqData.notify = notify.any;
-          // 提交
+          // submit
           let subResult = await submitBDConfig(reqData);
           loadingInstance.close();
           if (subResult.code === '000000') {
             this.signVisible = false;
-            // 返回
+            // return history
             this.$router.push({ name: 'History' });
           }
         }
       }
     },
-    // 添加一条Args
+    // add Args
     addArgs(v, k) {
       if (!v.disabled) {
         this.$refs['argsForm'].validateField(`argsList.${k}.value`, error => {
@@ -231,7 +222,7 @@ export default {
           }
         });
       } else {
-        // 删除
+        // remove
         this.argsForm.argsList.splice(k ,1);
       }
     }

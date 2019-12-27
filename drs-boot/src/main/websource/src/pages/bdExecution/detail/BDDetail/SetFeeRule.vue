@@ -39,7 +39,7 @@ export default {
     }
   },
   methods: {
-    validateFrom () {
+    validateForm () {
       let cloneRules = JSON.parse(JSON.stringify(this.ruleForm.rules));
       let edited = cloneRules.filter(v => v.disabled);
       let params = edited.map(v => {

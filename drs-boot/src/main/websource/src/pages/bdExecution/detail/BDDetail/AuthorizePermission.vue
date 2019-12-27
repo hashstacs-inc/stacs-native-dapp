@@ -26,7 +26,7 @@ export default {
   name: 'AuthorizePermission',
   data () {
     return {
-      // 表单数据
+      // Form Data
       ruleForm: {
         identityAddress: '',
         permissionNames: [],
@@ -61,8 +61,8 @@ export default {
       let data = await getPermissionList();
       this.permissionNameList = JSON.parse(JSON.stringify(data.data));
     },
-    // 效验表单，返回数据
-    validateFrom () {
+    // validate Form
+    validateForm () {
       let validCode = {
         valid: false,
         ruleForm: this.ruleForm

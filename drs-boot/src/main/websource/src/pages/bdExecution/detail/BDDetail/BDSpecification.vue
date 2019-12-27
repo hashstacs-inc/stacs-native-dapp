@@ -14,7 +14,7 @@
           <el-option :label="v.name" :value="v.name" v-for="(v, k) in BDTypeList" :key="k"></el-option>
         </el-select>
       </el-form-item>
-      <el-form-item label="Descision" prop="desc">
+      <el-form-item label="Desciption" prop="desc">
         <el-input v-model="ruleForm.desc" :maxlength="1024"></el-input>
       </el-form-item>
       <el-form-item label="Permission Name" prop="initPermission" ref="initPermission" class="permission-name">
@@ -125,7 +125,7 @@ export default {
       }
     }
     return {
-      // 表单数据
+      // Form Data
       ruleForm: {
         name: '',
         code: '',
@@ -195,7 +195,7 @@ export default {
       let lockingFunction = this.ruleForm.functions.filter(v => !v.locking);
       lockingFunction[0] = Object.assign(lockingFunction[0], currentFunction[0]);
     },
-    validateFrom () {
+    validateForm () {
       let ruleFormCopy = Object.assign({}, this.ruleForm);
       let locked = ruleFormCopy.functions.filter(v => v.locking);
       ruleFormCopy.functions = locked;
