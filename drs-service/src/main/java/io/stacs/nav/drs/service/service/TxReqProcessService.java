@@ -1,7 +1,6 @@
 package io.stacs.nav.drs.service.service;
 
 import com.alibaba.fastjson.JSON;
-import io.stacs.nav.drs.api.enums.ActionTypeEnum;
 import io.stacs.nav.drs.api.enums.ApiConstants;
 import io.stacs.nav.drs.api.exception.DappError;
 import io.stacs.nav.drs.api.exception.DappException;
@@ -48,15 +47,12 @@ import org.springframework.validation.annotation.Validated;
             log.error("[processInit] update status is error,txId:{}", bo.getTxId());
             throw new DappException(DappError.DAPP_UPDATE_STATUS_ERROR);
         }
-        log.info("[processInit]funcName:{}",bo.getFuncName());
+        log.info("[processInit]funcName:{}", bo.getFuncName());
         try {
             //send to block chain
             RespData respData = blockChainHelper
                 .post(ApiConstants.TransactionApiEnum.fromTxName(bo.getFuncName()).getApi(), bo.getTxData(),
                     Object.class);
-            //            RespData response = blockChainFacade
-            //                .send(ApiConstants.TransactionApiEnum.fromTxName(bo.getFuncName()).getApi(), bo.getTxData());
-            //update to END status
             if (respData.isSuccessful()) {
                 r = txRequestDao.updateStatusAndReceipt(bo.getTxId(), RequestStatus.SUBMITTING.name(),
                     RequestStatus.PROCESSING.name(), JSON.toJSONString(respData));
@@ -79,10 +75,7 @@ import org.springframework.validation.annotation.Validated;
                 tx.setExecuteResult("0");
                 tx.setErrorCode(respData.getCode());
                 tx.setErrorMessage(respData.getMsg());
-                ApiConstants.TransactionApiEnum transactionApiEnum = ApiConstants.TransactionApiEnum.fromTxName(bo.getFuncName());
-                if(transactionApiEnum != null){
-                    tx.setTxType(transactionApiEnum.getActionTypeEnum().getCode());
-                }
+                tx.setFunctionName(bo.getFuncName());
                 tx.setVersion(VersionEnum.V4.getCode());
                 //event
                 eventPublisher.publish(0L, bo.getTxId(), tx);

@@ -24,9 +24,12 @@ import java.util.Map;
     @Override public void afterPropertiesSet() throws Exception {
         Map<String, ITxCallbackHandler> beansOfType = applicationContext.getBeansOfType(ITxCallbackHandler.class);
         beansOfType.forEach((k, v) -> {
-            String key = v.supportType().getCode() + v.supportVersion();
-            handlerMap.put(key, v);
-            log.info("callback handler supported: {}, bean:{}", key, v.getClass().getSimpleName());
+            String[] types = v.supportType();
+            for (String type : types) {
+                String key = type + v.supportVersion();
+                handlerMap.put(key, v);
+                log.info("callback handler supported: {}, bean:{}", key, v.getClass().getSimpleName());
+            }
         });
     }
 
@@ -40,7 +43,7 @@ import java.util.Map;
      * @param po
      */
     public void process(TransactionPO po) {
-        String key = po.getTxType() + po.getVersion();
+        String key = po.getFunctionName() + po.getVersion();
         ITxCallbackHandler handler = handlerMap.get(key);
         if (handler == null) {
             log.error("[process] not support callback handler:{}", key);

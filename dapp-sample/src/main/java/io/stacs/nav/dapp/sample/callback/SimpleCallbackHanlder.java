@@ -1,7 +1,7 @@
 package io.stacs.nav.dapp.sample.callback;
 
 import io.stacs.nav.dapp.core.callback.ITxCallbackHandler;
-import io.stacs.nav.drs.api.enums.ActionTypeEnum;
+import io.stacs.nav.drs.api.enums.ApiConstants;
 import io.stacs.nav.drs.api.model.TransactionPO;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
@@ -13,11 +13,11 @@ import org.springframework.stereotype.Component;
  */
 @Component @Slf4j public class SimpleCallbackHanlder implements ITxCallbackHandler {
 
-    @Override public ActionTypeEnum supportType() {
-        return ActionTypeEnum.REGISTER_POLICY;
+    @Override public String[] supportType() {
+        return new String[] {ApiConstants.TransactionApiEnum.KYC_SETTING.getFunctionName()};
     }
 
     @Override public void handle(TransactionPO po) {
-        log.info("handle callback msg from block chain,po:{}",po);
+        log.info("handle callback msg from block chain,po:{}", po);
     }
 }

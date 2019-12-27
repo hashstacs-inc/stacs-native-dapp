@@ -60,7 +60,7 @@ import java.util.Date;
     /**
      * the type of transaction
      */
-    private String txType;
+    private String functionName;
     /**
      * contract state
      */

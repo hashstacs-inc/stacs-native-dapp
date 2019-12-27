@@ -16,7 +16,7 @@
         <result column="action_datas" property="actionDatas"/>
         <result column="execute_result" property="executeResult"/>
         <result column="error_code" property="errorCode"/>
-        <result column="tx_type" property="txType"/>
+        <result column="function_name" property="functionName"/>
         <result column="policy_version" property="policyVersion"/>
         <result column="deal_count" property="dealCount"/>
         <result column="max_allow_fee" property="maxAllowFee"/>
@@ -35,13 +35,13 @@
     <!-- transaction table all fields -->
     <sql id="baseColumnList">
         tx_id,biz_model,policy_id,lock_time,version,block_height,block_time,send_time,sender,execute_result,error_code,
-        error_message,sign_datas,action_datas,tx_type,policy_version,deal_count,max_allow_fee,fee_amount,fee_payment_address,
+        error_message,sign_datas,action_datas,function_name,policy_version,deal_count,max_allow_fee,fee_amount,fee_payment_address,
         fee_currency,bd_code,submitter,receipt_data,submitter_sign
     </sql>
 
     <sql id="queryList">
         tx_id,biz_model,policy_id,lock_time,version,block_height,block_time,send_time,sender,execute_result,error_code,
-        error_message,sign_datas,action_datas,tx_type,policy_version,deal_count,max_allow_fee,fee_amount,fee_payment_address,
+        error_message,sign_datas,action_datas,function_name,policy_version,deal_count,max_allow_fee,fee_amount,fee_payment_address,
         fee_currency,bd_code,submitter,receipt_data,submitter_sign,bd.name as bd_name, bd.bd_type as bd_type
     </sql>
     <!-- query  conditions -->
@@ -83,8 +83,8 @@
     <!-- insert row -->
     <insert id="add">
         insert into
-        transaction(tx_id,biz_model,policy_id,lock_time,version,block_height,block_time,send_time,sender,sign_datas,action_datas,execute_result,error_code,tx_type,policy_version,deal_count,max_allow_fee,fee_payment_address,fee_currency,bd_code,submitter,receipt_data,submitter_sign)
-        values(#{txId},#{bizModel},#{policyId},#{lockTime},#{version},#{blockHeight},#{blockTime},#{sendTime},#{sender},#{signDatas},#{actionDatas},#{executeResult},#{errorCode},#{txType},#{policyVersion},#{dealCount},#{maxAllowFee},#{feePaymentAddress},#{feeCurrency},#{bdCode},#{submitter},#{receiptData},#{submitterSign})
+        transaction(tx_id,biz_model,policy_id,lock_time,version,block_height,block_time,send_time,sender,sign_datas,action_datas,execute_result,error_code,function_name,policy_version,deal_count,max_allow_fee,fee_payment_address,fee_currency,bd_code,submitter,receipt_data,submitter_sign)
+        values(#{txId},#{bizModel},#{policyId},#{lockTime},#{version},#{blockHeight},#{blockTime},#{sendTime},#{sender},#{signDatas},#{actionDatas},#{executeResult},#{errorCode},#{functionName},#{policyVersion},#{dealCount},#{maxAllowFee},#{feePaymentAddress},#{feeCurrency},#{bdCode},#{submitter},#{receiptData},#{submitterSign})
     </insert>
     <!-- 列表总数 -->
     <select id="queryByCount" resultType="java.lang.Integer">
