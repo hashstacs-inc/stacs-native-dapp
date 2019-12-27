@@ -301,8 +301,10 @@ export default {
       this.$refs['ruleForm'].validate(async valid => {
         // Selecting BD system also needs to validate the corresponding subform
         if (this.ruleForm.bdCode === 'SystemBD') {
-          let validChild = this.$refs[this.ruleForm.functionName].validateForm();
-          this.submitBD(valid && validChild.valid, validChild, flag);
+          if (this.ruleForm.functionName) {
+            let validChild = this.$refs[this.ruleForm.functionName].validateForm();
+            this.submitBD(valid && validChild.valid, validChild, flag);
+          }
         } else {
           // Non system BD
           let args = Object.assign({}, { args: this.contractSubmit });

@@ -178,7 +178,7 @@ export default {
     },
     // jump PublishBDContract
     goPublish (row) {
-      this.$router.push({ name: 'PublishBDContract', query: { name: JSON.parse(row.actionDatas)[0].name, bdCode: row.bdCode } });
+      this.$router.push({ name: 'PublishBDContract', query: { name: JSON.parse(row.actionDatas)[0].name, bdCode: JSON.parse(row.actionDatas)[0].code } });
     }
   }
 }
