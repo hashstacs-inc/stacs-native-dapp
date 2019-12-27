@@ -17,6 +17,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -130,7 +131,7 @@ import java.util.stream.Collectors;
      *
      * @return
      */
-    @PostMapping ("/queryTxs") @ResponseBody public RespData<?> queryTxs(@RequestBody QueryTxListVO vo) {
+    @PostMapping ("/queryTxs") @ResponseBody public RespData<?> queryTxs(@RequestBody @Valid QueryTxListVO vo) {
         try {
             return RespData.success(queryService.queryTx(vo));
         } catch (Throwable e) {
