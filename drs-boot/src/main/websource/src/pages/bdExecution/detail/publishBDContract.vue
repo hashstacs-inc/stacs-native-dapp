@@ -15,6 +15,9 @@
       <el-form-item label="Contract Name" prop="name">
         <el-input v-model="ruleForm.name" :maxlength="64"></el-input>
       </el-form-item>
+      <el-form-item label="Symbol" prop="symbol">
+        <el-input v-model="ruleForm.symbol"></el-input>
+      </el-form-item>
       <el-form-item label="Extension" prop="extension">
         <el-input v-model="ruleForm.extension" :maxlength="1024"></el-input>
       </el-form-item>
@@ -22,7 +25,7 @@
         <el-input v-model="ruleForm.contractor"></el-input>
       </el-form-item>
       <el-form-item label="Source Code" prop="sourceCode">
-        <el-input v-model="ruleForm.sourceCode" type="textarea" :autosize="{ minRows: 4}"></el-input>
+        <el-input v-model="ruleForm.sourceCode" type="textarea" :autosize="{ minRows: 4 }"></el-input>
       </el-form-item>
       <el-form :model="argsForm" ref="argsForm" 
       label-width="150px" class="general-form" label-position="left">
@@ -83,6 +86,7 @@ export default {
       ruleForm: {
         bdName: '',
         submitter: '',
+        symbol: '',
         contractAddress: '',
         name: '',
         extension: '',
@@ -113,6 +117,9 @@ export default {
           { required: true, message: 'This filed is required', trigger: 'blur' }
         ],
         sourceCode: [
+          { required: true, message: 'This filed is required', trigger: 'blur' }
+        ],
+        symbol: [
           { required: true, message: 'This filed is required', trigger: 'blur' }
         ]
       },
