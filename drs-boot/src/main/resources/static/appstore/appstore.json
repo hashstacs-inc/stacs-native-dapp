@@ -8,7 +8,7 @@
       "icon": "appstore/img/icon1.png",
       "author": "stacs",
       "remark": "This is a demo app",
-      "downloadUrl": "https://stacs-dappstore.oss-cn-zhangjiakou.aliyuncs.com/dapp-sample-1.0.0-SNAPSHOT-dapp.jar"
+      "downloadUrl": "https://stacs-dappstore.oss-cn-zhangjiakou.aliyuncs.com/dev/dapp-sample-1.0.0-SNAPSHOT-dapp.jar"
     },
     {
       "showName": "STACS Explorer",
@@ -16,14 +16,14 @@
       "icon": "appstore/img/icon2.png",
       "author": "stacs",
       "remark": "This is a explorer app",
-      "downloadUrl": "https://stacs-dappstore.oss-cn-zhangjiakou.aliyuncs.com/native-explorer-dapp.jar"
+      "downloadUrl": "https://stacs-dappstore.oss-cn-zhangjiakou.aliyuncs.com/dev/native-explorer-dapp.jar"
     },{
       "showName": "发行&转账",
       "name": "dapp-transfer",
       "icon": "appstore/img/transfer.jpg",
       "author": "stacs",
       "remark": "This is a transfer demo app",
-      "downloadUrl": "https://stacs-dappstore.oss-cn-zhangjiakou.aliyuncs.com/dapp-transfer-1.0.0-SNAPSHOT-dapp.jar"
+      "downloadUrl": "https://stacs-dappstore.oss-cn-zhangjiakou.aliyuncs.com/dev/dapp-transfer-1.0.0-SNAPSHOT-dapp.jar"
     }
   ]
 }
