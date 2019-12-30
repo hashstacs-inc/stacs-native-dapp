@@ -2,7 +2,7 @@
   <div class="BD-specification">
     <p class="title">Special Information</p>
     <el-form :model="ruleForm" :rules="rules" ref="ruleForm" 
-      label-width="150px" class="general-form" label-position="left">
+      label-width="180px" class="general-form" label-position="left">
       <el-form-item label="BD Name" prop="name">
         <el-input v-model="ruleForm.name" :maxlength="64"></el-input>
       </el-form-item>
@@ -14,7 +14,7 @@
           <el-option :label="v.name" :value="v.name" v-for="(v, k) in BDTypeList" :key="k"></el-option>
         </el-select>
       </el-form-item>
-      <el-form-item label="Desciption" prop="desc">
+      <el-form-item label="Description" prop="desc">
         <el-input v-model="ruleForm.desc" :maxlength="1024"></el-input>
       </el-form-item>
       <el-form-item label="Permission Name" prop="initPermission" ref="initPermission" class="permission-name">
@@ -47,7 +47,7 @@
         <el-input v-model="ruleForm.BDVersion" :maxlength="4"></el-input>
       </el-form-item>
       <div class="new-function">
-        <el-form :model="ruleForm" v-for="(v, k) in ruleForm.functions" :key="k" label-width="150px" 
+        <el-form :model="ruleForm" v-for="(v, k) in ruleForm.functions" :key="k" label-width="180px" 
           ref="newFunctionFrom" class="functio-from-box">
           <div class="delete-new-from" v-if="v.locking" @click="deleteNew(k)">Delete</div>
           <el-form-item label="Type" :prop="'functions.' + k + '.type'"
@@ -64,7 +64,7 @@
             </el-select>
             <el-input v-model="v.name" :maxlength="256" v-else :disabled="v.locking"></el-input>
           </el-form-item>
-          <el-form-item label="Function Descision" :prop="'functions.' + k + '.desc'">
+          <el-form-item label="Function Description" :prop="'functions.' + k + '.desc'">
             <el-input v-model="v.desc" :maxlength="256" :disabled="v.type === 'SystemAction' || v.locking"></el-input>
           </el-form-item>
           <el-form-item label="Method Sign" :prop="'functions.' + k + '.methodSign'"
@@ -74,7 +74,7 @@
           <el-form-item label="Permission Name" :prop="'functions.' + k + '.execPermission'"
             :rules="{ required: true, message: 'This filed is required' }">
             <el-select v-model="v.execPermission" v-if="v.type === 'SystemAction' && !v.locking">
-              <el-option :label="v.permissionName" :value="v.permissionIndex" v-for="(v, k) in initPermissionList" :key="k"></el-option>
+              <el-option :label="v.permissionName" :value="v.permissionName" v-for="(v, k) in initPermissionList" :key="k"></el-option>
             </el-select>
             <el-input v-model="v.execPermission" :maxlength="256" v-else :disabled="v.locking"></el-input>
             <el-popover
@@ -118,7 +118,7 @@ export default {
   name: 'BDSpecification',
   data () {
     const BDCodeValidator = (rule, value, callback) => {
-      if (/^[a-zA-Z0-9]*(([a-zA-Z]+[0-9]+)|([0-9]+[a-zA-Z]+))[a-zA-Z0-9]*$/.test(value)) {
+      if (/^\d*[a-zA-Z]+\d*$/.test(value)) {
         callback();
       } else {
         callback(new Error('Please enter letters and numbers'));
@@ -196,12 +196,13 @@ export default {
       lockingFunction[0] = Object.assign(lockingFunction[0], currentFunction[0]);
     },
     validateForm () {
-      let ruleFormCopy = Object.assign({}, this.ruleForm);
+      let ruleFormCopy = JSON.parse(JSON.stringify(this.ruleForm));
+      this.$refs['ruleForm'].clearValidate();
+      this.$refs['newFunctionFrom'][ruleFormCopy.functions.length - 1].clearValidate();
       let locked = ruleFormCopy.functions.filter(v => v.locking);
-      ruleFormCopy.functions = locked;
       let validCode = {
         valid: false,
-        ruleForm: ruleFormCopy
+        ruleForm: {}
       };
       this.$refs['ruleForm'].validate(valid => {
         if (locked.length === 0) {
@@ -211,9 +212,20 @@ export default {
             }
           });
         } else {
-          validCode.valid = valid;
+          let funList = ruleFormCopy.functions[ruleFormCopy.functions.length - 1];
+          if (funList.name || funList.methodSign || funList.execPermission || funList.execPolicy) {
+            this.$refs['newFunctionFrom'][ruleFormCopy.functions.length - 1].validate(va => {
+              validCode.valid = va;
+            });
+          } else if (!funList.name && !funList.methodSign && !funList.execPermission && !funList.execPolicy) {
+            ruleFormCopy.functions.splice(ruleFormCopy.functions.length - 1, 1);
+            validCode.valid = valid;
+          } else {
+            validCode.valid = valid;
+          }
         }
       });
+      validCode.ruleForm = ruleFormCopy;
       return validCode;
     },
     deleteNew (k) {
@@ -330,7 +342,7 @@ export default {
     width: 16px;
     height: 16px;
     border-radius: 50%;
-    left: -22px;
+    left: -40px;
     top: 5px;
     background-color: #9BA1A8;
     text-align: center;
@@ -338,7 +350,7 @@ export default {
     cursor: pointer;
   }
   .policy-tips {
-    left: -70px;
+    left: -95px;
   }
 }
 </style>

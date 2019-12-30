@@ -2,7 +2,7 @@
   <div class="modify-policy">
     <p class="title">Special Information</p>
     <el-form :model="ruleForm" :rules="rules" ref="ruleForm" 
-      label-width="150px" class="general-form" label-position="left">
+      label-width="180px" class="general-form" label-position="left">
       <el-form-item label="Policy ID" prop="policyId">
         <el-select v-model="ruleForm.policyId" placeholder="Please select" @change="changePolicyId">
           <el-option :label="v.policyName" :value="v.policyId" v-for="(v, k) in policyList" :key="k"></el-option>

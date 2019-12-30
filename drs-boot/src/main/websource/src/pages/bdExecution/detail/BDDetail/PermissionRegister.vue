@@ -2,7 +2,7 @@
   <div class="permission-register">
     <p class="title">Special Information</p>
     <el-form :model="ruleForm" :rules="rules" ref="ruleForm" 
-      label-width="150px" class="general-form" label-position="left">
+      label-width="180px" class="general-form" label-position="left">
       <el-form-item label="Permission Name" prop="permissionName">
         <!-- <el-select v-model="ruleForm.permissionName" placeholder="Please select domian IDs" multiple filterable>
           <el-option :label="v.permissionName" :value="v.permissionIndex" v-for="(v, k) in permissionNameList" :key="k"></el-option>

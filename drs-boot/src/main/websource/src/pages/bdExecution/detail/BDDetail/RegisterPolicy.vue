@@ -2,7 +2,7 @@
   <div class="register-policy">
     <p class="title">Special Information</p>
     <el-form :model="ruleForm" :rules="rules" ref="ruleForm" 
-      label-width="150px" class="general-form" label-position="left">
+      label-width="180px" class="general-form" label-position="left">
       <el-form-item label="Policy ID" prop="policyId">
         <el-input v-model="ruleForm.policyId" placeholder="Please enter an Policy ID" :maxLength="32"></el-input>
       </el-form-item>

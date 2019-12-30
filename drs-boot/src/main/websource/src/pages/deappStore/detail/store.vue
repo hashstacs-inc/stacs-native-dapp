@@ -296,9 +296,9 @@ export default {
         position: relative;
         border-radius: 2px;
         text-align: center;
-        line-height: 20px;
-        padding: 0 3px;
-        min-width: 75px;
+        line-height: 19px;
+        padding: 0 5px;
+        min-width: 85px;
         cursor: pointer;
         .text {
           position: relative;

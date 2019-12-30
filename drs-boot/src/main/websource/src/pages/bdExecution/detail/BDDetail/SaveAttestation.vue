@@ -2,7 +2,7 @@
   <div class="save-attestation">
     <p class="title">Special Information</p>
     <el-form :model="ruleForm" :rules="rules" ref="ruleForm" 
-      label-width="150px" class="general-form" label-position="left">
+      label-width="180px" class="general-form" label-position="left">
       <el-form-item label="Version" prop="attestationVersion">
         <el-input v-model="ruleForm.attestationVersion"></el-input>
       </el-form-item>

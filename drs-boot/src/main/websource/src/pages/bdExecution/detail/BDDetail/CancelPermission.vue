@@ -2,7 +2,7 @@
   <div class="cancel-permission">
     <p class="title">Special Information</p>
     <el-form :model="ruleForm" :rules="rules" ref="ruleForm" 
-      label-width="150px" class="general-form" label-position="left">
+      label-width="180px" class="general-form" label-position="left">
       <el-form-item label="Identity Address" prop="identityAddress">
         <el-input v-model="ruleForm.identityAddress" placeholder="Please enter the  identity address" :maxlength="40"></el-input>
       </el-form-item>

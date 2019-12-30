@@ -40,23 +40,50 @@ export default {
   },
   methods: {
     validateForm () {
+      this.$refs['ruleForm'].clearValidate();
       let cloneRules = JSON.parse(JSON.stringify(this.ruleForm.rules));
       let edited = cloneRules.filter(v => v.disabled);
-      let params = edited.map(v => {
-        delete v.disabled;
-        return v;
-      });
+      let params = [];
       let validCode = {
         valid: false,
-        ruleForm: { rules: params }
+        ruleForm: {}
       };
       if (edited.length === 0) {
         this.$refs['ruleForm'].validate(valid => {
+          if (valid) {
+            params = cloneRules.map(v => {
+              delete v.disabled;
+              return v;
+            });
+          }
           validCode.valid = valid;
         });
       } else {
-        validCode.valid = true;
+        if (cloneRules[0].policyId && cloneRules[0].amount) {
+          params = cloneRules.map(v => {
+            delete v.disabled;
+            return v;
+          });
+          validCode.valid = true;
+        } else if (cloneRules[0].policyId || cloneRules[0].amount) {
+          this.$refs['ruleForm'].validate(va => {
+            if (va) {
+              params = cloneRules.map(v => {
+                delete v.disabled;
+                return v;
+              });
+            }
+            validCode.valid = va;
+          });
+        } else {
+          params = edited.map(v => {
+            delete v.disabled;
+            return v;
+          });
+          validCode.valid = true;
+        }
       }
+      validCode.ruleForm = { rules: params };
       return validCode;
     },
     ruleBtn (v, k, from) {

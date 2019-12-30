@@ -2,7 +2,7 @@
   <div class="publish-BD-contract" v-loading="loading">
     <p class="title">Publish BD Contract</p>
     <el-form :model="ruleForm" :rules="rules" ref="ruleForm" 
-      label-width="150px" class="general-form" label-position="left">
+      label-width="180px" class="general-form" label-position="left">
       <el-form-item label="BD Name" prop="bdName">
         <el-input v-model="ruleForm.bdName" disabled></el-input>
       </el-form-item>
@@ -15,21 +15,21 @@
       <el-form-item label="Contract Name" prop="name">
         <el-input v-model="ruleForm.name" :maxlength="64"></el-input>
       </el-form-item>
-      <el-form-item label="Symbol" prop="symbol">
-        <el-input v-model="ruleForm.symbol"></el-input>
+      <el-form-item label="Contract Code" prop="symbol">
+        <el-input v-model="ruleForm.symbol" :maxlength="64"></el-input>
       </el-form-item>
       <el-form-item label="Extension" prop="extension">
         <el-input v-model="ruleForm.extension" :maxlength="1024"></el-input>
       </el-form-item>
-      <el-form-item label="Contractor" prop="contractor">
+      <el-form-item label="Contract Method" prop="contractor">
         <el-input v-model="ruleForm.contractor"></el-input>
       </el-form-item>
       <el-form-item label="Source Code" prop="sourceCode">
         <el-input v-model="ruleForm.sourceCode" type="textarea" :autosize="{ minRows: 4 }"></el-input>
       </el-form-item>
       <el-form :model="argsForm" ref="argsForm" 
-      label-width="150px" class="general-form" label-position="left">
-        <el-form-item label="Init Args" :prop="'argsList.' + k + '.value'" v-for="(v, k) in argsForm.argsList" :key="k"
+      label-width="180px" class="general-form" label-position="left">
+        <el-form-item label="Contract Parameter" :prop="'argsList.' + k + '.value'" v-for="(v, k) in argsForm.argsList" :key="k"
           :rules="{ required: true, message: 'This filed is required', trigger: 'blur' }" class="args-box">
           <el-input v-model="v.value" :disabled="v.disabled"></el-input>
           <div class="add-args" :class="{'args-disabled': v.disabled}" @click="addArgs(v, k)">{{v.disabled ? '-' : '+'}}</div>
@@ -176,7 +176,7 @@ export default {
         subData['code'] = this.$route.query.bdCode;
         subData['bdCode'] = this.$route.query.bdCode;
         subData['fromAddr'] = subData.submitter;
-        let subArgs = Object.assign([], this.argsForm.argsList.filter(v => v.disabled));
+        let subArgs = Object.assign([], this.argsForm.argsList.filter(v => v.value));
         subData.initArgs = subArgs.map(v => {
           return v.value;
         });

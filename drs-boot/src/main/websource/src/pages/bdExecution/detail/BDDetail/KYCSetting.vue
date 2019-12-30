@@ -2,7 +2,7 @@
   <div class="KYC-setting">
     <p class="title">Special Information</p>
     <el-form :model="ruleForm" :rules="rules" ref="ruleForm" 
-      label-width="150px" class="general-form" label-position="left">
+      label-width="180px" class="general-form" label-position="left">
       <el-form-item label="Identity Address" prop="identityAddress">
         <el-input v-model="ruleForm.identityAddress" placeholder="Please enter identity address" :maxlength="40"></el-input>
       </el-form-item>
@@ -10,11 +10,11 @@
     <p class="title">KYC</p>
     <el-form :model="ruleForm" ref="ruleKycForm">
       <div v-for="(v, k) in ruleForm.KYC" :key="k" class="kyc-box">
-        <el-form-item label="key" :prop="'KYC.' + k + '.key'" :inline="true" label-width="50px"
+        <el-form-item label="Key" :prop="'KYC.' + k + '.key'" :inline="true" label-width="50px"
           :rules="{ required: true, message: 'This filed is required', trigger: 'blur' }">
           <el-input v-model="v.key" placeholder="Please enter Key" :maxlength="1024" :disabled="v.disabled"></el-input>
         </el-form-item>
-        <el-form-item label="value" :prop="'KYC.' + k + '.value'" :inline="true" label-width="50px"
+        <el-form-item label="Value" :prop="'KYC.' + k + '.value'" :inline="true" label-width="50px"
           :rules="{ required: true, message: 'This filed is required', trigger: 'blur' }">
           <el-input v-model="v.value" placeholder="Please enter Key word" :maxlength="1024" :disabled="v.disabled"></el-input>
         </el-form-item>
@@ -47,15 +47,13 @@ export default {
   },
   methods: {
     validateForm () {
+      this.$refs['ruleKycForm'].clearValidate();
+      this.$refs['ruleForm'].clearValidate();
       let params = {
         identityAddress: this.ruleForm.identityAddress,
         KYC: {}
       };
       let edited = this.ruleForm.KYC.filter(v => v.disabled);
-      edited.forEach(v => {
-        params.KYC[v.key] = v.value;
-      });
-      params.KYC = JSON.stringify(params.KYC);
       let validCode = {
         valid: false,
         ruleForm: params
@@ -64,12 +62,30 @@ export default {
         if (edited.length === 0) {
           this.$refs['ruleKycForm'].validate(validKyc => {
             if (valid && validKyc) {
+              this.ruleForm.KYC.forEach(v => {
+                params.KYC[v.key] = v.value;
+              });
+              params.KYC = JSON.stringify(params.KYC);
               validCode.valid = true;
             }
           });
         } else {
-          if (valid) {
-            validCode.valid = true;
+          if (this.ruleForm.KYC[0].key && this.ruleForm.KYC[0].value) {
+            this.ruleForm.KYC.forEach(v => {
+              params.KYC[v.key] = v.value;
+            });
+            params.KYC = JSON.stringify(params.KYC);
+            validCode.valid = valid;
+          } else if (this.ruleForm.KYC[0].key || this.ruleForm.KYC[0].value) {
+            this.$refs['ruleKycForm'].validate(val => {
+              validCode.valid = val;
+            });
+          } else {
+            edited.forEach(v => {
+              params.KYC[v.key] = v.value;
+            });
+            params.KYC = JSON.stringify(params.KYC);
+            validCode.valid = valid;
           }
         }
       });

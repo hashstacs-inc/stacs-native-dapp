@@ -325,7 +325,8 @@ export default {
       justify-content: space-around;
       align-items: center;
       .text {
-        padding: 0 10px;
+        padding: 0 5px;
+        min-width: 85px;
         height: 25px;
         font-size: 12px;
         background-color: #053C8C;
@@ -333,6 +334,7 @@ export default {
         color: #fff;
         line-height: 25px;
         cursor: pointer;
+        text-align: center;
       }
       .error {
         color: #F17070;

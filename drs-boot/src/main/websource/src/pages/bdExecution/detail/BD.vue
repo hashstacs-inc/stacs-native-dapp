@@ -3,7 +3,7 @@
     <div class="general-information">
       <p class="title">General Information</p>
       <el-form :model="ruleForm" :rules="rules" ref="ruleForm" 
-        label-width="150px" class="general-form" label-position="left">
+        label-width="180px" class="general-form" label-position="left">
         <el-form-item label="BD Name" prop="bdCode">
           <el-select v-model="ruleForm.bdCode" @change="changeBDName">
             <el-option :label="v.name" :value="v.code" v-for="(v, k) in dbNameList" :key="k"></el-option>
@@ -11,7 +11,7 @@
         </el-form-item>
         <el-form-item label="Contract Address" prop="contractName" v-if="ruleForm.bdCode !== 'SystemBD' && ruleForm.bdCode !== ''">
           <el-select v-model="ruleForm.contractName">
-            <el-option :label="v.name" :value="v.address" v-for="(v, k) in contractList" :key="k" placeholder="Please select address"></el-option>
+            <el-option :label="v.address" :value="v.address" v-for="(v, k) in contractList" :key="k" placeholder="Please select address"></el-option>
           </el-select>
         </el-form-item>
         <el-form-item label="Function Name" prop="functionName">
@@ -20,7 +20,7 @@
             <el-option :label="v.desc" :value="v.name" v-for="(v, k) in functionNameList" :key="k"></el-option>
           </el-select>
         </el-form-item>
-        <el-form-item label="Opeartion Address" prop="submitter">
+        <el-form-item label="Operation Address" prop="submitter">
           <el-input v-model="ruleForm.submitter" placeholder="Please enter address" :maxlength="40"></el-input>
         </el-form-item>
         <el-form-item label="Fee Currency" prop="feeCurrency">
@@ -279,6 +279,7 @@ export default {
           // if (sign.code === '000000') {
           //   this.signData = JSON.parse(JSON.stringify(sign.data));
           this.signVisible = true;
+          console.log(submitData)
           // }
         } else {
           let loadingInstance = Loading.service();
@@ -386,7 +387,7 @@ export default {
   width: 710px;
   background-color: #fff;
   padding: 40px 40px;
-  padding-right: 100px;
+  padding-right: 70px;
   float: left;
   .general-information {
     .title {
