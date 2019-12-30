@@ -1,6 +1,7 @@
 package io.stacs.nav.drs.service.network;
 
 import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONObject;
 import io.stacs.nav.drs.api.exception.DappError;
 import io.stacs.nav.drs.api.exception.DappException;
 import io.stacs.nav.drs.api.model.RespData;
@@ -43,9 +44,12 @@ import static io.stacs.nav.drs.service.utils.HttpHelper.buildGetRequestParam;
             String url = domainConfig.getBaseUrl() + api;
             log.info("[post]url:{}", url);
             log.info("[post]requestJSON:{}", JSON.toJSONString(param));
-            CasEncryptRequest request =
-                CasCryptoUtil.encrypt(param, domainConfig.getMerchantPriKey(), domainConfig.getAesKey());
-            String requestJSON = JSON.toJSONString(request);
+            String requestJSON = JSON.toJSONString(param);
+            if(!domainConfig.getMerchantId().equals("TEST_NO_ENCRYPT_MERCHANT")){
+                CasEncryptRequest request =
+                    CasCryptoUtil.encrypt(param, domainConfig.getMerchantPriKey(), domainConfig.getAesKey());
+                requestJSON = JSON.toJSONString(request);
+            }
             log.info("[post]requestJSONEncrypt:{}", requestJSON);
             String merchantId = domainConfig.getMerchantId();
             log.info("[post]merchantId:{}", merchantId);
@@ -55,8 +59,12 @@ import static io.stacs.nav.drs.service.utils.HttpHelper.buildGetRequestParam;
                 return RespData.fail(DappError.DAPP_COMMON_ERROR);
             }
             log.info("[post]responseJSON:{}", res);
-            CasDecryptResponse response =
-                CasCryptoUtil.decrypt(res, domainConfig.getChainPubKey(), domainConfig.getAesKey());
+            CasDecryptResponse response ;
+            if(!domainConfig.getMerchantId().equals("TEST_NO_ENCRYPT_MERCHANT")) {
+                response =  CasCryptoUtil.decrypt(res, domainConfig.getChainPubKey(), domainConfig.getAesKey());
+            }else {
+                response = JSONObject.parseObject(res,CasDecryptResponse.class);
+            }
             RespData respData = new RespData();
             respData.setCode(response.getRespCode());
             respData.setMsg(response.getMsg());
