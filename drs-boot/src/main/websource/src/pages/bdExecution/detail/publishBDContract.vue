@@ -23,6 +23,14 @@
       </el-form-item>
       <el-form-item label="Contract Method" prop="contractor">
         <el-input v-model="ruleForm.contractor"></el-input>
+        <el-popover
+          placement="top-start"
+          width="200"
+          popper-class="pub-create-tips"
+          trigger="hover"
+          content="The method that is used to construct the contract.">
+          <div class="methods-tips" slot="reference">?</div>
+        </el-popover>
       </el-form-item>
       <el-form-item label="Source Code" prop="sourceCode">
         <el-input v-model="ruleForm.sourceCode" type="textarea" :autosize="{ minRows: 4 }"></el-input>
@@ -33,6 +41,14 @@
           :rules="{ required: true, message: 'This filed is required', trigger: 'blur' }" class="args-box">
           <el-input v-model="v.value" :disabled="v.disabled"></el-input>
           <div class="add-args" :class="{'args-disabled': v.disabled}" @click="addArgs(v, k)">{{v.disabled ? '-' : '+'}}</div>
+          <el-popover
+            placement="top-start"
+            width="200"
+            popper-class="pub-create-tips"
+            trigger="hover"
+            content="The parameter that is used to construct the contract.">
+            <div class="pub-tips" slot="reference">?</div>
+          </el-popover>
         </el-form-item>
       </el-form>
     </el-form>
@@ -284,6 +300,23 @@ export default {
       background-color: #DC7171;
     }
   }
+  .methods-tips, .pub-tips {
+    position: absolute;
+    font-size: 12px;
+    color: #fff;
+    width: 16px;
+    height: 16px;
+    border-radius: 50%;
+    left: -30px;
+    top: 5px;
+    background-color: #9BA1A8;
+    text-align: center;
+    line-height: 16px;
+    cursor: pointer;
+  }
+  .methods-tips {
+    left: -45px;
+  }
   .sign-item {
     position: relative;
     .copy-sign {
@@ -337,5 +370,11 @@ export default {
       text-align: left;
     }
   }
+}
+</style>
+<style lang="scss">
+.pub-create-tips {
+  word-wrap: break-word;
+  word-break: break-word;
 }
 </style>

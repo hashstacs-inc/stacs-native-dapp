@@ -46,7 +46,7 @@
             :label="v.label"
             :width="v.width">
             <template slot-scope="scope">
-              <span>{{scope.row.functionNames[0]}}</span>
+              <span>{{scope.row.functionName}}</span>
             </template>
           </el-table-column>
           <el-table-column
@@ -57,7 +57,7 @@
             :width="v.width">
             <template slot-scope="scope">
               <span class="action-btn" @click="goPublish(scope.row)" 
-                v-if="scope.row.executeResult == 1 && JSON.parse(scope.row.actionDatas)[0].functionName === 'BD_PUBLISH'">Publish</span>
+                v-if="scope.row.executeResult == 1 && scope.row.functionName === 'BD_PUBLISH'">Publish</span>
             </template>
           </el-table-column>
           <el-table-column
@@ -155,7 +155,7 @@ export default {
     }
   },
   created () {
-    // left menu active
+    // menu
     this.$store.commit('changeBdMenu', this.$route.meta.menu);
     this.getTableList();
   },
