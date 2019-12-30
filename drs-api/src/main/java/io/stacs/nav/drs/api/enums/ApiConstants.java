@@ -26,6 +26,7 @@ public interface ApiConstants {
         SYSTEM_PROPERTY("SYSTEM_PROPERTY", "/systemProperty/config"),
         KYC_SETTING("KYC_SETTING", "/kyc/setting"),
         SET_FEE_RULE("SET_FEE_RULE", "/fee/setRule"),
+        SET_FEE_CONFIG("SET_FEE_CONFIG", "/fee/setConfig"),
         SAVE_ATTESTATION("SAVE_ATTESTATION", "/attestation/save"),
         BUILD_SNAPSHOT("BUILD_SNAPSHOT", "/snapshot/build"),
         CREATE_CONTRACT("CREATE_CONTRACT", "/contract/deploy"),
