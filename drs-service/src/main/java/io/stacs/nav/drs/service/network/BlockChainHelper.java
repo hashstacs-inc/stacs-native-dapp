@@ -80,13 +80,6 @@ import static io.stacs.nav.drs.service.utils.HttpHelper.buildGetRequestParam;
         }
     }
 
-    public static void main(String[] args) {
-        String a = "xxx";
-        String dataJSON = JSON.toJSONString(a);
-        log.info("[post]dataJSON:{}", dataJSON);
-        System.out.println(JSON.parseObject(dataJSON, Object.class));
-    }
-
     /**
      * get request
      *
