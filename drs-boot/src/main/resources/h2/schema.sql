@@ -129,7 +129,7 @@ IF NOT EXISTS `transaction` (
 	`execute_result` varchar(24) DEFAULT NULL COMMENT 'tx execute result,0:fail,1:success',
 	`error_code` varchar(128) DEFAULT NULL COMMENT 'tx execute error code',
 	`error_message` varchar(512) DEFAULT NULL COMMENT 'tx execute error message',
-	`function_name` varchar(16) NOT NULL DEFAULT 'DEFAULT' COMMENT 'the type of transaction',
+	`function_name` varchar(64) NOT NULL DEFAULT 'DEFAULT' COMMENT 'the type of transaction',
 	`policy_version` int(8) DEFAULT NULL COMMENT 'the policy version',
 	`deal_count` int(8) DEFAULT 1 COMMENT 'the real deal count',
 	`max_allow_fee` varchar(28) DEFAULT NULL COMMENT 'maximum fee allowed',
