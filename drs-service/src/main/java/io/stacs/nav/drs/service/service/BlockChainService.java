@@ -13,6 +13,7 @@ import io.stacs.nav.drs.service.dao.po.BusinessDefinePO;
 import io.stacs.nav.drs.service.network.BlockChainFacade;
 import io.stacs.nav.drs.service.network.BlockChainHelper;
 import io.stacs.nav.drs.service.vo.MethodParamVO;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -26,7 +27,7 @@ import static io.stacs.nav.drs.api.exception.DappException.newError;
  * @author liuyu
  * @date 2019-11-25
  */
-@Service public class BlockChainService {
+@Service @Slf4j public class BlockChainService {
     @Autowired BlockChainFacade blockChainFacade;
     @Autowired BlockChainHelper blockChainHelper;
     //TODO:use cache
@@ -95,9 +96,11 @@ import static io.stacs.nav.drs.api.exception.DappException.newError;
     }
 
     public JSONObject queryMethodParam(MethodParamVO vo) {
-        RespData<JSONObject> respData = blockChainHelper.post(CONTRACT_METHOD.getApi(), vo, JSONObject.class);
-        if (respData.isSuccessful()) {
-            return respData.getData();
+        RespData<String> respData = blockChainHelper.post(CONTRACT_METHOD.getApi(), vo, String.class);
+        if (respData.isSuccessful() && respData.getData() != null) {
+            String json = respData.getData();
+            log.info("[queryMethodParam]json:{}",json);
+            return JSONObject.parseObject(json);
         }
         return null;
     }
