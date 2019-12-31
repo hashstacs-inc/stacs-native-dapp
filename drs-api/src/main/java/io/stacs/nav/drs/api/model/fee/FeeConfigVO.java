@@ -15,9 +15,9 @@ import static io.stacs.nav.drs.api.enums.ApiConstants.TransactionApiEnum.SET_FEE
  */
 @Getter @Setter public class FeeConfigVO extends BaseTxVO {
     /**
-     * the contract address of fee
+     * currency
      */
-    @NotNull private String contractAddress;
+    @NotNull private String currency;
     /**
      * the received address of fee
      */
@@ -25,5 +25,9 @@ import static io.stacs.nav.drs.api.enums.ApiConstants.TransactionApiEnum.SET_FEE
 
     @Override public String getFunctionName() {
         return SET_FEE_CONFIG.getFunctionName();
+    }
+
+    @Override public String getSignValue() {
+        return super.getSignValue() + currency + receiveAddr + getFunctionName();
     }
 }
