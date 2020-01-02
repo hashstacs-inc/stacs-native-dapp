@@ -38,7 +38,7 @@ import static io.stacs.nav.drs.api.exception.DappException.newError;
         clazzs.forEach(v -> {
             try {
                 BaseTxVO o = v.newInstance();
-                String name = o.getFunctionName();
+                String name = o.getMethodSign();
                 paramMap.put(name, o.getClass());
             } catch (Exception e) {
                 log.error("has error", e);

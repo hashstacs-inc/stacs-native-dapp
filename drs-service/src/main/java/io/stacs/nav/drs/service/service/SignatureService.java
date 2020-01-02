@@ -55,7 +55,7 @@ import static io.stacs.nav.drs.api.exception.DappError.FUNCTION_NOT_FIND_ERROR;
             List<FunctionDefine> functionDefines = JSON.parseArray(po.getFunctions(), FunctionDefine.class);
             bd.setFunctions(functionDefines);
         }
-        if (CREATE_CONTRACT.getFunctionName().equals(vo.getFunctionName())) {
+        if (CREATE_CONTRACT.getFunctionName().equals(vo.getMethodSign())) {
             execPolicyId = bd.getInitPolicy();
         } else {
             List<FunctionDefine> functions = bd.getFunctions();

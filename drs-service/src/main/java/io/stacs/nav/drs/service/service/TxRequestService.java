@@ -76,7 +76,7 @@ import static io.stacs.nav.drs.api.exception.DappError.BD_NOT_FIND_ERROR;
         String execPolicyId;
         String execFuncName;
         String execPermission;
-        if (CREATE_CONTRACT.getFunctionName().equals(vo.getFunctionName())) {
+        if (CREATE_CONTRACT.getFunctionName().equals(vo.getMethodSign())) {
             execPolicyId = bd.getInitPolicy();
             execFuncName = CREATE_CONTRACT.getFunctionName();
             execPermission = bd.getInitPermission();
@@ -96,7 +96,7 @@ import static io.stacs.nav.drs.api.exception.DappError.BD_NOT_FIND_ERROR;
             if (BD_TYPE_CONTRACT.equalsIgnoreCase(fd.getType())) {
                 execFuncName = CONTRACT_INVOKER.getFunctionName();
             } else {
-                execFuncName = fd.getName();
+                execFuncName = fd.getMethodSign();
             }
         }
         log.info("[submit]txId:{},boCode:{}", vo.getTxId(), vo.getBdCode());
