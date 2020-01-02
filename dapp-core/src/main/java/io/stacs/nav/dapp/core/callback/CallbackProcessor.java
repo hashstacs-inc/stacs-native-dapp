@@ -18,23 +18,24 @@ import java.util.Map;
  */
 @Component @Slf4j public class CallbackProcessor implements InitializingBean, ApplicationContextAware {
     private ApplicationContext applicationContext;
-
+    /**
+     * hold all handler
+     */
     private Map<String, ITxCallbackHandler> handlerMap = new HashMap<>();
+
+    @Override public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
+        this.applicationContext = applicationContext;
+    }
 
     @Override public void afterPropertiesSet() throws Exception {
         Map<String, ITxCallbackHandler> beansOfType = applicationContext.getBeansOfType(ITxCallbackHandler.class);
         beansOfType.forEach((k, v) -> {
-            String[] types = v.supportType();
-            for (String type : types) {
-                String key = type + v.supportVersion();
-                handlerMap.put(key, v);
-                log.info("callback handler supported: {}, bean:{}", key, v.getClass().getSimpleName());
+            CallbackType[] types = v.supportType();
+            for (CallbackType type : types) {
+                handlerMap.put(type.key(), v);
+                log.info("callback handler supported: {}, bean:{}", type.key(), v.getClass().getSimpleName());
             }
         });
-    }
-
-    @Override public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
-        this.applicationContext = applicationContext;
     }
 
     /**
@@ -43,7 +44,12 @@ import java.util.Map;
      * @param po
      */
     public void process(TransactionPO po) {
-        String key = po.getFunctionName() + po.getVersion();
+        String key = po.getBdCode() + po.getFunctionName() + po.getVersion();
+        if(handlerMap.containsKey(key)){
+            handlerMap.get(key).handle(po);
+            return;
+        }
+        key = po.getFunctionName() + po.getVersion();
         ITxCallbackHandler handler = handlerMap.get(key);
         if (handler == null) {
             log.error("[process] not support callback handler:{}", key);
