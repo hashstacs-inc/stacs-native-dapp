@@ -2,6 +2,7 @@ package io.stacs.nav.drs.api.model.callback;
 
 import lombok.Getter;
 import lombok.Setter;
+import lombok.ToString;
 
 /**
  * The type Transaction receipt.
@@ -10,7 +11,7 @@ import lombok.Setter;
  * @description the execution result of the transaction
  * @date 2018 -04-09
  */
-@Getter @Setter public class TransactionReceipt {
+@Getter @Setter @ToString(callSuper = true) public class TransactionReceipt {
     /**
      * the id of the transaction
      */

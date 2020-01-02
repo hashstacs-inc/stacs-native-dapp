@@ -29,7 +29,7 @@
       title="Tips"
       :visible.sync="configVisible"
       width="520px">
-      <p>Do you want to use the default etup?</p>
+      <p>Do you want to use the default setup?</p>
       <p slot="footer" class="dialog-footer">
         <el-button type="primary" @click="configConfirm">YES</el-button>
         <el-button @click="configCancel">NO</el-button>
@@ -72,6 +72,7 @@ export default {
         this.appList = filter;
       }
     },
+    // return status
     returnStaus (str) {
       /* eslint-disable */
       switch (str) {
@@ -92,12 +93,13 @@ export default {
           break;
       }
     },
+    // default configuration
     async configConfirm () {
       this.configVisible = false;
       this.loading = true;
-      // 使用默认配置，后初始化app
+      // Initialize after configuration
 
-      // 查询默认配置
+      // Query default configuration
       let getConfig = {
         name: this.currentItem.name,
         notify: notify.error,
@@ -105,7 +107,7 @@ export default {
       }
       let defaultConfig = await getDeappConfig(getConfig);
       if (defaultConfig.code === '000000') {
-        // 使用默认配置
+        // Use default configuration
         let params = {
           name: this.currentItem.name,
           notify: notify.any,
@@ -114,7 +116,7 @@ export default {
         }
         let postData = await postDeappConfig(params);
         if (postData.code === '000000') {
-          // 配置成功后，初始化deapp
+          // After successful configuration, initialize deapp
           let startParams = {
             name: this.currentItem.name,
             slient: true
@@ -136,10 +138,12 @@ export default {
       }
       this.loading = false;
     },
+    // Custom configuration jump
     configCancel () {
       this.$store.commit('changeStoreMenu', 3);
       this.$router.push({name: 'AppConfig', query: { name: this.currentItem.name }});
     },
+    // download
     async downloadApp (v) {
       let params = {
         params: {
@@ -152,13 +156,14 @@ export default {
       this.$set(v, 'loading', true);
       let data = await downloadApp(params);
       if (data.code === '000000') {
-        // 下载成功
+        // success
         this.$set(v, 'status', 'DOWNLOADED');
       } else {
         this.$set(v, 'errorText', data.msg);
       }
       this.$set(v, 'loading', false);
     },
+    // install app
     async installApp (v) {
       this.$set(v, 'loading', true);
       let params = {
@@ -178,27 +183,30 @@ export default {
     async handleClick (v) {
       this.$set(v, 'errorText', null);
       if (!v.status) {
-        // 未下载状态
+        // Status not downloaded
         this.downloadApp(v);
       } else if (v.status === 'DOWNLOADED') {
-        // 已下载状态
+        // Downloaded status
         this.configVisible = true;
         this.currentItem = v;
       } else if (v.status === 'INITIALIZED' || v.status === 'STOPPED') {
-        // 已配置,已初始化
+        // Configured, initialized
         this.installApp(v);
       } else if (v.status === 'RUNNING') {
         window.open(window.location.origin + '/' + v.name);
       }
     },
+    // getList
     async getAppLists () {
       this.loading = true;
-      let data = await getAppList();
-      data.data.forEach(v => {
-        v['loading'] = false;
-      });
-      this.appList = JSON.parse(JSON.stringify(data.data));
-      this.copyAppList = JSON.parse(JSON.stringify(data.data));
+      let data = await getAppList({ slient: true });
+      if (data.code === '000000') {
+        data.data.forEach(v => {
+          v['loading'] = false;
+        });
+        this.appList = JSON.parse(JSON.stringify(data.data));
+        this.copyAppList = JSON.parse(JSON.stringify(data.data));
+      }
       this.loading = false;
     }
   }
@@ -288,9 +296,9 @@ export default {
         position: relative;
         border-radius: 2px;
         text-align: center;
-        line-height: 20px;
-        padding: 0 3px;
-        min-width: 75px;
+        line-height: 19px;
+        padding: 0 5px;
+        min-width: 85px;
         cursor: pointer;
         .text {
           position: relative;

@@ -1,61 +1,132 @@
 <template>
-  <div class="publish-BD-contract">
+  <div class="publish-BD-contract" v-loading="loading">
     <p class="title">Publish BD Contract</p>
     <el-form :model="ruleForm" :rules="rules" ref="ruleForm" 
-      label-width="150px" class="general-form" label-position="left">
-      <el-form-item label="BD Name" prop="BDName">
-        <el-input v-model="ruleForm.BDName" disabled></el-input>
+      label-width="180px" class="general-form" label-position="left">
+      <el-form-item label="BD Name" prop="bdName">
+        <el-input v-model="ruleForm.bdName" disabled></el-input>
       </el-form-item>
-      <el-form-item label="Operation Address" prop="operationAddress">
-        <el-input v-model="ruleForm.operationAddress" :maxlength="40"></el-input>
+      <el-form-item label="Operation Address" prop="submitter">
+        <el-input v-model="ruleForm.submitter" :maxlength="40"></el-input>
       </el-form-item>
       <el-form-item label="Contract Address" prop="contractAddress">
         <el-input v-model="ruleForm.contractAddress" :maxlength="40"></el-input>
       </el-form-item>
-      <el-form-item label="Contract Name" prop="contractName">
-        <el-input v-model="ruleForm.contractName" :maxlength="64"></el-input>
+      <el-form-item label="Contract Name" prop="name">
+        <el-input v-model="ruleForm.name" :maxlength="64"></el-input>
+      </el-form-item>
+      <el-form-item label="Contract Code" prop="symbol">
+        <el-input v-model="ruleForm.symbol" :maxlength="64"></el-input>
       </el-form-item>
       <el-form-item label="Extension" prop="extension">
         <el-input v-model="ruleForm.extension" :maxlength="1024"></el-input>
       </el-form-item>
-      <el-form-item label="Contractor" prop="contractor">
+      <el-form-item label="Contract Method" prop="contractor">
         <el-input v-model="ruleForm.contractor"></el-input>
+        <el-popover
+          placement="top-start"
+          width="200"
+          popper-class="pub-create-tips"
+          trigger="hover"
+          content="The method that is used to construct the contract.">
+          <div class="methods-tips" slot="reference">?</div>
+        </el-popover>
       </el-form-item>
       <el-form-item label="Source Code" prop="sourceCode">
-        <el-input v-model="ruleForm.sourceCode" type="textarea" :autosize="{ minRows: 4}"></el-input>
+        <el-input v-model="ruleForm.sourceCode" type="textarea" :autosize="{ minRows: 4 }"></el-input>
       </el-form-item>
-      <el-form-item label="Init Args" prop="initArgs">
-        <el-input v-model="ruleForm.initArgs"></el-input>
-      </el-form-item>
+      <el-form :model="argsForm" ref="argsForm" 
+      label-width="180px" class="general-form" label-position="left">
+        <el-form-item label="Contract Parameter" :prop="'argsList.' + k + '.value'" v-for="(v, k) in argsForm.argsList" :key="k"
+          :rules="{ required: true, message: 'This filed is required', trigger: 'blur' }" class="args-box">
+          <el-input v-model="v.value" :disabled="v.disabled"></el-input>
+          <div class="add-args" :class="{'args-disabled': v.disabled}" @click="addArgs(v, k)">{{v.disabled ? '-' : '+'}}</div>
+          <el-popover
+            placement="top-start"
+            width="200"
+            popper-class="pub-create-tips"
+            trigger="hover"
+            content="The parameter that is used to construct the contract.">
+            <div class="pub-tips" slot="reference">?</div>
+          </el-popover>
+        </el-form-item>
+      </el-form>
     </el-form>
     <div class="submit-btn">
-      <p @click="submitContract">Submit</p>
+      <p @click="validateForm">Submit</p>
     </div>
+    <!-- sign -->
+    <el-dialog
+      title="System"
+      :visible.sync="signVisible"
+      width="600px">
+      <el-form ref="contractFrom" :model="signData"
+        label-width="150px" class="general-form" label-position="left">
+        <!-- <el-form-item label="Signature Data" prop="signatureData" class="sign-item">
+          <el-input v-model="signData.sign" placeholder="Please enter signature value" :disabled="true"></el-input>
+          <div class="copy-sign" v-clipboard:copy="signData.sign" v-clipboard:success="onCopySign">
+            <img src="../../../assets/img/copy.png" alt="logo">
+          </div>
+        </el-form-item> -->
+        <el-form-item label="Private Key" prop="privateKey"
+          :rules="{ required: true, message: 'This filed is required', trigger: 'blur' }">
+          <el-input v-model="signData.privateKey" placeholder="Please enter your private key" type="textarea" :rows="3"></el-input>
+        </el-form-item>
+        <!-- <el-form-item label="" class="sign-icon-box">
+          <div class="sign-icon" @click="goSingLink">
+            <img src="../../../assets/img/sign-icon.png" alt="logo">
+          </div>          
+        </el-form-item>
+        <div class="sign-tips">
+          <img src="../../../assets/img/tips.png" alt="logo" class="tips-icon">
+          <p class="sign-title">Note</p>
+          <p class="sign-doc">For the security of your wallet, copy the value of Signature Data to sign other wallets, and then fill the returned signature value into the Signature Value box to complete the signature.</p>
+        </div> -->
+      </el-form>
+      <p slot="footer" class="dialog-footer">
+        <el-button type="primary" @click="confirmSign">Confirm</el-button>
+        <el-button @click="signVisible = false">Return</el-button>
+      </p>
+    </el-dialog>
   </div>
 </template>
 <script>
+import { submitBDConfig } from '@/api/storeApi';
+import { notify } from '@/common/util';
+import { Loading } from 'element-ui';
+
 export default {
   name: 'PublishBDContract',
   data () {
     return {
       ruleForm: {
-        BDName: '',
-        operationAddress: '',
+        bdName: '',
+        submitter: '',
+        symbol: '',
         contractAddress: '',
-        contractName: '',
+        name: '',
         extension: '',
         contractor: '',
         sourceCode: '',
-        initArgs: ''
+        initArgs: []
+      },
+      loading: false,
+      argsForm: {
+        argsList: [
+          {
+            value: '',
+            disabled: false
+          }
+        ]
       },
       rules: {
-        BDName: [
+        bdName: [
           { required: true, message: 'This filed is required', trigger: 'blur' }
         ],
-        operationAddress: [
+        submitter: [
           { required: true, message: 'This filed is required', trigger: 'blur' }
         ],
-        contractName: [
+        name: [
           { required: true, message: 'This filed is required', trigger: 'blur' }
         ],
         contractor: [
@@ -64,18 +135,119 @@ export default {
         sourceCode: [
           { required: true, message: 'This filed is required', trigger: 'blur' }
         ],
-        initArgs: [
+        symbol: [
           { required: true, message: 'This filed is required', trigger: 'blur' }
         ]
+      },
+      signVisible: false,
+      signData: {
+        // txId: '',
+        // sign: '',
+        privateKey: ''
       }
     }
   },
   created () {
     this.$store.commit('changeBdMenu', this.$route.meta.menu);
+    this.ruleForm.bdName = this.$route.query.name;
   },
   methods: {
-    submitContract () {
+    // copy
+    onCopySign () {
+      this.$notify.success({message: 'Operation Success'});
+    },
+    confirmSign () {
+      this.$refs['contractFrom'].validateField('privateKey', error => {
+        if (!error) {
+          this.submitContract(false, true);
+        }
+      });
+    },
+    // open page
+    // goSingLink () {
+    //   window.open('https://www.myetherwallet.com/access-my-wallet', '_blank');
+    // },
+    // validate
+    validateForm () {
+      let isValid = false;
+      this.$refs['ruleForm'].validate(async valid => {
+        if (this.argsForm.argsList.length === 1) {
+          this.$refs['argsForm'].validate(argsValid => {
+            if (valid && argsValid) {
+              isValid = true;
+              this.submitContract(true, isValid);
+            }
+          });
+        } else {
+          isValid = valid;
+          this.submitContract(true, isValid);
+        }
+      });
+    },
+    // submit form
+    async submitContract (flag, valid) {
+      if (valid) {
+        let subData = Object.assign({}, this.ruleForm);
+        delete subData.bdName;
+        subData['code'] = this.$route.query.bdCode;
+        subData['bdCode'] = this.$route.query.bdCode;
+        subData['fromAddr'] = subData.submitter;
+        let subArgs = Object.assign([], this.argsForm.argsList.filter(v => v.value));
+        subData.initArgs = subArgs.map(v => {
+          return v.value;
+        });
+        let reqData = {
+          data: {
+            functionName: 'CREATE_CONTRACT',
+            param: {}
+          },
+          slient: true,
+          notify: notify.error
+        }
+        reqData.data.param = Object.assign(reqData.data.param, subData);
+        if (flag) {
+          // this.loading = true;
+          // let sign = await getSignValue(reqData);
+          // if (sign.code === '000000') {
+          //   this.signData = JSON.parse(JSON.stringify(sign.data));
+          this.signVisible = true;
+          // }
+          // this.loading = false;
+        } else {
+          let loadingInstance = Loading.service();
+          // reqData.data.param = Object.assign(reqData.data.param, this.signData);
+          // reqData.data.param.txId = this.signData.txId;
+          // reqData.data.param.privateKey = this.signData.privateKey;
 
+          reqData.data = Object.assign(reqData.data, this.signData)
+          reqData.notify = notify.any;
+          // submit
+          let subResult = await submitBDConfig(reqData);
+          loadingInstance.close();
+          if (subResult.code === '000000') {
+            this.signVisible = false;
+            // return history
+            this.$router.push({ name: 'History' });
+          }
+        }
+      }
+    },
+    // add Args
+    addArgs(v, k) {
+      if (!v.disabled) {
+        this.$refs['argsForm'].validateField(`argsList.${k}.value`, error => {
+          if (!error) {
+            let add = Object.assign({}, v);
+            add.disabled = true;
+            this.argsForm.argsList[0].value = '';
+            this.argsForm.argsList[0].disabled = false;
+            this.argsForm.argsList.push(add);
+          }
+        });
+      } else {
+        // remove
+        this.argsForm.argsList.splice(k ,1);
+      }
     }
   }
 }
@@ -108,5 +280,101 @@ export default {
       margin-top: 40px;
     }
   }
+  .args-box {
+    position: relative;
+    .add-args {
+      position: absolute;
+      right: -48px;
+      top: 50%;
+      transform: translateY(-50%);
+      width: 28px;
+      height: 28px;
+      background-color: #5782F7;
+      color: #fff;
+      font-size: 25px;
+      text-align: center;
+      cursor: pointer;
+      line-height: 24px;
+    }
+    .args-disabled {
+      background-color: #DC7171;
+    }
+  }
+  .methods-tips, .pub-tips {
+    position: absolute;
+    font-size: 12px;
+    color: #fff;
+    width: 16px;
+    height: 16px;
+    border-radius: 50%;
+    left: -30px;
+    top: 5px;
+    background-color: #9BA1A8;
+    text-align: center;
+    line-height: 16px;
+    cursor: pointer;
+  }
+  .methods-tips {
+    left: -45px;
+  }
+  .sign-item {
+    position: relative;
+    .copy-sign {
+      position: absolute;
+      right: 10px;
+      top: 0px;
+      cursor: pointer;
+      img {
+        width: 14px;
+        height: 14px;
+      }
+    }
+  }
+  .sign-icon-box {
+    margin-bottom: 60px;
+    .sign-icon {
+      width: 40px;
+      height: 40px;
+      cursor: pointer;
+      img {
+        width: 100%;
+        height: 100%;
+      }
+    }
+  }
+  .sign-tips {
+    width: 400px;
+    margin: 0 auto;
+    background-color: #F1FFF5;
+    height: 150px;
+    position: relative;
+    padding: 30px 14px 0 14px;
+    .tips-icon {
+      width: 48px;
+      height: 48px;
+      position: absolute;
+      left: 50%;
+      top: -50%;
+      transform: translate(-50%, 100%);
+    }
+    .sign-title {
+      margin-bottom: 10px;
+      color: #333333;
+      font-size: 12px;
+    }
+    .sign-doc {
+      color: #66AE79;
+      font-size: 14px;
+      word-wrap: break-word;
+      word-break: normal;
+      text-align: left;
+    }
+  }
+}
+</style>
+<style lang="scss">
+.pub-create-tips {
+  word-wrap: break-word;
+  word-break: break-word;
 }
 </style>

@@ -40,6 +40,7 @@ export default {
         this.$refs[k][0].style.opacity = '0';
       }
     },
+    // Get custom configuration list
     async getAppConfig () {
       let params = {
         name: this.deappName,
@@ -48,6 +49,7 @@ export default {
       let data = await getDeappConfig(params);
       this.configObj = data.data;
     },
+    // submit
     async submit () {
       for(let i in this.configObj) {
         if (!this.configObj[i]) {
@@ -68,7 +70,7 @@ export default {
           dangerouslyUseHTMLString: true
         });
       } else {
-        // 配置成功后，初始化deapp
+        // After successful configuration, initialize deapp
         let startParams = {
           name: this.deappName,
           slient: true,

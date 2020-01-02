@@ -106,6 +106,7 @@ export default {
     this.SysConfig();
   },
   methods: {
+    // Get default configuration
     async SysConfig () {
       this.loading = true;
       let data = await getSysConfig();
@@ -117,6 +118,7 @@ export default {
     changeTab (v) {
       this.$router.push({name: v.pathName});
     },
+    // submit
     submitFrom () {
       this.$refs['ruleForm'].validate(async valid => {
         if (valid) {

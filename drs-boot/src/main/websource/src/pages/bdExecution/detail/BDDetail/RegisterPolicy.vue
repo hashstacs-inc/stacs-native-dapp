@@ -2,12 +2,12 @@
   <div class="register-policy">
     <p class="title">Special Information</p>
     <el-form :model="ruleForm" :rules="rules" ref="ruleForm" 
-      label-width="150px" class="general-form" label-position="left">
-      <el-form-item label="Policy Id" prop="policyId">
-        <el-input v-model="ruleForm.policyId" placeholder="Please enter an Policy Id"></el-input>
+      label-width="180px" class="general-form" label-position="left">
+      <el-form-item label="Policy ID" prop="policyId">
+        <el-input v-model="ruleForm.policyId" placeholder="Please enter an Policy ID" :maxLength="32"></el-input>
       </el-form-item>
       <el-form-item label="Policy Name" prop="policyName">
-        <el-input v-model="ruleForm.policyName" placeholder="Please enter an Policy Name"></el-input>
+        <el-input v-model="ruleForm.policyName" placeholder="Please enter an Policy Name" :maxLength="64"></el-input>
       </el-form-item>
       <el-form-item label="Domain IDs" prop="domainIds">
         <el-select v-model="ruleForm.domainIds" placeholder="Please select domian IDs" multiple filterable @change="changeDomain">
@@ -27,23 +27,23 @@
         </el-select>
       </el-form-item>
       <el-form-item label="Decision Type" prop="decisionType">
-        <el-select v-model="ruleForm.decisionType">
+        <el-select v-model="ruleForm.decisionType" @change="changeDecision">
           <el-option :label="v.name" :value="v.id" v-for="(v, k) in decisionList" :key="k"></el-option>
         </el-select>
       </el-form-item>
-      <!-- 投票类型选择Assign Num时 -->
+      <!-- decisionType = Assign Num -->
       <template v-if="ruleForm.decisionType === 'ASSIGN_NUM'">
         <p class="title meta">Assig Meta</p>
-        <el-form-item label="Verify Num" prop="verifyNum">
-          <el-input v-model="ruleForm.verifyNum" placeholder="Please enter an integer"></el-input>
+        <el-form-item label="Verify Num" prop="assignMeta.verifyNum">
+          <el-input v-model="ruleForm.assignMeta.verifyNum" placeholder="Please enter an integer"></el-input>
         </el-form-item>
-        <el-form-item label="Must Domain IDs" prop="mustDomainIds">
-          <el-select v-model="ruleForm.mustDomainIds" placeholder="Please select from Domain IDs" multiple filterable>
+        <el-form-item label="Must Domain IDs" prop="assignMeta.mustDomainIds">
+          <el-select v-model="ruleForm.assignMeta.mustDomainIds" placeholder="Please select from Domain IDs" multiple filterable>
             <el-option :label="v" :value="v" v-for="(v, k) in ruleForm.domainIds" :key="k"></el-option>
           </el-select>
         </el-form-item>
-        <el-form-item label="Expression" prop="expression">
-          <el-input v-model="ruleForm.expression" placeholder="Please fill in the expression. Only support integer、 +、-、x 、/ . as (n+1)/2"></el-input>
+        <el-form-item label="Expression" prop="assignMeta.expression">
+          <el-input v-model="ruleForm.assignMeta.expression" placeholder="Please fill in the expression. Only support integer、 +、-、x 、/ . as (n+1)/2"></el-input>
         </el-form-item>
       </template>
       <el-form-item label="Require Auth IDs" prop="requireAuthIds">
@@ -80,9 +80,11 @@ export default {
         callbackType: 'ALL',
         decisionType: 'FULL_VOTE',
         requireAuthIds: [],
-        verifyNum: '',
-        mustDomainIds: [],
-        expression: ''
+        assignMeta: {
+          verifyNum: '',
+          mustDomainIds: [],
+          expression: ''
+        }
       },
       domainList: [],
       voteList: [
@@ -134,29 +136,36 @@ export default {
         requireAuthIds: [
           { required: true, message: 'This filed is required', trigger: 'change' }
         ],
-        verifyNum: [
+        'assignMeta.verifyNum': [
           { required: true, message: 'This filed is required', trigger: 'blur' }
         ],
-        mustDomainIds: [
+        'assignMeta.mustDomainIds': [
           { required: true, message: 'This filed is required', trigger: 'change' }
         ],
         policyId: [
           { required: true, message: 'This filed is required', trigger: 'blur' }
         ],
-        expression: [
+        'assignMeta.expression': [
           { validator: validatorExpression, trigger: 'blur' }
         ]
       }
     }
   },
   methods: {
+    changeDecision (name) {
+      if (name !== 'ASSIGN_NUM') {
+        this.ruleForm.assignMeta.verifyNum = '';
+        this.ruleForm.assignMeta.mustDomainIds = [];
+        this.ruleForm.assignMeta.expression = '';
+      }
+    },
     changeDomain () {
       if (this.ruleForm.domainIds.length === 0) {
         this.ruleForm.requireAuthIds = [];
-        this.ruleForm.mustDomainIds = [];
+        this.ruleForm.assignMeta.mustDomainIds = [];
       }
     },
-    validateFrom () {
+    validateForm () {
       let validCode = {
         valid: false,
         ruleForm: this.ruleForm

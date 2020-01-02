@@ -13,7 +13,6 @@
         <div class="doc-box">
           <p class="title">{{v.showName}}</p>
           <p class="detail">{{v.remark}}</p>
-          <!-- <p>介绍资料：原名:Gestures for Chrome(TM)汉化版.方便,快捷汉化版.方便,快捷汉化版.方便,快捷汉化版.方便,快捷汉化版.方便,快捷</p> -->
         </div>
         <div class="operation">
           <p class="text" @click="operationClick(v)" v-loading="v.loading">{{returnStatus(v.status)}}</p>
@@ -35,7 +34,7 @@
       title="System"
       :visible.sync="configVisible"
       width="520px">
-      <p>Do you want to use the default etup?</p>
+      <p>Do you want to use the default setup?</p>
       <p slot="footer" class="dialog-footer">
         <el-button type="primary" @click="configConfirm">YES</el-button>
         <el-button @click="configCancel">NO</el-button>
@@ -88,10 +87,11 @@ export default {
         this.appList = filter;
       }
     },
+    // getData
     async getList () {
       this.loading = true;
-      let data = await getMyAppList();
-      if (data.data) {
+      let data = await getMyAppList({ slient: true });
+      if (data.code === '000000' && data.data) {
         this.appList = JSON.parse(JSON.stringify(data.data));
         this.copyAppList = JSON.parse(JSON.stringify(data.data));
       } else {
@@ -100,6 +100,7 @@ export default {
       }
       this.loading = false;
     },
+    // status
     returnStatus (state) {
       /* eslint-disable */
       switch(state) {
@@ -144,13 +145,14 @@ export default {
       this.currentUninstall = v;
       this.uninstallVisible = true;
     },
+    // default configuration
     async configConfirm () {
       this.configVisible = false;
       this.loading = true;
-      // 已下载状态
-      // 使用默认配置，后初始化app
+      // Downloaded
+      // Initialize after configuration
 
-      // 查询默认配置
+      // Query default configuration
       let getConfig = {
         name: this.currentItem.name,
         notify: notify.error,
@@ -158,7 +160,7 @@ export default {
       }
       let defaultConfig = await getDeappConfig(getConfig);
       if (defaultConfig.code === '000000') {
-        // 使用默认配置
+        // Use default configuration
         let params = {
           name: this.currentItem.name,
           notify: notify.any,
@@ -167,7 +169,7 @@ export default {
         }
         let postData = await postDeappConfig(params);
         if (postData.code === '000000') {
-          // 配置成功后，初始化deapp
+          // After successful configuration, initialize deapp
           let startParams = {
             name: this.currentItem.name,
             slient: true
@@ -186,10 +188,12 @@ export default {
       }
       this.loading = false;
     },
+    // Custom configuration jump
     configCancel () {
       this.$store.commit('changeStoreMenu', 3);
       this.$router.push({name: 'AppConfig', query: { name: this.currentItem.name }});
     },
+    // install
     async installApp (v) {
       this.$set(v, 'loading', true);
       let params = {
@@ -212,7 +216,7 @@ export default {
       if (this.currentItem.status === 'DOWNLOADED') {
         this.configVisible = true;
       } else if (this.currentItem.status === 'INITIALIZED' || this.currentItem.status === 'STOPPED') {
-        // 已配置,已初始化
+        // Configured, initialized
         this.installApp(v);
       } else if (v.status === 'RUNNING') {
         window.open(window.location.origin + '/' + v.name);
@@ -321,7 +325,8 @@ export default {
       justify-content: space-around;
       align-items: center;
       .text {
-        padding: 0 10px;
+        padding: 0 5px;
+        min-width: 85px;
         height: 25px;
         font-size: 12px;
         background-color: #053C8C;
@@ -329,6 +334,7 @@ export default {
         color: #fff;
         line-height: 25px;
         cursor: pointer;
+        text-align: center;
       }
       .error {
         color: #F17070;

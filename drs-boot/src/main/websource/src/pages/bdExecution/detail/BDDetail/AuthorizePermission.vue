@@ -2,7 +2,7 @@
   <div class="authorize-permission">
     <p class="title">Special Information</p>
     <el-form :model="ruleForm" :rules="rules" ref="ruleForm" 
-      label-width="150px" class="general-form" label-position="left">
+      label-width="180px" class="general-form" label-position="left">
       <el-form-item label="Identity Address" prop="identityAddress">
         <el-input v-model="ruleForm.identityAddress" placeholder="Please enter the  identity address" :maxlength="40"></el-input>
       </el-form-item>
@@ -26,6 +26,7 @@ export default {
   name: 'AuthorizePermission',
   data () {
     return {
+      // Form Data
       ruleForm: {
         identityAddress: '',
         permissionNames: [],
@@ -60,7 +61,8 @@ export default {
       let data = await getPermissionList();
       this.permissionNameList = JSON.parse(JSON.stringify(data.data));
     },
-    validateFrom () {
+    // validate Form
+    validateForm () {
       let validCode = {
         valid: false,
         ruleForm: this.ruleForm

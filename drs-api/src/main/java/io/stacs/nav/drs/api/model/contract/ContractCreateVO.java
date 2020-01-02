@@ -1,10 +1,11 @@
 package io.stacs.nav.drs.api.model.contract;
 
+import io.stacs.nav.drs.api.enums.ApiConstants;
 import io.stacs.nav.drs.api.model.BaseTxVO;
 import lombok.Getter;
 import lombok.Setter;
-
-import static io.stacs.nav.drs.api.enums.ApiConstants.TransactionApiEnum.CREATE_CONTRACT;
+import lombok.ToString;
+import org.apache.commons.lang3.StringUtils;
 
 /**
  * The type Contract create request.
@@ -12,7 +13,7 @@ import static io.stacs.nav.drs.api.enums.ApiConstants.TransactionApiEnum.CREATE_
  * @author duhongming
  * @date 2018 /6/24
  */
-@Getter @Setter public class ContractCreateVO extends BaseTxVO {
+@Getter @Setter @ToString(callSuper = true) public class ContractCreateVO extends BaseTxVO {
 
     private String fromAddr;
     /**
@@ -27,7 +28,10 @@ import static io.stacs.nav.drs.api.enums.ApiConstants.TransactionApiEnum.CREATE_
      * 合约构造器
      */
     private String contractor;
-
+    /**
+     *
+     */
+    private String symbol;
     /**
      * 合约代码
      */
@@ -37,10 +41,16 @@ import static io.stacs.nav.drs.api.enums.ApiConstants.TransactionApiEnum.CREATE_
      */
     private Object[] initArgs;
 
-    @Override public String getFunctionName() {
-        return CREATE_CONTRACT.getFunctionName();
+    @Override public String getMethodSign() {
+        return ApiConstants.TransactionApiEnum.CREATE_CONTRACT.getFunctionName();
     }
 
+    @Override public String getFunctionName() {
+        if (StringUtils.isEmpty(super.getFunctionName())) {
+            return this.getMethodSign();
+        }
+        return super.getFunctionName();
+    }
     /**
      * get sign value
      *
@@ -48,10 +58,11 @@ import static io.stacs.nav.drs.api.enums.ApiConstants.TransactionApiEnum.CREATE_
      */
     @Override
     public String getSignValue(){
-        return getSignValue()
+        return super.getSignValue()
                     + fromAddr
                     + contractAddress
                     + name
+                    + symbol
                     + extension
                     + getFunctionName();
     }

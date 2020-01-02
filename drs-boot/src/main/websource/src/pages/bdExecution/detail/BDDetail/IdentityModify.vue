@@ -2,7 +2,7 @@
   <div class="identity-modify">
     <p class="title">Special Information</p>
     <el-form :model="ruleForm" :rules="rules" ref="ruleForm" 
-      label-width="150px" class="general-form" label-position="left">
+      label-width="180px" class="general-form" label-position="left">
       <el-form-item label="Property" prop="property">
         <el-input v-model="ruleForm.property" placeholder="Please enter with json" :maxlength="1024"></el-input>
       </el-form-item>
@@ -29,7 +29,7 @@ export default {
     }
   },
   methods: {
-    validateFrom () {
+    validateForm () {
       let validCode = {
         valid: false,
         ruleForm: this.ruleForm

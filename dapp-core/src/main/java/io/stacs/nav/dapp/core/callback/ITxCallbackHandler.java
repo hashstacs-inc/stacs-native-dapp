@@ -1,5 +1,7 @@
 package io.stacs.nav.dapp.core.callback;
 
+import io.stacs.nav.drs.api.model.TransactionPO;
+
 /**
  * @author liuyu
  * @description
@@ -7,9 +9,14 @@ package io.stacs.nav.dapp.core.callback;
  */
 public interface ITxCallbackHandler {
     /**
-     * handle event
+     * supported type
      *
-     * @param txId
+     * @return
      */
-    void handle(String txId);
+    CallbackType[] supportType();
+
+    /**
+     * @param po
+     */
+    void handle(TransactionPO po);
 }

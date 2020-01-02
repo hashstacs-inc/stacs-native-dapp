@@ -38,8 +38,16 @@ import java.util.function.Consumer;
             log.warn("init plugin is fail,get plugin is null,name:{}", Constants.SERVICE_NAME);
             return;
         }
+
+        registryService.publishService(
+            ISubmitterService.class,
+            newInstance(),
+            new PluginServiceProvider(plugin));
+    }
+
+    public ISubmitterService newInstance() {
         Consumer<Object[]> TX_SUBMITTER_HANDLER =  args -> {
-           requestService.submitTx((BaseTxVO)args[0]);
+            requestService.submitTx((BaseTxVO)args[0]);
         };
 
         BiPredicate<Method, Object[]> FILTER = (method, args) -> {
@@ -47,12 +55,9 @@ import java.util.function.Consumer;
                 throw new IllegalArgumentException(String.format("Illegal args for tx submitter: %s", Arrays.toString(args)));
             return true;
         };
-        registryService.publishService(
-            ISubmitterService.class,
-            ReflectUtils.getInstance(
+        return ReflectUtils.getInstance(
                 ISubmitterService.class,
-                ReflectUtils.newProxy(TX_SUBMITTER_HANDLER, FILTER)),
-            new PluginServiceProvider(plugin));
+                ReflectUtils.newProxy(TX_SUBMITTER_HANDLER, FILTER));
     }
     // @formatter:on
 

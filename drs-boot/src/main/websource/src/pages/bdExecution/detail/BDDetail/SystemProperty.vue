@@ -2,15 +2,15 @@
   <div class="system-property">
     <p class="title">Special Information</p>
     <el-form :model="ruleForm" :rules="rules" ref="ruleForm" 
-      label-width="150px" class="general-form" label-position="left">
-      <el-form-item label="Proprty Name" prop="key">
-        <el-input v-model="ruleForm.key" placeholder="Please enter proprty name"></el-input>
+      label-width="180px" class="general-form" label-position="left">
+      <el-form-item label="Property Name" prop="key">
+        <el-input v-model="ruleForm.key" placeholder="Please enter Property name"></el-input>
       </el-form-item>
-      <el-form-item label="Proprty Information" prop="value">
+      <el-form-item label="Property Information" prop="value">
         <el-input v-model="ruleForm.value" placeholder="Please enter property information"></el-input>
       </el-form-item>
-      <el-form-item label="Descision" prop="desc">
-        <el-input v-model="ruleForm.desc" placeholder="Please enter property descision"></el-input>
+      <el-form-item label="Description" prop="desc">
+        <el-input v-model="ruleForm.desc" placeholder="Please enter property description"></el-input>
       </el-form-item>
     </el-form>
   </div>
@@ -39,7 +39,7 @@ export default {
     }
   },
   methods: {
-    validateFrom () {
+    validateForm () {
       let validCode = {
         valid: false,
         ruleForm: this.ruleForm

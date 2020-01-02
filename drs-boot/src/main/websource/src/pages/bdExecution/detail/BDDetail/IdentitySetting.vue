@@ -2,16 +2,16 @@
   <div class="identity-setting">
     <p class="title">Special Information</p>
     <el-form :model="ruleForm" :rules="rules" ref="ruleForm" 
-      label-width="150px" class="general-form" label-position="left">
-      <el-form-item label="IdentityType" prop="identityType">
+      label-width="180px" class="general-form" label-position="left">
+      <el-form-item label="Identity Type" prop="identityType">
         <el-select v-model="ruleForm.identityType">
           <el-option :label="v.name" :value="v.name" v-for="(v, k) in identityTypeList" :key="k"></el-option>
         </el-select>
       </el-form-item>
-      <el-form-item label="property" prop="property">
+      <el-form-item label="Property" prop="property">
         <el-input v-model="ruleForm.property" placeholder="Please enter with json" :maxlength="1024"></el-input>
       </el-form-item>
-      <el-form-item label="address" prop="address">
+      <el-form-item label="Address" prop="address">
         <el-input v-model="ruleForm.address" placeholder="Please enter new identity address" :maxlength="40"></el-input>
       </el-form-item>
     </el-form>
@@ -45,7 +45,7 @@ export default {
     }
   },
   methods: {
-    validateFrom () {
+    validateForm () {
       let validCode = {
         valid: false,
         ruleForm: this.ruleForm

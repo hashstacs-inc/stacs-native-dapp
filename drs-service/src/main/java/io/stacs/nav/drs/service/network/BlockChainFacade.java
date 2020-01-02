@@ -15,6 +15,7 @@ import io.stacs.nav.drs.service.config.DomainConfig;
 import io.stacs.nav.drs.service.dao.po.BusinessDefinePO;
 import io.stacs.nav.drs.service.utils.*;
 import io.stacs.nav.drs.service.utils.config.ConfigListener;
+import io.stacs.nav.drs.service.vo.MethodParamVO;
 import io.stacs.nav.drs.service.vo.PermissionCheckVO;
 import lombok.extern.slf4j.Slf4j;
 import okhttp3.ResponseBody;
@@ -45,7 +46,7 @@ import static io.stacs.nav.drs.service.utils.Pair.of;
 
     @Autowired private DrsHttpClient client;
     private static Predicate<String> encryptSkipFilter = Pattern.compile("[Qq]uery").asPredicate();
-    //    private static Predicate<String> encryptSkipFilter = s -> true;
+       // private static Predicate<String> encryptSkipFilter = s -> true;
 
     private String baseUrl;
 
@@ -168,10 +169,12 @@ import static io.stacs.nav.drs.service.utils.Pair.of;
     public Optional<JSONArray> queryContract(ContractQueryRequest request) {
         return commonPostApi(QUERY_CONTRACT, request, resp -> (JSONArray)resp.getData());
     }
+    public Optional<JSONObject> queryMethodParam(MethodParamVO vo) {
+        return commonPostApi(CONTRACT_METHOD, vo, resp -> (JSONObject)resp.getData());
+    }
 
     public Optional<Boolean> checkPermission(PermissionCheckVO vo) {
-        String r = (String)(commonPostApi(CHECK_PERMISSION, vo).get());
-        return Optional.of(Boolean.valueOf(r));
+        return commonPostApi(CHECK_PERMISSION, vo);
     }
 
     @Nonnull

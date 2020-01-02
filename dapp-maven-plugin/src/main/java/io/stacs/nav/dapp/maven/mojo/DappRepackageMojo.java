@@ -130,7 +130,7 @@ public class DappRepackageMojo extends AbstractMojo {
 
         Artifact drsApi = Optional.ofNullable(project.getArtifactMap().get(DRS_API_ARTIFACT_KEY))
             .orElseThrow(() -> new MojoExecutionException("can't repackage dapp without drs-api dependency"));
-        drsVersion = drsApi.getVersion();
+        drsVersion = drsApi.getBaseVersion();
         // write drs config
 
         repackage();
@@ -188,21 +188,21 @@ public class DappRepackageMojo extends AbstractMojo {
 
             Set<Artifact> artifacts = Sets.newHashSet(ark);
             if (!skipBuildDebug) {
-                Artifact drs = artifactFactory.createArtifactWithClassifier(DRS.GROUP_ID, DRS.ARTIFACT_ID, drsVersion,
-                                                                            DRS.TYPE, DRS.CLASSIFIER);
+                Artifact drs = artifactFactory
+                    .createArtifactWithClassifier(DRS.GROUP_ID, DRS.ARTIFACT_ID, drsVersion, DRS.TYPE, DRS.CLASSIFIER);
                 drs.setScope(DRS.SCOPE);
-                Artifact service = artifactFactory.createArtifact(Plugin.DrsService.GROUP_ID,
-                                                                  Plugin.DrsService.ARTIFACT_ID, drsVersion,
-                                                                  Plugin.DrsService.SCOPE, Plugin.DrsService.TYPE);
-                artifactResolver.resolve(drs, project.getRemoteArtifactRepositories(),
-                                         mavenSession.getLocalRepository());
-                artifactResolver.resolve(service, project.getRemoteArtifactRepositories(),
-                                         mavenSession.getLocalRepository());
+                Artifact service = artifactFactory
+                    .createArtifact(Plugin.DrsService.GROUP_ID, Plugin.DrsService.ARTIFACT_ID, drsVersion,
+                        Plugin.DrsService.SCOPE, Plugin.DrsService.TYPE);
+                artifactResolver
+                    .resolve(drs, project.getRemoteArtifactRepositories(), mavenSession.getLocalRepository());
+                artifactResolver
+                    .resolve(service, project.getRemoteArtifactRepositories(), mavenSession.getLocalRepository());
                 artifacts.add(drs);
                 artifacts.add(service);
             }
-            artifacts.addAll(
-                filterExcludeArtifacts(project.getArtifacts(), excludes, excludeGroupIds, excludeArtifactIds));
+            artifacts
+                .addAll(filterExcludeArtifacts(project.getArtifacts(), excludes, excludeGroupIds, excludeArtifactIds));
             return artifacts;
         } catch (ArtifactResolutionException | ArtifactNotFoundException ex) {
             throw new MojoExecutionException(ex.getMessage(), ex);

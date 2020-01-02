@@ -5,6 +5,7 @@ import com.google.common.collect.Lists;
 import io.stacs.nav.drs.api.exception.DappError;
 import io.stacs.nav.drs.api.exception.DappException;
 import io.stacs.nav.drs.api.model.BaseTxVO;
+import io.stacs.nav.drs.api.model.RespData;
 import io.stacs.nav.drs.api.model.bd.BusinessDefine;
 import io.stacs.nav.drs.api.model.bd.FunctionDefine;
 import io.stacs.nav.drs.service.dao.BusinessDefineDao;
@@ -14,6 +15,7 @@ import io.stacs.nav.drs.service.dao.po.TxRequestPO;
 import io.stacs.nav.drs.service.enums.RequestStatus;
 import io.stacs.nav.drs.service.model.TxRequestBO;
 import io.stacs.nav.drs.service.network.BlockChainFacade;
+import io.stacs.nav.drs.service.network.BlockChainHelper;
 import io.stacs.nav.drs.service.scheduler.InitTxDisruptor;
 import io.stacs.nav.drs.service.utils.BeanConvertor;
 import io.stacs.nav.drs.service.vo.PermissionCheckVO;
@@ -29,10 +31,10 @@ import javax.validation.Valid;
 import java.util.List;
 import java.util.Optional;
 
+import static io.stacs.nav.drs.api.enums.ApiConstants.QueryApiEnum.CHECK_PERMISSION;
 import static io.stacs.nav.drs.api.enums.ApiConstants.TransactionApiEnum.CONTRACT_INVOKER;
 import static io.stacs.nav.drs.api.enums.ApiConstants.TransactionApiEnum.CREATE_CONTRACT;
-import static io.stacs.nav.drs.api.exception.DappError.DAPP_NETWORK_COMMON_ERROR;
-import static io.stacs.nav.drs.api.exception.DappException.newError;
+import static io.stacs.nav.drs.api.exception.DappError.BD_NOT_FIND_ERROR;
 
 /**
  * @author liuyu
@@ -43,11 +45,12 @@ import static io.stacs.nav.drs.api.exception.DappException.newError;
     /**
      * contract type of BD
      */
-    private final static String BD_TYPE_CONTRACT = "contract";
+    private final static String BD_TYPE_CONTRACT = "Contract";
 
     @Autowired TxRequestDao txRequestDao;
     @Autowired InitTxDisruptor initTxDisruptor;
     @Autowired BlockChainFacade blockChainFacade;
+    @Autowired BlockChainHelper blockChainHelper;
     @Autowired BlockChainService blockChainService;
     @Autowired BusinessDefineDao businessDefineDao;
 
@@ -60,7 +63,11 @@ import static io.stacs.nav.drs.api.exception.DappException.newError;
         log.info("[submitTx]is start,{}", JSON.toJSONString(vo));
         //query business define by bdCode
         BusinessDefinePO po = businessDefineDao.queryBDByCode(vo.getBdCode());
-        log.info("[submit]query BD from database:{}",po);
+        log.info("[submit]query BD from database:{}", JSON.toJSONString(po));
+        if (po == null) {
+            log.warn("[submit]bd is not exists,bdCode:{}", vo.getBdCode());
+            throw new DappException(BD_NOT_FIND_ERROR);
+        }
         BusinessDefine bd = BeanConvertor.convertBean(po, BusinessDefine.class);
         if (bd != null && StringUtils.isNotEmpty(po.getFunctions())) {
             List<FunctionDefine> functionDefines = JSON.parseArray(po.getFunctions(), FunctionDefine.class);
@@ -69,14 +76,14 @@ import static io.stacs.nav.drs.api.exception.DappException.newError;
         String execPolicyId;
         String execFuncName;
         String execPermission;
-        if (CREATE_CONTRACT.getFunctionName().equals(vo.getFunctionName())) {
+        if (CREATE_CONTRACT.getFunctionName().equals(vo.getMethodSign())) {
             execPolicyId = bd.getInitPolicy();
             execFuncName = CREATE_CONTRACT.getFunctionName();
             execPermission = bd.getInitPermission();
         } else {
             List<FunctionDefine> functions = bd.getFunctions();
-            Optional<FunctionDefine> define = functions.stream().filter(a -> a.getName().equals(vo.getFunctionName()))
-                .findFirst();
+            Optional<FunctionDefine> define =
+                functions.stream().filter(a -> a.getName().equals(vo.getFunctionName())).findFirst();
             //check function
             if (!define.isPresent()) {
                 log.warn("function define is not find,functionName:{},txId:{}", vo.getFunctionName(), vo.getTxId());
@@ -89,9 +96,13 @@ import static io.stacs.nav.drs.api.exception.DappException.newError;
             if (BD_TYPE_CONTRACT.equalsIgnoreCase(fd.getType())) {
                 execFuncName = CONTRACT_INVOKER.getFunctionName();
             } else {
-                execFuncName = fd.getName();
+                execFuncName = fd.getMethodSign();
             }
         }
+        log.info("[submit]txId:{},boCode:{}", vo.getTxId(), vo.getBdCode());
+        log.info("[submit]txId:{},execPolicyId:{}", vo.getTxId(), execPolicyId);
+        log.info("[submit]txId:{},execFuncName:{}", vo.getTxId(), execFuncName);
+        log.info("[submit]txId:{},execPermission:{}", vo.getTxId(), execPermission);
         //check permission
         checkPermission(vo.getSubmitter(), execPermission);
         //set policy id
@@ -143,9 +154,9 @@ import static io.stacs.nav.drs.api.exception.DappException.newError;
         vo.setAddress(address);
         vo.setPermissionNames(Lists.newArrayList(permission));
         //permission check
-        boolean res = blockChainFacade.checkPermission(vo).orElseThrow(newError(DAPP_NETWORK_COMMON_ERROR));
-
-        if (!res) {
+        RespData<Boolean> res = blockChainHelper.post(CHECK_PERMISSION.getApi(), vo,
+            Boolean.class);
+        if (!res.isSuccessful() || !res.getData()) {
             log.warn("address:{} not has permission:{}", address, permission);
             throw new DappException(DappError.NO_PERMISSION_ERROR);
         }

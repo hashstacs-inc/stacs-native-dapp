@@ -2,72 +2,104 @@
   <div class="BD-specification">
     <p class="title">Special Information</p>
     <el-form :model="ruleForm" :rules="rules" ref="ruleForm" 
-      label-width="150px" class="general-form" label-position="left">
-      <el-form-item label="BD Name" prop="BDName">
-        <el-input v-model="ruleForm.BDName" :maxlength="64"></el-input>
+      label-width="180px" class="general-form" label-position="left">
+      <el-form-item label="BD Name" prop="name">
+        <el-input v-model="ruleForm.name" :maxlength="64"></el-input>
       </el-form-item>
-      <el-form-item label="BD Code" prop="BDCode">
-        <el-input v-model="ruleForm.BDCode" placeholder="Please enter" :maxlength="32"></el-input>
+      <el-form-item label="BD Code" prop="code">
+        <el-input v-model="ruleForm.code" placeholder="Please enter" :maxlength="32"></el-input>
       </el-form-item>
-      <el-form-item label="BD Type" prop="BDType">
-        <el-select v-model="ruleForm.BDType" @change="changeBDType">
+      <el-form-item label="BD Type" prop="bdType">
+        <el-select v-model="ruleForm.bdType">
           <el-option :label="v.name" :value="v.name" v-for="(v, k) in BDTypeList" :key="k"></el-option>
         </el-select>
       </el-form-item>
-      <el-form-item label="Descision" prop="descision">
-        <el-input v-model="ruleForm.descision" :maxlength="1024"></el-input>
+      <el-form-item label="Description" prop="desc">
+        <el-input v-model="ruleForm.desc" :maxlength="1024"></el-input>
       </el-form-item>
-      <el-form-item label="Init Permission" prop="initPermission" ref="initPermission">
+      <el-form-item label="Permission Name" prop="initPermission" ref="initPermission" class="permission-name">
         <el-select v-model="ruleForm.initPermission">
-          <el-option :label="v.permissionName" :value="v.permissionIndex" v-for="(v, k) in initPermissionList" :key="k"></el-option>
+          <el-option :label="v.permissionName" :value="v.permissionName" v-for="(v, k) in initPermissionList" :key="k"></el-option>
         </el-select>
+        <el-popover
+          placement="top-start"
+          width="200"
+          popper-class="bd-create-tips"
+          trigger="hover"
+          content="The Permission name that is used to define the BD related contract.">
+          <div class="bd-tips" slot="reference">?</div>
+        </el-popover>
       </el-form-item>
-      <el-form-item label="Init Policy" prop="initPolicy" ref="initPolicy">
+      <el-form-item label="Policy ID" prop="initPolicy" ref="initPolicy" class="policy-id">
         <el-select v-model="ruleForm.initPolicy">
           <el-option :label="v.policyName" :value="v.policyId" v-for="(v, k) in initPolicyList" :key="k"></el-option>
         </el-select>
+        <el-popover
+          placement="top-start"
+          width="200"
+          popper-class="bd-create-tips"
+          trigger="hover"
+          content="The Policy ID that is used to define the BD related contract.">
+          <div class="bd-tips policy-tips" slot="reference">?</div>
+        </el-popover>
       </el-form-item>
       <el-form-item label="BD Version" prop="BDVersion">
         <el-input v-model="ruleForm.BDVersion" :maxlength="4"></el-input>
       </el-form-item>
       <div class="new-function">
-        <el-form :model="ruleForm" v-for="(v, k) in ruleForm.newFunction" :key="k" label-width="150px" 
+        <el-form :model="ruleForm" v-for="(v, k) in ruleForm.functions" :key="k" label-width="180px" 
           ref="newFunctionFrom" class="functio-from-box">
           <div class="delete-new-from" v-if="v.locking" @click="deleteNew(k)">Delete</div>
-          <el-form-item label="Type" :prop="'newFunction.' + k + '.type'"
+          <el-form-item label="Type" :prop="'functions.' + k + '.type'"
             :rules="{ required: true, message: 'This filed is required', trigger: 'change' }">
             <el-select v-model="v.type" v-if="!v.locking" @change="changeNewType">
               <el-option :label="v.name" :value="v.name" v-for="(v, k) in v.typeList" :key="k"></el-option>
             </el-select>
             <el-input v-model="v.type" v-else :disabled="v.locking"></el-input>
           </el-form-item>
-          <el-form-item label="Function Name" :prop="'newFunction.' + k + '.functionName'"
+          <el-form-item label="Function Name" :prop="'functions.' + k + '.name'"
             :rules="{ required: true, message: 'This filed is required' }">
-            <el-select v-model="v.functionName" placeholder="Please select" v-if="v.type === 'System Action' && !v.locking">
+            <el-select v-model="v.name" placeholder="Please select" v-if="v.type === 'SystemAction' && !v.locking" @change="changeAddFunction">
               <el-option :label="v.desc" :value="v.name" v-for="(v, k) in functionNameList" :key="k"></el-option>
             </el-select>
-            <el-input v-model="v.functionName" :maxlength="256" v-else :disabled="v.locking"></el-input>
+            <el-input v-model="v.name" :maxlength="256" v-else :disabled="v.locking"></el-input>
           </el-form-item>
-          <el-form-item label="Function Descision" :prop="'newFunction.' + k + '.functionDescision'">
-            <el-input v-model="v.functionDescision" :maxlength="256" :disabled="v.type === 'System Action' || v.locking"></el-input>
+          <el-form-item label="Function Description" :prop="'functions.' + k + '.desc'">
+            <el-input v-model="v.desc" :maxlength="256" :disabled="v.type === 'SystemAction' || v.locking"></el-input>
           </el-form-item>
-          <el-form-item label="Method Sign" :prop="'newFunction.' + k + '.methodSign'"
+          <el-form-item label="Method Sign" :prop="'functions.' + k + '.methodSign'"
             :rules="{ required: true, message: 'This filed is required' }">
-            <el-input v-model="v.methodSign" :maxlength="256" :disabled="v.type === 'System Action' || v.locking"></el-input>
+            <el-input v-model="v.methodSign" :maxlength="256" :disabled="v.type === 'SystemAction' || v.locking"></el-input>
           </el-form-item>
-          <el-form-item label="Init Permission" :prop="'newFunction.' + k + '.initPermission'"
+          <el-form-item label="Permission Name" :prop="'functions.' + k + '.execPermission'"
             :rules="{ required: true, message: 'This filed is required' }">
-            <el-select v-model="v.initPermission" v-if="v.type === 'System Action' && !v.locking">
-              <el-option :label="v.permissionName" :value="v.permissionIndex" v-for="(v, k) in initPermissionList" :key="k"></el-option>
+            <el-select v-model="v.execPermission" v-if="v.type === 'SystemAction' && !v.locking">
+              <el-option :label="v.permissionName" :value="v.permissionName" v-for="(v, k) in initPermissionList" :key="k"></el-option>
             </el-select>
-            <el-input v-model="v.initPermission" :maxlength="256" v-else :disabled="v.locking"></el-input>
+            <el-input v-model="v.execPermission" :maxlength="256" v-else :disabled="v.locking"></el-input>
+            <el-popover
+              placement="top-start"
+              width="200"
+              popper-class="bd-create-tips"
+              trigger="hover"
+              content="The Permission name that is used when BD executes the function.">
+              <div class="bd-tips" slot="reference">?</div>
+            </el-popover>
           </el-form-item>
-          <el-form-item label="Exec Policy" :prop="'newFunction.' + k + '.execPolicy'"
+          <el-form-item label="Policy ID" :prop="'functions.' + k + '.execPolicy'"
             :rules="{ required: true, message: 'This filed is required' }">
-            <el-select v-model="v.execPolicy" v-if="v.type === 'System Action' && !v.locking">
+            <el-select v-model="v.execPolicy" v-if="v.type === 'SystemAction' && !v.locking">
               <el-option :label="v.policyName" :value="v.policyId" v-for="(v, k) in initPolicyList" :key="k"></el-option>
             </el-select>
             <el-input v-model="v.execPolicy" :maxlength="256" v-else :disabled="v.locking"></el-input>
+            <el-popover
+              placement="top-start"
+              width="200"
+              popper-class="bd-create-tips"
+              trigger="hover"
+              content="The Policy ID that is used when BD executes the function.">
+              <div class="bd-tips policy-tips" slot="reference">?</div>
+            </el-popover>
           </el-form-item>
         </el-form>
         <p class="add-new-btn" @click="addNewFunction('newFunctionFrom')">
@@ -86,71 +118,61 @@ export default {
   name: 'BDSpecification',
   data () {
     const BDCodeValidator = (rule, value, callback) => {
-      if (/^[a-zA-Z0-9]*(([a-zA-Z]+[0-9]+)|([0-9]+[a-zA-Z]+))[a-zA-Z0-9]*$/.test(value)) {
+      if (/^\d*[a-zA-Z]+\d*$/.test(value)) {
         callback();
       } else {
         callback(new Error('Please enter letters and numbers'));
       }
     }
     return {
+      // Form Data
       ruleForm: {
-        BDName: '',
-        BDCode: '',
-        BDType: '',
-        descision: '',
+        name: '',
+        code: '',
+        bdType: '',
+        desc: '',
         initPermission: '',
         initPolicy: '',
         BDVersion: '',
-        newFunction: [
+        functions: [
           {
-            type: 'System Action',
+            type: 'SystemAction',
             typeList: [
-              { name: 'System Action' },
+              { name: 'SystemAction' },
               { name: 'Contract' },
-              { name: 'Contract Query' }
+              { name: 'ContractQuery' }
             ],
-            functionName: '',
-            functionNameList: [{
-                "desc":"Permission撤销授权",
-                "execPermission":"RS",
-                "execPolicy":"CANCEL_PERMISSION",
-                "methodSign":"CANCEL_PERMISSION",
-                "name":"CANCEL_PERMISSION",
-                "type":"SyetemAction"
-            }, {
-                "desc":"注册policy",
-                "execPermission":"RS",
-                "execPolicy":"REGISTER_POLICY",
-                "methodSign":"REGISTER_POLICY",
-                "name":"REGISTER_POLICY",
-                "type":"SyetemAction"
-            }],
-            functionDescision: '',
+            name: '',
+            desc: '',
             methodSign: '',
-            initPermission: '',
+            execPermission: '',
             execPolicy: '',
             locking: false
           }
         ]
       },
       rules: {
-        BDName: [
+        name: [
           { required: true, message: 'This filed is required', trigger: 'blur' }
         ],
-        BDCode: [
+        code: [
           { required: true, message: 'This filed is required', trigger: 'blur' },
-          { validator: BDCodeValidator, trigger: 'change' }
+          { validator: BDCodeValidator, trigger: 'change' },
+          { validator: BDCodeValidator, trigger: 'blur' }
         ],
-        BDType: [
+        bdType: [
           { required: true, message: 'This filed is required', trigger: 'change' }
         ],
         initPermission: [
-          { required: false, message: 'This filed is required', trigger: 'change' }
+          { required: true, message: 'This filed is required', trigger: 'change' }
         ],
         initPolicy: [
-          { required: false, message: 'This filed is required', trigger: 'change' }
+          { required: true, message: 'This filed is required', trigger: 'change' }
         ],
         BDVersion: [
+          { required: true, message: 'This filed is required', trigger: 'blur' }
+        ],
+        execPermission: [
           { required: true, message: 'This filed is required', trigger: 'blur' }
         ]
       },
@@ -168,13 +190,21 @@ export default {
     }
   },
   methods: {
-    validateFrom () {
+    changeAddFunction (name) {
+      let currentFunction = this.functionNameList.filter(v => name === v.name);
+      let lockingFunction = this.ruleForm.functions.filter(v => !v.locking);
+      lockingFunction[0] = Object.assign(lockingFunction[0], currentFunction[0]);
+    },
+    validateForm () {
+      let ruleFormCopy = JSON.parse(JSON.stringify(this.ruleForm));
+      this.$refs['ruleForm'].clearValidate();
+      this.$refs['newFunctionFrom'][ruleFormCopy.functions.length - 1].clearValidate();
+      let locked = ruleFormCopy.functions.filter(v => v.locking);
       let validCode = {
         valid: false,
-        ruleForm: this.ruleForm
+        ruleForm: {}
       };
       this.$refs['ruleForm'].validate(valid => {
-        let locked = JSON.parse(JSON.stringify(this.ruleForm.newFunction.filter(v => v.locking)));
         if (locked.length === 0) {
           this.$refs['newFunctionFrom'][0].validate(validNew => {
             if (valid && validNew) {
@@ -182,9 +212,20 @@ export default {
             }
           });
         } else {
-          validCode.valid = valid;
+          let funList = ruleFormCopy.functions[ruleFormCopy.functions.length - 1];
+          if (funList.name || funList.methodSign || funList.execPermission || funList.execPolicy) {
+            this.$refs['newFunctionFrom'][ruleFormCopy.functions.length - 1].validate(va => {
+              validCode.valid = va;
+            });
+          } else if (!funList.name && !funList.methodSign && !funList.execPermission && !funList.execPolicy) {
+            ruleFormCopy.functions.splice(ruleFormCopy.functions.length - 1, 1);
+            validCode.valid = valid;
+          } else {
+            validCode.valid = valid;
+          }
         }
       });
+      validCode.ruleForm = ruleFormCopy;
       return validCode;
     },
     deleteNew (k) {
@@ -192,18 +233,18 @@ export default {
         confirmButtonText: 'Confirm',
         cancelButtonText: 'Back'
       }).then(() => {
-        this.ruleForm.newFunction.splice(k, 1);
+        this.ruleForm.functions.splice(k, 1);
       });
     },
     changeNewType () {
-      this.ruleForm.newFunction.forEach((v, k) => {
+      this.ruleForm.functions.forEach((v, k) => {
         if (!v.locking) {
           this.$refs['newFunctionFrom'][k].clearValidate();
         }
       });
     },
     addNewFunction (from) {
-      this.ruleForm.newFunction.forEach((v, k) => {
+      this.ruleForm.functions.forEach((v, k) => {
         if (!v.locking) {
           this.$refs[from][k].validate(valid => {
             if (valid) {
@@ -215,24 +256,24 @@ export default {
                   copyV[i] = '';
                 }
               }
-              copyV.type = 'System Action';
-              this.ruleForm.newFunction.push(copyV);
+              copyV.type = 'SystemAction';
+              this.ruleForm.functions.push(copyV);
             }
           });
         }
       });
     },
-    changeBDType (v) {
-      if (v !== 'System') {
-        this.rules.initPermission[0].required = true;
-        this.rules.initPolicy[0].required = true;
-      } else {
-        this.rules.initPermission[0].required = false;
-        this.rules.initPolicy[0].required = false;
-        this.$refs['initPermission'].clearValidate();
-        this.$refs['initPolicy'].clearValidate();
-      }
-    },
+    // changeBDType (v) {
+    //   if (v !== 'System') {
+    //     this.rules.initPermission[0].required = true;
+    //     this.rules.initPolicy[0].required = true;
+    //   } else {
+    //     this.rules.initPermission[0].required = false;
+    //     this.rules.initPolicy[0].required = false;
+    //     this.$refs['initPermission'].clearValidate();
+    //     this.$refs['initPolicy'].clearValidate();
+    //   }
+    // },
     async getPermission () {
       let data = await getPermissionList();
       this.initPermissionList = JSON.parse(JSON.stringify(data.data));
@@ -294,5 +335,28 @@ export default {
       }
     }
   }
+  .bd-tips {
+    position: absolute;
+    font-size: 12px;
+    color: #fff;
+    width: 16px;
+    height: 16px;
+    border-radius: 50%;
+    left: -40px;
+    top: 5px;
+    background-color: #9BA1A8;
+    text-align: center;
+    line-height: 16px;
+    cursor: pointer;
+  }
+  .policy-tips {
+    left: -95px;
+  }
+}
+</style>
+<style lang="scss">
+.bd-create-tips {
+  word-wrap: break-word;
+  word-break: break-word;
 }
 </style>

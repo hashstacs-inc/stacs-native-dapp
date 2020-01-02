@@ -1,20 +1,20 @@
 /**
- * 简体中文常量
+ * Chinese
  */
 export const ZH_CN = 'zh-CN';
 
 /**
- * 英文常量
+ * English
  */
 export const EN_GB = 'en-GB';
 
 /**
- * 存储在localStorage的语言变量KEY
+ * localStorage language Key
  */
 export const LOCAL_STORAGE_LANG = '_lang';
 
 /**
- * 请求响应拦截信息提示
+ * request tips
  */
 export const notify = {
   any: 'ANY',
@@ -22,7 +22,7 @@ export const notify = {
   error: 'ERROR'
 };
 
-// 获取语言环境，默认英文
+// getLanguage default English
 export const getLang = () => {
   let localStorageLang = localStorage.getItem(LOCAL_STORAGE_LANG);
   let lang = EN_GB;

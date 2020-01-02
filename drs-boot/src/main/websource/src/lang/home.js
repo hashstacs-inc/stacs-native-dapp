@@ -1,12 +1,12 @@
 export default {
   'zh-CN': {
     home: {
-      headTitle: '首页'
+      headTitle: ''
     }
   },
   'zh-TW': {
     home: {
-      headTitle: '首页繁体'
+      headTitle: ''
     }
   },
   'en-GB': {

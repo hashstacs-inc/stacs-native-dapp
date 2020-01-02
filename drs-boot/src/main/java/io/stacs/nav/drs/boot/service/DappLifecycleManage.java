@@ -53,6 +53,7 @@ import static io.stacs.nav.drs.service.utils.ResourceLoader.getManifest;
      */
     private static final String DAPP_CONFIG_FILE_NAME = "application.properties";
     private static final String SPRING_APP_NAME = "spring.application.name";
+    private static final String SPRING_JMX_NAME = "spring.jmx.default-domain";
     private static final String WEB_SERVER_PORT = "server.port";
     private static final String WEB_SERVER_CONTEXT_PATH = "server.servlet.context-path";
 
@@ -207,19 +208,19 @@ import static io.stacs.nav.drs.service.utils.ResourceLoader.getManifest;
         }
         if (isGened) {
             log.info("generator config file is success,appName:{}", appName);
-            resetWebContextPath(appName, filePath);
+            resetConfigProperty(appName, filePath);
         } else {
             log.warn("generator config file is fail,appName:{}", appName);
         }
     }
 
     /**
-     * reset web-context-path
+     * reset property config
      *
      * @param appName
      * @param filePath
      */
-    private void resetWebContextPath(String appName, String filePath) {
+    private void resetConfigProperty(String appName, String filePath) {
         Properties p = new Properties();
         FileInputStream is = null;
         FileOutputStream os = null;
@@ -229,6 +230,7 @@ import static io.stacs.nav.drs.service.utils.ResourceLoader.getManifest;
             p.load(is);
             p.put(WEB_SERVER_CONTEXT_PATH, "/" + appName);
             p.put(SPRING_APP_NAME, appName);
+            p.put(SPRING_JMX_NAME, appName);
             os = new FileOutputStream(f);
             p.store(os, null);
         } catch (IOException e) {
@@ -368,6 +370,7 @@ import static io.stacs.nav.drs.service.utils.ResourceLoader.getManifest;
             p.remove(SPRING_APP_NAME);
             p.remove(WEB_SERVER_PORT);
             p.remove(WEB_CONTEXT_PATH);
+            p.remove(SPRING_JMX_NAME);
         } catch (IOException e) {
             log.warn("[queryConfig] has IO error,appName:{}", appName, e);
             throw new DappException(DappError.DAPP_CONFIG_NOT_FOUND);
@@ -392,6 +395,9 @@ import static io.stacs.nav.drs.service.utils.ResourceLoader.getManifest;
         }
         if (!p.containsKey(WEB_SERVER_PORT)) {
             p.put(WEB_SERVER_PORT, baseConfig.getServerPort() + "");
+        }
+        if (!p.containsKey(SPRING_JMX_NAME)) {
+            p.put(SPRING_JMX_NAME,appName);
         }
         p.put(WEB_SERVER_CONTEXT_PATH, "/" + appName);
         FileOutputStream os = null;

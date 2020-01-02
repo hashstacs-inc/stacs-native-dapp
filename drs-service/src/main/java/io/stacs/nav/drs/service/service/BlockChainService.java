@@ -3,6 +3,7 @@ package io.stacs.nav.drs.service.service;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import io.stacs.nav.drs.api.model.Policy;
+import io.stacs.nav.drs.api.model.RespData;
 import io.stacs.nav.drs.api.model.RsDomain;
 import io.stacs.nav.drs.api.model.block.BlockHeaderVO;
 import io.stacs.nav.drs.api.model.permission.PermissionInfoVO;
@@ -10,11 +11,15 @@ import io.stacs.nav.drs.api.model.query.*;
 import io.stacs.nav.drs.api.model.tx.CoreTransactionVO;
 import io.stacs.nav.drs.service.dao.po.BusinessDefinePO;
 import io.stacs.nav.drs.service.network.BlockChainFacade;
+import io.stacs.nav.drs.service.network.BlockChainHelper;
+import io.stacs.nav.drs.service.vo.MethodParamVO;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 
+import static io.stacs.nav.drs.api.enums.ApiConstants.QueryApiEnum.CONTRACT_METHOD;
 import static io.stacs.nav.drs.api.exception.DappError.DRS_NETWORK_COMMON_ERROR;
 import static io.stacs.nav.drs.api.exception.DappException.newError;
 
@@ -22,8 +27,9 @@ import static io.stacs.nav.drs.api.exception.DappException.newError;
  * @author liuyu
  * @date 2019-11-25
  */
-@Service public class BlockChainService {
+@Service @Slf4j public class BlockChainService {
     @Autowired BlockChainFacade blockChainFacade;
+    @Autowired BlockChainHelper blockChainHelper;
     //TODO:use cache
 
     /**
@@ -87,5 +93,15 @@ import static io.stacs.nav.drs.api.exception.DappException.newError;
 
     public JSONArray queryContract(ContractQueryRequest vo) {
         return blockChainFacade.queryContract(vo).orElseThrow(newError(DRS_NETWORK_COMMON_ERROR));
+    }
+
+    public JSONObject queryMethodParam(MethodParamVO vo) {
+        RespData<String> respData = blockChainHelper.post(CONTRACT_METHOD.getApi(), vo, String.class);
+        if (respData.isSuccessful() && respData.getData() != null) {
+            String json = respData.getData();
+            log.info("[queryMethodParam]json:{}",json);
+            return JSONObject.parseObject(json);
+        }
+        return null;
     }
 }

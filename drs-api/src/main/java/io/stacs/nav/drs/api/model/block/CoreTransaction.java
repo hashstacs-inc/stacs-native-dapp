@@ -1,7 +1,6 @@
 package io.stacs.nav.drs.api.model.block;
 
 import com.alibaba.fastjson.JSONObject;
-import io.stacs.nav.drs.api.enums.TxTypeEnum;
 import io.stacs.nav.drs.api.model.BaseBO;
 import lombok.Getter;
 import lombok.Setter;
@@ -76,7 +75,7 @@ import java.util.Date;
     /**
      * the type of transaction
      */
-    private String txType = TxTypeEnum.DEFAULT.getCode();
+    private String functionName;
     /**
      * policy version of tx
      */
