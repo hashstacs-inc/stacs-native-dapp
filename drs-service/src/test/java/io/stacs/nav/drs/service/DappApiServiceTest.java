@@ -86,7 +86,7 @@ public class DappApiServiceTest {
     }
 
     @Test public void test4() {
-        failoverSchedule.exe();
+        failoverSchedule.schedule();
     }
 
     @Test public void test5() {
