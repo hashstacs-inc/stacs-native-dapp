@@ -30,7 +30,7 @@ import static io.stacs.nav.drs.service.model.ConvertHelper.*;
     @Autowired BlockChainService blockChainService;
     @Autowired private DrsRuntimeData runtimeData;
 
-    @Scheduled(fixedDelayString = "${drs.schedule.failover:60000}") public void exe() {
+    @Scheduled(fixedDelayString = "${drs.schedule.failover:120000}") public void exe() {
         long nextHeight = runtimeData.getNextHeight();
         long chainMaxHeight = blockChainService.queryCurrentHeight();
         Long optCallbackHeight = txCallbackDao.initCallbackMinHeight();
@@ -39,8 +39,9 @@ import static io.stacs.nav.drs.service.model.ConvertHelper.*;
                 List<BlockVO> blocks = blockChainService.queryBlocks(interval.left(), interval.right()).stream().map(
                     json -> JSONHelper.toJavaObject(json, BlockVO.class)).filter(Optional::isPresent).map(Optional::get)
                     .collect(Collectors.toList());
-                if (blocks.isEmpty())
+                if (blocks.isEmpty()) {
                     return;
+                }
                 // bo -> po & setPO state = INIT
                 blocks.stream().map(block2CallbackBOConvert.andThen(block2CallbackPOConvert).andThen(setPOInitState))
                     .forEach(txCallbackDao::save);
