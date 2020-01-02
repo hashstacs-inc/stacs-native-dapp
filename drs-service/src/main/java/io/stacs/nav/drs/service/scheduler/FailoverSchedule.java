@@ -1,5 +1,6 @@
 package io.stacs.nav.drs.service.scheduler;
 
+import io.stacs.nav.drs.service.config.DomainConfig;
 import io.stacs.nav.drs.service.config.DrsRuntimeData;
 import io.stacs.nav.drs.service.dao.BlockCallbackDao;
 import io.stacs.nav.drs.service.dao.BlockVO;
@@ -7,6 +8,7 @@ import io.stacs.nav.drs.service.service.BlockCallbackService;
 import io.stacs.nav.drs.service.service.BlockChainService;
 import io.stacs.nav.drs.service.utils.JSONHelper;
 import io.stacs.nav.drs.service.utils.Pair;
+import io.stacs.nav.drs.service.utils.config.ConfigListener;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
@@ -23,22 +25,26 @@ import static io.stacs.nav.drs.service.model.ConvertHelper.*;
  * @author dekuofa <br>
  * @date 2019-12-09 <br>
  */
-@Service @Slf4j public class FailoverSchedule {
+@Service @Slf4j public class FailoverSchedule implements ConfigListener {
 
     @Autowired BlockCallbackDao txCallbackDao;
     @Autowired BlockCallbackService txCallbackService;
     @Autowired BlockChainService blockChainService;
     @Autowired private DrsRuntimeData runtimeData;
 
-    @Scheduled(fixedDelayString = "${drs.schedule.failover:120000}") public void exe() {
+    @Scheduled(fixedDelayString = "${drs.schedule.failover:120000}") public void schedule() {
+        exe();
+    }
+
+    private void exe() {
         long nextHeight = runtimeData.getNextHeight();
         long chainMaxHeight = blockChainService.queryCurrentHeight();
         Long optCallbackHeight = txCallbackDao.initCallbackMinHeight();
-        HeightChecker.of(nextHeight, chainMaxHeight, optCallbackHeight).countMissBlocksInterval().ifPresent(
-            interval -> {
-                List<BlockVO> blocks = blockChainService.queryBlocks(interval.left(), interval.right()).stream().map(
-                    json -> JSONHelper.toJavaObject(json, BlockVO.class)).filter(Optional::isPresent).map(Optional::get)
-                    .collect(Collectors.toList());
+        HeightChecker.of(nextHeight, chainMaxHeight, optCallbackHeight).countMissBlocksInterval()
+            .ifPresent(interval -> {
+                List<BlockVO> blocks = blockChainService.queryBlocks(interval.left(), interval.right()).stream()
+                    .map(json -> JSONHelper.toJavaObject(json, BlockVO.class)).filter(Optional::isPresent)
+                    .map(Optional::get).collect(Collectors.toList());
                 if (blocks.isEmpty()) {
                     return;
                 }
@@ -46,6 +52,13 @@ import static io.stacs.nav.drs.service.model.ConvertHelper.*;
                 blocks.stream().map(block2CallbackBOConvert.andThen(block2CallbackPOConvert).andThen(setPOInitState))
                     .forEach(txCallbackDao::save);
             });
+        log.info("failover schedule executed success");
+    }
+
+    @Override public <T> void updateNotify(T config) {
+        if (config instanceof DomainConfig) {
+            exe();
+        }
     }
 
     static class HeightChecker {
