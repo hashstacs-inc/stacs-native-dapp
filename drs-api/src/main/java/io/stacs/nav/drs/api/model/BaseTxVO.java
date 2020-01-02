@@ -34,7 +34,13 @@ import javax.validation.constraints.NotBlank;
 
     private String feeMaxAmount;
 
-    public abstract String getFunctionName();
+    @NotBlank private String functionName;
+
+    /**
+     * method sign
+     * @return
+     */
+    public abstract String getMethodSign();
 
     /**
      * get sign value

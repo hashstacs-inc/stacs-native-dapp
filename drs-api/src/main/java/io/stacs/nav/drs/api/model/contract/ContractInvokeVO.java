@@ -1,10 +1,12 @@
 package io.stacs.nav.drs.api.model.contract;
 
 import com.alipay.sofa.common.utils.StringUtil;
+import io.stacs.nav.drs.api.enums.ApiConstants;
 import io.stacs.nav.drs.api.model.BaseTxVO;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
+import org.apache.commons.lang3.StringUtils;
 import org.hibernate.validator.constraints.Length;
 import org.hibernate.validator.constraints.NotBlank;
 
@@ -42,22 +44,23 @@ import java.math.BigDecimal;
      * contract address
      */
     @NotBlank @Length(max = 40) private String to;
-
-    /**
-     * BD functionName
-     */
-    @NotBlank private String functionName;
     /**
      * remark of contract
      */
     private String remark;
-    @Override
-    public String getSignValue(){
-        return super.getSignValue()
-                        + methodSignature
-                        + from
-                        + to
-                        + StringUtil.join(args,",")
-                        + getFunctionName();
+
+    @Override public String getMethodSign() {
+        return ApiConstants.TransactionApiEnum.CONTRACT_INVOKER.getFunctionName();
+    }
+
+    @Override public String getFunctionName() {
+        if (StringUtils.isEmpty(super.getFunctionName())) {
+            return this.getMethodSign();
+        }
+        return super.getFunctionName();
+    }
+
+    @Override public String getSignValue() {
+        return super.getSignValue() + methodSignature + from + to + StringUtil.join(args, ",") + getFunctionName();
     }
 }

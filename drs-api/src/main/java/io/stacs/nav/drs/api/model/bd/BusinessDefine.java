@@ -1,13 +1,13 @@
 package io.stacs.nav.drs.api.model.bd;
 
+import io.stacs.nav.drs.api.enums.ApiConstants;
 import io.stacs.nav.drs.api.model.BaseTxVO;
 import lombok.Getter;
 import lombok.Setter;
+import org.apache.commons.lang3.StringUtils;
 
 import java.util.List;
 import java.util.stream.Collectors;
-
-import static io.stacs.nav.drs.api.enums.ApiConstants.TransactionApiEnum.BD_PUBLISH;
 
 /**
  * @author dekuofa <br>
@@ -31,21 +31,22 @@ import static io.stacs.nav.drs.api.enums.ApiConstants.TransactionApiEnum.BD_PUBL
 
     private String bdVersion;
 
+    @Override public String getMethodSign() {
+        return ApiConstants.TransactionApiEnum.BD_PUBLISH.getFunctionName();
+    }
+
     @Override public String getFunctionName() {
-        return BD_PUBLISH.getFunctionName();
+        if (StringUtils.isEmpty(super.getFunctionName())) {
+            return this.getMethodSign();
+        }
+        return super.getFunctionName();
     }
 
     @Override public String getSignValue() {
         String signValue = super.getSignValue();
-        signValue = signValue
-            + getCode()
-            + getName()
-            + getBdType()
-            + getDesc()
-            + getInitPermission()
-            + getInitPolicy()
-            + getBdVersion()
-            + String.join(",",getFunctions().stream().map(FunctionDefine::getSignValue).collect(Collectors.toList()))
+        signValue = signValue + getCode() + getName() + getBdType() + getDesc() + getInitPermission() + getInitPolicy()
+            + getBdVersion() + String
+            .join(",", getFunctions().stream().map(FunctionDefine::getSignValue).collect(Collectors.toList()))
             + getFunctionName();
         return signValue;
     }
