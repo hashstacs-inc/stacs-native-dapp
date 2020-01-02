@@ -39,7 +39,6 @@ import static io.stacs.nav.drs.service.model.ConvertHelper.blockHeader2BlockPO;
     @Autowired BlockCallbackDao blockCallbackDao;
     @Autowired BlockDao blockDao;
     @Autowired TransactionDao txDao;
-    @Autowired BlockCallbackDao txCallbackDao;
     @Autowired EventPublisher eventPublisher;
     @Autowired TxNoticeService txNoticeService;
     @Autowired private TransactionTemplate txRequired;
@@ -85,8 +84,9 @@ import static io.stacs.nav.drs.service.model.ConvertHelper.blockHeader2BlockPO;
             Comparator.comparing(TransactionPO::getTxId)).map(ActionConverterUtil::doConvert).forEach(
             optPairs -> optPairs
                 .ifPresent(pairs -> pairs.forEach(pair -> actionsMap.compute(pair.left(), (k, oldVal) -> {
-                    if (oldVal == null)
+                    if (oldVal == null) {
                         return Lists.newArrayList((ActionPO)pair.right());
+                    }
                     oldVal.add((ActionPO)pair.right());
                     return oldVal;
                 }))));
