@@ -1,5 +1,6 @@
 package io.stacs.nav.dapp.sample.callback;
 
+import io.stacs.nav.dapp.core.callback.CallbackType;
 import io.stacs.nav.dapp.core.callback.ITxCallbackHandler;
 import io.stacs.nav.drs.api.enums.ApiConstants;
 import io.stacs.nav.drs.api.model.TransactionPO;
@@ -13,8 +14,8 @@ import org.springframework.stereotype.Component;
  */
 @Component @Slf4j public class SimpleCallbackHanlder implements ITxCallbackHandler {
 
-    @Override public String[] supportType() {
-        return new String[] {ApiConstants.TransactionApiEnum.KYC_SETTING.getFunctionName()};
+    @Override public CallbackType[] supportType() {
+        return new CallbackType[] {CallbackType.of(ApiConstants.TransactionApiEnum.KYC_SETTING.getFunctionName())};
     }
 
     @Override public void handle(TransactionPO po) {
