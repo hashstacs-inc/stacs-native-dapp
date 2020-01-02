@@ -11,7 +11,7 @@
       </el-form-item>
       <el-form-item label="BD Type" prop="bdType">
         <el-select v-model="ruleForm.bdType">
-          <el-option :label="v.name" :value="v.name" v-for="(v, k) in BDTypeList" :key="k"></el-option>
+          <el-option :label="v.name" :value="v.val" v-for="(v, k) in BDTypeList" :key="k"></el-option>
         </el-select>
       </el-form-item>
       <el-form-item label="Description" prop="desc">
@@ -178,11 +178,14 @@ export default {
       },
       BDTypeList: [
         {
-          name: 'System'
+          name: 'System',
+          val: 'system'
         }, {
-          name: 'Contract'
+          name: 'Contract',
+          val: 'contract'
         }, {
-          name: 'Assets'
+          name: 'Assets',
+          val: 'assets'
         }
       ],
       initPermissionList: [],
