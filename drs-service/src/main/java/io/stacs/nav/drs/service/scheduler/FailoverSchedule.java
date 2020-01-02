@@ -36,23 +36,31 @@ import static io.stacs.nav.drs.service.model.ConvertHelper.*;
         exe();
     }
 
+    /**
+     * execute failover
+     */
     private void exe() {
-        long nextHeight = runtimeData.getNextHeight();
-        long chainMaxHeight = blockChainService.queryCurrentHeight();
-        Long optCallbackHeight = txCallbackDao.initCallbackMinHeight();
-        HeightChecker.of(nextHeight, chainMaxHeight, optCallbackHeight).countMissBlocksInterval()
-            .ifPresent(interval -> {
-                List<BlockVO> blocks = blockChainService.queryBlocks(interval.left(), interval.right()).stream()
-                    .map(json -> JSONHelper.toJavaObject(json, BlockVO.class)).filter(Optional::isPresent)
-                    .map(Optional::get).collect(Collectors.toList());
-                if (blocks.isEmpty()) {
-                    return;
-                }
-                // bo -> po & setPO state = INIT
-                blocks.stream().map(block2CallbackBOConvert.andThen(block2CallbackPOConvert).andThen(setPOInitState))
-                    .forEach(txCallbackDao::save);
-            });
-        log.info("failover schedule executed success");
+        try {
+            long nextHeight = runtimeData.getNextHeight();
+            long chainMaxHeight = blockChainService.queryCurrentHeight();
+            Long optCallbackHeight = txCallbackDao.initCallbackMinHeight();
+            HeightChecker.of(nextHeight, chainMaxHeight, optCallbackHeight).countMissBlocksInterval()
+                .ifPresent(interval -> {
+                    List<BlockVO> blocks = blockChainService.queryBlocks(interval.left(), interval.right()).stream()
+                        .map(json -> JSONHelper.toJavaObject(json, BlockVO.class)).filter(Optional::isPresent)
+                        .map(Optional::get).collect(Collectors.toList());
+                    if (blocks.isEmpty()) {
+                        return;
+                    }
+                    // bo -> po & setPO state = INIT
+                    blocks.stream()
+                        .map(block2CallbackBOConvert.andThen(block2CallbackPOConvert).andThen(setPOInitState))
+                        .forEach(txCallbackDao::save);
+                });
+            log.info("failover schedule executed success");
+        } catch (Throwable e) {
+            log.error("failover execute has error", e);
+        }
     }
 
     @Override public <T> void updateNotify(T config) {
