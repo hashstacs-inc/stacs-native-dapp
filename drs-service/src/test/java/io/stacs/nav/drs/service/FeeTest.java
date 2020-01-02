@@ -18,10 +18,10 @@ import java.util.Map;
  * @date 2019-12-31
  */
 public class FeeTest {
-    private static String DRS_URL = "http://10.200.174.52:30010/";
+    private static String DRS_URL = "http://10.200.174.52:30055/";
 
     @Test public void testFeeConfig() throws IOException {
-        //需要先做permission
+        //需要先做permission -- permission:RS
         String priKey = "bbb43be030237c818bea2a5b808e872f432d1e83e6776f88b66a30d00956188c";
         StacsECKey ecKey = StacsECKey.fromPrivate(Hex.decode(priKey));
         FeeConfigVO feeConfigVO = new FeeConfigVO();
