@@ -8,7 +8,7 @@
     <ul class="app-list" v-if="appList.length > 0">
       <li v-for="(v, k) in appList" :key="k" :edge="v.edge">
         <p class="logo">
-          <img :src="v.icon | formatIcon" alt="logo">
+          <img :src="v.icon" alt="logo">
         </p>
         <el-tooltip effect="dark" :content="v.showName" placement="top-start">
           <p class="name">{{v.showName}}</p>

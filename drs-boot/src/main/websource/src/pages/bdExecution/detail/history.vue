@@ -98,6 +98,15 @@
         </div>
       </el-table>
     </div>
+    <el-pagination
+      background
+      class="pagination"
+      layout="prev, pager, next"
+      :page-size="params.pageSize"
+      :current-page="params.pageNum"
+      @current-change="changeSize"
+      :total="total">
+    </el-pagination>
   </div>
 </template>
 <script>
@@ -148,9 +157,10 @@ export default {
       ],
       tableData: [],
       loading: false,
+      total: 0,
       params: {
-        pageNum: '1',
-        pageSize: '10'
+        pageNum: 1,
+        pageSize: 10
       }
     }
   },
@@ -160,6 +170,10 @@ export default {
     this.getTableList();
   },
   methods: {
+    changeSize (page) {
+      this.params.pageNum = page;
+      this.getTableList();
+    },
     dateFormat (date) {
       return moment(date).format('YYYY/MM/DD HH:mm')
     },
@@ -173,6 +187,7 @@ export default {
           v['sort'] = k + 1;
           return v;
         });
+        this.total = data.data.total;
       }
       this.loading = false;
     },
@@ -191,6 +206,13 @@ export default {
   padding: 0px 10px 40px 10px;
   float: left;
   min-height: 550px;
+  &::after {
+    content: '';
+    display: block;
+    clear: both;
+    width: 0px;
+    height: 0px;
+  }
   .search-box {
     display: flex;
     position: relative;
@@ -247,6 +269,10 @@ export default {
       margin-left: 10px;
       cursor: pointer;
     }
+  }
+  .pagination {
+    float: right;
+    margin-top: 20px;
   }
 }
 </style>

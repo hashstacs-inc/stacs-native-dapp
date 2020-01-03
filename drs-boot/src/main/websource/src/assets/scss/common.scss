@@ -139,3 +139,12 @@
 .el-select-dropdown.is-multiple .el-select-dropdown__item.selected {
   color: #053C8C !important;
 }
+
+.el-pagination.is-background .el-pager li {
+  &:hover {
+    color: #053C8C;
+  }
+}
+.el-pagination.is-background .el-pager li:not(.disabled).active {
+  background-color: #053C8C;
+}

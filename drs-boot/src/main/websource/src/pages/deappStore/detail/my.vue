@@ -8,7 +8,7 @@
     <template v-if="appList.length > 0">
       <div class="my-list" v-for="(v, k) in appList" :key="k">
         <div class="logo">
-          <img :src="v.icon | formatIcon" alt="logo">
+          <img :src="v.icon" alt="logo">
         </div>
         <div class="doc-box">
           <p class="title">{{v.showName}}</p>
