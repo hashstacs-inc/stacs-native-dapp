@@ -1,5 +1,6 @@
 package io.stacs.nav.drs.api.model.contract;
 
+import io.stacs.nav.crypto.StacsECKey;
 import io.stacs.nav.drs.api.enums.ApiConstants;
 import io.stacs.nav.drs.api.model.BaseTxVO;
 import lombok.Getter;
@@ -41,6 +42,13 @@ import org.apache.commons.lang3.StringUtils;
      */
     private Object[] initArgs;
 
+    public String getContractAddress() {
+        if(StringUtils.isEmpty(contractAddress)){
+            contractAddress = new StacsECKey().getHexAddress();
+        }
+        return contractAddress;
+    }
+
     @Override public String getMethodSign() {
         return ApiConstants.TransactionApiEnum.CREATE_CONTRACT.getFunctionName();
     }
@@ -60,7 +68,7 @@ import org.apache.commons.lang3.StringUtils;
     public String getSignValue(){
         return super.getSignValue()
                     + fromAddr
-                    + contractAddress
+                    + getContractAddress()
                     + name
                     + symbol
                     + extension
