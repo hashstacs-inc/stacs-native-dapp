@@ -32,6 +32,8 @@ public interface ApiConstants {
         CREATE_CONTRACT("CREATE_CONTRACT", "/contract/deploy"),
         CONTRACT_INVOKER("CONTRACT_INVOKER", "/contract/invoke"),
         TASK_CONFIG("TASK_CONFIG", "/task/config"),
+        STAKING_CONFIG_DOMAIN("STAKING_CONFIG_DOMAIN", "/staking/configDomain"),
+        STAKING_CONFIG_CURRENCY("STAKING_CONFIG_CURRENCY", "/staking/configCurrency"),
         ;
         //@formatter:on
         private String functionName;
