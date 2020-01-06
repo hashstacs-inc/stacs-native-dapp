@@ -5,13 +5,13 @@ import lombok.Getter;
 import lombok.Setter;
 
 /**
- * @author tangkun
- * @date 2019-09-06
+ * @author liuyu
+ * @date 2020-01-06
  */
 @Getter
 @Setter
 @AllArgsConstructor
-public class DomainConfig implements java.io.Serializable {
+public class StakingDomain implements java.io.Serializable {
 
     private String domainId;
 

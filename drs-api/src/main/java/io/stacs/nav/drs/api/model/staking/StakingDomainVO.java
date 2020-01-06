@@ -8,10 +8,10 @@ import lombok.Setter;
 import org.hibernate.validator.constraints.NotBlank;
 
 /**
- * @author tangkun
- * @date 2019-09-06
+ * @author liuyu
+ * @date 2020-01-06
  */
-@Getter @Setter public class DomainConfigVO extends BaseTxVO {
+@Getter @Setter public class StakingDomainVO extends BaseTxVO {
     @NotBlank private String domainId;
 
     @NotBlank private String stakingAddress;
@@ -29,7 +29,7 @@ import org.hibernate.validator.constraints.NotBlank;
     @Override public String getSignValue() {
         return super.getSignValue()
             + String.join("_", "DOMAIN_CONFIG", domainId)
-            + JSON.toJSONString(new DomainConfig(domainId,stakingAddress,participationAddress))
+            + JSON.toJSONString(new StakingDomain(domainId,stakingAddress,participationAddress))
             + getFunctionName();
     }
 }

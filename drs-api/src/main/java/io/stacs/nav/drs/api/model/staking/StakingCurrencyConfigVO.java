@@ -7,8 +7,8 @@ import lombok.Setter;
 import org.hibernate.validator.constraints.NotBlank;
 
 /**
- * @author tangkun
- * @date 2019-09-09
+ * @author liuyu
+ * @date 2020-01-06
  */
 @Setter @Getter public class StakingCurrencyConfigVO extends BaseTxVO {
     @NotBlank private String stakingCurrency;
