@@ -31,6 +31,7 @@ public interface ApiConstants {
         BUILD_SNAPSHOT("BUILD_SNAPSHOT", "/snapshot/build"),
         CREATE_CONTRACT("CREATE_CONTRACT", "/contract/deploy"),
         CONTRACT_INVOKER("CONTRACT_INVOKER", "/contract/invoke"),
+        TASK_CONFIG("TASK_CONFIG", "/task/config"),
         ;
         //@formatter:on
         private String functionName;
