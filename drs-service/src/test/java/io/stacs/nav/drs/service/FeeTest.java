@@ -46,7 +46,7 @@ public class FeeTest {
         vo.setBdCode("SystemBD");
         vo.setSubmitter(ecKey.getHexAddress());
         //contract address--require publish
-        vo.setCurrency("FEE_COIN");
+        vo.setCurrency("FEE_COIN_A");
         //fee received address --require identity setting
         vo.setReceiveAddr("ef1d8935b0fb015242b024e05220c72f44ff5e6e");
         submit(priKey, vo);
@@ -58,9 +58,9 @@ public class FeeTest {
         vo.setBdCode("SystemBD");
         vo.setSubmitter(ecKey.getHexAddress());
         //domain id
-        vo.setDomainId("");
-        vo.setStakingAddress("");
-        vo.setParticipationAddress("xx");
+        vo.setDomainId("GSX-GROUP");
+        vo.setStakingAddress("164d9926b903f342ff6238a6d2cfc0ed9b60e879");//fb5993e53c2a48e929d017347c8e43c388aa5a91f93eef202d797e54b4f9e4fe
+        vo.setParticipationAddress("e45413ca676846fd92a57dbe3001e23195223cdd");//68632a1d3398751836a53dc332901ce10e183634aada51e596b0db7c418d6ee1
         submit(priKey, vo);
     }
 
@@ -70,7 +70,7 @@ public class FeeTest {
         vo.setBdCode("SystemBD");
         vo.setSubmitter(ecKey.getHexAddress());
 
-        vo.setStakingCurrency("");
+        vo.setStakingCurrency("FEE_COIN_A");
         submit(priKey, vo);
     }
 
@@ -81,7 +81,7 @@ public class FeeTest {
         vo.setSubmitter(ecKey.getHexAddress());
 
         vo.setType(TaskTypeEnum.BONUS_TYPE.getType());
-        vo.setCronExpression("");
+        vo.setCronExpression("0 05 17 * * ?");
         submit(priKey, vo);
     }
 }
