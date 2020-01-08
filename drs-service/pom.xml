@@ -24,7 +24,7 @@
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-web</artifactId>
         </dependency>
-        <!--用于多 web 合并部署-->
+        <!--web-->
         <dependency>
             <groupId>com.alipay.sofa</groupId>
             <artifactId>web-ark-plugin</artifactId>
@@ -155,7 +155,7 @@
                         <configuration>
                             <!--can only configure no more than one activator-->
                             <activator>io.stacs.nav.drs.service.ServiceActivator</activator>
-                            <!-- 配置优先级，数字越小，优先级越高，优先启动，优先导出类，默认1000 -->
+                            <!-- default 1000 -->
                             <priority>1</priority>
                             <pluginName>drs-service</pluginName>
                             <!-- configure exported class -->

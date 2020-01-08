@@ -8,7 +8,6 @@ import java.math.BigInteger;
 import java.util.regex.Pattern;
 
 /**
- * 检查 amount
  *
  * @author lingchao
  * @create 2017年12月19日11:01
@@ -20,7 +19,6 @@ public class AmountUtil {
     private static final String RS_AMOUNT_PATTERN = "(\\d{1,18})(\\.\\d{0,8})?";
     public static final int DEFAULT_DECIMALS = 8;
     /**
-     * 校验 amount 是否在规定单位内
      *
      * @param amount
      * @return
@@ -37,7 +35,6 @@ public class AmountUtil {
             }
             int max = validAmount.compareTo(MAX_AMOUNT);
             int min = validAmount.compareTo(MIN_AMOUNT);
-            //amount 在 最大和最小之间为合法
             if (max == 1 || min == -1) {
                 return false;
             }
@@ -113,7 +110,6 @@ public class AmountUtil {
      * @param bigDecimal
      * @return BigDecimal
      * @Title: clearNoUseZeroForBigDecimal
-     * @Description: 去掉BigDecimal尾部多余的0，通过stripTrailingZeros().toPlainString()实现
      */
     public static BigDecimal clearNoUseZeroForBigDecimal(BigDecimal bigDecimal) {
         if (null == bigDecimal) {
@@ -127,7 +123,6 @@ public class AmountUtil {
     }
 
     /**
-     * 判断是否是一个符合不超过18正数，小数不超过8位，且大于0
      * @param amount
      * @return
      */

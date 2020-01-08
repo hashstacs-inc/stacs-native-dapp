@@ -17,7 +17,6 @@
     <sql id="baseColumnList">
         id,code,`name`,bd_type,`desc`,init_permission,init_policy,functions,bd_version,create_time,update_time
     </sql>
-    <!-- 查询条件 -->
     <sql id="baseWhereClause">
         where 1=1
         <trim suffixOverrides=",">
@@ -56,30 +55,25 @@
             </if>
         </trim>
     </sql>
-    <!-- 插入记录 -->
     <insert id="add" parameterType="Object">
         insert into
         business_define(code,`name`,bd_type,`desc`,init_permission,init_policy,functions,bd_version,create_time,update_time)
         values(#{code},#{name},#{bdType},#{desc},#{initPermission},#{initPolicy},#{functions},#{bdVersion},#{createTime},#{updateTime})
     </insert>
-    <!-- 删除记录 -->
     <delete id="delete" parameterType="Object">
         delete from business_define where
         id=#{id}
     </delete>
-    <!-- 根据id查询 -->
     <select id="queryById" resultMap="baseResultMap" parameterType="Object">
         select
         <include refid="baseColumnList"/>
         from business_define where id=#{id}
     </select>
-    <!-- 列表总数 -->
     <select id="queryByCount" resultType="java.lang.Integer"
             parameterType="Object">
         select count(1) from business_define
         <include refid="baseWhereClause"/>
     </select>
-    <!-- 查询列表 -->
     <select id="queryByList" resultMap="baseResultMap"
             parameterType="Object">
         select
@@ -87,7 +81,6 @@
         from business_define
         <include refid="baseWhereClause"/>
     </select>
-    <!-- 以上为工具自动生成 -->
 
     <select id="queryByCode" resultMap="baseResultMap" parameterType="string">
         select

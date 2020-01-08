@@ -73,9 +73,6 @@ import static io.stacs.nav.drs.service.model.ConvertHelper.blockHeader2BlockPO;
      * process callback block
      */
     public void processCallbackBlock(BlockCallbackBO bo) {
-        // todo 1. 块信息
-        //      2. 交易数据
-        //      3. BD、policy、contract
         BlockVO block = JSON.parseObject(bo.getBlockData(), BlockVO.class);
         BlockPO blockPO = blockHeader2BlockPO.apply(block.getBlockHeader());
         Map<ActionExecTypeEnum, List<ActionPO>> actionsMap = new HashMap<>();

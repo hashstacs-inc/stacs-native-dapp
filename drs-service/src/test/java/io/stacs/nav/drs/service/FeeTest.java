@@ -81,7 +81,7 @@ public class FeeTest {
         vo.setSubmitter(ecKey.getHexAddress());
 
         vo.setType(TaskTypeEnum.BONUS_TYPE.getType());
-        vo.setCronExpression("0 05 17 * * ?");
+        vo.setCronExpression("0 30 18 * * ?");
         submit(priKey, vo);
     }
 }

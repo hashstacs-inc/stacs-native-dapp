@@ -21,7 +21,6 @@
     <sql id="baseColumnList">
 		policy_id,policy_name,decision_type,vote_pattern,callback_type,domain_ids,verifyNum,mustDomainIds,create_time,expression,require_auth_ids,version,update_time
 	</sql>
-    <!-- 查询条件 -->
     <sql id="baseWhereClause">
         where 1=1
         <trim suffixOverrides=",">
@@ -45,24 +44,20 @@
             </if>
         </trim>
     </sql>
-    <!-- 插入记录 -->
     <insert id="add" parameterType="object">
 		insert into
 		policy(policy_id,policy_name,decision_type,vote_pattern,callback_type,domain_ids,verifyNum,mustDomainIds,create_time,expression,require_auth_ids,version)
 		values(#{policyId},#{policyName},#{decisionType},#{votePattern},#{callbackType},#{domainIds},#{verifyNum},#{mustDomainIds},now(3),expression,requireAuthIds,version)
 	</insert>
-    <!-- 删除记录 -->
     <delete id="delete" parameterType="object">
 		delete from policy where
 		id=#{id}
 	</delete>
-    <!-- 列表总数 -->
     <select id="queryByCount" resultType="java.lang.Integer"
             parameterType="object">
         select count(1) from policy
         <include refid="baseWhereClause"/>
     </select>
-    <!-- 查询列表 -->
     <select id="queryByList" resultMap="baseResultMap"
             parameterType="object">
         select
@@ -70,7 +65,6 @@
         from policy
         <include refid="baseWhereClause"/>
     </select>
-    <!-- 以上为工具自动生成 -->
 
     <!-- query by policy id -->
     <select id="queryByPolicyId" resultMap="baseResultMap" parameterType="object">

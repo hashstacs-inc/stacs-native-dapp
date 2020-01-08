@@ -13,27 +13,23 @@ import java.nio.charset.StandardCharsets;
 
 /**
  * @author WangQuanzhou
- * @desc Aes加密使用的工具类
  * @date 2018/2/24 15:53
  */
 public class AesUtil {
     private static final Logger LOGGER = LoggerFactory.getLogger(AesUtil.class);
 
     /**
-     * @param content  需要加密的内容
-     * @param password 加密密码 16bytes长度
-     * @return 返回是加密的bytes流
+     * @param content
+     * @param password
+     * @return
      */
     public static byte[] encryptToBytes(String content, String password) {
         try {
             SecretKey key = new SecretKeySpec(password.getBytes(), "AES");
-            // 创建密码器
             Cipher cipher = Cipher.getInstance("AES");
             byte[] byteContent = content.getBytes(StandardCharsets.UTF_8);
-            // 初始化
             cipher.init(Cipher.ENCRYPT_MODE, key);
             byte[] result = cipher.doFinal(byteContent);
-            // 加密
             return result;
         } catch (Exception e) {
             LOGGER.error("Aes encrypt failed {} " + e.getMessage(), e);
@@ -42,21 +38,17 @@ public class AesUtil {
     }
 
     /**
-     * 解密
      *
-     * @param content  待解密内容
-     * @param password 解密密钥
+     * @param content
+     * @param password
      * @return
      */
     public static byte[] decryptToBytes(byte[] content, String password) {
         try {
             SecretKey key = new SecretKeySpec(password.getBytes(), "AES");
-            // 创建密码器
             Cipher cipher = Cipher.getInstance("AES");
-            // 初始化
             cipher.init(Cipher.DECRYPT_MODE, key);
             byte[] result = cipher.doFinal(content);
-            // 加密
             return result;
         } catch (Exception e) {
             LOGGER.error("Aes decrypt failed {}", e.getMessage(), e);
@@ -65,7 +57,6 @@ public class AesUtil {
     }
 
     /**
-     * 生成加密文件
      *
      * @param content
      * @param password
@@ -78,7 +69,6 @@ public class AesUtil {
         try {
             output = new FileOutputStream(file);
             bufferedOutput = new BufferedOutputStream(output);
-            //加密形成文件
             byte[] bytes = encryptToBytes(content, password);
             bufferedOutput.write(bytes);
         } catch (Exception e) {
@@ -102,7 +92,6 @@ public class AesUtil {
     }
 
     /**
-     * 从加密文件解密成为string
      *
      * @param password
      * @param filePath
@@ -121,7 +110,6 @@ public class AesUtil {
                 bos.write(b, 0, n);
             }
             byte[] contentBytes = bos.toByteArray();
-            //解密成byte
             decryptToBytes(contentBytes, password);
             return new String(decryptToBytes(contentBytes, password));
         } catch (Exception e) {
@@ -148,7 +136,6 @@ public class AesUtil {
     }
 
     /**
-     * BASE64解密
      *
      * @param key
      * @return
@@ -159,7 +146,6 @@ public class AesUtil {
     }
 
     /**
-     * BASE64加密
      *
      * @param key
      * @return

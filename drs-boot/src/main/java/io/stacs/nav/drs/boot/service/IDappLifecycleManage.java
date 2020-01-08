@@ -69,7 +69,7 @@ public interface IDappLifecycleManage {
     void config(String appName, Map<String, String> config);
 
     /**
-     * 获取当前安装过的app
+     * Gets the currently installed app
      * @return
      */
     List<AppProfileVO> queryCurrentApps();

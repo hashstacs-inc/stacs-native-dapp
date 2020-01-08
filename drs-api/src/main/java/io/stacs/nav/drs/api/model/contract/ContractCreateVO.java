@@ -18,7 +18,7 @@ import org.apache.commons.lang3.StringUtils;
 
     private String fromAddr;
     /**
-     * 合约地址
+     * contract address
      */
     private String contractAddress;
 
@@ -26,7 +26,7 @@ import org.apache.commons.lang3.StringUtils;
 
     private String extension;
     /**
-     * 合约构造器
+     * constructor
      */
     private String contractor;
     /**
@@ -34,11 +34,11 @@ import org.apache.commons.lang3.StringUtils;
      */
     private String symbol;
     /**
-     * 合约代码
+     * source code of contract
      */
     private String sourceCode;
     /**
-     * 合约构造入参
+     * args
      */
     private Object[] initArgs;
 

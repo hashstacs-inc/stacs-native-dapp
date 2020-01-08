@@ -1,6 +1,5 @@
 package io.stacs.nav.drs.service.vo;
 
-import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;

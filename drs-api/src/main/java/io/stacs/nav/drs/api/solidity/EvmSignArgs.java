@@ -6,11 +6,11 @@ package io.stacs.nav.drs.api.solidity;
  */
 public class EvmSignArgs {
     /**
-     * solidity合约数据类型
+     * Solidity  contract data type
      */
     private SolidityTypeEnum paramType;
     /**
-     * 合约类型对应的值
+     * The value corresponding to the contract type
      */
     private Object paramValue;
 

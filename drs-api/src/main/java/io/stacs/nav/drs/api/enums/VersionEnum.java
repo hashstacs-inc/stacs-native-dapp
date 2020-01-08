@@ -11,23 +11,23 @@ public enum VersionEnum {
     /**
      * V 1 version enum.
      */
-    V1("1.0.0", "V1版本"),
+    V1("1.0.0", "V1 version"),
     /**
      * V 2 version enum.
      */
-    V2("2.0.0", "V2版本"),
+    V2("2.0.0", "V2 version"),
     /**
      * V 3 version enum.
      */
-    V3("3.0.0", "V3版本"),
+    V3("3.0.0", "V3 version"),
     /**
      * V 4 version enum.
      */
-    V4("4.0.0", "V4版本"),
+    V4("4.0.0", "V4 version"),
     /**
      * V 5 version enum.
      */
-    V5("5.0.0", "V5版本"),
+    V5("5.0.0", "V5 version"),
     ;
 
     /**

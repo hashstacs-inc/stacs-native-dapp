@@ -20,7 +20,7 @@ import lombok.NoArgsConstructor;
      */
     private String address;
     /**
-     * 余额查询 ：uint256） balanceOf(address)
+     * balance of ：uint256） balanceOf(address)
      * Method signature, e.g. (uint256) get(uint256).
      */
     private String methodSignature;

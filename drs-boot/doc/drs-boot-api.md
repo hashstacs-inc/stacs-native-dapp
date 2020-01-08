@@ -1,150 +1,150 @@
-#接口文档
+#Interface documentation
 
-#### Dapp下载
-##### 接口地址：/dapp/download
-请求方式：GET
-##### 请求参数
+#### Download Dapp
+##### API：/dapp/download
+Request Method：GET
+##### Request parameters
 
-| 属性            | 类型            | 最大长度 | 必填 | 说明                           |
+| Attribute            | Type            | The maximum length | Required | Instructions                           |
 | -------------  | -------------   | -------- | ---- | -------------------------------- |
-| filePath       | `String`        | 64       | Y    | dapp文件地址路径(支持网络和本地路径)
+| filePath       | `String`        | 64       | Y    | Dapp file address path (support network and local path)
 
-##### 返回值：
+##### The return value：
 
-| 属性            | 类型            | 最大长度 | 必填 | 说明                           |
+| Attribute            | Type            | The maximum length | Required | Instructions                           |
 | -------------  | -------------   | -------- | ---- | -------------------------------- |
-| code           | `int`           | 6        | Y    | 返回码 '000000'表示成功
-| msg            | `String`        | 64       | Y    | 消息信息
-| data           | `Object`        |          | N    | 返回数据 Dapp
+| code           | `int`           | 6        | Y    | The return code '000000' indicates success
+| msg            | `String`        | 64       | Y    | Message information
+| data           | `Object`        |          | N    | Return the data Dapp
 
 ##### Dapp data
-| 属性          | 类型          | 最大长度 | 必填 | 说明                           |
+| Attribute          | Type          | The maximum length | Required | Instructions                           |
 | ------------- | ------------- | -------- | ---- | ------------------------------ |
 | name          | `String`      |          | Y    | Dapp name
 | version       | `String`      |          | Y    | Dapp version
 | contextPath   | `String`      |          | N    | web context path
 | status        | `String`      |          | Y    | DOWNLOAD、INITIALIZED、RUNNING、STOPPED
-| runError      | `String`      |          | N    | 运行错误信息
-| fileName      | `String`      |          | Y    | 文件名
-| icon          | `String`      |          | N    | 图标地址
-| author        | `String`      |          | N    | 发布人
-| remark        | `String`      |          | N    | 备注
+| runError      | `String`      |          | N    | Run error message
+| fileName      | `String`      |          | Y    | The file name
+| icon          | `String`      |          | N    | Icon url
+| author        | `String`      |          | N    | Release people
+| remark        | `String`      |          | N    | remark
 
 
-#### Dapp初始化
-##### 接口地址：/dapp/init/{appName}
-请求方式：GET
-##### 参数列表
+#### Initialize the Dapp
+##### API：/dapp/init/{appName}
+Request Method：GET
+##### Parameter list
 
-|     属性     | 类型     | 最大长度 | 必填 | 说明                                              |
+|     Attribute     | Type     | The maximum length | Required | Instructions                                              |
 | :----------: | -------- | -------- | ---- | ------------------------------------------------- |
 | appName        | `String`        | 64       | Y    | Dapp name
 
-##### 返回值：
+##### The return value：
 
-| 属性            | 类型            | 最大长度 | 必填 | 说明                           |
+| Attribute            | Type            | The maximum length | Required | Instructions                           |
 | -------------  | -------------   | -------- | ---- | -------------------------------- |
-| code           | `int`           | 6        | Y    | 返回码 '000000'表示成功
-| msg            | `String`        | 64       | Y    | 消息信息
-| data           | `Object`        |          | N    | 返回数据
+| code           | `int`           | 6        | Y    | The return code '000000' indicates success
+| msg            | `String`        | 64       | Y    | Message information
+| data           | `Object`        |          | N    | Return the data
 
 
-#### Dapp安装
-##### 接口地址：/dapp/install/{appName}
-请求方式：GET
-##### 参数列表
+#### Installed Dapp
+##### API：/dapp/install/{appName}
+Request Method：GET
+##### Parameter list
 
-|     属性     | 类型     | 最大长度 | 必填 | 说明                                              |
+|     Attribute     | Type     | The maximum length | Required | Instructions                                              |
 | :----------: | -------- | -------- | ---- | ------------------------------------------------- |
 | appName        | `String`        | 64       | Y    | Dapp name
 
-##### 返回值：
+##### The return value：
 
-| 属性            | 类型            | 最大长度 | 必填 | 说明                           |
+| Attribute            | Type            | The maximum length | Required | Instructions                           |
 | -------------  | -------------   | -------- | ---- | -------------------------------- |
-| code           | `int`           | 6        | Y    | 返回码 '000000'表示成功
-| msg            | `String`        | 64       | Y    | 消息信息
-| data           | `Object`        |          | N    | 返回数据
+| code           | `int`           | 6        | Y    | The return code '000000' indicates success
+| msg            | `String`        | 64       | Y    | Message information
+| data           | `Object`        |          | N    | Return the data
 
 
 
-#### Dapp卸载/停止
-##### 接口地址：/dapp/uninstall/{appName}
-请求方式：GET
-##### 参数列表
+#### Dapp uninstall/stop
+##### API：/dapp/uninstall/{appName}
+Request Method：GET
+##### Parameter list
 
-|     属性     | 类型     | 最大长度 | 必填 | 说明                                              |
+|     Attribute     | Type     | The maximum length | Required | Instructions                                              |
 | :----------: | -------- | -------- | ---- | ------------------------------------------------- |
 | appName        | `String`        | 64       | Y    | Dapp name
 
-##### 返回值：
+##### The return value：
 
-| 属性            | 类型            | 最大长度 | 必填 | 说明                           |
+| Attribute            | Type            | The maximum length | Required | Instructions                           |
 | -------------  | -------------   | -------- | ---- | -------------------------------- |
-| code           | `int`           | 6        | Y    | 返回码 '000000'表示成功
-| msg            | `String`        | 64       | Y    | 消息信息
-| data           | `Object`        |          | N    | 返回数据
+| code           | `int`           | 6        | Y    | The return code '000000' indicates success
+| msg            | `String`        | 64       | Y    | Message information
+| data           | `Object`        |          | N    | Return the data
 
 
 
 #### Dapp 配置信息查询
-##### 接口地址：/dapp/config/query/{appName}
-请求方式：GET
-##### 参数列表
+##### API：/dapp/config/query/{appName}
+Request Method：GET
+##### Parameter list
 
-|     属性     | 类型     | 最大长度 | 必填 | 说明                                              |
+|     Attribute     | Type     | The maximum length | Required | Instructions                                              |
 | :----------: | -------- | -------- | ---- | ------------------------------------------------- |
 | appName        | `String`        | 64       | Y    | Dapp name
 
-##### 返回值：
+##### The return value：
 
-| 属性            | 类型            | 最大长度 | 必填 | 说明                           |
+| Attribute            | Type            | The maximum length | Required | Instructions                           |
 | -------------  | -------------   | -------- | ---- | -------------------------------- |
-| code           | `int`           | 6        | Y    | 返回码 '000000'表示成功
-| msg            | `String`        | 64       | Y    | 消息信息
-| data           | `Object`        |          | N    | 返回数据
+| code           | `int`           | 6        | Y    | The return code '000000' indicates success
+| msg            | `String`        | 64       | Y    | Message information
+| data           | `Object`        |          | N    | Return the data
 
 
 #### Dapp 配置
-##### 接口地址：/dapp/config/{appName}
-请求方式：POST
-##### 参数列表
+##### API：/dapp/config/{appName}
+Request Method：POST
+##### Parameter list
 
-|     属性     | 类型     | 最大长度 | 必填 | 说明                                              |
+|     Attribute     | Type     | The maximum length | Required | Instructions                                              |
 | :----------: | -------- | -------- | ---- | ------------------------------------------------- |
 | appName        | `String`        | 64       | Y    | Dapp name
-| {}             | `Json String`   |          | Y    | Dapp 配置参数，key-value的 json对象
+| {}             | `Json String`   |          | Y    | Dapp Configuration parameters，The json object of key-value
 
-##### 返回值：
+##### The return value：
 
-| 属性            | 类型            | 最大长度 | 必填 | 说明                           |
+| Attribute            | Type            | The maximum length | Required | Instructions                           |
 | -------------  | -------------   | -------- | ---- | -------------------------------- |
-| code           | `int`           | 6        | Y    | 返回码 '000000'表示成功
-| msg            | `String`        | 64       | Y    | 消息信息
-| data           | `Object`        |          | N    | 返回数据
+| code           | `int`           | 6        | Y    | The return code '000000' indicates success
+| msg            | `String`        | 64       | Y    | Message information
+| data           | `Object`        |          | N    | Return the data
 
-#### Dapp Store列表查询
-##### 接口地址：/dapp/queryAppStore
-请求方式：GET
-##### 参数列表
+#### Dapp Store list query
+##### API：/dapp/queryAppStore
+Request Method：GET
+##### Parameter list
 
-|     属性     | 类型     | 最大长度 | 必填 | 说明                                              |
+|     Attribute     | Type     | The maximum length | Required | Instructions                                              |
 | :----------: | -------- | -------- | ---- | ------------------------------------------------- |
 
-##### 返回值：
+##### The return value：
 
-| 属性            | 类型            | 最大长度 | 必填 | 说明                           |
+| Attribute            | Type            | The maximum length | Required | Instructions                           |
 | -------------  | -------------   | -------- | ---- | -------------------------------- |
-| code           | `int`           | 6        | Y    | 返回码 '000000'表示成功
-| msg            | `String`        | 64       | Y    | 消息信息
-| data           | `Object`        |          | N    | 返回数据，List<AppProfileVO>
+| code           | `int`           | 6        | Y    | The return code '000000' indicates success
+| msg            | `String`        | 64       | Y    | Message information
+| data           | `Object`        |          | N    | Return the data，List<AppProfileVO>
 
-###### 返回参数样例:
+###### Sample return parameters:
 ```
 [
   {
 
-    "showName":"测试App1",
+    "showName":"App1",
     "name":"dapp-sample",
     "icon":"appstore/img/icon1.ong",
     "author":"test",
@@ -154,7 +154,7 @@
   },
   {
 
-    "showName":"测试App2",
+    "showName":"App2",
     "name":"dapp-sample",
     "icon":"appstore/img/icon2.ong",
     "author":"test",
@@ -165,28 +165,28 @@
 ]
 ```
 
-#### Dapp 已下载列表查询
-##### 接口地址：/dapp/installList
-请求方式：GET
-##### 参数列表
+#### Dapp has downloaded the list query
+##### API：/dapp/installList
+Request Method：GET
+##### Parameter list
 
-|     属性     | 类型     | 最大长度 | 必填 | 说明                                              |
+|     Attribute     | Type     | The maximum length | Required | Instructions                                              |
 | :----------: | -------- | -------- | ---- | ------------------------------------------------- |
 
-##### 返回值：
+##### The return value：
 
-| 属性            | 类型            | 最大长度 | 必填 | 说明                           |
+| Attribute            | Type            | The maximum length | Required | Instructions                           |
 | -------------  | -------------   | -------- | ---- | -------------------------------- |
-| code           | `int`           | 6        | Y    | 返回码 '000000'表示成功
-| msg            | `String`        | 64       | Y    | 消息信息
-| data           | `Object`        |          | N    | 返回数据，List<AppProfileVO>
+| code           | `int`           | 6        | Y    | The return code '000000' indicates success
+| msg            | `String`        | 64       | Y    | Message information
+| data           | `Object`        |          | N    | Return the data，List<AppProfileVO>
 
-###### 返回参数样例:
+###### Sample return parameters:
 ```
 [
   {
 
-    "showName":"测试App1",
+    "showName":"App1",
     "name":"dapp-sample",
     "icon":"appstore/img/icon1.ong",
     "author":"test",
@@ -196,7 +196,7 @@
   },
   {
 
-    "showName":"测试App2",
+    "showName":"App2",
     "name":"dapp-sample",
     "icon":"appstore/img/icon2.ong",
     "author":"test",
@@ -207,29 +207,29 @@
 ]
 ```
 
-#### Policy 信息查询
-##### 接口地址：/drs/queryAllPolicy
-请求方式：GET
-##### 参数列表
+#### Policy information query
+##### API：/drs/queryAllPolicy
+Request Method：GET
+##### Parameter list
 
-无
+NO DATA
 
-###### 请求参数样例:
+###### Sample Request parameters:
 ```
-无
+NO DATA
 ```
-##### 返回值：
-| 属性            | 类型            | 最大长度 | 必填 | 说明                           |
+##### The return value：
+| Attribute            | Type            | The maximum length | Required | Instructions                           |
 | -------------  | -------------   | -------- | ---- | -------------------------------- |
-| code           | `int`           | 6        | Y    | 返回码 '000000'表示成功
-| msg            | `String`        | 64       | Y    | 消息信息
-| data           | `Object`        |          | N    | 返回数据，List<Policy>
+| code           | `int`           | 6        | Y    | The return code '000000' indicates success
+| msg            | `String`        | 64       | Y    | Message information
+| data           | `Object`        |          | N    | Return the data，List<Policy>
 #####RsDomain
-| 属性            | 类型            | 最大长度 | 必填 | 说明                           |
+| Attribute            | Type            | The maximum length | Required | Instructions                           |
 | -------------  | -------------   | -------- | ---- | -------------------------------- |
 | policyId       | `String`        | 32       | Y    | id
 | policyName     | `String`        | 24       | Y    | name
-###### 返回参数样例:
+###### Sample return parameters:
 ```
 [
     {"policyId":"policyId-0","policyName":"policy name-0"},
@@ -237,28 +237,28 @@
     {"policyId":"policyId-2","policyName":"policy name-2"}
 ]
 ```
-#### Permission 信息查询
-##### 接口地址：/drs/queryPermissionList
-请求方式：GET
-##### 参数列表
+#### Permission information query
+##### API：/drs/queryPermissionList
+Request Method：GET
+##### Parameter list
 
-无
+NO DATA
 
-###### 请求参数样例:
+###### Sample Request parameters:
 ```
-无
+NO DATA
 ```
-##### 返回值：
-| 属性            | 类型            | 最大长度 | 必填 | 说明                           |
+##### The return value：
+| Attribute            | Type            | The maximum length | Required | Instructions                           |
 | -------------  | -------------   | -------- | ---- | -------------------------------- |
-| code           | `int`           | 6        | Y    | 返回码 '000000'表示成功
-| msg            | `String`        | 64       | Y    | 消息信息
-| data           | `Object`        |          | N    | 返回数据，List<Policy>
+| code           | `int`           | 6        | Y    | The return code '000000' indicates success
+| msg            | `String`        | 64       | Y    | Message information
+| data           | `Object`        |          | N    | Return the data，List<Policy>
 #####RsDomain
-| 属性            | 类型            | 最大长度 | 必填 | 说明                           |
+| Attribute            | Type            | The maximum length | Required | Instructions                           |
 | -------------  | -------------   | -------- | ---- | -------------------------------- |
-| permissionName | `String`        | 32       | Y    | 权限名称
-###### 返回参数样例:
+| permissionName | `String`        | 32       | Y    | Permission to name
+###### Sample return parameters:
 ```
 [
     {"permissionName":"name-0"},
@@ -267,29 +267,29 @@
 ]
 ```
 
-#### Domain 信息查询
-##### 接口地址：/drs/queryAllDomain
-请求方式：GET
-##### 参数列表
+#### Domain information query
+##### API：/drs/queryAllDomain
+Request Method：GET
+##### Parameter list
 
-无
+NO DATA
 
-###### 请求参数样例:
+###### Sample Request parameters:
 ```
-无
+NO DATA
 ```
-##### 返回值：
-| 属性            | 类型            | 最大长度 | 必填 | 说明                           |
+##### The return value：
+| Attribute            | Type            | The maximum length | Required | Instructions                           |
 | -------------  | -------------   | -------- | ---- | -------------------------------- |
-| code           | `int`           | 6        | Y    | 返回码 '000000'表示成功
-| msg            | `String`        | 64       | Y    | 消息信息
-| data           | `Object`        |          | N    | 返回数据，List<RsDomain>
+| code           | `int`           | 6        | Y    | The return code '000000' indicates success
+| msg            | `String`        | 64       | Y    | Message information
+| data           | `Object`        |          | N    | Return the data，List<RsDomain>
 #####RsDomain
-| 属性            | 类型            | 最大长度 | 必填 | 说明                           |
+| Attribute            | Type            | The maximum length | Required | Instructions                           |
 | -------------  | -------------   | -------- | ---- | -------------------------------- |
-| domainId       | `String`        | 64       | Y    | 返回码 '000000'表示成功
+| domainId       | `String`        | 64       | Y    | The return code '000000' indicates success
 | desc           | `String`        | 1024     | N    | 描述
-###### 返回参数样例:
+###### Sample return parameters:
 ```
 [
     {"desc":"test desc","domainId":"domainId-0"},
@@ -298,41 +298,41 @@
 ]
 ```
 
-#### 合约 信息查询
-##### 接口地址：/drs/queryContract
-请求方式：GET
-##### 参数列表
+#### Contract information query
+##### API：/drs/queryContract
+Request Method：GET
+##### Parameter list
 
-无
+NO DATA
 
-###### 请求参数样例:
+###### Sample Request parameters:
 ```
-无
+NO DATA
 ```
-##### 返回值：
-| 属性            | 类型            | 最大长度 | 必填 | 说明                           |
+##### The return value：
+| Attribute            | Type            | The maximum length | Required | Instructions                           |
 | -------------  | -------------   | -------- | ---- | -------------------------------- |
-| code           | `int`           | 6        | Y    | 返回码 '000000'表示成功
-| msg            | `String`        | 64       | Y    | 消息信息
-| data           | `Object`        |          | N    | 返回数据，List<RsDomain>
+| code           | `int`           | 6        | Y    | The return code '000000' indicates success
+| msg            | `String`        | 64       | Y    | Message information
+| data           | `Object`        |          | N    | Return the data，List<RsDomain>
 #####RsDomain
-| 属性            | 类型            | 最大长度 | 必填 | 说明                           |
+| Attribute            | Type            | The maximum length | Required | Instructions                           |
 | -------------  | -------------   | -------- | ---- | -------------------------------- |
-| address        | `String`        | 64       | Y    | 合约地址
-| name           | `String`        | 1024     | N    | 合约名称
+| address        | `String`        | 64       | Y    | Contract address
+| name           | `String`        | 1024     | N    | The name of the contract
 | symbol         | `String`        | 1024     | N    | token
-| extension      | `String`        | 1024     | N    | 扩展字段
+| extension      | `String`        | 1024     | N    | Extension field
 | bdCode         | `String`        | 1024     | N    | bd code
-| status         | `String`        | 1024     | N    | 状态
-| blockHeight    | `String`        | 1024     | N    | 区块高度
-| txId           | `String`        | 1024     | N    | 交易id
+| status         | `String`        | 1024     | N    | state
+| blockHeight    | `String`        | 1024     | N    | Block height
+| txId           | `String`        | 1024     | N    | Transaction id
 | actionIndex    | `String`        | 1024     | N    | action index
-| version        | `String`        | 1024     | N    | 版本号
-| code           | `String`        | 1024     | N    | 源码
-| createTime     | `String`        | 1024     | N    | 时间
-| bdType         | `String`        | 1024     | N    | bd type
+| version        | `String`        | 1024     | N    | The version number
+| code           | `String`        | 1024     | N    | The source code
+| createTime     | `String`        | 1024     | N    | data time
+| bdType         | `String`        | 1024     | N    | bd Type
 
-###### 返回参数样例:
+###### Sample return parameters:
 ```
 [
     {"address":"test desc","name":"domainId-0"},
@@ -341,32 +341,32 @@
 ```
 
 
-#### 合约中的方法信息查询
-##### 接口地址：/drs/queryMethodParam
-请求方式：POST
-##### 参数列表
+#### Method information query in contract
+##### API：/drs/queryMethodParam
+Request Method：POST
+##### Parameter list
 
-##### 返回值：
-| 属性               | 类型            | 最大长度 | 必填 | 说明                           |
+##### The return value：
+| Attribute               | Type            | The maximum length | Required | Instructions                           |
 | ------------------| -------------   | -------- | ---- | -------------------------------- |
-| contractAddress   | `String`        | 32       | Y    | 合约地址
-| methodSign        | `String`        | 128      | Y    | 方法名字:transfer(address,uint256)
+| contractAddress   | `String`        | 32       | Y    | Contract address
+| methodSign        | `String`        | 128      | Y    | Method name:transfer(address,uint256)
 
-###### 请求参数样例:
+###### Sample Request parameters:
 ```
 {
 "contractAddress":"177f03aefabb6dfc07f189ddf6d0d48c2f60cdbf",
 "methodSign":"transfer(address,uint256)"
 }
 ```
-##### 返回值：
-| 属性            | 类型            | 最大长度 | 必填 | 说明                           |
+##### The return value：
+| Attribute            | Type            | The maximum length | Required | Instructions                           |
 | -------------  | -------------   | -------- | ---- | -------------------------------- |
-| code           | `int`           | 6        | Y    | 返回码 '000000'表示成功
-| msg            | `String`        | 64       | Y    | 消息信息
-| data           | `Object`        |          | N    | 返回数据，Map<String,String>
+| code           | `int`           | 6        | Y    | The return code '000000' indicates success
+| msg            | `String`        | 64       | Y    | Message information
+| data           | `Object`        |          | N    | Return the data，Map<String,String>
 
-###### 返回参数样例:
+###### Sample return parameters:
 ```
 {
   "data":{
@@ -378,31 +378,31 @@
 
 
 #### 获取签名原值
-##### 接口地址：/bd/getSignValue
-请求方式：POST
-##### 参数列表
+##### API：/bd/getSignValue
+Request Method：POST
+##### Parameter list
 
-##### 返回值：
-| 属性               | 类型            | 最大长度 | 必填 | 说明                           |
+##### The return value：
+| Attribute               | Type            | The maximum length | Required | Instructions                           |
 | ------------------| -------------   | -------- | ---- | -------------------------------- |
-| functionName      | `String`        | 32       | Y    | 方法名字
-| param             | `JSONObject`    | 1024     | Y    | 参数对象
+| functionName      | `String`        | 32       | Y    | Method name
+| param             | `JSONObject`    | 1024     | Y    | Parameter object
 
-###### 请求参数样例:
+###### Sample Request parameters:
 ```
 {
 "functionName":"IDENTITY_SETTING",
 "param":{}
 }
 ```
-##### 返回值：
-| 属性            | 类型            | 最大长度 | 必填 | 说明                           |
+##### The return value：
+| Attribute            | Type            | The maximum length | Required | Instructions                           |
 | -------------  | -------------   | -------- | ---- | -------------------------------- |
-| code           | `int`           | 6        | Y    | 返回码 '000000'表示成功
-| msg            | `String`        | 64       | Y    | 消息信息
-| data           | `Object`        |          | N    | 返回数据
+| code           | `int`           | 6        | Y    | The return code '000000' indicates success
+| msg            | `String`        | 64       | Y    | Message information
+| data           | `Object`        |          | N    | Return the data
 
-###### 返回参数样例:
+###### Sample return parameters:
 ```
 {
 "txId":"tx_id_abc_123","sign":"xxxx"
@@ -412,31 +412,31 @@
 
 
 #### 根据私钥获取签名
-##### 接口地址：/bd/getSignature
-请求方式：POST
-##### 参数列表
+##### API：/bd/getSignature
+Request Method：POST
+##### Parameter list
 
-##### 返回值：
-| 属性               | 类型            | 最大长度 | 必填 | 说明                           |
+##### The return value：
+| Attribute               | Type            | The maximum length | Required | Instructions                           |
 | ------------------| -------------   | -------- | ---- | -------------------------------- |
-| priKey            | `String`        | 64       | Y    | 私钥
-| signValue         | `String`        | 1024     | Y    | 待签名值
+| priKey            | `String`        | 64       | Y    | The private key
+| signValue         | `String`        | 1024     | Y    | To be signed value
 
-###### 请求参数样例:
+###### Sample Request parameters:
 ```
 {
 "priKey":"xxx",
 "signValue":"xxxxSystemBD"
 }
 ```
-##### 返回值：
-| 属性            | 类型            | 最大长度 | 必填 | 说明                           |
+##### The return value：
+| Attribute            | Type            | The maximum length | Required | Instructions                           |
 | -------------  | -------------   | -------- | ---- | -------------------------------- |
-| code           | `int`           | 6        | Y    | 返回码 '000000'表示成功
-| msg            | `String`        | 64       | Y    | 消息信息
-| data           | `String`        |          | N    | 返回签名数据
+| code           | `int`           | 6        | Y    | The return code '000000' indicates success
+| msg            | `String`        | 64       | Y    | Message information
+| data           | `String`        |          | N    | Return signature data
 
-###### 返回参数样例:
+###### Sample return parameters:
 ```
 {
 "data":"xxxxxxxxxxx"
@@ -446,82 +446,82 @@
 ```
 
 
-#### 获取交易信息
+#### Obtain transaction information
 
-##### 接口地址：/bd/queryTxs
-请求方式：POST
-##### 参数列表
+##### API：/bd/queryTxs
+Request Method：POST
+##### Parameter list
 
-##### 返回值：
-| 属性               | 类型            | 最大长度 | 必填 | 说明                           |
+##### The return value：
+| Attribute               | Type            | The maximum length | Required | Instructions                           |
 | ------------------| -------------   | -------- | ---- | -------------------------------- |
-| blockHeight       | `Long`          | 20       | N    | 高度
-| txId              | `String`        | 64       | N    | 交易id
-| submitter         | `String`        | 32       | N    | 交易提交者
-| pageNum           | `int`           | 10       | Y    | 页数
-| pageSize          | `int`           | 104      | Y    | 每页条数
+| blockHeight       | `Long`          | 20       | N    | block height
+| txId              | `String`        | 64       | N    | Transaction id
+| submitter         | `String`        | 32       | N    | Transaction submitter
+| pageNum           | `int`           | 10       | Y    | Number of pages
+| pageSize          | `int`           | 104      | Y    | Number each page
 
-###### 请求参数样例:
+###### Sample Request parameters:
 ```
 {
 "pageNum":1,
 "pageSize":10
 }
 ```
-##### 返回值：
-| 属性            | 类型            | 最大长度 | 必填 | 说明                           |
+##### The return value：
+| Attribute            | Type            | The maximum length | Required | Instructions                           |
 | -------------  | -------------   | -------- | ---- | -------------------------------- |
-| code           | `int`           | 6        | Y    | 返回码 '000000'表示成功
-| msg            | `String`        | 64       | Y    | 消息信息
-| data           | `PageInfo`      |          | N    | 返回数据
+| code           | `int`           | 6        | Y    | The return code '000000' indicates success
+| msg            | `String`        | 64       | Y    | Message information
+| data           | `PageInfo`      |          | N    | Return the data
 
 
-###### 返回参数样例:
+###### Sample return parameters:
 ```
-无
+NO DATA
 
 ```
 
-#### BD(Business Define) 查询
-##### 接口地址：/drs/bd/query
-请求方式：GET
-##### 参数列表
+#### BD(Business Define)  
+##### API：/drs/bd/query
+Request Method：GET
+##### Parameter list
 
-|     属性     | 类型     | 最大长度 | 必填 | 说明                                              |
+|     Attribute     | Type     | The maximum length | Required | Instructions                                              |
 | :----------: | -------- | -------- | ---- | ------------------------------------------------- |
-| bdCode       | `String` | 32       | N    | 要查询的BD code,允许为空
-###### 请求参数样例:
+| bdCode       | `String` | 32       | N    | The BD code to query is allowed to be null
+###### Sample Request parameters:
 ```
-1.无参：http://domain/drs/bd/query
-2.有参：http://domain/drs/bd/query?bdCode=SysBD
+1.NO DATA：http://domain/drs/bd/query
+2.HAS DATA：http://domain/drs/bd/query?bdCode=SysBD
 ```
-##### 返回值：
-| 属性            | 类型            | 最大长度 | 必填 | 说明                           |
+##### The return value：
+| Attribute            | Type            | The maximum length | Required | Instructions                         |
 | -------------  | -------------   | -------- | ---- | -------------------------------- |
-| code           | `int`           | 6        | Y    | 返回码 '000000'表示成功
-| msg            | `String`        | 64       | Y    | 消息信息
-| data           | `Object`        |          | N    | 返回数据，List<BusinessDefine>
+| code           | `int`           | 6        | Y    | The return code '000000' indicates success
+| msg            | `String`        | 64       | Y    | Message information
+| data           | `Object`        |          | N    | Return the data，List<BusinessDefine>
 #####BusinessDefine
-| 属性            | 类型            | 最大长度 | 必填 | 说明                           |
-| -------------  | -------------   | -------- | ---- | -------------------------------- |
-| code           | `int`           | 64       | Y    | bd code
-| name           | `String`        | 64       | Y    | bd 名称
-| bdType         | `String`        | 32       | Y    | 类型
-| desc           | `String`        | 1024     | N    | 描述
-| initPermission | `String`        | 64       | Y    | 初始权限
-| initPolicy     | `String`        | 32       | Y    | 初始policy
-| functions      | `List<FunctionDefine>`     |      | Y    | 拥有的function
-| bdVersion      | `String`        |  4       | Y    | 版本号
+| Attribute            | Type                | The maximum length | Required | Instructions                      |
+| -------------  | ----------------------    | ------------------- | -------- | -------------------------------- |
+| code           | `int`                     | 64                       | Y    | bd code
+| name           | `String`                  | 64                       | Y    | bd name
+| bdType         | `String`                  | 32                       | Y    | Type
+| desc           | `String`                  | 1024                     | N    | Description
+| initPermission | `String`                  | 64                       | Y    | The initial permissions
+| initPolicy     | `String`                  | 32                       | Y    | The original policy
+| functions      | `List<FunctionDefine>`    |                          | Y    | Has the function of
+| bdVersion      | `String`                  |  4                       | Y    | version
 ######FunctionDefine
-| 属性            | 类型            | 最大长度 | 必填 | 说明                           |
+| Attribute            | Type            | The maximum length | Required | Instructions                        |
 | -------------  | -------------   | -------- | ---- | -------------------------------- |
-| name           | `String`        | 64       | Y    | bd 名称
-| type           | `String`        | 32       | Y    | 类型
-| desc           | `String`        | 256      | N    | 描述
-| methodSign     | `String`        | 256      | Y    | 方法
-| execPermission | `String`        | 64       | Y    | 执行权限
-| execPolicy     | `String`        | 32       | Y    | 执行policy
-###### 返回参数样例:
+| name           | `String`        | 64       | Y    | bd name
+| Type           | `String`        | 32       | Y    | Type
+| desc           | `String`        | 256      | N    | Description
+| methodSign     | `String`        | 256      | Y    | method 
+| execPermission | `String`        | 64       | Y    | Execute permissions
+| execPolicy     | `String`        | 32       | Y    | Implement the policy
+###### Sample return parameters:
 ```
 {
     "code":"000000",
@@ -535,172 +535,172 @@
             "initPolicy":"INIT_BD",
             "functions":[
                 {
-                    "desc":"Identity设置",
+                    "desc":"Identity Setting",
                     "execPermission":"RS",
                     "execPolicy":"IDENTITY_SETTING",
                     "methodSign":"IDENTITY_SETTING",
                     "name":"IDENTITY_SETTING",
-                    "type":"SyetemAction"
+                    "Type":"SyetemAction"
                 },
                 {
-                    "desc":"BD发布",
+                    "desc":"BD Publish",
                     "execPermission":"RS",
                     "execPolicy":"BD_PUBLISH",
                     "methodSign":"BD_PUBLISH",
                     "name":"BD_PUBLISH",
-                    "type":"SyetemAction"
+                    "Type":"SyetemAction"
                 },
                 {
-                    "desc":"Permission注册",
+                    "desc":"Permission Register",
                     "execPermission":"RS",
                     "execPolicy":"PERMISSION_REGISTER",
                     "methodSign":"PERMISSION_REGISTER",
                     "name":"PERMISSION_REGISTER",
-                    "type":"SyetemAction"
+                    "Type":"SyetemAction"
                 },
                 {
-                    "desc":"Permission授权",
+                    "desc":"Permission Auth",
                     "execPermission":"RS",
                     "execPolicy":"AUTHORIZE_PERMISSION",
                     "methodSign":"AUTHORIZE_PERMISSION",
                     "name":"AUTHORIZE_PERMISSION",
-                    "type":"SyetemAction"
+                    "Type":"SyetemAction"
                 },
                 {
-                    "desc":"Permission撤销授权",
+                    "desc":"Permission Cancel",
                     "execPermission":"RS",
                     "execPolicy":"CANCEL_PERMISSION",
                     "methodSign":"CANCEL_PERMISSION",
                     "name":"CANCEL_PERMISSION",
-                    "type":"SyetemAction"
+                    "Type":"SyetemAction"
                 },
                 {
-                    "desc":"注册policy",
+                    "desc":"policy Register",
                     "execPermission":"RS",
                     "execPolicy":"REGISTER_POLICY",
                     "methodSign":"REGISTER_POLICY",
                     "name":"REGISTER_POLICY",
-                    "type":"SyetemAction"
+                    "Type":"SyetemAction"
                 },
                 {
-                    "desc":"修改policy",
+                    "desc":"policy Modify",
                     "execPermission":"RS",
                     "execPolicy":"MODIFY_POLICY",
                     "methodSign":"MODIFY_POLICY",
                     "name":"MODIFY_POLICY",
-                    "type":"SyetemAction"
+                    "Type":"SyetemAction"
                 },
                 {
-                    "desc":"注册RS",
+                    "desc":"RS Register",
                     "execPermission":"RS",
                     "execPolicy":"REGISTER_RS",
                     "methodSign":"REGISTER_RS",
                     "name":"REGISTER_RS",
-                    "type":"SyetemAction"
+                    "Type":"SyetemAction"
                 },
                 {
-                    "desc":"撤销RS",
+                    "desc":"RS Cancel",
                     "execPermission":"RS",
                     "execPolicy":"CANCEL_RS",
                     "methodSign":"CANCEL_RS",
                     "name":"CANCEL_RS",
-                    "type":"SyetemAction"
+                    "Type":"SyetemAction"
                 },
                 {
-                    "desc":"CA认证",
+                    "desc":"CA Auth",
                     "execPermission":"RS",
                     "execPolicy":"CA_AUTH",
                     "methodSign":"CA_AUTH",
                     "name":"CA_AUTH",
-                    "type":"SyetemAction"
+                    "Type":"SyetemAction"
                 },
                 {
-                    "desc":"CA撤销",
+                    "desc":"CA Cancel",
                     "execPermission":"RS",
                     "execPolicy":"CA_CANCEL",
                     "methodSign":"CA_CANCEL",
                     "name":"CA_CANCEL",
-                    "type":"SyetemAction"
+                    "Type":"SyetemAction"
                 },
                 {
-                    "desc":"CA更新",
+                    "desc":"CA Update",
                     "execPermission":"RS",
                     "execPolicy":"CA_UPDATE",
                     "methodSign":"CA_UPDATE",
                     "name":"CA_UPDATE",
-                    "type":"SyetemAction"
+                    "Type":"SyetemAction"
                 },
                 {
-                    "desc":"节点加入",
+                    "desc":"Node Join",
                     "execPermission":"RS",
                     "execPolicy":"NODE_JOIN",
                     "methodSign":"NODE_JOIN",
                     "name":"NODE_JOIN",
-                    "type":"SyetemAction"
+                    "Type":"SyetemAction"
                 },
                 {
-                    "desc":"节点退出",
+                    "desc":"Node leave",
                     "execPermission":"RS",
                     "execPolicy":"NODE_LEAVE",
                     "methodSign":"NODE_LEAVE",
                     "name":"NODE_LEAVE",
-                    "type":"SyetemAction"
+                    "Type":"SyetemAction"
                 },
                 {
-                    "desc":"系统属性配置",
+                    "desc":"System Attribute Setting",
                     "execPermission":"RS",
                     "execPolicy":"SYSTEM_PROPERTY",
                     "methodSign":"SYSTEM_PROPERTY",
                     "name":"SYSTEM_PROPERTY",
-                    "type":"SyetemAction"
+                    "Type":"SyetemAction"
                 },
                 {
-                    "desc":"Identity BD 管理（froze/unfroze）",
+                    "desc":"Identity BD Management（froze/unfroze）",
                     "execPermission":"RS",
                     "execPolicy":"IDENTITY_BD_MANAGE",
                     "methodSign":"IDENTITY_BD_MANAGE",
                     "name":"IDENTITY_BD_MANAGE",
-                    "type":"SyetemAction"
+                    "Type":"SyetemAction"
                 },
                 {
-                    "desc":"identity kyc 设置",
+                    "desc":"identity kyc Setting",
                     "execPermission":"RS",
                     "execPolicy":"KYC_SETTING",
                     "methodSign":"KYC_SETTING",
                     "name":"KYC_SETTING",
-                    "type":"SyetemAction"
+                    "Type":"SyetemAction"
                 },
                 {
-                    "desc":"手续费设置：合约地址 & 收取地址",
+                    "desc":"Fee setting",
                     "execPermission":"RS",
                     "execPolicy":"SET_FEE_CONFIG",
                     "methodSign":"SET_FEE_CONFIG",
                     "name":"SET_FEE_CONFIG",
-                    "type":"SyetemAction"
+                    "Type":"SyetemAction"
                 },
                 {
-                    "desc":"手续费费率配置",
+                    "desc":"Fee Rule Setting",
                     "execPermission":"RS",
                     "execPolicy":"SET_FEE_RULE",
                     "methodSign":"SET_FEE_RULE",
                     "name":"SET_FEE_RULE",
-                    "type":"SyetemAction"
+                    "Type":"SyetemAction"
                 },
                 {
-                    "desc":"保存存证",
+                    "desc":"Save Attestation",
                     "execPermission":"RS",
                     "execPolicy":"SAVE_ATTESTATION",
                     "methodSign":"SAVE_ATTESTATION",
                     "name":"SAVE_ATTESTATION",
-                    "type":"SyetemAction"
+                    "Type":"SyetemAction"
                 },
                 {
-                    "desc":"打快照",
+                    "desc":"Build Snapshot",
                     "execPermission":"RS",
                     "execPolicy":"BUILD_SNAPSHOT",
                     "methodSign":"BUILD_SNAPSHOT",
                     "name":"BUILD_SNAPSHOT",
-                    "type":"SyetemAction"
+                    "Type":"SyetemAction"
                 }
             ]
         }

@@ -9,8 +9,6 @@ import org.hibernate.validator.constraints.Length;
 import javax.validation.constraints.NotBlank;
 
 /**
- * 基本交易类型VO 包含交易VO的公共字段
- *
  * @author ganxiang
  * @date 10/29/2019
  */

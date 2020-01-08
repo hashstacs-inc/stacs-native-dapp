@@ -14,15 +14,15 @@ import org.hibernate.validator.constraints.NotBlank;
  */
 @Getter @Setter public class SaveAttestationVO extends BaseTxVO {
     /**
-     * 版本
+     * version
      */
     @NotBlank @Length(max = 20) private String attestationVersion;
     /**
-     * 存证内容
+     * content of attestation
      */
     @NotBlank @Length(max = 4096) private String attestation;
     /**
-     * 备注
+     * remark
      */
     @Length(max = 1024) private String remark;
 
