@@ -21,7 +21,7 @@ import org.hibernate.validator.constraints.NotBlank;
     @Length(max = 1024) private String KYC;
 
     /**
-     * 1. user(默认) 2. domain 3. node
+     * 1. user(default) 2. domain 3. node
      */
     private String identityType;
 

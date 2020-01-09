@@ -34,7 +34,6 @@ public interface ConvertHelper {
         return po;
     };
 
-    // 块信息
     Function<BlockHeader, BlockPO> blockHeader2BlockPO = header -> {
         BlockPO po = BeanConvertor.convertBean(header, BlockPO.class);
         BeanUtils.copyProperties(header.getStateRootHash(), po);

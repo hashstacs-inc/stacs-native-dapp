@@ -10,7 +10,7 @@ import java.util.regex.Pattern;
 /**
  *
  * @author lingchao
- * @create 2017年12月19日11:01
+ * @create 2017-12-19 11:01
  */
 @Slf4j
 public class AmountUtil {
