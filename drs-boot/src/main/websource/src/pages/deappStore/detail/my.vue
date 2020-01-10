@@ -232,6 +232,7 @@ export default {
 <style scoped lang="scss">
 .my {
   min-height: 550px;
+  padding: 40px 35px 20px 35px;
   .search {
     display: flex;
     height: 30px;

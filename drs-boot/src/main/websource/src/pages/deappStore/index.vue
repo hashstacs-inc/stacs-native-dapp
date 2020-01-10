@@ -66,7 +66,6 @@ export default {
     float: left;
     width: 710px;
     background-color: #fff;
-    padding: 40px 35px 20px 35px;
   }
 }
 .deapp-store::after {
