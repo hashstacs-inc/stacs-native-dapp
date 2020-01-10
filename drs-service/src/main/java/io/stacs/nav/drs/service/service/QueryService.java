@@ -65,7 +65,7 @@ import static io.stacs.nav.drs.service.utils.AmountUtil.transContractAmount2RSAm
     @Override public TransactionVO queryTxById(QueryTxVO vo) {
         TransactionVO po = txDao.queryByTxId(vo.getTxId());
         //when tx bdType is contract or assets,show contractName and contractAddress
-        if(po.getBdType().equals(BDTypeEnum.CONTRACT.getCode()) || po.getBdType().equals(BDTypeEnum.ASSETS.getCode())){
+        if(po.getBdType().equals("contract") || po.getBdType().equals("assets")){
             JSONArray arr = JSONArray.parseArray(po.getActionDatas());
             JSONObject o = arr.getJSONObject(0);
             String str = o.getString("to");
