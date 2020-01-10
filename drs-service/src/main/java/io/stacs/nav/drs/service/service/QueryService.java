@@ -23,6 +23,7 @@ import io.stacs.nav.drs.service.dao.ContractDao;
 import io.stacs.nav.drs.service.dao.TransactionDao;
 import io.stacs.nav.drs.service.dao.po.BlockPO;
 import io.stacs.nav.drs.service.dao.po.BusinessDefinePO;
+import io.stacs.nav.drs.service.dao.po.ContractPO;
 import io.stacs.nav.drs.service.utils.AmountUtil;
 import io.stacs.nav.drs.service.utils.BeanConvertor;
 import lombok.extern.slf4j.Slf4j;
@@ -69,10 +70,10 @@ import static io.stacs.nav.drs.service.utils.AmountUtil.transContractAmount2RSAm
             JSONObject o = arr.getJSONObject(0);
             String str = o.getString("to");
             if(StringUtils.isNotEmpty(str)) {
-                ContractVO contractVO = contractDao.queryByAddress(str);
-                if(contractVO != null) {
-                    po.setContractName(contractVO.getName());
-                    po.setContractAddress(contractVO.getAddress());
+                ContractPO contractPO = contractDao.queryByAddress(str);
+                if(contractPO != null) {
+                    po.setContractName(contractPO.getName());
+                    po.setContractAddress(contractPO.getAddress());
                 }
             }
         }

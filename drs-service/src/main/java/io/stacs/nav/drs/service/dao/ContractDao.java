@@ -20,6 +20,6 @@ import java.util.List;
 
     List<ContractVO> queryByCond(@Param("cond") QueryContractVO cond);
 
-    ContractVO queryByAddress(@Param("address") String address);
+    ContractPO queryByAddress(@Param("address") String address);
 
 }
