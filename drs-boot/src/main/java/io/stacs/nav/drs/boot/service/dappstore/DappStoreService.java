@@ -40,7 +40,7 @@ import java.util.function.Predicate;
             .build();
 
     /**
-     * 获取app 信息
+     * query all app from appstore
      *
      * @return
      * @throws IOException
@@ -88,7 +88,7 @@ import java.util.function.Predicate;
     }
 
     /**
-     * 根据name 获取dapp信息
+     * query by app name
      *
      * @param name
      * @return

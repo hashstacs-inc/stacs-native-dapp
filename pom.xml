@@ -85,7 +85,7 @@
                 <scope>import</scope>
             </dependency>
 
-            <!--用于多 web 合并部署-->
+            <!-- web -->
             <dependency>
                 <groupId>com.alipay.sofa</groupId>
                 <artifactId>web-ark-plugin</artifactId>

@@ -14,7 +14,6 @@
     <sql id="baseColumnList">
 		id,block_height,block_data,status,create_time,update_time
 	</sql>
-    <!-- 查询条件 -->
     <sql id="baseWhereClause">
         where 1=1
         <trim suffixOverrides=",">
@@ -38,7 +37,6 @@
             </if>
         </trim>
     </sql>
-    <!-- 插入记录 -->
     <insert id="save" parameterType="Object">
 		insert into
 		block_callback(id,block_height,block_data,status,create_time,update_time)

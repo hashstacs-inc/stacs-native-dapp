@@ -34,6 +34,7 @@ import java.util.Optional;
 import static io.stacs.nav.drs.api.enums.ApiConstants.QueryApiEnum.CHECK_PERMISSION;
 import static io.stacs.nav.drs.api.enums.ApiConstants.TransactionApiEnum.CONTRACT_INVOKER;
 import static io.stacs.nav.drs.api.enums.ApiConstants.TransactionApiEnum.CREATE_CONTRACT;
+import static io.stacs.nav.drs.api.enums.ApiConstants.TransactionApiEnum.SYSTEM_PROPERTY;
 import static io.stacs.nav.drs.api.exception.DappError.BD_NOT_FIND_ERROR;
 
 /**
@@ -95,7 +96,10 @@ import static io.stacs.nav.drs.api.exception.DappError.BD_NOT_FIND_ERROR;
             //contract type
             if (BD_TYPE_CONTRACT.equalsIgnoreCase(fd.getType())) {
                 execFuncName = CONTRACT_INVOKER.getFunctionName();
-            } else {
+            } else if(SYSTEM_PROPERTY.getFunctionName().equals(vo.getFunctionName())){
+                //FOR SYSTEM_PROPERTY
+                execFuncName = vo.getMethodSign();
+            }else{
                 execFuncName = fd.getMethodSign();
             }
         }

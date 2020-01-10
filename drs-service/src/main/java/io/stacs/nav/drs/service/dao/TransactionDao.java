@@ -13,7 +13,7 @@ import java.util.List;
  * TransactionPO data deal dao
  *
  * @author lingchao
- * @create 2018年03月27日20 :10
+ * @create 2018-03-27 20 :10
  */
 @Mapper public interface TransactionDao extends BaseDao<TransactionPO> {
 

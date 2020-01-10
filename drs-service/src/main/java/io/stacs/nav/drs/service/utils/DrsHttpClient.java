@@ -95,7 +95,7 @@ import java.util.function.Predicate;
     public Function<Object, Pair<CasEncryptRequest, Optional<DomainConfig>>> encrypt() {
         return param -> {
             // load config
-            final DomainConfig config = this.config; // 先获取&保存当前配置内存地址到栈中，避免并发错误
+            final DomainConfig config = this.config;
             Objects.requireNonNull(config.getMerchantId(), "merchantId can't be null");
             String aesKey = config.getAesKey();
             String priKey = config.getMerchantPriKey();

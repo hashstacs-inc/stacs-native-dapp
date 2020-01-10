@@ -85,12 +85,10 @@
         transaction(tx_id,biz_model,policy_id,lock_time,version,block_height,block_time,send_time,sender,sign_datas,action_datas,execute_result,error_code,function_name,policy_version,deal_count,max_allow_fee,fee_currency,bd_code,submitter,receipt_data,submitter_sign)
         values(#{txId},#{bizModel},#{policyId},#{lockTime},#{version},#{blockHeight},#{blockTime},#{sendTime},#{sender},#{signDatas},#{actionDatas},#{executeResult},#{errorCode},#{functionName},#{policyVersion},#{dealCount},#{maxAllowFee},#{feeCurrency},#{bdCode},#{submitter},#{receiptData},#{submitterSign})
     </insert>
-    <!-- 列表总数 -->
     <select id="queryByCount" resultType="java.lang.Integer">
         select count(1) from transaction
         <include refid="baseWhereClause"/>
     </select>
-    <!-- 查询列表 -->
     <select id="queryByList" resultMap="baseResultMap">
         select
         <include refid="baseColumnList"/>

@@ -8,98 +8,98 @@ import java.util.List;
  */
 public abstract class BaseBuilder {
     /**
-     * 映射solidity参数 地址类型
+     * Map the solidity parameter address type
      *
-     * @param address evm地址
-     * @return 当前对象引用
+     * @param address
+     * @return Current object reference
      */
     public abstract BaseBuilder buildAddress(String address);
 
     /**
-     * 映射solidity参数 地址数组类型
+     * Map the address array type of the solidity parameter
      *
      * @param addressList
-     * @return 当前对象引用
+     * @return
      */
     public abstract BaseBuilder buildAddressList(List<String> addressList);
 
     /**
-     * 映射solidity参数 无符号整型
+     * Mapping solidity parameter unsigned integer
      *
-     * @param uint 基本数据类型或者 Number及其子类
-     * @return 当前对象引用
+     * @param uint
+     * @return
      */
     public abstract BaseBuilder buildUint(Number uint);
 
     /**
-     * 映射solidity参数 无符号整型数组
+     * Map an unsigned integer array of solidity parameters
      *
      * @param uintList List<? extends Number>
-     * @return 当前对象引用
+     * @return
      */
     public abstract BaseBuilder buildUintList(List<? extends Number> uintList);
 
     /**
-     * 映射solidity参数 有符号整型
+     * The solidity parameter is mapped to a signed integer
      *
-     * @param intParam 基本数据类型或者 Number及其子类
-     * @return 当前对象引用
+     * @param intParam
+     * @return
      */
     public abstract BaseBuilder buildInt(Number intParam);
 
     /**
-     * 映射solidity参数 有符号整型数组
+     * The mapping solidity parameter has an array of signed integers
      *
      * @param intList List<? extends Number>
-     * @return 当前对象引用
+     * @return
      */
     public abstract BaseBuilder buildIntList(List<? extends Number> intList);
 
     /**
-     * 映射solidity参数 bool类型
+     * Map the bool type of the solidity parameter
      *
-     * @param bool Boolean类型
-     * @return 当前对象引用
+     * @param bool
+     * @return
      */
     public abstract BaseBuilder buildBool(Boolean bool);
 
     /**
-     * 映射solidity参数 bool数组类型
+     * Maps the array type of the solidity parameter bool
      *
      * @param boolList
-     * @return 当前对象引用
+     * @return
      */
     public abstract BaseBuilder buildBoolList(List<Boolean> boolList);
 
     /**
-     * 映射solidity参数 字符串类型
+     * Map the solidity parameter string type
      *
      * @param string string
-     * @return 当前对象引用
+     * @return
      */
     public abstract BaseBuilder buildString(String string);
 
     /**
-     * 映射solidity参数 字节数组类型（bytes）
+     * Mapping the byte array type of solidity parameter (bytes)
      *
-     * @param hexString ：十六进制字符串
-     * @return 当前对象引用
+     * @param hexString ：Hexadecimal string
+     * @return
      */
     public abstract BaseBuilder buildBytes(String hexString);
 
     /**
-     * 映射solidity参数 32长度的字节数组（byte[32]）
+     * An array of bytes (byte[32]) that maps the length of the solidity parameter 32.
      *
-     * @param hexString64 ：长度为64的十六进制字符串
-     * @return 当前对象引用
+     * @param hexString64 ：A hexadecimal string of length 64
+     * @return
      */
     public abstract BaseBuilder buildBytes32(String hexString64);
 
     /**
-     * 映射solidity参数 函数类型
+     * Map the solfat parameter function type
      *
      * @param function
-     * @return 当前对象引用
+     * @return
      */
     public abstract BaseBuilder buildFunction(Object function);
 

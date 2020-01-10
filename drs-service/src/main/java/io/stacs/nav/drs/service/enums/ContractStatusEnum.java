@@ -20,7 +20,6 @@ import lombok.Getter;
     @Getter private String desc;
 
     public static ContractStatusEnum valueOfBD(String bdCode) {
-        // todo 待后续功能完善
         return INIT;
     }
 

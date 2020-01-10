@@ -17,7 +17,7 @@ import java.security.cert.CertificateFactory;
 import java.util.concurrent.TimeUnit;
 
 /**
- * OkHttpClientManager对OkHttp进行封装
+ * OkHttpClientManager
  * ref:https://github.com/hongyangAndroid/okhttputils/blob/5f02ae06c0d19ff7672e0cc422c2abd8e3564f1d/OkHttpClientManager.java
  *
  * @author yangjiyun
@@ -122,7 +122,6 @@ public class OkHttpClientManager {
     }
 
     /**
-     * 同步的Get请求
      *
      * @param url
      * @return Response
@@ -138,10 +137,8 @@ public class OkHttpClientManager {
     }
 
     /**
-     * 同步的Get请求
      *
      * @param url
-     * @return 字符串
      */
     private String _getAsString(String url) throws IOException {
         Response execute = _getAsyn(url);
@@ -150,7 +147,6 @@ public class OkHttpClientManager {
 
 
     /**
-     * 同步的Post请求
      *
      * @param url
      * @param
@@ -164,11 +160,9 @@ public class OkHttpClientManager {
 
 
     /**
-     * 同步的Post请求字符串
      *
      * @param url
      * @param
-     * @return 字符串
      */
     private String _postAsString(String url, String json) throws IOException {
         Response response = _post(url, json);
@@ -198,7 +192,7 @@ public class OkHttpClientManager {
     }
 
     /**
-     * timeout单位是毫秒（ms）
+     * timeout （ms）
      *
      * @param url
      * @param json

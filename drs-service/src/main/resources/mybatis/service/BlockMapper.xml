@@ -25,7 +25,6 @@
     <sql id="baseColumnList">
 		height,version,previous_hash,block_hash,tx_root_hash,account_root_hash,contract_root_hash,policy_root_hash,rs_root_hash,tx_receipt_root_hash,ca_root_hash,state_root_hash,block_time,tx_num,total_tx_num,total_block_size
 	</sql>
-    <!-- 查询条件 -->
     <sql id="baseWhereClause">
         where 1=1
         <trim suffixOverrides=",">
@@ -70,30 +69,25 @@
             </if>
         </trim>
     </sql>
-    <!-- 插入记录 -->
     <insert id="add" parameterType="object">
 		insert into
 		block(height,version,previous_hash,block_hash,tx_root_hash,account_root_hash,contract_root_hash,policy_root_hash,rs_root_hash,tx_receipt_root_hash,ca_root_hash,state_root_hash,block_time,tx_num,total_tx_num,total_block_size)
 		values(#{height},#{version},#{previousHash},#{blockHash},#{txRootHash},#{accountRootHash},#{contractRootHash},#{policyRootHash},#{rsRootHash},#{txReceiptRootHash},#{caRootHash},#{stateRootHash},#{blockTime},#{txNum},#{totalTxNum},#{totalBlockSize})
 	</insert>
-    <!-- 删除记录 -->
     <delete id="delete" parameterType="object">
 		delete from block where
 		height=#{height}
 	</delete>
-    <!-- 根据id查询 -->
     <select id="queryById" resultMap="baseResultMap" parameterType="object">
         select
         <include refid="baseColumnList"/>
         from block where id=#{id}
     </select>
-    <!-- 列表总数 -->
     <select id="queryByCount" resultType="java.lang.Integer"
             parameterType="object">
         select count(1) from block
         <include refid="baseWhereClause"/>
     </select>
-    <!-- 查询列表 -->
     <select id="queryByList" resultMap="baseResultMap"
             parameterType="object">
         select
@@ -102,7 +96,6 @@
         <include refid="baseWhereClause"/>
     </select>
 
-    <!-- 条件查询 -->
     <select id="queryByCond" resultMap="baseResultMap"
             parameterType="io.stacs.nav.drs.api.model.query.QueryBlockVO">
         select
@@ -121,7 +114,6 @@
             </if>
         </where>
     </select>
-    <!-- 以上为工具自动生成 -->
 
     <!-- query block by block height -->
     <select id="queryByHeight" resultMap="baseResultMap"

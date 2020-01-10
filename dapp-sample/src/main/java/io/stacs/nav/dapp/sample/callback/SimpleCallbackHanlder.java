@@ -15,7 +15,7 @@ import org.springframework.stereotype.Component;
 @Component @Slf4j public class SimpleCallbackHanlder implements ITxCallbackHandler {
 
     @Override public CallbackType[] supportType() {
-        return new CallbackType[] {CallbackType.of(ApiConstants.TransactionApiEnum.KYC_SETTING.getFunctionName())};
+        return new CallbackType[] {CallbackType.of(ApiConstants.TransactionApiEnum.AUTHORIZE_PERMISSION.getFunctionName())};
     }
 
     @Override public void handle(TransactionPO po) {

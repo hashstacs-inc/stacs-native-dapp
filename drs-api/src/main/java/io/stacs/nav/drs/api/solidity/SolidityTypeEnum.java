@@ -6,47 +6,47 @@ package io.stacs.nav.drs.api.solidity;
  */
 public enum SolidityTypeEnum {
     /**
-     * solidity合约地址：对应于以太坊地址
+     * solidity Contract address: corresponding to ethereum address
      */
     ADDRESS("address"),
     /**
-     * solidity合约地址数组：对应于java的List<String>
+     * solidity Array of contract addresses: List for Java
      */
     ADDRESS_ARR("address[]"),
     /**
-     * solidity合约无符号整型：java基本类型或Number及其子类
+     * solidity Contract unsigned integer: Java base type or Number and its subclasses
      */
     UINT("uint"),
     /**
-     * solidity合约无符号整型：java基本类型或Number及其子类
+     * solidity Contract unsigned integer: Java base type or Number and its subclasses
      */
     UINT256("uint256"),
     /**
-     * solidity合约无符号整型数组: List
+     * solidity Contract unsigned integer array: List
      */
     UINT_ARR("uint[]"),
     /**
-     * solidity合约无符号整型数组: List
+     * solidity Contract unsigned integer array: List
      */
     UINT256_ARR("uint256[]"),
     /**
-     * solidity合约整型：java基本类型或Number及其子类
+     * solidity Contract integer: Java base type or Number and its subclasses
      */
     INT("int"),
     /**
-     * solidity合约整型：List
+     * solidity Contract integer: List
      */
     INT_ARR("int[]"),
     /**
-     * solidity合约boolean类型
+     * solidity Contract Boolean type
      */
     BOOL("bool"),
     /**
-     * solidity合约boolean数组
+     * solidity Contract Boolean array
      */
     BOOL_ARR("bool[]"),
     /**
-     * solidity字符串类型：对应于java的String
+     * solidity String type: String corresponding to Java
      */
     STRING("string"),
     /**
@@ -58,7 +58,7 @@ public enum SolidityTypeEnum {
      */
     BYTES32("bytes32"),
     /**
-     * solidity合约函数类型
+     * solidity Contract function type
      */
     FUNCTION("function");
 

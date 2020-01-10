@@ -18,7 +18,7 @@
       "remark": "This is a explorer app",
       "downloadUrl": "https://stacs-dappstore.oss-cn-zhangjiakou.aliyuncs.com/dev/native-explorer-dapp.jar"
     },{
-      "showName": "发行&转账",
+      "showName": "Assets Demo",
       "name": "dapp-transfer",
       "icon": "appstore/img/transfer.jpg",
       "author": "stacs",

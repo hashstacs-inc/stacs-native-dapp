@@ -21,7 +21,6 @@
     <sql id="baseColumnList">
 		id,tx_id,policy_id,submitter,bd_code,func_name,tx_data,block_height,tx_receipt,status,create_time,update_time
 	</sql>
-    <!-- 查询条件 -->
     <sql id="baseWhereClause">
         where 1=1
         <trim suffixOverrides=",">
@@ -51,19 +50,16 @@
             </if>
         </trim>
     </sql>
-    <!-- 插入记录 -->
     <insert id="save" parameterType="Object">
 		insert into
 		tx_request(id,tx_id,policy_id,submitter,bd_code,func_name,tx_data,block_height,tx_receipt,status,create_time,update_time)
 		values(#{id},#{txId},#{policyId},#{submitter},#{bdCode},#{funcName},#{txData},#{blockHeight},#{txReceipt},#{status},now(),now())
 	</insert>
-    <!-- 根据tx_id查询 -->
     <select id="queryByTxId" resultMap="baseResultMap" parameterType="Object">
         select
         <include refid="baseColumnList"/>
         from tx_request where tx_id=#{txId}
     </select>
-    <!-- 根据状态 查询列表 -->
     <select id="queryByStatus" resultMap="baseResultMap"
             parameterType="Object">
         select

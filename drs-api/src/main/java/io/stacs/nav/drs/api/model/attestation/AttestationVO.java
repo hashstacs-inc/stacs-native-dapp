@@ -9,15 +9,15 @@ import lombok.Setter;
  */
 @Getter @Setter public class AttestationVO {
     /**
-     * 版本
+     * version
      */
     private String attestationVersion;
     /**
-     * 存证内容
+     * content of attestation
      */
     private String attestation;
     /**
-     * 备注
+     * remark
      */
     private String remark;
 }
