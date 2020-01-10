@@ -10,6 +10,7 @@ import com.alipay.sofa.ark.spi.service.registry.RegistryService;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import io.stacs.nav.drs.api.IQueryService;
+import io.stacs.nav.drs.api.enums.BDTypeEnum;
 import io.stacs.nav.drs.api.model.ContractVO;
 import io.stacs.nav.drs.api.model.TransactionVO;
 import io.stacs.nav.drs.api.model.bd.BusinessDefine;
@@ -26,6 +27,7 @@ import io.stacs.nav.drs.service.dao.po.BusinessDefinePO;
 import io.stacs.nav.drs.service.utils.AmountUtil;
 import io.stacs.nav.drs.service.utils.BeanConvertor;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -62,7 +64,19 @@ import static io.stacs.nav.drs.service.utils.AmountUtil.transContractAmount2RSAm
 
     @Override public TransactionVO queryTxById(QueryTxVO vo) {
         TransactionVO po = txDao.queryByTxId(vo.getTxId());
-        convertFunctionNames(po);
+        //when tx bdType is contract or assets,show contractName and contractAddress
+        if(po.getBdType().equals(BDTypeEnum.CONTRACT.getCode()) || po.getBdType().equals(BDTypeEnum.ASSETS.getCode())){
+            JSONArray arr = JSONArray.parseArray(po.getActionDatas());
+            JSONObject o = arr.getJSONObject(0);
+            String str = o.getString("to");
+            if(StringUtils.isNotEmpty(str)) {
+                ContractVO contractVO = contractDao.queryByAddress(str);
+                if(contractVO != null) {
+                    po.setContractName(contractVO.getName());
+                    po.setContractAddress(contractVO.getAddress());
+                }
+            }
+        }
         return po;
     }
 
@@ -87,7 +101,7 @@ import static io.stacs.nav.drs.service.utils.AmountUtil.transContractAmount2RSAm
     private void convertFunctionNames(TransactionVO po){
         List<JSONObject> actionList = JSONArray.parseArray(po.getActionDatas(),JSONObject.class);
         List<String> fns = actionList.stream().map(action -> action.getString("functionName")).collect(Collectors.toList());
-        po.setFunctionNames(fns);
+
     }
     @Override public io.stacs.nav.drs.api.model.PageInfo<BlockVO> queryBlocks(QueryBlockVO vo) {
         PageHelper.startPage(vo.getPageNum(), vo.getPageSize());
