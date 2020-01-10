@@ -10,7 +10,6 @@ import com.alipay.sofa.ark.spi.service.registry.RegistryService;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import io.stacs.nav.drs.api.IQueryService;
-import io.stacs.nav.drs.api.enums.BDTypeEnum;
 import io.stacs.nav.drs.api.model.ContractVO;
 import io.stacs.nav.drs.api.model.TransactionVO;
 import io.stacs.nav.drs.api.model.bd.BusinessDefine;
