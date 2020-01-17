@@ -6,7 +6,7 @@
       <i class="el-icon-search"></i>
     </div>
     <ul class="app-list" v-if="appList.length > 0">
-      <li v-for="(v, k) in appList" :key="k" :edge="v.edge">
+      <li v-for="(v, k) in appList" :key="k" :edge="k % 5 === 4">
         <p class="logo">
           <img :src="v.icon" alt="logo">
         </p>
