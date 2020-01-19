@@ -160,3 +160,14 @@ CREATE TABLE IF NOT EXISTS `business_define` (
   PRIMARY KEY (`id`),
 	UNIQUE (`code`)
 );
+
+CREATE TABLE IF NOT EXISTS `sys_conf` (
+  `id` int(8) NOT NULL AUTO_INCREMENT,
+  `_key` varchar(64) NOT NULL COMMENT 'key name',
+  `_value` varchar(4096) NOT NULL  COMMENT 'value',
+  `remark` varchar(128) DEFAULT NULL COMMENT 'remark of config',
+  `create_time` datetime NOT NULL  COMMENT 'create time',
+  `update_time` datetime DEFAULT NULL COMMENT 'update time',
+  PRIMARY KEY (`id`),
+  UNIQUE (`_key`)
+);

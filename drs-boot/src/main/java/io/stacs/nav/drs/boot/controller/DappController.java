@@ -10,6 +10,7 @@ import io.stacs.nav.drs.api.model.RespData;
 import io.stacs.nav.drs.boot.bo.Dapp;
 import io.stacs.nav.drs.boot.enums.DappStatus;
 import io.stacs.nav.drs.boot.service.IDappLifecycleManage;
+import io.stacs.nav.drs.boot.service.PropertiesService;
 import io.stacs.nav.drs.boot.service.dapp.IDappService;
 import io.stacs.nav.drs.boot.service.dappstore.DappStoreService;
 import io.stacs.nav.drs.service.config.DomainConfig;
@@ -42,6 +43,8 @@ import java.util.stream.Collectors;
     @Autowired DappStoreService dappStoreService;
 
     @Autowired ConfigurationManager manager;
+
+    @Autowired PropertiesService propertiesService;
 
     /**
      * install dapp
@@ -206,9 +209,14 @@ import java.util.stream.Collectors;
      *
      * @return
      */
-    @GetMapping("/querySysConfig") @ResponseBody public RespData<ConfigVO> querySysConfig() throws IOException {
+    @GetMapping("/querySysConfig") @ResponseBody public RespData<ConfigVO> querySysConfig() {
         log.info("querySysConfig is start");
-        ConfigVO vo = new ConfigVO();
+        ConfigVO vo = propertiesService.queryConfigVO();
+        if (vo != null) {
+            return RespData.success(vo);
+        } else {
+            vo = new ConfigVO();
+        }
         DomainConfig domainConfig = manager.getConfigByClass(DomainConfig.class);
         DomainConfigVO domainConfigVO = BeanConvertor.convertBean(domainConfig, DomainConfigVO.class);
         vo.setDomainConfig(domainConfigVO);
@@ -224,11 +232,12 @@ import java.util.stream.Collectors;
      *
      * @return
      */
-    @PostMapping("/sysConfig") @ResponseBody public RespData<Boolean> sysConfig(@RequestBody ConfigVO vo)
-        throws IOException {
+    @PostMapping("/sysConfig") @ResponseBody public RespData<Boolean> sysConfig(@RequestBody ConfigVO vo) {
         log.info("sysConfig {}", vo);
         manager.updateConfig(BeanConvertor.convertBean(vo.getDomainConfig(), DomainConfig.class));
         manager.updateConfig(BeanConvertor.convertBean(vo.getDrsConfig(), DrsConfig.class));
+        //save or update
+        propertiesService.saveOrUpdate(vo);
         return RespData.success(true);
     }
 }

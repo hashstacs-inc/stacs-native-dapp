@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mappers.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="io.stacs.nav.drs.boot.dao.SysConfDao">
+	<!-- Result Map -->
+	<resultMap id="baseResultMap" type="io.stacs.nav.drs.boot.dao.po.SysConfPO">
+		<result column="id" property="id" />
+		<result column="_key" property="key" />
+		<result column="_value" property="value" />
+		<result column="remark" property="remark" />
+		<result column="create_time" property="createTime" />
+		<result column="update_time" property="updateTime" />
+	</resultMap>
+	<!-- app_info table all fields -->
+	<sql id="baseColumnList">
+		id,_key,_value,remark,create_time,update_time
+	</sql>
+	<sql id="baseWhereClause">
+		where 1=1
+		<trim suffixOverrides=",">
+			<if test="id != null">
+				and id=#{id}
+			</if>
+			<if test="key != null and key != ''">
+				and _key=#{key}
+			</if>
+			<if test="value != null and value != ''">
+				and _value=#{value}
+			</if>
+			<if test="remark != null and remark != ''">
+				and remark=#{remark}
+			</if>
+			<if test="createTime != null">
+				and create_time=#{createTime}
+			</if>
+			<if test="updateTime != null">
+				and update_time=#{updateTime}
+			</if>
+		</trim>
+	</sql>
+	<!-- save record -->
+	<insert id="save" parameterType="Object">
+		insert into
+		sys_conf(id,_key,_value,remark,create_time,update_time)
+		values(#{id},#{key},#{value},#{remark},now(),now())
+	</insert>
+
+	<!-- query by app name -->
+	<select id="queryByKey" resultMap="baseResultMap" parameterType="java.lang.String">
+		SELECT
+		<include refid="baseColumnList"/>
+		FROM `sys_conf`
+		WHERE
+		`_key` = #{key}
+	</select>
+
+	<!-- update -->
+	<update id="updateByKey">
+		UPDATE `sys_conf`
+		SET
+		`_value` = #{value},
+		`update_time`= now()
+		WHERE
+		`_key` = #{key}
+	</update>
+</mapper>

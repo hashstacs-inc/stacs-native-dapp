@@ -15,3 +15,15 @@ CREATE TABLE IF NOT EXISTS `app_info` (
   PRIMARY KEY (`id`),
   UNIQUE KEY `uniq_name` (`name`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT 'the dapp info table';
+
+
+CREATE TABLE IF NOT EXISTS `sys_conf` (
+  `id` int(8) NOT NULL AUTO_INCREMENT,
+  `_key` varchar(64) NOT NULL COMMENT 'key name',
+  `_value` VARCHAR(4096) NOT NULL  COMMENT 'value',
+  `remark` varchar(128) DEFAULT NULL COMMENT 'remark of config',
+  `create_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP  COMMENT 'create time',
+  `update_time` datetime DEFAULT CURRENT_TIMESTAMP COMMENT 'update time',
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `uniq_key` (`_key`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT 'sys_conf';
