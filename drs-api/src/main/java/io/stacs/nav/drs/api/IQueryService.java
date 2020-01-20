@@ -2,6 +2,7 @@ package io.stacs.nav.drs.api;
 
 import io.stacs.nav.drs.api.model.ContractVO;
 import io.stacs.nav.drs.api.model.PageInfo;
+import io.stacs.nav.drs.api.model.RsDomain;
 import io.stacs.nav.drs.api.model.TransactionVO;
 import io.stacs.nav.drs.api.model.bd.BusinessDefine;
 import io.stacs.nav.drs.api.model.block.BlockHeaderVO;
@@ -43,4 +44,6 @@ public interface IQueryService {
      * query all bd info
      */
     List<BusinessDefine> queryAllBDInfo(String bdCode);
+
+    List<RsDomain> queryAllDomains();
 }

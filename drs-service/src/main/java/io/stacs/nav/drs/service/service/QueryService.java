@@ -11,6 +11,7 @@ import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import io.stacs.nav.drs.api.IQueryService;
 import io.stacs.nav.drs.api.model.ContractVO;
+import io.stacs.nav.drs.api.model.RsDomain;
 import io.stacs.nav.drs.api.model.TransactionVO;
 import io.stacs.nav.drs.api.model.bd.BusinessDefine;
 import io.stacs.nav.drs.api.model.bd.FunctionDefine;
@@ -153,6 +154,10 @@ import static io.stacs.nav.drs.service.utils.AmountUtil.transContractAmount2RSAm
             return vo;
         }).collect(Collectors.toList());
         return collect;
+    }
+
+    @Override public List<RsDomain> queryAllDomains() {
+        return blockService.queryAllDomains();
     }
 
     // @formatter:off

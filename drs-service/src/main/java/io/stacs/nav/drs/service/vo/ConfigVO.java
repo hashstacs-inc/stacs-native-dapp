@@ -10,7 +10,7 @@ import lombok.Setter;
  * @description
  * @date 2019-12-11
  */
-@Getter @Setter public class ConfigVO {
+@Getter @Setter public class ConfigVO implements java.io.Serializable{
     private DomainConfigVO domainConfig;
     private DrsConfigVO drsConfig;
 }
