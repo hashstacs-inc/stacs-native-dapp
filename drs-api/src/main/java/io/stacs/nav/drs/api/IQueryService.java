@@ -31,6 +31,17 @@ public interface IQueryService {
 
     String queryBalance(QueryBalanceVO vo);
 
+    /**
+     * query contract state
+     * <example>
+     *  req：{"methodSignature":"(uint256) get(uint256)",
+     *  "address":"b8da898d50712ea4695ade4b1de6926cbc4bcfb9","parameters":[]}
+     *
+     *
+     *</>
+     * @param vo
+     * @return
+     */
     String queryContract(ContractQueryRequest vo);
 
     BlockHeaderVO queryBlockByHeight(QueryBlockByHeightVO vo);
