@@ -7,6 +7,7 @@ import io.stacs.nav.drs.api.model.TransactionVO;
 import io.stacs.nav.drs.api.model.bd.BusinessDefine;
 import io.stacs.nav.drs.api.model.block.BlockHeaderVO;
 import io.stacs.nav.drs.api.model.block.BlockVO;
+import io.stacs.nav.drs.api.model.policy.PolicyVO;
 import io.stacs.nav.drs.api.model.query.*;
 
 import java.util.List;
@@ -57,4 +58,6 @@ public interface IQueryService {
     List<BusinessDefine> queryAllBDInfo(String bdCode);
 
     List<RsDomain> queryAllDomains();
+
+    PolicyVO queryPolicy(String policyId);
 }

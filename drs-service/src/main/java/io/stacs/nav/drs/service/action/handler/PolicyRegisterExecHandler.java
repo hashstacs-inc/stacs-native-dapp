@@ -30,6 +30,10 @@ import static io.stacs.nav.drs.service.enums.ActionExecTypeEnum.POLICY_ADD;
             return;
         }
         log.info("PolicyRegister actions:{}", JSON.toJSONString(actions));
-        policyDao.batchInsert(actions);
+        try {
+            policyDao.batchInsert(actions);
+        }catch (Throwable e){
+            log.error("register policy has error",e);
+        }
     }
 }

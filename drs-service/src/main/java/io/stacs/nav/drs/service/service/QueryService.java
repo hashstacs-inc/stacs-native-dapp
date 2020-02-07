@@ -17,6 +17,7 @@ import io.stacs.nav.drs.api.model.bd.BusinessDefine;
 import io.stacs.nav.drs.api.model.bd.FunctionDefine;
 import io.stacs.nav.drs.api.model.block.BlockHeaderVO;
 import io.stacs.nav.drs.api.model.block.BlockVO;
+import io.stacs.nav.drs.api.model.policy.PolicyVO;
 import io.stacs.nav.drs.api.model.query.*;
 import io.stacs.nav.drs.service.constant.Constants;
 import io.stacs.nav.drs.service.dao.BlockDao;
@@ -25,6 +26,7 @@ import io.stacs.nav.drs.service.dao.TransactionDao;
 import io.stacs.nav.drs.service.dao.po.BlockPO;
 import io.stacs.nav.drs.service.dao.po.BusinessDefinePO;
 import io.stacs.nav.drs.service.dao.po.ContractPO;
+import io.stacs.nav.drs.service.dao.po.PolicyPO;
 import io.stacs.nav.drs.service.utils.AmountUtil;
 import io.stacs.nav.drs.service.utils.BeanConvertor;
 import lombok.extern.slf4j.Slf4j;
@@ -57,26 +59,24 @@ import static io.stacs.nav.drs.service.utils.AmountUtil.transContractAmount2RSAm
     @Autowired(required = false) TransactionDao txDao;
     @Autowired(required = false) ContractDao contractDao;
 
-
-
     @Override public Long queryCurrentHeight() {
         return Long.valueOf(blockService.queryCurrentHeight().toString());
     }
 
     @Override public TransactionVO queryTxById(QueryTxVO vo) {
         TransactionVO po = txDao.queryByTxId(vo.getTxId());
-        if(po == null){
-            log.warn("can't find tx id:{}",vo.getTxId());
+        if (po == null) {
+            log.warn("can't find tx id:{}", vo.getTxId());
             return null;
         }
         //when tx bdType is contract or assets,show contractName and contractAddress
-        if(po.getBdType().equals("contract") || po.getBdType().equals("assets")){
+        if (po.getBdType().equals("contract") || po.getBdType().equals("assets")) {
             JSONArray arr = JSONArray.parseArray(po.getActionDatas());
             JSONObject o = arr.getJSONObject(0);
             String str = o.getString("to");
-            if(StringUtils.isNotEmpty(str)) {
+            if (StringUtils.isNotEmpty(str)) {
                 ContractPO contractPO = contractDao.queryByAddress(str);
-                if(contractPO != null) {
+                if (contractPO != null) {
                     po.setContractName(contractPO.getName());
                     po.setContractAddress(contractPO.getAddress());
                 }
@@ -95,23 +95,26 @@ import static io.stacs.nav.drs.service.utils.AmountUtil.transContractAmount2RSAm
 
     @Override public io.stacs.nav.drs.api.model.PageInfo<TransactionVO> queryTx(QueryTxListVO vo) {
         PageHelper.startPage(vo.getPageNum(), vo.getPageSize());
-        io.stacs.nav.drs.api.model.PageInfo<TransactionVO> pageInfo = BeanConvertor.convertBean(
-            PageInfo.of(txDao.queryTxWithCondition(vo)), io.stacs.nav.drs.api.model.PageInfo.class);
+        io.stacs.nav.drs.api.model.PageInfo<TransactionVO> pageInfo = BeanConvertor
+            .convertBean(PageInfo.of(txDao.queryTxWithCondition(vo)), io.stacs.nav.drs.api.model.PageInfo.class);
         //handler functionNames
         pageInfo.getList().forEach(item -> {
             convertFunctionNames(item);
         });
         return pageInfo;
     }
-    private void convertFunctionNames(TransactionVO po){
-        List<JSONObject> actionList = JSONArray.parseArray(po.getActionDatas(),JSONObject.class);
-        List<String> fns = actionList.stream().map(action -> action.getString("functionName")).collect(Collectors.toList());
+
+    private void convertFunctionNames(TransactionVO po) {
+        List<JSONObject> actionList = JSONArray.parseArray(po.getActionDatas(), JSONObject.class);
+        List<String> fns =
+            actionList.stream().map(action -> action.getString("functionName")).collect(Collectors.toList());
 
     }
+
     @Override public io.stacs.nav.drs.api.model.PageInfo<BlockVO> queryBlocks(QueryBlockVO vo) {
         PageHelper.startPage(vo.getPageNum(), vo.getPageSize());
-        io.stacs.nav.drs.api.model.PageInfo<BlockVO> pageInfo = BeanConvertor.convertBean(
-            PageInfo.of(blockDao.queryByCond(vo)), io.stacs.nav.drs.api.model.PageInfo.class);
+        io.stacs.nav.drs.api.model.PageInfo<BlockVO> pageInfo =
+            BeanConvertor.convertBean(PageInfo.of(blockDao.queryByCond(vo)), io.stacs.nav.drs.api.model.PageInfo.class);
         return pageInfo;
     }
 
@@ -129,8 +132,9 @@ import static io.stacs.nav.drs.service.utils.AmountUtil.transContractAmount2RSAm
             request.setBlockHeight(vo.getHeight());
         }
         Object balance = blockService.queryContract(request).get(0);
-        return Optional.ofNullable(balance).map(b ->{
-            BigDecimal amount = clearNoUseZeroForBigDecimal(transContractAmount2RSAmount(b.toString(),AmountUtil.DEFAULT_DECIMALS)) ;
+        return Optional.ofNullable(balance).map(b -> {
+            BigDecimal amount =
+                clearNoUseZeroForBigDecimal(transContractAmount2RSAmount(b.toString(), AmountUtil.DEFAULT_DECIMALS));
             return amount.toPlainString();
         }).orElse("0");
     }
@@ -162,6 +166,11 @@ import static io.stacs.nav.drs.service.utils.AmountUtil.transContractAmount2RSAm
 
     @Override public List<RsDomain> queryAllDomains() {
         return blockService.queryAllDomains();
+    }
+
+    @Override public PolicyVO queryPolicy(String policyId) {
+        PolicyPO policyPO = blockService.queryPolicy(policyId);
+        return BeanConvertor.convertBean(policyPO, PolicyVO.class);
     }
 
     // @formatter:off

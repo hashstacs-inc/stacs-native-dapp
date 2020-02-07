@@ -66,10 +66,10 @@ import static io.stacs.nav.drs.api.exception.DappException.newError;
     }
 
     /**
-     * query all policy
+     * query policy
      */
-    public List<PolicyPO> queryPolicy(String policyId) {
-        return (StringUtils.equalsIgnoreCase("all",policyId)) ? policyDao.queryAll() : Lists.newArrayList(policyDao.queryByPolicyId(policyId));
+    public PolicyPO queryPolicy(String policyId) {
+        return policyDao.queryByPolicyId(policyId);
     }
 
     /**
