@@ -25,4 +25,11 @@ import java.util.List;
      * @return
      */
     PolicyPO queryByPolicyId(@Param("policyId")String policyId);
+
+    /**
+     * batch insert
+     * @param list
+     * @return
+     */
+    int batchInsert(List<PolicyPO> list);
 }

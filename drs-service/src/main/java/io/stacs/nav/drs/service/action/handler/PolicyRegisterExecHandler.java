@@ -1,5 +1,6 @@
 package io.stacs.nav.drs.service.action.handler;
 
+import com.alibaba.fastjson.JSON;
 import io.stacs.nav.drs.service.dao.PolicyDao;
 import io.stacs.nav.drs.service.dao.po.PolicyPO;
 import io.stacs.nav.drs.service.enums.ActionExecTypeEnum;
@@ -28,9 +29,7 @@ import static io.stacs.nav.drs.service.enums.ActionExecTypeEnum.POLICY_ADD;
         if (CollectionUtils.isEmpty(actions)){
             return;
         }
-        log.info("PolicyRegister actions:{}",actions);
-        actions.forEach(v->{
-            policyDao.add(v);
-        });
+        log.info("PolicyRegister actions:{}", JSON.toJSONString(actions));
+        policyDao.batchInsert(actions);
     }
 }

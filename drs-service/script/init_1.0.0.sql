@@ -86,7 +86,7 @@ IF NOT EXISTS `policy` (
 	`callback_type` VARCHAR (16) NOT NULL COMMENT 'callback type of slave 1.ALL 2.SELF',
 	`verifyNum` int(8) DEFAULT NULL COMMENT 'verifyNum',
 	`mustDomainIds` VARCHAR(1024) DEFAULT NULL COMMENT 'mustDomainIds',
-	`expression` VARCHAR(64) DEFAULT NULL COMMENT 'expression',
+	`_expression` VARCHAR(64) DEFAULT NULL COMMENT 'expression',
 	`require_auth_ids` VARCHAR(1024) DEFAULT NULL COMMENT 'require_auth_ids',
 	`version` int(8) DEFAULT 0 COMMENT 'the policy version',
 	`create_time` datetime (3) NOT NULL COMMENT 'create time',
