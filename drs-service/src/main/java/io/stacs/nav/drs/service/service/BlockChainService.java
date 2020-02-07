@@ -9,7 +9,9 @@ import io.stacs.nav.drs.api.model.block.BlockHeaderVO;
 import io.stacs.nav.drs.api.model.permission.PermissionInfoVO;
 import io.stacs.nav.drs.api.model.query.*;
 import io.stacs.nav.drs.api.model.tx.CoreTransactionVO;
+import io.stacs.nav.drs.service.dao.PolicyDao;
 import io.stacs.nav.drs.service.dao.po.BusinessDefinePO;
+import io.stacs.nav.drs.service.dao.po.PolicyPO;
 import io.stacs.nav.drs.service.network.BlockChainFacade;
 import io.stacs.nav.drs.service.network.BlockChainHelper;
 import io.stacs.nav.drs.service.vo.MethodParamVO;
@@ -30,6 +32,7 @@ import static io.stacs.nav.drs.api.exception.DappException.newError;
 @Service @Slf4j public class BlockChainService {
     @Autowired BlockChainFacade blockChainFacade;
     @Autowired BlockChainHelper blockChainHelper;
+    @Autowired PolicyDao policyDao;
     //TODO:use cache
 
     /**
@@ -58,6 +61,13 @@ import static io.stacs.nav.drs.api.exception.DappException.newError;
      */
     public List<Policy> queryAllPolicy() {
         return blockChainFacade.queryAllPolicyList().orElseThrow(newError(DRS_NETWORK_COMMON_ERROR));
+    }
+
+    /**
+     * query all policy
+     */
+    public PolicyPO queryPolicy(String policyId) {
+        return policyDao.queryByPolicyId(policyId);
     }
 
     /**
