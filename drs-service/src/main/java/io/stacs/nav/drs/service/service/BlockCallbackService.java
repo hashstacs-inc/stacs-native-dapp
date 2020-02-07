@@ -89,6 +89,7 @@ import static io.stacs.nav.drs.service.model.ConvertHelper.blockHeader2BlockPO;
                     oldVal.add((ActionPO)pair.right());
                     return oldVal;
                 }))));
+        log.info("processCallbackBlock:{}",actionsMap);
         // order by txid
         txRequired.execute(transactionStatus -> {
             // 1. save block
