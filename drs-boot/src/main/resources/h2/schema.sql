@@ -105,8 +105,8 @@ IF NOT EXISTS `policy` (
 	`mustDomainIds` VARCHAR(1024) DEFAULT NULL COMMENT 'mustDomainIds',
 	`_expression` VARCHAR(64) DEFAULT NULL COMMENT 'expression',
 	`require_auth_ids` VARCHAR(1024) DEFAULT NULL COMMENT 'require_auth_ids',
-	`create_time` bigint(16)  NOT NULL COMMENT 'create time',
-	`update_time` bigint(16)  DEFAULT NULL COMMENT 'update time',
+	`create_time` datetime (3) NOT NULL COMMENT 'create time',
+	`update_time` datetime (3) DEFAULT NULL COMMENT 'update time',
 	PRIMARY KEY (`id`),
 	UNIQUE  (`policy_id`)
 );
