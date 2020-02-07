@@ -32,4 +32,11 @@ import java.util.List;
      * @return
      */
     int batchInsert(List<PolicyPO> list);
+
+    /**
+     *  update
+     * @param
+     * @return
+     */
+    int updateByPolicyId(PolicyPO policyPO);
 }
