@@ -2,6 +2,7 @@ package io.stacs.nav.drs.service.service;
 
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
+import com.google.common.collect.Lists;
 import io.stacs.nav.drs.api.model.Policy;
 import io.stacs.nav.drs.api.model.RespData;
 import io.stacs.nav.drs.api.model.RsDomain;
@@ -16,6 +17,7 @@ import io.stacs.nav.drs.service.network.BlockChainFacade;
 import io.stacs.nav.drs.service.network.BlockChainHelper;
 import io.stacs.nav.drs.service.vo.MethodParamVO;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -66,8 +68,8 @@ import static io.stacs.nav.drs.api.exception.DappException.newError;
     /**
      * query all policy
      */
-    public PolicyPO queryPolicy(String policyId) {
-        return policyDao.queryByPolicyId(policyId);
+    public List<PolicyPO> queryPolicy(String policyId) {
+        return (StringUtils.equalsIgnoreCase("all",policyId)) ? policyDao.queryAll() : Lists.newArrayList(policyDao.queryByPolicyId(policyId));
     }
 
     /**
