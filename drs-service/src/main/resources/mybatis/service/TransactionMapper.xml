@@ -25,6 +25,7 @@
         <result column="bd_code" property="bdCode"/>
         <result column="submitter" property="submitter"/>
         <result column="submitter_sign" property="submitterSign"/>
+        <result column="vote_info" property="voteInfo"/>
     </resultMap>
     <resultMap id="queryMap" type="io.stacs.nav.drs.api.model.TransactionVO" extends="baseResultMap">
         <result column="bd_name" property="bdName"/>
@@ -35,13 +36,13 @@
     <sql id="baseColumnList">
         tx_id,biz_model,policy_id,lock_time,version,block_height,block_time,send_time,sender,execute_result,error_code,
         error_message,sign_datas,action_datas,function_name,policy_version,deal_count,max_allow_fee,fee_amount,
-        fee_currency,bd_code,submitter,receipt_data,submitter_sign
+        fee_currency,bd_code,submitter,receipt_data,submitter_sign,vote_info
     </sql>
 
     <sql id="queryList">
         tx_id,biz_model,policy_id,lock_time,version,block_height,block_time,send_time,sender,execute_result,error_code,
         error_message,sign_datas,action_datas,function_name,policy_version,deal_count,max_allow_fee,fee_amount,
-        fee_currency,bd_code,submitter,receipt_data,submitter_sign,bd.name as bd_name, bd.bd_type as bd_type
+        fee_currency,bd_code,submitter,receipt_data,submitter_sign,vote_info,bd.name as bd_name, bd.bd_type as bd_type
     </sql>
     <!-- query  conditions -->
     <sql id="baseWhereClause">
@@ -82,8 +83,8 @@
     <!-- insert row -->
     <insert id="add">
         insert into
-        transaction(tx_id,biz_model,policy_id,lock_time,version,block_height,block_time,send_time,sender,sign_datas,action_datas,execute_result,error_code,function_name,policy_version,deal_count,max_allow_fee,fee_currency,bd_code,submitter,receipt_data,submitter_sign)
-        values(#{txId},#{bizModel},#{policyId},#{lockTime},#{version},#{blockHeight},#{blockTime},#{sendTime},#{sender},#{signDatas},#{actionDatas},#{executeResult},#{errorCode},#{functionName},#{policyVersion},#{dealCount},#{maxAllowFee},#{feeCurrency},#{bdCode},#{submitter},#{receiptData},#{submitterSign})
+        transaction(tx_id,biz_model,policy_id,lock_time,version,block_height,block_time,send_time,sender,sign_datas,action_datas,execute_result,error_code,function_name,policy_version,deal_count,max_allow_fee,fee_currency,bd_code,submitter,receipt_data,submitter_sign,vote_info)
+        values(#{txId},#{bizModel},#{policyId},#{lockTime},#{version},#{blockHeight},#{blockTime},#{sendTime},#{sender},#{signDatas},#{actionDatas},#{executeResult},#{errorCode},#{functionName},#{policyVersion},#{dealCount},#{maxAllowFee},#{feeCurrency},#{bdCode},#{submitter},#{receiptData},#{submitterSign},#{voteInfo})
     </insert>
     <select id="queryByCount" resultType="java.lang.Integer">
         select count(1) from transaction
@@ -111,14 +112,14 @@
         insert into transaction
         (tx_id,biz_model,policy_id,lock_time,version,block_height,block_time,send_time,sender,
         sign_datas,action_datas,execute_result,error_code,error_message,policy_version,deal_count,max_allow_fee,
-        fee_currency,bd_code,submitter,receipt_data,submitter_sign,function_name)
+        fee_currency,bd_code,submitter,receipt_data,submitter_sign,function_name,vote_info)
         values
         <foreach collection="list" item="item" index="index" separator=",">
             (#{item.txId},#{item.bizModel},#{item.policyId},#{item.lockTime},#{item.version},
             #{item.blockHeight},#{item.blockTime},#{item.sendTime},#{item.sender},#{item.signDatas},
             #{item.actionDatas},#{item.executeResult},#{item.errorCode},#{item.errorMessage},#{item.policyVersion},
             #{item.dealCount},#{item.maxAllowFee},#{item.feeCurrency},
-            #{item.bdCode},#{item.submitter},#{item.receiptData},#{item.submitterSign},#{item.functionName})
+            #{item.bdCode},#{item.submitter},#{item.receiptData},#{item.submitterSign},#{item.functionName},#{item.voteInfo})
         </foreach>
     </insert>
     <!--query by block height-->

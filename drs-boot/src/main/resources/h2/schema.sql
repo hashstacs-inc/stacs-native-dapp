@@ -140,6 +140,7 @@ IF NOT EXISTS `transaction` (
 	`receipt_data` MEDIUMTEXT DEFAULT NULL COMMENT 'receipt data json',
 	`submitter` varchar (40)  DEFAULT '' COMMENT 'submitter',
 	`submitter_sign` varchar (130)  DEFAULT '' COMMENT 'data signature of submitter',
+	`vote_info` varchar (2048)  DEFAULT NULL COMMENT 'vote info json string',
 	PRIMARY KEY (`id`),
 	UNIQUE (`tx_id`),
 	INDEX  (`block_height`)
