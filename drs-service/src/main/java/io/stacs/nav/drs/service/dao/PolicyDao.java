@@ -5,12 +5,20 @@ import io.stacs.nav.drs.service.dao.po.PolicyPO;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 
+import java.util.List;
+
 /**
  * tx request
  *
  * @author liuyu
  */
 @Mapper public interface PolicyDao extends BaseDao<PolicyPO> {
+    /**
+     * query all
+     *
+     * @return
+     */
+    List<PolicyPO> queryAll();
     /**
      * query by policy id
      * @param policyId

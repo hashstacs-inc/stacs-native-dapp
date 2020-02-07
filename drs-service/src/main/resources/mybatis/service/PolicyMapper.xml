@@ -97,4 +97,10 @@
         <include refid="baseColumnList"/>
         from policy
     </select>
+
+    <select id="queryByPolicyId" resultMap="baseResultMap">
+        select
+        <include refid="baseColumnList"/>
+        from policy where policy_id=#{policyId}
+    </select>
 </mapper>
