@@ -28,6 +28,7 @@ import static io.stacs.nav.drs.service.enums.ActionExecTypeEnum.POLICY_ADD;
         if (CollectionUtils.isEmpty(actions)){
             return;
         }
+        log.info("PolicyRegister actions:{}",actions);
         actions.forEach(v->{
             policyDao.add(v);
         });
