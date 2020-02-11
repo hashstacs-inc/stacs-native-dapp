@@ -302,10 +302,11 @@ import static io.stacs.nav.drs.service.utils.ResourceLoader.getManifest;
         DappStatus toStatus;
         String runError = null;
         ReentrantLock reentrantLock = null;
+        boolean flag = false;
         try {
             reentrantLock = BuildLockHelper.getLock(appName);
 
-            boolean flag = reentrantLock.tryLock(3, TimeUnit.SECONDS);
+            flag = reentrantLock.tryLock(3, TimeUnit.SECONDS);
             if(!flag){
                 log.warn("[install] app status is already installing,appName:{},status:{}", appName, fromStatus);
                 throw new DappException(DappError.DAPP_ALREADY_INSTALLING);
@@ -332,7 +333,7 @@ import static io.stacs.nav.drs.service.utils.ResourceLoader.getManifest;
             runError = "install fail,unknown error";
             toStatus = DappStatus.STOPPED;
         }finally {
-            if(reentrantLock != null){
+            if(reentrantLock != null && flag == true){
                 reentrantLock.unlock();
             }
         }
