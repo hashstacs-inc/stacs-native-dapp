@@ -43,14 +43,15 @@ import java.util.*;
      * @param po
      */
     public void process(TransactionPO po) {
+
+        //process wildcard call back handler
+        processWildcardCallbackHandler(po);
+
         String key = po.getBdCode() + po.getFunctionName() + po.getVersion();
         if(handlerMap.containsKey(key)){
             handlerMap.get(key).handle(po);
             return;
         }
-
-        //process wildcard call back handler
-        processWildcardCallbackHandler(po);
 
         key = po.getFunctionName() + po.getVersion();
         ITxCallbackHandler handler = handlerMap.get(key);
