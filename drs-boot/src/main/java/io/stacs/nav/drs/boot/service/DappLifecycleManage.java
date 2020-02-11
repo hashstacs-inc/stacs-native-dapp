@@ -34,6 +34,8 @@ import javax.annotation.Nonnull;
 import java.io.*;
 import java.net.URL;
 import java.util.*;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.locks.ReentrantLock;
 import java.util.function.Predicate;
 import java.util.jar.Attributes;
 import java.util.jar.Manifest;
@@ -299,26 +301,47 @@ import static io.stacs.nav.drs.service.utils.ResourceLoader.getManifest;
         }
         DappStatus toStatus;
         String runError = null;
+        ReentrantLock reentrantLock = null;
         try {
-            synchronized (INSTALL_LOCK) {
-                //update state to installing
-                dappService.updateStatus(appName, DappStatus.INSTALLING, "");
+            reentrantLock = BuildLockHelper.getLock(appName);
 
-                File dappFile = new File(drsConfig.getDownloadPath(), dapp.getFileName());
-                String configPath = getConfigPath(dapp.getName());
-                log.info("install dapp:{}, with configPath:{}", dapp, configPath);
-                ClientResponse response = ArkClient.installBiz(dappFile, new String[] {"--spring.config.location=" + configPath});
-                if (ResponseCode.SUCCESS.equals(response.getCode())) {
-                    toStatus = DappStatus.RUNNING;
-                } else {
-                    toStatus = DappStatus.STOPPED;
-                    runError = response.getMessage();
-                }
+            boolean flag = reentrantLock.tryLock(3, TimeUnit.SECONDS);
+            if(!flag){
+                log.warn("[install] app status is already installing,appName:{},status:{}", appName, fromStatus);
+                throw new DappException(DappError.DAPP_ALREADY_INSTALLING);
             }
-        } catch (Throwable e) {
+
+            //double check
+            Dapp after = dappService.findByAppName(appName);
+            if (after.getStatus() == DappStatus.RUNNING) {
+                log.warn("[install] app status is not INITIALIZED,appName:{},status:{}", appName, fromStatus);
+                throw new DappException(DappError.DAPP_ALREADY_RUNNING);
+            }
+
+            //update state to installing
+            dappService.updateStatus(appName, DappStatus.INSTALLING, "");
+
+            File dappFile = new File(drsConfig.getDownloadPath(), dapp.getFileName());
+            String configPath = getConfigPath(dapp.getName());
+            log.info("install dapp:{}, with configPath:{}", dapp, configPath);
+            ClientResponse response = ArkClient.installBiz(dappFile, new String[] {"--spring.config.location=" + configPath});
+            if (ResponseCode.SUCCESS.equals(response.getCode())) {
+                toStatus = DappStatus.RUNNING;
+            } else {
+                toStatus = DappStatus.STOPPED;
+                runError = response.getMessage();
+            }
+        }catch (DappException ex){
+            log.error("dapp install get lock failed", ex);
+            throw ex;
+        }catch (Throwable e) {
             log.error("dapp install is failed", e);
             runError = "install fail,unknown error";
             toStatus = DappStatus.STOPPED;
+        }finally {
+            if(reentrantLock != null){
+                reentrantLock.unlock();
+            }
         }
         //update status
         dappService.updateStatus(appName, toStatus, runError);

@@ -27,6 +27,7 @@ import lombok.Getter;
     DAPP_CONFIG_NOT_FOUND("21","00","08", "Dapp config file is not found"),
     DAPP_DRS_VERSION_NOT_EXISTS("21","00","09", "Dapp drs version is not exists"),
     DAPP_VERSION_UNEQUAL("21","00","10", "Dapp is unequal"),
+    DAPP_ALREADY_INSTALLING("21","00","11", "Dapp is already installing"),
 
     BD_NOT_FIND_ERROR("22","00","01", "bd is not find error"),
     NO_PERMISSION_ERROR("22","00","02", "no permission error"),
