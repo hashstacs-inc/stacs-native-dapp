@@ -57,6 +57,11 @@ import static io.stacs.nav.drs.service.utils.ResourceLoader.getManifest;
     private static final String WEB_SERVER_PORT = "server.port";
     private static final String WEB_SERVER_CONTEXT_PATH = "server.servlet.context-path";
 
+    /**
+     * lock for install
+     */
+    private static final Object INSTALL_LOCK = new Object();
+
     @Autowired BaseConfig baseConfig;
 
     @Autowired DrsConfig drsConfig;
@@ -78,7 +83,7 @@ import static io.stacs.nav.drs.service.utils.ResourceLoader.getManifest;
         }
         //auto install
         dappList.forEach(v -> {
-            if (v.getStatus() == DappStatus.RUNNING) {
+            if (v.getStatus() == DappStatus.RUNNING || v.getStatus() == DappStatus.INSTALLING) {
                 v.setStatus(DappStatus.STOPPED);
                 install(v);
             }
@@ -295,16 +300,20 @@ import static io.stacs.nav.drs.service.utils.ResourceLoader.getManifest;
         DappStatus toStatus;
         String runError = null;
         try {
-            File dappFile = new File(drsConfig.getDownloadPath(), dapp.getFileName());
-            String configPath = getConfigPath(dapp.getName());
-            log.info("install dapp:{}, with configPath:{}", dapp, configPath);
-            ClientResponse response =
-                ArkClient.installBiz(dappFile, new String[] {"--spring.config.location=" + configPath});
-            if (ResponseCode.SUCCESS.equals(response.getCode())) {
-                toStatus = DappStatus.RUNNING;
-            } else {
-                toStatus = DappStatus.STOPPED;
-                runError = response.getMessage();
+            synchronized (INSTALL_LOCK) {
+                //update state to installing
+                dappService.updateStatus(appName, DappStatus.INSTALLING, "");
+
+                File dappFile = new File(drsConfig.getDownloadPath(), dapp.getFileName());
+                String configPath = getConfigPath(dapp.getName());
+                log.info("install dapp:{}, with configPath:{}", dapp, configPath);
+                ClientResponse response = ArkClient.installBiz(dappFile, new String[] {"--spring.config.location=" + configPath});
+                if (ResponseCode.SUCCESS.equals(response.getCode())) {
+                    toStatus = DappStatus.RUNNING;
+                } else {
+                    toStatus = DappStatus.STOPPED;
+                    runError = response.getMessage();
+                }
             }
         } catch (Throwable e) {
             log.error("dapp install is failed", e);
