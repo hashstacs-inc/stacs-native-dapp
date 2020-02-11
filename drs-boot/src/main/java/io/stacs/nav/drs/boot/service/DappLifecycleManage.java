@@ -311,13 +311,6 @@ import static io.stacs.nav.drs.service.utils.ResourceLoader.getManifest;
                 throw new DappException(DappError.DAPP_ALREADY_INSTALLING);
             }
 
-            //double check
-            Dapp after = dappService.findByAppName(appName);
-            if (after.getStatus() == DappStatus.RUNNING) {
-                log.warn("[install] app status is not INITIALIZED,appName:{},status:{}", appName, fromStatus);
-                throw new DappException(DappError.DAPP_ALREADY_RUNNING);
-            }
-
             //update state to installing
             dappService.updateStatus(appName, DappStatus.INSTALLING, "");
 
