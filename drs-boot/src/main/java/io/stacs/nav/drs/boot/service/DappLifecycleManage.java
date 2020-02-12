@@ -459,6 +459,42 @@ import static io.stacs.nav.drs.service.utils.ResourceLoader.getManifest;
         return appProfileVOList;
     }
 
+    @Override public boolean start(String appName) {
+        install(appName);
+        return false;
+    }
+
+    @Override public boolean stop(String appName) {
+        Dapp dapp = dappService.findByAppName(appName);
+        if (dapp == null) {
+            log.warn("[stop] app is not exists,appName:{}", appName);
+            throw new DappException(DappError.DAPP_NOT_EXISTS);
+        }
+        DappStatus fromStatus = dapp.getStatus();
+        if (fromStatus != DappStatus.RUNNING) {
+            log.warn("[stop] app status is not RUNNING,appName:{},status:{}", appName, fromStatus);
+            throw new DappException(DappError.DAPP_NOT_RUNNING);
+        }
+        String runError = null;
+        try {
+            ClientResponse response = ArkClient.uninstallBiz(dapp.getName(), dapp.getVersion());
+            if (ResponseCode.SUCCESS.equals(response.getCode())) {
+            } else {
+                runError = response.getMessage();
+            }
+        } catch (Throwable e) {
+            log.error("[stop]dapp uninstall is failed", e);
+            runError = "stop has fail," + e.getMessage();
+        }
+        if (runError != null) {
+            log.warn("[stop]dapp stop has failed,{}", runError);
+            throw new DappException(runError);
+        }
+        //update status
+        dappService.updateStatus(appName,DappStatus.STOPPED,null);
+        return true;
+    }
+
     @Override public <T> void updateNotify(T config) {
         if(config instanceof DrsConfig){
             this.drsConfig = (DrsConfig)config;

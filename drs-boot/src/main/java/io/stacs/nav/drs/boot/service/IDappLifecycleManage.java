@@ -73,4 +73,20 @@ public interface IDappLifecycleManage {
      * @return
      */
     List<AppProfileVO> queryCurrentApps();
+
+    /**
+     * start dapp
+     *
+     * @param appName
+     * @return
+     */
+    boolean start(String appName);
+
+    /**
+     * stop dapp
+     *
+     * @param appName
+     * @return
+     */
+    boolean stop(String appName);
 }

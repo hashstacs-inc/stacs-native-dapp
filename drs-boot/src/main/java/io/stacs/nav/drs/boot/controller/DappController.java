@@ -117,6 +117,40 @@ import java.util.stream.Collectors;
     }
 
     /**
+     * start dapp
+     *
+     * @return
+     */
+    @GetMapping("/start/{appName}") public RespData start(@PathVariable("appName") String appName) {
+        try {
+            return RespData.success(dappLifecycleManage.start(appName));
+        } catch (DappException e) {
+            log.error("[start]has dapp error", e);
+            return RespData.fail(e.getCode(), e.getMsg());
+        } catch (Throwable e) {
+            log.error("[start]has unknown error", e);
+            return RespData.fail(DappError.DAPP_COMMON_ERROR);
+        }
+    }
+
+    /**
+     * stop dapp
+     *
+     * @return
+     */
+    @GetMapping("/stop/{appName}") public RespData stop(@PathVariable("appName") String appName) {
+        try {
+            return RespData.success(dappLifecycleManage.stop(appName));
+        } catch (DappException e) {
+            log.error("[stop]has dapp error", e);
+            return RespData.fail(e.getCode(), e.getMsg());
+        } catch (Throwable e) {
+            log.error("[stop]has unknown error", e);
+            return RespData.fail(DappError.DAPP_COMMON_ERROR);
+        }
+    }
+
+    /**
      * show all dapp
      *
      * @return
