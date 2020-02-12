@@ -51,4 +51,12 @@ public interface AppInfoDao{
      * @return
      */
     int unInstall(@Param("name")String name);
+
+    /**
+     * query by multiple app-name
+     *
+     * @param list
+     * @return
+     */
+    List<AppInfoPO> queryByNames(List<String> list);
 }

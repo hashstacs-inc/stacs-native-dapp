@@ -6,6 +6,7 @@
 		<result column="id" property="id" />
 		<result column="name" property="name" />
 		<result column="version" property="version" />
+		<result column="version_code" property="versionCode" />
 		<result column="context_path" property="contextPath" />
 		<result column="status" property="status" />
 		<result column="run_error" property="runError" />
@@ -18,7 +19,7 @@
 	</resultMap>
 	<!-- app_info table all fields -->
 	<sql id="baseColumnList">
-		id,name,version,context_path,status,run_error,file_name,icon,author,remark,create_time,update_time
+		id,name,version,version_code,context_path,status,run_error,file_name,icon,author,remark,create_time,update_time
 	</sql>
 	<sql id="baseWhereClause">
 		where 1=1
@@ -64,8 +65,8 @@
 	<!-- save record -->
 	<insert id="save" parameterType="Object">
 		insert into
-		app_info(id,name,version,context_path,status,run_error,file_name,icon,author,remark,create_time,update_time)
-		values(#{id},#{name},#{version},#{contextPath},#{status},#{runError},#{fileName},#{icon},#{author},#{remark},now(),now())
+		app_info(id,name,version,version_code,context_path,status,run_error,file_name,icon,author,remark,create_time,update_time)
+		values(#{id},#{name},#{version},#{versionCode},#{contextPath},#{status},#{runError},#{fileName},#{icon},#{author},#{remark},now(),now())
 	</insert>
 
 	<!-- query by app name -->
@@ -99,4 +100,15 @@
 	<delete id="unInstall" parameterType="Object">
 		delete from app_info where name=#{name}
 	</delete>
+
+	<!--queryByNames-->
+	<select id="queryByNames" resultMap="baseResultMap">
+		SELECT
+		<include refid="baseColumnList"/>
+		FROM `app_info`
+		WHERE name IN
+		<foreach item="item" index="index" collection="list" open="(" separator="," close=")">
+			#{item}
+		</foreach>
+	</select>
 </mapper>

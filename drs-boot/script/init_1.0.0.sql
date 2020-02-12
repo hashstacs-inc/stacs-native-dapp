@@ -3,6 +3,7 @@ CREATE TABLE IF NOT EXISTS `app_info` (
   `id` bigint(20) NOT NULL AUTO_INCREMENT,
   `name` varchar(64) NOT NULL COMMENT 'the app name',
   `version` VARCHAR(16) NOT NULL  COMMENT 'the app version',
+  `version_code` int(8) DEFAULT 0 COMMENT 'code of version',
   `context_path` varchar(32) DEFAULT NULL COMMENT 'context path for web app',
   `status` varchar(16) NOT NULL COMMENT 'status,DOWNLOAD、INITIALIZED、RUNNING、STOPPED',
   `run_error` varchar(128) DEFAULT NULL COMMENT 'app run error info',
