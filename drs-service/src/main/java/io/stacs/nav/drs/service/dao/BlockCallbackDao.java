@@ -27,6 +27,12 @@ import javax.annotation.Nullable;
      */
     Long maxHeight();
 
+    /**
+     * get exist block
+     * @return max height of call back
+     */
+    Long maxExistHeight();
+
     @Nullable Long initCallbackMinHeight();
 
     /**

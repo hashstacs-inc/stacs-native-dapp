@@ -48,10 +48,9 @@ import static io.stacs.nav.drs.service.model.ConvertHelper.*;
         try {
             final AtomicBoolean remain = new AtomicBoolean(true);
             while (remain.get()) {
-                long nextHeight = runtimeData.getNextHeight();
                 long chainMaxHeight = blockChainService.queryCurrentHeight();
-                Long optCallbackHeight = txCallbackDao.initCallbackMinHeight();
-                Optional<Pair<Long, Long>>  synchronize = HeightChecker.of(nextHeight, chainMaxHeight, optCallbackHeight).countMissBlocksInterval();
+                Long maxExistHeight = txCallbackDao.maxExistHeight();
+                Optional<Pair<Long, Long>>  synchronize = HeightChecker.of(chainMaxHeight, maxExistHeight).countMissBlocksInterval();
 
                 synchronize.ifPresent(interval -> {
                     Long endHeight = interval.right();
@@ -91,24 +90,18 @@ import static io.stacs.nav.drs.service.model.ConvertHelper.*;
     }
 
     static class HeightChecker {
-        // min(callbackHeight),if has not callback block well be empty
-        private Optional<Long> optCallbackHeight;
-        // drs next block height
-        private long nextHeight;
         // chain max block height
         private long chainMaxHeight;
 
-        private HeightChecker() {
-        }
+        private long  maxExistHeight;
 
-        private HeightChecker(long nextHeight, long chainMaxHeight, Optional<Long> optCallbackHeight) {
-            this.optCallbackHeight = optCallbackHeight;
-            this.nextHeight = nextHeight;
+        private HeightChecker( long chainMaxHeight, Long maxExistHeight) {
+            this.maxExistHeight = maxExistHeight;
             this.chainMaxHeight = chainMaxHeight;
         }
 
-        public static HeightChecker of(long nextHeight, long chainMaxHeight, @Nullable Long callbackHeight) {
-            return new HeightChecker(nextHeight, chainMaxHeight, Optional.ofNullable(callbackHeight));
+        public static HeightChecker of( long chainMaxHeight, @Nullable Long maxExistHeight) {
+            return new HeightChecker( chainMaxHeight, maxExistHeight);
         }
 
         /**
@@ -120,12 +113,9 @@ import static io.stacs.nav.drs.service.model.ConvertHelper.*;
             // 1. if exist callback block && nextHeight < callbackHeight
             // 2. if not exist callback block && chainMaxHeight > currentHeight = nextHeight - 1
             //@formatter:off
-            return optCallbackHeight.map(callbackHeight -> nextHeight < callbackHeight
-                    ? Optional.of(Pair.of(nextHeight, callbackHeight - 1))
-                    : Optional.<Pair<Long, Long>>empty())
-                .orElseGet(() -> chainMaxHeight > nextHeight - 1
-                    ? Optional.of(Pair.of(nextHeight, chainMaxHeight))
-                    : Optional.empty());
+            return  maxExistHeight < chainMaxHeight
+                    ? Optional.of(Pair.of(maxExistHeight, chainMaxHeight - 1))
+                    : Optional.<Pair<Long, Long>>empty();
             //@formatter:on
         }
 

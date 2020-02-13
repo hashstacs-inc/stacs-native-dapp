@@ -53,6 +53,10 @@
     <select id="maxHeight" resultType="java.lang.Long" parameterType="Object">
 		select block_height from block_callback where status='PROCESSED' order by block_height desc limit 1
 	</select>
+    <!-- get max exist Height -->
+    <select id="maxExistHeight" resultType="java.lang.Long" parameterType="Object">
+		select block_height from block_callback   order by block_height desc limit 1
+	</select>
 
     <select id="initCallbackMinHeight" resultType="java.lang.Long">
         select block_height from block_callback where status='INIT' order by block_height asc limit 1
