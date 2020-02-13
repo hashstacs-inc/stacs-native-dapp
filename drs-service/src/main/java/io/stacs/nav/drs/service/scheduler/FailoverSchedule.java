@@ -17,6 +17,7 @@ import org.springframework.stereotype.Service;
 import javax.annotation.Nullable;
 import java.util.List;
 import java.util.Optional;
+import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.stream.Collectors;
 
 import static io.stacs.nav.drs.service.model.ConvertHelper.*;
@@ -32,31 +33,51 @@ import static io.stacs.nav.drs.service.model.ConvertHelper.*;
     @Autowired BlockChainService blockChainService;
     @Autowired private DrsRuntimeData runtimeData;
 
-    @Scheduled(fixedDelayString = "${drs.schedule.failover:120000}") public void schedule() {
+    @Scheduled(fixedDelayString = "${drs.schedule.failover:1000}") public void schedule() {
         exe();
     }
 
+    /**
+     * peer max of SYNCHRONIZED block height
+     */
+    private final static int MAX_SYNCHRONIZED_BLOCK_HEIGHT = 3;
     /**
      * execute failover
      */
     private void exe() {
         try {
-            long nextHeight = runtimeData.getNextHeight();
-            long chainMaxHeight = blockChainService.queryCurrentHeight();
-            Long optCallbackHeight = txCallbackDao.initCallbackMinHeight();
-            HeightChecker.of(nextHeight, chainMaxHeight, optCallbackHeight).countMissBlocksInterval()
-                .ifPresent(interval -> {
-                    List<BlockVO> blocks = blockChainService.queryBlocks(interval.left(), interval.right()).stream()
-                        .map(json -> JSONHelper.toJavaObject(json, BlockVO.class)).filter(Optional::isPresent)
-                        .map(Optional::get).collect(Collectors.toList());
+            final AtomicBoolean remain = new AtomicBoolean(true);
+            while (remain.get()) {
+                long nextHeight = runtimeData.getNextHeight();
+                long chainMaxHeight = blockChainService.queryCurrentHeight();
+                Long optCallbackHeight = txCallbackDao.initCallbackMinHeight();
+                Optional<Pair<Long, Long>>  synchronize = HeightChecker.of(nextHeight, chainMaxHeight, optCallbackHeight).countMissBlocksInterval();
+
+                synchronize.ifPresent(interval -> {
+                    Long endHeight = interval.right();
+                    if (interval.getRight() - interval.getLeft() > MAX_SYNCHRONIZED_BLOCK_HEIGHT) {
+                        endHeight = interval.getLeft() + MAX_SYNCHRONIZED_BLOCK_HEIGHT;
+                        remain.set(true);
+                    } else {
+                        remain.set(false);
+                    }
+                    List<BlockVO> blocks = blockChainService.queryBlocks(interval.left(), endHeight).stream()
+                        .map(json -> JSONHelper.toJavaObject(json, BlockVO.class)).filter(Optional::isPresent).map(Optional::get).collect(Collectors.toList());
                     if (blocks.isEmpty()) {
                         return;
                     }
                     // bo -> po & setPO state = INIT
-                    blocks.stream()
-                        .map(block2CallbackBOConvert.andThen(block2CallbackPOConvert).andThen(setPOInitState))
+                    blocks.stream().map(block2CallbackBOConvert.andThen(block2CallbackPOConvert).andThen(setPOInitState))
                         .forEach(txCallbackDao::save);
+                    log.info("peer failover schedule executed success startHeight:{}, endHeight:{}",interval.getLeft(),
+                        endHeight);
                 });
+
+                if(!synchronize.isPresent()){
+                    remain.set(false);
+                }
+
+            }
             log.info("failover schedule executed success");
         } catch (Throwable e) {
             log.error("failover execute has error", e);
