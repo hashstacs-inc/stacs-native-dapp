@@ -73,7 +73,7 @@ import static io.stacs.nav.drs.service.model.ConvertHelper.*;
                         endHeight);
                 });
 
-                if(!synchronize.isPresent() || ){
+                if(!synchronize.isPresent()){
                     remain.set(false);
                 }
 
