@@ -33,7 +33,7 @@ import static io.stacs.nav.drs.service.model.ConvertHelper.*;
     @Autowired BlockChainService blockChainService;
     @Autowired private DrsRuntimeData runtimeData;
 
-    @Scheduled(fixedDelayString = "${drs.schedule.failover:1000}") public void schedule() {
+    @Scheduled(fixedDelayString = "${drs.schedule.failover:60000}") public void schedule() {
         exe();
     }
 
@@ -73,7 +73,7 @@ import static io.stacs.nav.drs.service.model.ConvertHelper.*;
                         endHeight);
                 });
 
-                if(!synchronize.isPresent()){
+                if(!synchronize.isPresent() || ){
                     remain.set(false);
                 }
 
