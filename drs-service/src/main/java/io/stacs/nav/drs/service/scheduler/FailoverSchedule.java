@@ -76,9 +76,9 @@ import static io.stacs.nav.drs.service.model.ConvertHelper.*;
                 if(!synchronize.isPresent()){
                     remain.set(false);
                 }
-
+                log.info("peer failover schedule executed success remain data :{}", remain.get());
             }
-            log.info("failover schedule executed success");
+            log.info("failover schedule executed success ");
         } catch (Throwable e) {
             log.error("failover execute has error", e);
         }
