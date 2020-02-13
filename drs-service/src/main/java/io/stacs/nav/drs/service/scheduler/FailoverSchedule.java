@@ -50,6 +50,9 @@ import static io.stacs.nav.drs.service.model.ConvertHelper.*;
             while (remain.get()) {
                 long chainMaxHeight = blockChainService.queryCurrentHeight();
                 Long maxExistHeight = txCallbackDao.maxExistHeight();
+                if(maxExistHeight == null){
+                    maxExistHeight = 0L;
+                }
                 Optional<Pair<Long, Long>>  synchronize = HeightChecker.of(chainMaxHeight, maxExistHeight).countMissBlocksInterval();
 
                 synchronize.ifPresent(interval -> {
