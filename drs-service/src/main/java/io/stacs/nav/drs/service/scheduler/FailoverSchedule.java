@@ -67,7 +67,14 @@ import static io.stacs.nav.drs.service.model.ConvertHelper.*;
                     }
                     // bo -> po & setPO state = INIT
                     blocks.stream().map(block2CallbackBOConvert.andThen(block2CallbackPOConvert).andThen(setPOInitState))
-                        .forEach(txCallbackDao::save);
+                        .forEach(item -> {
+                            try{
+                                txCallbackDao.save(item);
+                            }catch (Exception ex) {
+                                log.error("save call back block error:{}",ex);
+                            };
+                            });
+
                     log.info("peer failover schedule executed success startHeight:{}, endHeight:{}",interval.getLeft(),
                         endHeight);
                 });
@@ -114,7 +121,7 @@ import static io.stacs.nav.drs.service.model.ConvertHelper.*;
             // 2. if not exist callback block && chainMaxHeight > currentHeight = nextHeight - 1
             //@formatter:off
             return  maxExistHeight < chainMaxHeight
-                    ? Optional.of(Pair.of(maxExistHeight, chainMaxHeight - 1))
+                    ? Optional.of(Pair.of(maxExistHeight+1, chainMaxHeight - 1))
                     : Optional.<Pair<Long, Long>>empty();
             //@formatter:on
         }
