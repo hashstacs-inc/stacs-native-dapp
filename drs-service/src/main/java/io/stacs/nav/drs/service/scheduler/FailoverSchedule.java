@@ -121,7 +121,7 @@ import static io.stacs.nav.drs.service.model.ConvertHelper.*;
             // 2. if not exist callback block && chainMaxHeight > currentHeight = nextHeight - 1
             //@formatter:off
             return  maxExistHeight < chainMaxHeight
-                    ? Optional.of(Pair.of(maxExistHeight+1, chainMaxHeight - 1))
+                    ? Optional.of(Pair.of(maxExistHeight+1, chainMaxHeight))
                     : Optional.<Pair<Long, Long>>empty();
             //@formatter:on
         }
