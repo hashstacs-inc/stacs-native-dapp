@@ -59,6 +59,9 @@ export default {
     this.getAppLists();
     this.$store.commit('changeStoreMenu', this.$route.meta.menu);
   },
+  beforeDestroy () {
+    clearInterval(this.installingTimer);
+  },
   methods: {
     searchList () {
       if (!this.searchApp) {
@@ -170,6 +173,7 @@ export default {
     // install app
     async installApp (v) {
       this.$set(v, 'loading', true);
+      this.$set(v, 'status', 'INSTALLING');
       let params = {
         name: v.name,
         slient: true,
@@ -177,12 +181,11 @@ export default {
         timeout: 0
       }
       let data = await installDeapp(params);
-      // this.$set(v, 'loading', false);
-      window.location.reload();
+      this.$set(v, 'loading', false);
       if (data.code === '000000') {
         this.$set(v, 'status', 'RUNNING');
       } else if (data.code === '210011') {
-        this.$set(v, 'loading', true);
+        window.location.reload();
       } else {
         this.$set(v, 'errorText', data.msg);
       }
@@ -193,17 +196,17 @@ export default {
         this.getAppLists()
         return
       }
-      if (!v.status) {
+      if (!v.status && !v.loading) {
         // Status not downloaded
         this.downloadApp(v);
-      } else if (v.status === 'DOWNLOADED') {
+      } else if (v.status === 'DOWNLOADED' && !v.loading) {
         // Downloaded status
         this.configVisible = true;
         this.currentItem = v;
-      } else if (v.status === 'INITIALIZED' || v.status === 'STOPPED') {
+      } else if (v.status === 'INITIALIZED' && !v.loading || v.status === 'STOPPED' && !v.loading) {
         // Configured, initialized
         this.installApp(v);
-      } else if (v.status === 'RUNNING') {
+      } else if (v.status === 'RUNNING' && !v.loading) {
         window.open(window.location.origin + '/' + v.name);
       }
     },
@@ -244,7 +247,7 @@ export default {
             clearInterval(this.installingTimer);
           }
         }, 4000);
-      this.loading = false;
+        this.loading = false;
       }
     }
   }
