@@ -111,4 +111,41 @@
 			#{item}
 		</foreach>
 	</select>
+
+	<!--updateBySelective-->
+	<update id="updateBySelective" parameterType="Object">
+		update `app_info` set
+		<trim suffixOverrides=",">
+			<if test="version != null">
+				version=#{version},
+			</if>
+			<if test="versionCode != null">
+				version_code=#{versionCode},
+			</if>
+			<if test="contextPath != null">
+				context_path=#{contextPath},
+			</if>
+			<if test="status != null">
+				status=#{status},
+			</if>
+			<if test="runError != null">
+				run_error=#{runError},
+			</if>
+			<if test="fileName != null">
+				file_name=#{fileName},
+			</if>
+			<if test="icon != null">
+				icon=#{icon},
+			</if>
+			<if test="author != null">
+				author=#{author},
+			</if>
+			<if test="remark != null">
+				remark=#{remark},
+			</if>
+			update_time = now()
+		</trim>
+		where name=#{name}
+	</update>
+
 </mapper>

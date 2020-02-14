@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mappers.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="io.stacs.nav.drs.boot.dao.AppUpgradeHistoryDao">
+	<!-- Result Map -->
+	<resultMap id="baseResultMap" type="io.stacs.nav.drs.boot.dao.po.AppUpgradeHistoryPO">
+		<result column="id" property="id" />
+		<result column="name" property="name" />
+		<result column="version" property="version" />
+		<result column="version_code" property="versionCode" />
+		<result column="context_path" property="contextPath" />
+		<result column="run_error" property="runError" />
+		<result column="file_name" property="fileName" />
+		<result column="icon" property="icon" />
+		<result column="author" property="author" />
+		<result column="remark" property="remark" />
+		<result column="create_time" property="createTime" />
+	</resultMap>
+	<!-- app_info table all fields -->
+	<sql id="baseColumnList">
+		id,name,version,version_code,context_path,run_error,file_name,icon,author,remark,create_time
+	</sql>
+	<sql id="baseWhereClause">
+		where 1=1
+		<trim suffixOverrides=",">
+			<if test="id != null">
+				and id=#{id}
+			</if>
+			<if test="name != null and name != ''">
+				and name=#{name}
+			</if>
+			<if test="version != null and version != ''">
+				and version=#{version}
+			</if>
+			<if test="contextPath != null and contextPath != ''">
+				and context_path=#{contextPath}
+			</if>
+			<if test="runError != null and runError != ''">
+				and run_error=#{runError}
+			</if>
+			<if test="fileName != null and fileName != ''">
+				and file_name=#{fileName}
+			</if>
+			<if test="icon != null and icon != ''">
+				and icon=#{icon}
+			</if>
+			<if test="author != null and author != ''">
+				and author=#{author}
+			</if>
+			<if test="remark != null and remark != ''">
+				and remark=#{remark}
+			</if>
+			<if test="createTime != null">
+				and create_time=#{createTime}
+			</if>
+		</trim>
+	</sql>
+	<!-- save record -->
+	<insert id="save" parameterType="Object">
+		insert into
+		app_upgrade_history(id,name,version,version_code,context_path,run_error,file_name,icon,author,remark,create_time,update_time)
+		values(#{id},#{name},#{version},#{versionCode},#{contextPath},#{runError},#{fileName},#{icon},#{author},#{remark},now())
+	</insert>
+</mapper>

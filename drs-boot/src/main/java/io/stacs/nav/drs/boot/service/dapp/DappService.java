@@ -7,6 +7,7 @@ import io.stacs.nav.drs.boot.bo.Dapp;
 import io.stacs.nav.drs.boot.dao.AppInfoDao;
 import io.stacs.nav.drs.boot.dao.po.AppInfoPO;
 import io.stacs.nav.drs.boot.enums.DappStatus;
+import io.stacs.nav.drs.service.utils.BeanConvertor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -95,5 +96,11 @@ import java.util.List;
             dappList.add(dapp);
         });
         return dappList;
+    }
+
+    @Override public int updateBySelective(Dapp dapp) {
+        AppInfoPO po = BeanConvertor.convertBean(dapp,AppInfoPO.class);
+        po.setStatus(dapp.getStatus().name());
+        return appInfoDao.updateBySelective(po);
     }
 }

@@ -149,6 +149,23 @@ import java.util.stream.Collectors;
             return RespData.fail(DappError.DAPP_COMMON_ERROR);
         }
     }
+    /**
+     * upgrade dapp
+     *
+     * @return
+    */
+    @GetMapping("/upgrade/{appName}") public RespData upgrade(@PathVariable String appName) {
+        log.info("start upgrade dapp by appName:{}", appName);
+        try {
+            return RespData.success(dappLifecycleManage.upgrade(appName));
+        } catch (DappException e) {
+            log.error("[upgrade]has dapp error", e);
+            return RespData.fail(e.getCode(), e.getMsg());
+        } catch (Throwable e) {
+            log.error("[upgrade]has unknown error", e);
+            return RespData.fail(DappError.DAPP_COMMON_ERROR);
+        }
+    }
 
     /**
      * show all dapp

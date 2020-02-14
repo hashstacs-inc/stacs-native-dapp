@@ -46,6 +46,20 @@ CREATE TABLE IF NOT EXISTS `app_info` (
   UNIQUE (`name`)
 );
 
+CREATE TABLE IF NOT EXISTS `app_upgrade_history` (
+  `id` bigint(20) NOT NULL AUTO_INCREMENT,
+  `name` varchar(64) NOT NULL COMMENT 'the app name',
+  `version` VARCHAR(16) NOT NULL  COMMENT 'the app version',
+  `version_code` int(8) DEFAULT 0 COMMENT 'code of version',
+  `context_path` varchar(32) DEFAULT NULL COMMENT 'context path for web app',
+  `run_error` varchar(128) DEFAULT NULL COMMENT 'app run error info',
+  `file_name` varchar(64) NOT NULL COMMENT 'app jar file name',
+  `icon` varchar(128) DEFAULT NULL COMMENT 'app icon url',
+  `author` varchar(64) DEFAULT NULL COMMENT 'author of app ',
+  `remark` varchar(128) DEFAULT NULL COMMENT 'the app description',
+  `create_time` datetime NOT NULL COMMENT 'create time',
+  PRIMARY KEY (`id`)
+);
 
 CREATE TABLE
 IF NOT EXISTS `block` (

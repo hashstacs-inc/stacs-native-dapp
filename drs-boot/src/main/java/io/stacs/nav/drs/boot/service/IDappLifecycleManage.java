@@ -89,4 +89,12 @@ public interface IDappLifecycleManage {
      * @return
      */
     boolean stop(String appName);
+
+    /**
+     * dapp upgrade
+     *
+     * @param appName
+     * @return
+     */
+    boolean upgrade(String appName) throws IOException;
 }

@@ -59,4 +59,12 @@ public interface AppInfoDao{
      * @return
      */
     List<AppInfoPO> queryByNames(List<String> list);
+
+    /**
+     * update by selective
+     *
+     * @param po
+     * @return
+     */
+    int updateBySelective(AppInfoPO po);
 }

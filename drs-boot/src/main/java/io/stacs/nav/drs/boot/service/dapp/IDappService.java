@@ -65,4 +65,12 @@ public interface IDappService {
      * @return
      */
     List<Dapp> queryByNames(List<String> names);
+
+    /**
+     * update by selective
+     *
+     * @param dapp
+     * @return
+     */
+    int updateBySelective(Dapp dapp);
 }

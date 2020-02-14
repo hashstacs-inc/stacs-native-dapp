@@ -13,11 +13,14 @@ import io.stacs.nav.drs.api.exception.DappError;
 import io.stacs.nav.drs.api.exception.DappException;
 import io.stacs.nav.drs.boot.bo.Dapp;
 import io.stacs.nav.drs.boot.config.BaseConfig;
+import io.stacs.nav.drs.boot.dao.AppUpgradeHistoryDao;
+import io.stacs.nav.drs.boot.dao.po.AppUpgradeHistoryPO;
 import io.stacs.nav.drs.boot.enums.DappStatus;
 import io.stacs.nav.drs.boot.service.dapp.IDappService;
 import io.stacs.nav.drs.boot.service.dappstore.DappStoreService;
 import io.stacs.nav.drs.boot.vo.AppProfileVO;
 import io.stacs.nav.drs.service.config.DrsConfig;
+import io.stacs.nav.drs.service.utils.BeanConvertor;
 import io.stacs.nav.drs.service.utils.config.ConfigListener;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.io.FileUtils;
@@ -28,6 +31,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.context.event.ApplicationReadyEvent;
 import org.springframework.context.ApplicationListener;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.support.TransactionTemplate;
 import org.springframework.util.CollectionUtils;
 
 import javax.annotation.Nonnull;
@@ -39,6 +43,7 @@ import java.util.concurrent.locks.ReentrantLock;
 import java.util.function.Predicate;
 import java.util.jar.Attributes;
 import java.util.jar.Manifest;
+import java.util.stream.Collectors;
 
 import static com.alipay.sofa.ark.spi.constant.Constants.*;
 import static io.stacs.nav.drs.service.constant.Constants.DRS_VERSION_KEY;
@@ -49,7 +54,7 @@ import static io.stacs.nav.drs.service.utils.ResourceLoader.getManifest;
  * @date 2019/10/31
  */
 @Slf4j @Service public class DappLifecycleManage
-    implements ConfigListener,IDappLifecycleManage, ApplicationListener<ApplicationReadyEvent> {
+    implements ConfigListener, IDappLifecycleManage, ApplicationListener<ApplicationReadyEvent> {
     /**
      * app config file name
      */
@@ -58,6 +63,7 @@ import static io.stacs.nav.drs.service.utils.ResourceLoader.getManifest;
     private static final String SPRING_JMX_NAME = "spring.jmx.default-domain";
     private static final String WEB_SERVER_PORT = "server.port";
     private static final String WEB_SERVER_CONTEXT_PATH = "server.servlet.context-path";
+    private static final String UPGRADE_FOLDER = "upgrade";
 
     /**
      * lock for install
@@ -67,9 +73,11 @@ import static io.stacs.nav.drs.service.utils.ResourceLoader.getManifest;
     @Autowired BaseConfig baseConfig;
 
     @Autowired DrsConfig drsConfig;
+    @Autowired AppUpgradeHistoryDao appUpgradeHistoryDao;
 
     @Autowired IDappService dappService;
     @Autowired DappStoreService dappStoreService;
+    @Autowired private TransactionTemplate txRequired;
 
     @Override public void onApplicationEvent(ApplicationReadyEvent applicationReadyEvent) {
         init();
@@ -87,7 +95,7 @@ import static io.stacs.nav.drs.service.utils.ResourceLoader.getManifest;
         dappList.forEach(v -> {
             if (v.getStatus() == DappStatus.RUNNING || v.getStatus() == DappStatus.INSTALLING) {
                 v.setStatus(DappStatus.STOPPED);
-                install(v);
+                install(v, null);
             }
         });
     }
@@ -96,18 +104,8 @@ import static io.stacs.nav.drs.service.utils.ResourceLoader.getManifest;
         String fileName = FilenameUtils.getName(urlPath);
         log.info("[download]the app file name:{}", fileName);
         File destination = new File(drsConfig.getDownloadPath(), UUID.randomUUID().toString());
-        try {
-            URL url = new URL(urlPath);
-            FileUtils.copyURLToFile(url, destination);
-        } catch (Throwable e) {
-            File source = new File(urlPath);
-            if (!source.exists()) {
-                log.warn("download is fail,source file is not exists");
-                throw new DappException(DappError.DAPP_SOURCE_FILE_NOT_EXISTS_ERROR);
-            }
-            FileUtils.copyFile(source, destination);
-        }
-        log.info("[download]the app file are saved to destination:{}", destination);
+        //download file
+        this.downloadFile(urlPath, destination);
         //make jar file
         JarFile bizFile = new JarFile(destination);
         //get info from app file
@@ -118,7 +116,7 @@ import static io.stacs.nav.drs.service.utils.ResourceLoader.getManifest;
             throw new DappException(DappError.DAPP_ALREADY_EXISTS);
         }
         //generator config file from Jar file
-        genAppConfig(bizFile, app.getName());
+        genAppConfig(bizFile, app.getName(), null);
         //move
         Files.move(destination, new File(drsConfig.getDownloadPath(), fileName));
         //set DOWNLOADED status
@@ -126,6 +124,29 @@ import static io.stacs.nav.drs.service.utils.ResourceLoader.getManifest;
         app.setFileName(fileName);
         return dappService.save(app);
 
+    }
+
+    /**
+     * download dapp file
+     *
+     * @param urlPath
+     * @param destination
+     * @return
+     * @throws IOException
+     */
+    private void downloadFile(String urlPath, File destination) throws IOException {
+        try {
+            URL url = new URL(urlPath);
+            FileUtils.copyURLToFile(url, destination);
+        } catch (Throwable e) {
+            File source = new File(urlPath);
+            if (!source.exists()) {
+                log.warn("[downloadFile] is fail,source file is not exists");
+                throw new DappException(DappError.DAPP_SOURCE_FILE_NOT_EXISTS_ERROR);
+            }
+            FileUtils.copyFile(source, destination);
+        }
+        log.info("[downloadFile]the app file are saved to destination:{}", destination);
     }
 
     @Override public boolean initialized(String appName) {
@@ -159,9 +180,9 @@ import static io.stacs.nav.drs.service.utils.ResourceLoader.getManifest;
         String appVersion = manifestMainAttributes.getValue(ARK_BIZ_VERSION);
         dapp.setVersion(appVersion);
         String contextPath = manifestMainAttributes.getValue(WEB_CONTEXT_PATH);
-        log.info("[getInfo]appName:{}",dapp.getName());
-        log.info("[getInfo]contextPath:{}",contextPath);
-        log.info("[getInfo]version:{}",appVersion);
+        log.info("[getInfo]appName:{}", dapp.getName());
+        log.info("[getInfo]contextPath:{}", contextPath);
+        log.info("[getInfo]version:{}", appVersion);
         dapp.setContextPath(contextPath);
 
         String usedDrsVersion = manifestMainAttributes.getValue(DRS_VERSION_KEY);
@@ -190,9 +211,10 @@ import static io.stacs.nav.drs.service.utils.ResourceLoader.getManifest;
      *
      * @param bizFile
      * @param appName
+     * @param fileName the config file name,allow null default:DAPP_CONFIG_FILE_NAME
      */
-    private void genAppConfig(JarFile bizFile, String appName) throws IOException {
-        String filePath = getConfigPath(appName);
+    private void genAppConfig(JarFile bizFile, String appName, String fileName) throws IOException {
+        String filePath = getConfigPath(appName, fileName);
         boolean isGened = false;
         Enumeration myEnum = bizFile.entries();
         while (myEnum.hasMoreElements()) {
@@ -256,12 +278,23 @@ import static io.stacs.nav.drs.service.utils.ResourceLoader.getManifest;
      * @return
      */
     private String getConfigPath(String appName) {
+        return getConfigPath(appName, null);
+    }
+
+    /**
+     * config path for app
+     *
+     * @param appName
+     * @param fileName
+     * @return
+     */
+    private String getConfigPath(String appName, String fileName) {
         String configPath = drsConfig.getConfigPath() + File.separator + appName;
         File file = new File(configPath);
         if (!file.exists()) {
             file.mkdirs();
         }
-        return configPath + File.separator + DAPP_CONFIG_FILE_NAME;
+        return configPath + File.separator + (StringUtils.isEmpty(fileName) ? DAPP_CONFIG_FILE_NAME : fileName);
     }
 
     /**
@@ -276,7 +309,7 @@ import static io.stacs.nav.drs.service.utils.ResourceLoader.getManifest;
             log.warn("[install] app is not exists,appName:{}", appName);
             throw new DappException(DappError.DAPP_NOT_EXISTS);
         }
-        this.install(dapp);
+        this.install(dapp, null);
         return true;
     }
 
@@ -284,8 +317,9 @@ import static io.stacs.nav.drs.service.utils.ResourceLoader.getManifest;
      * install by dapp info
      *
      * @param dapp
+     * @param configName dapp config file name,allow null
      */
-    public void install(Dapp dapp) {
+    public void install(Dapp dapp, String configName) {
         if (dapp == null) {
             return;
         }
@@ -307,7 +341,7 @@ import static io.stacs.nav.drs.service.utils.ResourceLoader.getManifest;
             reentrantLock = BuildLockHelper.getLock(appName);
 
             flag = reentrantLock.tryLock(3, TimeUnit.SECONDS);
-            if(!flag){
+            if (!flag) {
                 log.warn("[install] app status is already installing,appName:{},status:{}", appName, fromStatus);
                 throw new DappException(DappError.DAPP_ALREADY_INSTALLING);
             }
@@ -316,24 +350,25 @@ import static io.stacs.nav.drs.service.utils.ResourceLoader.getManifest;
             dappService.updateStatus(appName, DappStatus.INSTALLING, "");
 
             File dappFile = new File(drsConfig.getDownloadPath(), dapp.getFileName());
-            String configPath = getConfigPath(dapp.getName());
+            String configPath = getConfigPath(dapp.getName(), configName);
             log.info("install dapp:{}, with configPath:{}", dapp, configPath);
-            ClientResponse response = ArkClient.installBiz(dappFile, new String[] {"--spring.config.location=" + configPath});
+            ClientResponse response =
+                ArkClient.installBiz(dappFile, new String[] {"--spring.config.location=" + configPath});
             if (ResponseCode.SUCCESS.equals(response.getCode())) {
                 toStatus = DappStatus.RUNNING;
             } else {
                 toStatus = DappStatus.STOPPED;
                 runError = response.getMessage();
             }
-        }catch (DappException ex){
+        } catch (DappException ex) {
             log.error("dapp install get lock failed", ex);
             throw ex;
-        }catch (Throwable e) {
+        } catch (Throwable e) {
             log.error("dapp install is failed", e);
             runError = "install fail,unknown error";
             toStatus = DappStatus.STOPPED;
-        }finally {
-            if(reentrantLock != null && flag == true){
+        } finally {
+            if (reentrantLock != null && flag == true) {
                 reentrantLock.unlock();
             }
         }
@@ -368,11 +403,11 @@ import static io.stacs.nav.drs.service.utils.ResourceLoader.getManifest;
         }
         //unInstall
         int r = dappService.unInstall(appName);
-        log.info("unInstall dapp:{},result:{}",appName,r);
-        try{
+        log.info("unInstall dapp:{},result:{}", appName, r);
+        try {
             new File(drsConfig.getDownloadPath(), dapp.getFileName()).delete();
-        }catch (Throwable e){
-            log.error("delete dapp file has error",e);
+        } catch (Throwable e) {
+            log.error("delete dapp file has error", e);
         }
         return true;
     }
@@ -423,7 +458,7 @@ import static io.stacs.nav.drs.service.utils.ResourceLoader.getManifest;
             p.put(WEB_SERVER_PORT, baseConfig.getServerPort() + "");
         }
         if (!p.containsKey(SPRING_JMX_NAME)) {
-            p.put(SPRING_JMX_NAME,appName);
+            p.put(SPRING_JMX_NAME, appName);
         }
         p.put(WEB_SERVER_CONTEXT_PATH, "/" + appName);
         FileOutputStream os = null;
@@ -440,23 +475,29 @@ import static io.stacs.nav.drs.service.utils.ResourceLoader.getManifest;
 
     @Override public List<AppProfileVO> queryCurrentApps() {
         List<Dapp> list = dappService.findAll();
-        if(CollectionUtils.isEmpty(list)){
+        if (CollectionUtils.isEmpty(list)) {
             return null;
         }
-        List<AppProfileVO> appProfileVOList = Lists.newArrayList();
-        list.forEach(v -> {
-            try {
-                AppProfileVO vo = dappStoreService.queryAppByName(v.getName());
-                if(vo!=null) {
+        List<AppProfileVO> mList = Lists.newArrayList();
+        try {
+            List<AppProfileVO> appProfileVOList = dappStoreService.queryApps();
+            if (CollectionUtils.isEmpty(appProfileVOList)) {
+                return mList;
+            }
+            Map<String, AppProfileVO> appProfileVOMap =
+                appProfileVOList.stream().collect(Collectors.toMap(AppProfileVO::getName, v -> v));
+            list.forEach(v -> {
+                AppProfileVO vo = appProfileVOMap.get(v.getName());
+                if (vo != null) {
                     //set status
                     vo.setStatus(v.getStatus().name());
-                    appProfileVOList.add(vo);
+                    mList.add(vo);
                 }
-            } catch (IOException e) {
-                log.error("has io error", e);
-            }
-        });
-        return appProfileVOList;
+            });
+        } catch (IOException e) {
+            log.error("has io error", e);
+        }
+        return mList;
     }
 
     @Override public boolean start(String appName) {
@@ -471,6 +512,10 @@ import static io.stacs.nav.drs.service.utils.ResourceLoader.getManifest;
             throw new DappException(DappError.DAPP_NOT_EXISTS);
         }
         DappStatus fromStatus = dapp.getStatus();
+        if (fromStatus == DappStatus.STOPPED) {
+            log.warn("[stop] dapp is already STOPPED,appName:{},status:{}", appName, fromStatus);
+            return true;
+        }
         if (fromStatus != DappStatus.RUNNING) {
             log.warn("[stop] app status is not RUNNING,appName:{},status:{}", appName, fromStatus);
             throw new DappException(DappError.DAPP_NOT_RUNNING);
@@ -491,15 +536,104 @@ import static io.stacs.nav.drs.service.utils.ResourceLoader.getManifest;
             throw new DappException(runError);
         }
         //update status
-        dappService.updateStatus(appName,DappStatus.STOPPED,null);
+        dappService.updateStatus(appName, DappStatus.STOPPED, null);
+        return true;
+    }
+
+    @Override public boolean upgrade(String appName) throws IOException {
+        log.info("[upgrade] is start,appName:{}", appName);
+        Dapp originalDapp = dappService.findByAppName(appName);
+        if (originalDapp == null) {
+            log.warn("[upgrade] app is not exists,appName:{}", appName);
+            throw new DappException(DappError.DAPP_NOT_EXISTS);
+        }
+        //query from appstore
+        AppProfileVO appProfileVO = dappStoreService.queryAppByName(appName);
+        //compare version code
+        if (originalDapp.getVersionCode() >= appProfileVO.getVersionCode()) {
+            log.warn("[upgrade] No upgrade required,drs.version:{},appstore.version:{},appName:{}",
+                originalDapp.getVersionCode(), appProfileVO.getVersionCode(), appName);
+            throw new DappException(DappError.DAPP_NO_UPGRADE_REQUIRED);
+        }
+        String urlPath = appProfileVO.getDownloadUrl();
+        log.info("[upgrade]urlPath:{}", urlPath);
+        String fileName = FilenameUtils.getName(urlPath);
+        fileName = "upgrade-" + appProfileVO.getVersionCode() + "-" + fileName;
+        log.info("[upgrade]the app file name:{}", fileName);
+        File destination = new File(drsConfig.getDownloadPath(), fileName);
+        //download file
+        this.downloadFile(urlPath, destination);
+        //make jar file
+        JarFile bizFile = new JarFile(destination);
+        //get info from app file
+        Dapp upgradeApp = getInfo(bizFile);
+        if (!StringUtils.equals(upgradeApp.getName(), appName)) {
+            log.warn("[upgrade] name not same upgradeApp.name:{},appName:{}", originalDapp.getName(), appName);
+            throw new DappException(DappError.DAPP_UPGRADE_NAME_NOT_SAME_ERROR);
+        }
+        //dapp config name
+        String dappConfigFileName = "upgrade-" + appProfileVO.getVersionCode() + "-" + DAPP_CONFIG_FILE_NAME;
+        //generator config file from Jar file
+        genAppConfig(bizFile, upgradeApp.getName(), dappConfigFileName);
+        //stop current dapp
+        stop(appName);
+        //reset status、fileName
+        upgradeApp.setStatus(DappStatus.STOPPED);
+        upgradeApp.setFileName(fileName);
+        boolean isInstalled = false;
+        DappException dappException = null;
+        try {
+            //install new dapp
+            install(upgradeApp, dappConfigFileName);
+            isInstalled = true;
+            log.info("[upgrade]installed upgrade-dapp");
+        } catch (DappException e) {
+            log.warn("[upgrade]install new dapp has dapp error", e);
+            dappException = e;
+        } catch (Throwable e) {
+            log.warn("[upgrade]install new dapp has error", e);
+        }
+        if (!isInstalled) {
+            //install the original dapp
+            install(appName);
+            log.info("[upgrade]recovered original-dapp");
+            if (dappException != null) {
+                throw dappException;
+            }
+            return false;
+        }
+        //replace dapp file
+        Files.copy(destination, new File(drsConfig.getDownloadPath(), originalDapp.getFileName()));
+        //replace dapp config
+        Files.copy(new File(getConfigPath(appName, dappConfigFileName)), new File(getConfigPath(appName)));
+        log.info("[upgrade]replaced dapp file");
+        //reset original file name、versionCode、status
+        upgradeApp.setFileName(originalDapp.getFileName());
+        upgradeApp.setVersionCode(appProfileVO.getVersionCode());
+        upgradeApp.setStatus(DappStatus.RUNNING);
+        try {
+            txRequired.execute(transactionStatus -> {
+                //update database
+                dappService.updateBySelective(upgradeApp);
+                //save history
+                appUpgradeHistoryDao.save(BeanConvertor.convertBean(upgradeApp, AppUpgradeHistoryPO.class));
+                return null;
+            });
+            log.info("[upgrade]updated database");
+        } catch (Throwable e) {
+            log.error("[upgrade]update dapp info has database error", e);
+            throw new DappException(DappError.DAPP_UPGRADE_DATABASE_ERROR);
+        }
+        log.info("[upgrade] is success");
         return true;
     }
 
     @Override public <T> void updateNotify(T config) {
-        if(config instanceof DrsConfig){
+        if (config instanceof DrsConfig) {
             this.drsConfig = (DrsConfig)config;
         }
     }
+
     @Nonnull @Override public Predicate<Object> filter() {
         return obj -> obj instanceof DrsConfig;
     }
