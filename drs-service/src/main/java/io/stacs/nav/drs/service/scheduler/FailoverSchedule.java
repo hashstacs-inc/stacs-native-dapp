@@ -40,7 +40,7 @@ import static io.stacs.nav.drs.service.model.ConvertHelper.*;
     /**
      * peer max of SYNCHRONIZED block height
      */
-    private final static int MAX_SYNCHRONIZED_BLOCK_HEIGHT = 3;
+    private final static int MAX_SYNCHRONIZED_BLOCK_HEIGHT = 10;
     /**
      * execute failover
      */
