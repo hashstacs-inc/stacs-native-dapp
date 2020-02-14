@@ -8,7 +8,8 @@
       "icon": "appstore/img/icon1.png",
       "author": "stacs",
       "remark": "This is a demo app",
-      "downloadUrl": "https://stacs-dappstore.oss-cn-zhangjiakou.aliyuncs.com/dev/dapp-sample-1.0.0-SNAPSHOT-dapp.jar"
+      "downloadUrl": "https://stacs-dappstore.oss-cn-zhangjiakou.aliyuncs.com/dev/dapp-sample-1.0.0-SNAPSHOT-dapp.jar",
+      "versionCode":0
     },
     {
       "showName": "STACS Explorer",
@@ -16,14 +17,16 @@
       "icon": "appstore/img/icon2.png",
       "author": "stacs",
       "remark": "This is a explorer app",
-      "downloadUrl": "https://stacs-dappstore.oss-cn-zhangjiakou.aliyuncs.com/dev/native-explorer-dapp.jar"
+      "downloadUrl": "https://stacs-dappstore.oss-cn-zhangjiakou.aliyuncs.com/dev/native-explorer-dapp.jar",
+      "versionCode":0
     },{
       "showName": "Assets Demo",
       "name": "dapp-transfer",
       "icon": "appstore/img/transfer.jpg",
       "author": "stacs",
       "remark": "This is a transfer demo app",
-      "downloadUrl": "https://stacs-dappstore.oss-cn-zhangjiakou.aliyuncs.com/dev/dapp-transfer-1.0.0-SNAPSHOT-dapp.jar"
+      "downloadUrl": "https://stacs-dappstore.oss-cn-zhangjiakou.aliyuncs.com/dev/dapp-transfer-1.0.0-SNAPSHOT-dapp.jar",
+      "versionCode":0
     }
   ]
 }

@@ -122,6 +122,12 @@ import static io.stacs.nav.drs.service.utils.ResourceLoader.getManifest;
         //set DOWNLOADED status
         app.setStatus(DappStatus.DOWNLOADED);
         app.setFileName(fileName);
+        //query dapp from appstore
+        AppProfileVO appProfileVO = dappStoreService.queryAppByName(app.getName());
+        if(appProfileVO!=null){
+            //set versionCode of appStore
+            app.setVersionCode(appProfileVO.getVersionCode());
+        }
         return dappService.save(app);
 
     }
@@ -611,12 +617,18 @@ import static io.stacs.nav.drs.service.utils.ResourceLoader.getManifest;
         upgradeApp.setFileName(originalDapp.getFileName());
         upgradeApp.setVersionCode(appProfileVO.getVersionCode());
         upgradeApp.setStatus(DappStatus.RUNNING);
+        //make history record
+        AppUpgradeHistoryPO history = BeanConvertor.convertBean(upgradeApp, AppUpgradeHistoryPO.class);
+        //Save the updated dapp file name as history
+        history.setFileName(fileName);
+        //Save the updated dapp config file name as history
+        history.setConfigName(dappConfigFileName);
         try {
             txRequired.execute(transactionStatus -> {
                 //update database
                 dappService.updateBySelective(upgradeApp);
                 //save history
-                appUpgradeHistoryDao.save(BeanConvertor.convertBean(upgradeApp, AppUpgradeHistoryPO.class));
+                appUpgradeHistoryDao.save(history);
                 return null;
             });
             log.info("[upgrade]updated database");

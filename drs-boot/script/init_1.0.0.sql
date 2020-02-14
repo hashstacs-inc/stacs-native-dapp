@@ -25,12 +25,14 @@ CREATE TABLE IF NOT EXISTS `app_upgrade_history` (
   `version_code` int(8) DEFAULT 0 COMMENT 'code of version',
   `context_path` varchar(32) DEFAULT NULL COMMENT 'context path for web app',
   `run_error` varchar(128) DEFAULT NULL COMMENT 'app run error info',
-  `file_name` varchar(64) NOT NULL COMMENT 'app jar file name',
+  `file_name` varchar(128) NOT NULL COMMENT 'app jar file name',
+  `config_name` varchar(128) NOT NULL COMMENT 'app config file name',
   `icon` varchar(128) DEFAULT NULL COMMENT 'app icon url',
   `author` varchar(64) DEFAULT NULL COMMENT 'author of app ',
   `remark` varchar(128) DEFAULT NULL COMMENT 'the app description',
   `create_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP  COMMENT 'create time',
-  PRIMARY KEY (`id`)
+  PRIMARY KEY (`id`),
+  KEY `idx_name` (`name`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT 'the dapp upgrade history';
 
 

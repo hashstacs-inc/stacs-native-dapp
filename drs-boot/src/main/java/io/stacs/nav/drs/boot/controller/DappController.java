@@ -12,6 +12,7 @@ import io.stacs.nav.drs.boot.enums.DappStatus;
 import io.stacs.nav.drs.boot.service.IDappLifecycleManage;
 import io.stacs.nav.drs.boot.service.PropertiesService;
 import io.stacs.nav.drs.boot.service.dapp.IDappService;
+import io.stacs.nav.drs.boot.service.dapp.UpgradeHistoryService;
 import io.stacs.nav.drs.boot.service.dappstore.DappStoreService;
 import io.stacs.nav.drs.service.config.DomainConfig;
 import io.stacs.nav.drs.service.config.DrsConfig;
@@ -45,6 +46,8 @@ import java.util.stream.Collectors;
     @Autowired ConfigurationManager manager;
 
     @Autowired PropertiesService propertiesService;
+
+    @Autowired UpgradeHistoryService upgradeHistoryService;
 
     /**
      * install dapp
@@ -166,7 +169,23 @@ import java.util.stream.Collectors;
             return RespData.fail(DappError.DAPP_COMMON_ERROR);
         }
     }
-
+    /**
+     * query upgrade history
+     *
+     * @return
+     */
+    @GetMapping("/upgrade/history/{appName}") public RespData queryUpgradeHistory(@PathVariable String appName) {
+        log.info("start query upgrade history by appName:{}", appName);
+        try {
+            return RespData.success(upgradeHistoryService.queryHistory(appName));
+        } catch (DappException e) {
+            log.error("[queryHistory]has dapp error", e);
+            return RespData.fail(e.getCode(), e.getMsg());
+        } catch (Throwable e) {
+            log.error("[queryHistory]has unknown error", e);
+            return RespData.fail(DappError.DAPP_COMMON_ERROR);
+        }
+    }
     /**
      * show all dapp
      *

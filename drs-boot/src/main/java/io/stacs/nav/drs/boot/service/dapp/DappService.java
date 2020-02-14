@@ -26,8 +26,7 @@ import java.util.List;
     @Autowired private AppInfoDao appInfoDao;
 
     @Override public Dapp save(Dapp app) {
-        AppInfoPO po = new AppInfoPO();
-        BeanUtils.copyProperties(app, po);
+        AppInfoPO po = BeanConvertor.convertBean(app,AppInfoPO.class);
         po.setStatus(app.getStatus().name());
         try {
             appInfoDao.save(po);
