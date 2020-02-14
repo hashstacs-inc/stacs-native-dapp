@@ -57,7 +57,7 @@
 	<!-- save record -->
 	<insert id="save" parameterType="Object">
 		insert into
-		app_upgrade_history(id,name,version,version_code,context_path,run_error,file_name,icon,author,remark,create_time,update_time)
+		app_upgrade_history(id,name,version,version_code,context_path,run_error,file_name,icon,author,remark,create_time)
 		values(#{id},#{name},#{version},#{versionCode},#{contextPath},#{runError},#{fileName},#{icon},#{author},#{remark},now())
 	</insert>
 </mapper>
