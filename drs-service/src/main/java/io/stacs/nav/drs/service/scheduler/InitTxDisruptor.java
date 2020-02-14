@@ -55,7 +55,9 @@ import java.util.concurrent.TimeUnit;
      */
     public void publish(String txId, TxRequestBO bo) {
         if (INIT_PROCESS_CACHE.getIfPresent(txId) != null) {
-            log.warn("already published txId:{}", txId);
+            if(log.isDebugEnabled()){
+                log.warn("already published txId:{}", txId);
+            }
             return;
         }
         INIT_PROCESS_CACHE.put(txId, txId);

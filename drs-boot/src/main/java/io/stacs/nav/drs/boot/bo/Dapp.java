@@ -46,4 +46,8 @@ import lombok.ToString;
      * the app description
      */
     private String remark;
+    /**
+     * version code for upgrade
+     */
+    private int versionCode;
 }

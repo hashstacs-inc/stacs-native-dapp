@@ -32,6 +32,7 @@ CREATE TABLE IF NOT EXISTS `app_info` (
   `id` bigint(20) NOT NULL AUTO_INCREMENT,
   `name` varchar(64) NOT NULL COMMENT 'the app name',
   `version` VARCHAR(16) NOT NULL  COMMENT 'the app version',
+  `version_code` int(8) DEFAULT 0 COMMENT 'code of version',
   `context_path` varchar(32) DEFAULT NULL COMMENT 'context path for web app',
   `status` varchar(16) NOT NULL COMMENT 'status,DOWNLOAD、INITIALIZED、RUNNING、STOPPED',
   `run_error` varchar(128) DEFAULT NULL COMMENT 'app run error info',
@@ -103,11 +104,10 @@ IF NOT EXISTS `policy` (
 	`callback_type` VARCHAR (16) NOT NULL COMMENT 'callback type of slave 1.ALL 2.SELF',
 	`verifyNum` int(8) DEFAULT NULL COMMENT 'verifyNum',
 	`mustDomainIds` VARCHAR(1024) DEFAULT NULL COMMENT 'mustDomainIds',
-	`expression` VARCHAR(64) DEFAULT NULL COMMENT 'expression',
+	`_expression` VARCHAR(64) DEFAULT NULL COMMENT 'expression',
 	`require_auth_ids` VARCHAR(1024) DEFAULT NULL COMMENT 'require_auth_ids',
-	`version` int(8) DEFAULT 0 COMMENT 'the policy version',
-	`create_time` bigint(16)  NOT NULL COMMENT 'create time',
-	`update_time` bigint(16)  DEFAULT NULL COMMENT 'update time',
+	`create_time` datetime (3) NOT NULL COMMENT 'create time',
+	`update_time` datetime (3) DEFAULT NULL COMMENT 'update time',
 	PRIMARY KEY (`id`),
 	UNIQUE  (`policy_id`)
 );
@@ -140,6 +140,7 @@ IF NOT EXISTS `transaction` (
 	`receipt_data` MEDIUMTEXT DEFAULT NULL COMMENT 'receipt data json',
 	`submitter` varchar (40)  DEFAULT '' COMMENT 'submitter',
 	`submitter_sign` varchar (130)  DEFAULT '' COMMENT 'data signature of submitter',
+	`vote_info` varchar (2048)  DEFAULT NULL COMMENT 'vote info json string',
 	PRIMARY KEY (`id`),
 	UNIQUE (`tx_id`),
 	INDEX  (`block_height`)
@@ -159,4 +160,15 @@ CREATE TABLE IF NOT EXISTS `business_define` (
 	`update_time` bigint(16) DEFAULT NULL COMMENT 'update time',
   PRIMARY KEY (`id`),
 	UNIQUE (`code`)
+);
+
+CREATE TABLE IF NOT EXISTS `sys_conf` (
+  `id` int(8) NOT NULL AUTO_INCREMENT,
+  `_key` varchar(64) NOT NULL COMMENT 'key name',
+  `_value` varchar(4096) NOT NULL  COMMENT 'value',
+  `remark` varchar(128) DEFAULT NULL COMMENT 'remark of config',
+  `create_time` datetime NOT NULL  COMMENT 'create time',
+  `update_time` datetime DEFAULT NULL COMMENT 'update time',
+  PRIMARY KEY (`id`),
+  UNIQUE (`_key`)
 );

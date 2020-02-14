@@ -34,6 +34,8 @@ import javax.annotation.Nonnull;
 import java.io.*;
 import java.net.URL;
 import java.util.*;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.locks.ReentrantLock;
 import java.util.function.Predicate;
 import java.util.jar.Attributes;
 import java.util.jar.Manifest;
@@ -57,6 +59,11 @@ import static io.stacs.nav.drs.service.utils.ResourceLoader.getManifest;
     private static final String WEB_SERVER_PORT = "server.port";
     private static final String WEB_SERVER_CONTEXT_PATH = "server.servlet.context-path";
 
+    /**
+     * lock for install
+     */
+    private static final Object INSTALL_LOCK = new Object();
+
     @Autowired BaseConfig baseConfig;
 
     @Autowired DrsConfig drsConfig;
@@ -78,7 +85,7 @@ import static io.stacs.nav.drs.service.utils.ResourceLoader.getManifest;
         }
         //auto install
         dappList.forEach(v -> {
-            if (v.getStatus() == DappStatus.RUNNING) {
+            if (v.getStatus() == DappStatus.RUNNING || v.getStatus() == DappStatus.INSTALLING) {
                 v.setStatus(DappStatus.STOPPED);
                 install(v);
             }
@@ -294,22 +301,41 @@ import static io.stacs.nav.drs.service.utils.ResourceLoader.getManifest;
         }
         DappStatus toStatus;
         String runError = null;
+        ReentrantLock reentrantLock = null;
+        boolean flag = false;
         try {
+            reentrantLock = BuildLockHelper.getLock(appName);
+
+            flag = reentrantLock.tryLock(3, TimeUnit.SECONDS);
+            if(!flag){
+                log.warn("[install] app status is already installing,appName:{},status:{}", appName, fromStatus);
+                throw new DappException(DappError.DAPP_ALREADY_INSTALLING);
+            }
+
+            //update state to installing
+            dappService.updateStatus(appName, DappStatus.INSTALLING, "");
+
             File dappFile = new File(drsConfig.getDownloadPath(), dapp.getFileName());
             String configPath = getConfigPath(dapp.getName());
             log.info("install dapp:{}, with configPath:{}", dapp, configPath);
-            ClientResponse response =
-                ArkClient.installBiz(dappFile, new String[] {"--spring.config.location=" + configPath});
+            ClientResponse response = ArkClient.installBiz(dappFile, new String[] {"--spring.config.location=" + configPath});
             if (ResponseCode.SUCCESS.equals(response.getCode())) {
                 toStatus = DappStatus.RUNNING;
             } else {
                 toStatus = DappStatus.STOPPED;
                 runError = response.getMessage();
             }
-        } catch (Throwable e) {
+        }catch (DappException ex){
+            log.error("dapp install get lock failed", ex);
+            throw ex;
+        }catch (Throwable e) {
             log.error("dapp install is failed", e);
             runError = "install fail,unknown error";
             toStatus = DappStatus.STOPPED;
+        }finally {
+            if(reentrantLock != null && flag == true){
+                reentrantLock.unlock();
+            }
         }
         //update status
         dappService.updateStatus(appName, toStatus, runError);
@@ -431,6 +457,42 @@ import static io.stacs.nav.drs.service.utils.ResourceLoader.getManifest;
             }
         });
         return appProfileVOList;
+    }
+
+    @Override public boolean start(String appName) {
+        install(appName);
+        return false;
+    }
+
+    @Override public boolean stop(String appName) {
+        Dapp dapp = dappService.findByAppName(appName);
+        if (dapp == null) {
+            log.warn("[stop] app is not exists,appName:{}", appName);
+            throw new DappException(DappError.DAPP_NOT_EXISTS);
+        }
+        DappStatus fromStatus = dapp.getStatus();
+        if (fromStatus != DappStatus.RUNNING) {
+            log.warn("[stop] app status is not RUNNING,appName:{},status:{}", appName, fromStatus);
+            throw new DappException(DappError.DAPP_NOT_RUNNING);
+        }
+        String runError = null;
+        try {
+            ClientResponse response = ArkClient.uninstallBiz(dapp.getName(), dapp.getVersion());
+            if (ResponseCode.SUCCESS.equals(response.getCode())) {
+            } else {
+                runError = response.getMessage();
+            }
+        } catch (Throwable e) {
+            log.error("[stop]dapp uninstall is failed", e);
+            runError = "stop has fail," + e.getMessage();
+        }
+        if (runError != null) {
+            log.warn("[stop]dapp stop has failed,{}", runError);
+            throw new DappException(runError);
+        }
+        //update status
+        dappService.updateStatus(appName,DappStatus.STOPPED,null);
+        return true;
     }
 
     @Override public <T> void updateNotify(T config) {

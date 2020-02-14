@@ -34,7 +34,15 @@ import lombok.Setter;
      */
     private String downloadUrl;
     /**
-     * NULL,DOWNLOADED,INITIALIZED,RUNNING,STOPPED
+     * NULL,DOWNLOADED,INITIALIZED,INSTALLING,RUNNING,STOPPED
      */
     private String status;
+    /**
+     * version code for upgrade
+     */
+    private int versionCode;
+    /**
+     * has update
+     */
+    private boolean hasUpgrade;
 }

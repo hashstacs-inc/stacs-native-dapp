@@ -2,10 +2,12 @@ package io.stacs.nav.drs.api;
 
 import io.stacs.nav.drs.api.model.ContractVO;
 import io.stacs.nav.drs.api.model.PageInfo;
+import io.stacs.nav.drs.api.model.RsDomain;
 import io.stacs.nav.drs.api.model.TransactionVO;
 import io.stacs.nav.drs.api.model.bd.BusinessDefine;
 import io.stacs.nav.drs.api.model.block.BlockHeaderVO;
 import io.stacs.nav.drs.api.model.block.BlockVO;
+import io.stacs.nav.drs.api.model.policy.PolicyVO;
 import io.stacs.nav.drs.api.model.query.*;
 
 import java.util.List;
@@ -30,6 +32,17 @@ public interface IQueryService {
 
     String queryBalance(QueryBalanceVO vo);
 
+    /**
+     * query contract state
+     * <example>
+     *  req：{"methodSignature":"(uint256) get(uint256)",
+     *  "address":"b8da898d50712ea4695ade4b1de6926cbc4bcfb9","parameters":[]}
+     *
+     *
+     *</>
+     * @param vo
+     * @return
+     */
     String queryContract(ContractQueryRequest vo);
 
     BlockHeaderVO queryBlockByHeight(QueryBlockByHeightVO vo);
@@ -43,4 +56,8 @@ public interface IQueryService {
      * query all bd info
      */
     List<BusinessDefine> queryAllBDInfo(String bdCode);
+
+    List<RsDomain> queryAllDomains();
+
+    PolicyVO queryPolicy(String policyId);
 }

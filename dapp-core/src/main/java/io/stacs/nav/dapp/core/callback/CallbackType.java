@@ -12,6 +12,10 @@ import org.apache.commons.lang3.StringUtils;
  */
 @Getter @Setter public class CallbackType {
     private String bdCode;
+    /**
+     * support wildcard call back handler
+     * example:CallbackType.of("*")
+     */
     private String functionName;
     private String version = VersionEnum.V4.getCode();
 

@@ -10,6 +10,7 @@ import io.stacs.nav.drs.api.model.RespData;
 import io.stacs.nav.drs.boot.bo.Dapp;
 import io.stacs.nav.drs.boot.enums.DappStatus;
 import io.stacs.nav.drs.boot.service.IDappLifecycleManage;
+import io.stacs.nav.drs.boot.service.PropertiesService;
 import io.stacs.nav.drs.boot.service.dapp.IDappService;
 import io.stacs.nav.drs.boot.service.dappstore.DappStoreService;
 import io.stacs.nav.drs.service.config.DomainConfig;
@@ -42,6 +43,8 @@ import java.util.stream.Collectors;
     @Autowired DappStoreService dappStoreService;
 
     @Autowired ConfigurationManager manager;
+
+    @Autowired PropertiesService propertiesService;
 
     /**
      * install dapp
@@ -109,6 +112,40 @@ import java.util.stream.Collectors;
             return RespData.fail(e.getCode(), e.getMsg());
         } catch (Throwable e) {
             log.error("[uninstall]has unknown error", e);
+            return RespData.fail(DappError.DAPP_COMMON_ERROR);
+        }
+    }
+
+    /**
+     * start dapp
+     *
+     * @return
+     */
+    @GetMapping("/start/{appName}") public RespData start(@PathVariable("appName") String appName) {
+        try {
+            return RespData.success(dappLifecycleManage.start(appName));
+        } catch (DappException e) {
+            log.error("[start]has dapp error", e);
+            return RespData.fail(e.getCode(), e.getMsg());
+        } catch (Throwable e) {
+            log.error("[start]has unknown error", e);
+            return RespData.fail(DappError.DAPP_COMMON_ERROR);
+        }
+    }
+
+    /**
+     * stop dapp
+     *
+     * @return
+     */
+    @GetMapping("/stop/{appName}") public RespData stop(@PathVariable("appName") String appName) {
+        try {
+            return RespData.success(dappLifecycleManage.stop(appName));
+        } catch (DappException e) {
+            log.error("[stop]has dapp error", e);
+            return RespData.fail(e.getCode(), e.getMsg());
+        } catch (Throwable e) {
+            log.error("[stop]has unknown error", e);
             return RespData.fail(DappError.DAPP_COMMON_ERROR);
         }
     }
@@ -206,9 +243,14 @@ import java.util.stream.Collectors;
      *
      * @return
      */
-    @GetMapping("/querySysConfig") @ResponseBody public RespData<ConfigVO> querySysConfig() throws IOException {
+    @GetMapping("/querySysConfig") @ResponseBody public RespData<ConfigVO> querySysConfig() {
         log.info("querySysConfig is start");
-        ConfigVO vo = new ConfigVO();
+        ConfigVO vo = propertiesService.queryConfigVO();
+        if (vo != null) {
+            return RespData.success(vo);
+        } else {
+            vo = new ConfigVO();
+        }
         DomainConfig domainConfig = manager.getConfigByClass(DomainConfig.class);
         DomainConfigVO domainConfigVO = BeanConvertor.convertBean(domainConfig, DomainConfigVO.class);
         vo.setDomainConfig(domainConfigVO);
@@ -224,11 +266,12 @@ import java.util.stream.Collectors;
      *
      * @return
      */
-    @PostMapping("/sysConfig") @ResponseBody public RespData<Boolean> sysConfig(@RequestBody ConfigVO vo)
-        throws IOException {
+    @PostMapping("/sysConfig") @ResponseBody public RespData<Boolean> sysConfig(@RequestBody ConfigVO vo) {
         log.info("sysConfig {}", vo);
         manager.updateConfig(BeanConvertor.convertBean(vo.getDomainConfig(), DomainConfig.class));
         manager.updateConfig(BeanConvertor.convertBean(vo.getDrsConfig(), DrsConfig.class));
+        //save or update
+        propertiesService.saveOrUpdate(vo);
         return RespData.success(true);
     }
 }

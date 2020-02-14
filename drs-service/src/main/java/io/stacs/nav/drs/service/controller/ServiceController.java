@@ -84,7 +84,19 @@ import java.util.stream.Collectors;
             return RespData.fail(DappError.DAPP_COMMON_ERROR);
         }
     }
-
+    /**
+     * query  policy info
+     *
+     * @return
+     */
+    @GetMapping("/queryPolicy") @ResponseBody public RespData<?> queryPolicy(@RequestParam("policyId") String policyId) {
+        try {
+            return RespData.success(blockChainService.queryPolicy(policyId));
+        } catch (Throwable e) {
+            log.error("[queryAllPolicy]has error", e);
+            return RespData.fail(DappError.DAPP_COMMON_ERROR);
+        }
+    }
     /**
      * query all policy info
      *

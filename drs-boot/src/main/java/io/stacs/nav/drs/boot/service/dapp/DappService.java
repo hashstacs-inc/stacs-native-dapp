@@ -81,4 +81,19 @@ import java.util.List;
     @Override public int unInstall(String name) {
         return appInfoDao.unInstall(name);
     }
+
+    @Override public List<Dapp> queryByNames(List<String> names) {
+        List<AppInfoPO> appInfoPOList = appInfoDao.queryByNames(names);
+        if(CollectionUtils.isEmpty(appInfoPOList)){
+            return null;
+        }
+        List<Dapp> dappList = Lists.newArrayList();
+        appInfoPOList.parallelStream().forEach(v->{
+            Dapp dapp = new Dapp();
+            BeanUtils.copyProperties(v, dapp);
+            dapp.setStatus(DappStatus.fromCode(v.getStatus()));
+            dappList.add(dapp);
+        });
+        return dappList;
+    }
 }

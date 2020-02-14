@@ -13,6 +13,11 @@ public enum DappStatus {
      * initialized
      */
     INITIALIZED,
+
+    /**
+     * installing
+     */
+    INSTALLING,
     /**
      * running
      */

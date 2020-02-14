@@ -22,9 +22,11 @@ import javax.annotation.Nonnull;
 import java.io.File;
 import java.io.IOException;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.concurrent.TimeUnit;
 import java.util.function.Predicate;
+import java.util.stream.Collectors;
 
 /**
  * @author suimi
@@ -36,7 +38,7 @@ import java.util.function.Predicate;
     @Autowired private IDappService dappService;
 
     private static final Cache<String, List<AppProfileVO>> DAPP_CACHE =
-        CacheBuilder.newBuilder().initialCapacity(100).maximumSize(10000).expireAfterWrite(5 * 60, TimeUnit.SECONDS)
+        CacheBuilder.newBuilder().initialCapacity(100).maximumSize(100).expireAfterWrite(5 * 60, TimeUnit.SECONDS)
             .build();
 
     /**
@@ -47,40 +49,53 @@ import java.util.function.Predicate;
      */
     public List<AppProfileVO> queryApps() throws IOException {
         List<AppProfileVO> list = queryFromAppStore();
-        list.forEach(v -> {
-            Dapp dapp = dappService.findByAppName(v.getName());
-            if (dapp != null) {
-                v.setStatus(dapp.getStatus().name());
-            }
-        });
+        if (CollectionUtils.isEmpty(list)) {
+            log.warn("[queryApps]list is empty");
+            return null;
+        }
+        List<String> names = list.stream().map(AppProfileVO::getName).collect(Collectors.toList());
+        List<Dapp> dappList = dappService.queryByNames(names);
+        if (CollectionUtils.isNotEmpty(dappList)) {
+            Map<String, Dapp> dappMap = dappList.stream().collect(Collectors.toMap(Dapp::getName, v -> v));
+            list.forEach(v -> {
+                Dapp dapp = dappMap.get(v.getName());
+                if (dapp != null) {
+                    v.setStatus(dapp.getStatus().name());
+                    //set hasUpgrade by versionCode
+                    if (v.getVersionCode() > dapp.getVersionCode()) {
+                        v.setHasUpgrade(true);
+                    }
+                }
+            });
+        }
         return list;
     }
 
     private List<AppProfileVO> queryFromAppStore() throws IOException {
         String storePath = drsConfig.getDappStorePath();
-        log.info("[queryApps]storePath:{}", storePath);
+        log.info("[queryFromAppStore]storePath:{}", storePath);
         List<AppProfileVO> appProfileVOList = DAPP_CACHE.getIfPresent(storePath);
         if (CollectionUtils.isNotEmpty(appProfileVOList)) {
             return BeanConvertor.convertList(appProfileVOList, AppProfileVO.class);
         }
         List<AppProfileVO> list = null;
         if (!StringUtil.isEmpty(storePath)) {
-            if(storePath.contains("http")) {
+            if (storePath.contains("http")) {
                 Optional<String> optional = blockChainFacade.sendGet(storePath,
                     resp -> resp.isSuccessful() ? Optional.of(String.valueOf(resp.getData())) : Optional.empty());
                 String json = optional.orElse(null);
                 list = JSON.parseArray(json, AppProfileVO.class);
-            }else{
+            } else {
                 //from file
                 File f = new File(storePath);
-                String json = FileUtils.readFileToString(f,"utf-8");
-                log.info("json of file:{}",json);
+                String json = FileUtils.readFileToString(f, "utf-8");
+                log.info("json of file:{}", json);
                 JSONObject jsonObject = JSONObject.parseObject(json);
                 list = JSON.parseArray(jsonObject.getJSONArray("data").toJSONString(), AppProfileVO.class);
             }
         }
         if (CollectionUtils.isEmpty(list)) {
-            log.warn("[queryApps]list is empty");
+            log.warn("[queryFromAppStore]list is empty");
             return null;
         }
         DAPP_CACHE.put(storePath, list);

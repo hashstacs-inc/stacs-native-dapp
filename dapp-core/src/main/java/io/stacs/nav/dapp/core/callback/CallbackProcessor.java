@@ -8,8 +8,7 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
 import org.springframework.stereotype.Component;
 
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 
 /**
  * @author liuyu
@@ -44,11 +43,16 @@ import java.util.Map;
      * @param po
      */
     public void process(TransactionPO po) {
+
+        //process wildcard call back handler
+        processWildcardCallbackHandler(po);
+
         String key = po.getBdCode() + po.getFunctionName() + po.getVersion();
         if(handlerMap.containsKey(key)){
             handlerMap.get(key).handle(po);
             return;
         }
+
         key = po.getFunctionName() + po.getVersion();
         ITxCallbackHandler handler = handlerMap.get(key);
         if (handler == null) {
@@ -56,5 +60,15 @@ import java.util.Map;
             return;
         }
         handler.handle(po);
+    }
+
+    private void processWildcardCallbackHandler(TransactionPO po){
+
+        for(Map.Entry<String,ITxCallbackHandler> entry : handlerMap.entrySet()){
+          if(entry.getKey().startsWith("*")){
+              log.info("process wildcard call back handler txId:{}",po.getTxId());
+              entry.getValue().handle(po);
+          }
+        }
     }
 }

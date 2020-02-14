@@ -86,9 +86,8 @@ IF NOT EXISTS `policy` (
 	`callback_type` VARCHAR (16) NOT NULL COMMENT 'callback type of slave 1.ALL 2.SELF',
 	`verifyNum` int(8) DEFAULT NULL COMMENT 'verifyNum',
 	`mustDomainIds` VARCHAR(1024) DEFAULT NULL COMMENT 'mustDomainIds',
-	`expression` VARCHAR(64) DEFAULT NULL COMMENT 'expression',
+	`_expression` VARCHAR(64) DEFAULT NULL COMMENT 'expression',
 	`require_auth_ids` VARCHAR(1024) DEFAULT NULL COMMENT 'require_auth_ids',
-	`version` int(8) DEFAULT 0 COMMENT 'the policy version',
 	`create_time` datetime (3) NOT NULL COMMENT 'create time',
 	`update_time` datetime (3) DEFAULT NULL COMMENT 'update time',
 	PRIMARY KEY (`id`),
@@ -123,6 +122,7 @@ IF NOT EXISTS `transaction` (
 	`receipt_data` MEDIUMTEXT DEFAULT NULL COMMENT 'receipt data json',
 	`submitter` varchar (40)  DEFAULT '' COMMENT 'submitter',
 	`submitter_sign` varchar (130)  DEFAULT '' COMMENT 'data signature of submitter',
+	`vote_info` varchar (2048)  DEFAULT NULL COMMENT 'vote info json string',
 	PRIMARY KEY (`id`),
 	UNIQUE KEY `uniq_tx_id` (`tx_id`),
 	INDEX `idx_block_height` (`block_height`)

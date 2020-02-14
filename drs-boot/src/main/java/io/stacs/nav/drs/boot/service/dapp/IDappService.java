@@ -57,4 +57,12 @@ public interface IDappService {
      * @return
      */
     int unInstall(String name);
+
+    /**
+     * query by multiple app-name
+     *
+     * @param names
+     * @return
+     */
+    List<Dapp> queryByNames(List<String> names);
 }

@@ -12,14 +12,13 @@
         <result column="verifyNum" property="verifyNum"/>
         <result column="mustDomainIds" property="mustDomainIds"/>
         <result column="create_time" property="createTime"/>
-        <result column="expression" property="expression"/>
+        <result column="_expression" property="expression"/>
         <result column="require_auth_ids" property="requireAuthIds"/>
-        <result column="version" property="version"/>
         <result column="update_time" property="updateTime"/>
     </resultMap>
     <!-- policy table all fields -->
     <sql id="baseColumnList">
-		policy_id,policy_name,decision_type,vote_pattern,callback_type,domain_ids,verifyNum,mustDomainIds,create_time,expression,require_auth_ids,version,update_time
+		policy_id,policy_name,decision_type,vote_pattern,callback_type,domain_ids,verifyNum,mustDomainIds,create_time,_expression,require_auth_ids,update_time
 	</sql>
     <sql id="baseWhereClause">
         where 1=1
@@ -46,8 +45,8 @@
     </sql>
     <insert id="add" parameterType="object">
 		insert into
-		policy(policy_id,policy_name,decision_type,vote_pattern,callback_type,domain_ids,verifyNum,mustDomainIds,create_time,expression,require_auth_ids,version)
-		values(#{policyId},#{policyName},#{decisionType},#{votePattern},#{callbackType},#{domainIds},#{verifyNum},#{mustDomainIds},now(3),expression,requireAuthIds,version)
+		policy(policy_id,policy_name,decision_type,vote_pattern,callback_type,domain_ids,verifyNum,mustDomainIds,create_time,_expression,require_auth_ids)
+		values(#{policyId},#{policyName},#{decisionType},#{votePattern},#{callbackType},#{domainIds},#{verifyNum},#{mustDomainIds},now(3),expression,requireAuthIds)
 	</insert>
     <delete id="delete" parameterType="object">
 		delete from policy where
@@ -75,11 +74,11 @@
 
     <insert id="batchInsert" parameterType="java.util.List">
         insert into
-        policy(policy_id,policy_name,decision_type,vote_pattern,callback_type,domain_ids,verifyNum,mustDomainIds,create_time,expression,require_auth_ids,version)
+        policy(policy_id,policy_name,decision_type,vote_pattern,callback_type,domain_ids,verifyNum,mustDomainIds,create_time,_expression,require_auth_ids)
         VALUES
         <foreach collection="list" item="item" index="index" separator=",">
             (#{item.policyId}, #{item.policyName},
-            #{item.decisionType},#{item.votePattern},#{item.callbackType},#{item.domainIds},#{item.verifyNum},#{item.mustDomainIds},now(3),#{item.expression},#{item.requireAuthIds},#{item.version})
+            #{item.decisionType},#{item.votePattern},#{item.callbackType},#{item.domainIds},#{item.verifyNum},#{item.mustDomainIds},now(3),#{item.expression},#{item.requireAuthIds})
         </foreach>
     </insert>
 
@@ -87,9 +86,7 @@
     <update id="updateByPolicyId" parameterType="Object">
         update policy
         set policy_name=#{policyName},domain_ids=#{domainIds},decision_type=#{decisionType},vote_pattern=#{votePattern},callback_type=#{callbackType},
-        verifyNum=#{verifyNum},mustDomainIds=#{mustDomainIds},expression=#{expression},require_auth_ids=#{requireAuthIds},update_time=now(3),
-        version=version+1
-        where policy_id=#{policyId}
+        verifyNum=#{verifyNum},mustDomainIds=#{mustDomainIds},_expression=#{expression},require_auth_ids=#{requireAuthIds},update_time=now(3)        where policy_id=#{policyId}
     </update>
 
     <select id="queryAll" resultMap="baseResultMap">

@@ -4,6 +4,7 @@ import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONException;
 import com.alibaba.fastjson.JSONObject;
+import lombok.extern.slf4j.Slf4j;
 
 import java.util.List;
 import java.util.Optional;
@@ -12,6 +13,7 @@ import java.util.Optional;
  * @author dekuofa <br>
  * @date 2019-12-10 <br>
  */
+@Slf4j
 public class JSONHelper {
 
     public static <T> Optional<T> parseJSONObject(String json, Class<T> clazz) {
@@ -27,6 +29,7 @@ public class JSONHelper {
 
             return Optional.of(JSON.toJavaObject(json, clazz));
         } catch (JSONException e) {
+            log.error("toJavaObject has error,json:{}",json,e);
             return Optional.empty();
         }
     }
