@@ -558,7 +558,7 @@ import static io.stacs.nav.drs.service.utils.ResourceLoader.getManifest;
         String urlPath = appProfileVO.getDownloadUrl();
         log.info("[upgrade]urlPath:{}", urlPath);
         String fileName = FilenameUtils.getName(urlPath);
-        fileName = "upgrade-" + appProfileVO.getVersionCode() + "-" + fileName;
+        fileName = "upgrade-" + appProfileVO.getVersionCode() + "-" + System.currentTimeMillis() + "-" +  fileName;
         log.info("[upgrade]the app file name:{}", fileName);
         File destination = new File(drsConfig.getDownloadPath(), fileName);
         //download file
@@ -572,7 +572,7 @@ import static io.stacs.nav.drs.service.utils.ResourceLoader.getManifest;
             throw new DappException(DappError.DAPP_UPGRADE_NAME_NOT_SAME_ERROR);
         }
         //dapp config name
-        String dappConfigFileName = "upgrade-" + appProfileVO.getVersionCode() + "-" + DAPP_CONFIG_FILE_NAME;
+        String dappConfigFileName = "upgrade-" + appProfileVO.getVersionCode() + "-" + System.currentTimeMillis() + "-" + DAPP_CONFIG_FILE_NAME;
         //generator config file from Jar file
         genAppConfig(bizFile, upgradeApp.getName(), dappConfigFileName);
         //stop current dapp
