@@ -560,9 +560,9 @@ import static io.stacs.nav.drs.service.utils.ResourceLoader.getManifest;
         AppProfileVO appProfileVO = dappStoreService.queryAppByName(appName);
         //compare version code
         if (originalDapp.getVersionCode() >= appProfileVO.getVersionCode()) {
-            log.warn("[upgrade] No upgrade required,drs.version:{},appstore.version:{},appName:{}",
+            log.warn("[upgrade]Dapp Not need upgrade,drs.version:{},appstore.version:{},appName:{}",
                 originalDapp.getVersionCode(), appProfileVO.getVersionCode(), appName);
-            throw new DappException(DappError.DAPP_NO_UPGRADE_REQUIRED);
+            throw new DappException(DappError.DAPP_NOT_NEED_UPGRADE);
         }
         String urlPath = appProfileVO.getDownloadUrl();
         log.info("[upgrade]urlPath:{}", urlPath);
@@ -608,7 +608,8 @@ import static io.stacs.nav.drs.service.utils.ResourceLoader.getManifest;
             upgradeService.cancelUpgrade(appName);
         }
         if (!isInstalled) {
-            //install the original dapp
+            //recover the original dapp
+            log.info("[upgrade]start recover original-dapp:{}",originalDapp);
             install(appName);
             log.info("[upgrade]recovered original-dapp");
             if (dappException != null) {
