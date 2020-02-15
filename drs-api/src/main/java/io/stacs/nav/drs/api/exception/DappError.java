@@ -29,7 +29,7 @@ import lombok.Getter;
     DAPP_VERSION_UNEQUAL("21","00","10", "Dapp is unequal"),
     DAPP_ALREADY_INSTALLING("21","00","11", "Dapp is already installing"),
     DAPP_NOT_RUNNING("21","00","12", "Dapp is not Running"),
-    DAPP_NO_UPGRADE_REQUIRED("21","00","13", "Dapp No upgrade required"),
+    DAPP_NOT_NEED_UPGRADE("21","00","13", "Dapp not need upgrade"),
     DAPP_UPGRADE_NAME_NOT_SAME_ERROR("21","00","14", "Dapp upgrade name not same error"),
     DAPP_UPGRADE_DATABASE_ERROR("21","00","15", "Dapp upgrade database error"),
 
