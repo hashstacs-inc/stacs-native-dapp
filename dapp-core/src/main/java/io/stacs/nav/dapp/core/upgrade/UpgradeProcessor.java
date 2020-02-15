@@ -6,7 +6,6 @@ import io.stacs.nav.drs.api.model.UpgradeVersion;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.core.io.ResourceLoader;
 import org.springframework.stereotype.Component;
 
 import java.io.IOException;
@@ -18,7 +17,6 @@ import java.io.IOException;
  */
 @Component @Slf4j public class UpgradeProcessor {
     @Value("${spring.application.name}") private String appName;
-    @Autowired ResourceLoader resourceLoader;
     @ArkInject IUpgradeService upgradeService;
     @Autowired IDappUpgradeHanlder dappUpgradeHanlder;
     @Autowired UpgradeDDLHandler upgradeDDLHandler;
