@@ -1,8 +1,15 @@
 package io.stacs.nav.drs.service.service;
 
+import com.alipay.sofa.ark.container.registry.PluginServiceProvider;
+import com.alipay.sofa.ark.spi.model.Plugin;
+import com.alipay.sofa.ark.spi.service.ArkInject;
+import com.alipay.sofa.ark.spi.service.plugin.PluginManagerService;
+import com.alipay.sofa.ark.spi.service.registry.RegistryService;
 import io.stacs.nav.drs.api.IUpgradeService;
 import io.stacs.nav.drs.api.model.UpgradeVersion;
+import io.stacs.nav.drs.service.constant.Constants;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.InitializingBean;
 import org.springframework.stereotype.Service;
 
 import java.util.Map;
@@ -13,8 +20,18 @@ import java.util.concurrent.ConcurrentHashMap;
  * @description
  * @date 2020-02-14
  */
-@Service @Slf4j public class UpgradeService implements IUpgradeService {
+@Service @Slf4j public class UpgradeService implements IUpgradeService, InitializingBean {
+    @ArkInject PluginManagerService pluginManagerService;
+    @ArkInject RegistryService registryService;
 
+    @Override public void afterPropertiesSet() throws Exception {
+        Plugin plugin = pluginManagerService.getPluginByName(Constants.SERVICE_NAME);
+        if (plugin == null) {
+            log.warn("init plugin is fail,get plugin is null,name:{}", Constants.SERVICE_NAME);
+            return;
+        }
+        registryService.publishService(IUpgradeService.class, this, new PluginServiceProvider(plugin));
+    }
     /**
      * hold is need upgrade message
      */
