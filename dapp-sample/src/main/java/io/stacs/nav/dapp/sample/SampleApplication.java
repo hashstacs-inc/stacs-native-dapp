@@ -7,9 +7,10 @@ import org.springframework.context.annotation.EnableAspectJAutoProxy;
 
 import java.util.Arrays;
 
-
-@SpringBootApplication(scanBasePackages = "io.stacs.nav.dapp")  @Slf4j @EnableAspectJAutoProxy public class SampleApplication {
-
+@SpringBootApplication(scanBasePackages = "io.stacs.nav.dapp")
+@Slf4j
+@EnableAspectJAutoProxy
+public class SampleApplication {
     public static void main(String[] args) {
         log.info("starting dapp with args:{}", Arrays.toString(args));
         SpringApplication.run(SampleApplication.class, args);

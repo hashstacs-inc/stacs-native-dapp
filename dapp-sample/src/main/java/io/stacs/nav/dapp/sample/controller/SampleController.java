@@ -35,7 +35,6 @@ import org.springframework.web.bind.annotation.RestController;
     @Value("${spring.application.name}") private String appName;
     @Value("${server.port}") private int port;
     @Autowired private SampleService sampleService;
-
     /**
      * api test
      *
@@ -44,6 +43,17 @@ import org.springframework.web.bind.annotation.RestController;
     @GetMapping("/authPermission") public RespData<?> service() {
         log.info("appName:{}, port:{}", appName, port);
         return sampleService.authPermission(new AuthPermissionVO());
+
+    }
+
+    /**
+     * jdbc test
+     *
+     * @return
+     */
+    @GetMapping("/jdbcTest") public RespData<?> tx() {
+        sampleService.testJdbc();
+        return RespData.success();
 
     }
 
