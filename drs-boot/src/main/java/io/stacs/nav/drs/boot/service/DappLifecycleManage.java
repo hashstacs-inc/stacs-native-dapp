@@ -11,6 +11,7 @@ import com.google.common.collect.Lists;
 import com.google.common.io.Files;
 import io.stacs.nav.drs.api.exception.DappError;
 import io.stacs.nav.drs.api.exception.DappException;
+import io.stacs.nav.drs.api.model.UpgradeVersion;
 import io.stacs.nav.drs.boot.bo.Dapp;
 import io.stacs.nav.drs.boot.config.BaseConfig;
 import io.stacs.nav.drs.boot.dao.AppUpgradeHistoryDao;
@@ -20,6 +21,7 @@ import io.stacs.nav.drs.boot.service.dapp.IDappService;
 import io.stacs.nav.drs.boot.service.dappstore.DappStoreService;
 import io.stacs.nav.drs.boot.vo.AppProfileVO;
 import io.stacs.nav.drs.service.config.DrsConfig;
+import io.stacs.nav.drs.service.service.UpgradeService;
 import io.stacs.nav.drs.service.utils.BeanConvertor;
 import io.stacs.nav.drs.service.utils.config.ConfigListener;
 import lombok.extern.slf4j.Slf4j;
@@ -77,7 +79,8 @@ import static io.stacs.nav.drs.service.utils.ResourceLoader.getManifest;
 
     @Autowired IDappService dappService;
     @Autowired DappStoreService dappStoreService;
-    @Autowired private TransactionTemplate txRequired;
+    @Autowired TransactionTemplate txRequired;
+    @Autowired UpgradeService upgradeService;
 
     @Override public void onApplicationEvent(ApplicationReadyEvent applicationReadyEvent) {
         init();
@@ -124,7 +127,7 @@ import static io.stacs.nav.drs.service.utils.ResourceLoader.getManifest;
         app.setFileName(fileName);
         //query dapp from appstore
         AppProfileVO appProfileVO = dappStoreService.queryAppByName(app.getName());
-        if(appProfileVO!=null){
+        if (appProfileVO != null) {
             //set versionCode of appStore
             app.setVersionCode(appProfileVO.getVersionCode());
         }
@@ -564,7 +567,7 @@ import static io.stacs.nav.drs.service.utils.ResourceLoader.getManifest;
         String urlPath = appProfileVO.getDownloadUrl();
         log.info("[upgrade]urlPath:{}", urlPath);
         String fileName = FilenameUtils.getName(urlPath);
-        fileName = "upgrade-" + appProfileVO.getVersionCode() + "-" + System.currentTimeMillis() + "-" +  fileName;
+        fileName = "upgrade-" + appProfileVO.getVersionCode() + "-" + System.currentTimeMillis() + "-" + fileName;
         log.info("[upgrade]the app file name:{}", fileName);
         File destination = new File(drsConfig.getDownloadPath(), fileName);
         //download file
@@ -578,7 +581,8 @@ import static io.stacs.nav.drs.service.utils.ResourceLoader.getManifest;
             throw new DappException(DappError.DAPP_UPGRADE_NAME_NOT_SAME_ERROR);
         }
         //dapp config name
-        String dappConfigFileName = "upgrade-" + appProfileVO.getVersionCode() + "-" + System.currentTimeMillis() + "-" + DAPP_CONFIG_FILE_NAME;
+        String dappConfigFileName =
+            "upgrade-" + appProfileVO.getVersionCode() + "-" + System.currentTimeMillis() + "-" + DAPP_CONFIG_FILE_NAME;
         //generator config file from Jar file
         genAppConfig(bizFile, upgradeApp.getName(), dappConfigFileName);
         //stop current dapp
@@ -589,6 +593,8 @@ import static io.stacs.nav.drs.service.utils.ResourceLoader.getManifest;
         boolean isInstalled = false;
         DappException dappException = null;
         try {
+            upgradeService.needUpgrade(appName, UpgradeVersion
+                .of(originalDapp.getVersionCode(), appProfileVO.getVersionCode(), upgradeApp.getVersion()));
             //install new dapp
             install(upgradeApp, dappConfigFileName);
             isInstalled = true;
@@ -598,6 +604,8 @@ import static io.stacs.nav.drs.service.utils.ResourceLoader.getManifest;
             dappException = e;
         } catch (Throwable e) {
             log.warn("[upgrade]install new dapp has error", e);
+        } finally {
+            upgradeService.cancelUpgrade(appName);
         }
         if (!isInstalled) {
             //install the original dapp
