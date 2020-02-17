@@ -150,7 +150,8 @@
     "author":"test",
     "remark":"this is a test app",
     "downloadUrl":"http://www.appstore.cn",
-    "status":"STOPPED"
+    "status":"STOPPED",
+    "hasUpgrade"：false
   },
   {
 
@@ -160,7 +161,8 @@
     "author":"test",
     "remark":"this is a test app",
     "downloadUrl":"http://www.appstore.cn",
-    "status":"DOWNLOAD"
+    "status":"DOWNLOAD",
+    "hasUpgrade"：true
   }
 ]
 ```
@@ -192,7 +194,8 @@
     "author":"test",
     "remark":"this is a test app",
     "downloadUrl":"",
-    "status":""
+    "status":"",
+    "hasUpgrade"：true
   },
   {
 
@@ -202,10 +205,69 @@
     "author":"test",
     "remark":"this is a test app",
     "downloadUrl":"",
-    "status":"DOWNLOAD"
+    "status":"DOWNLOAD",
+    "hasUpgrade"：false
   }
 ]
 ```
+
+#### Dapp 启动
+##### 接口地址：/dapp/start/{appName}
+请求方式：GET
+##### 参数列表
+|     属性     | 类型     | 最大长度 | 必填 | 说明                                              |
+| :----------: | -------- | -------- | ---- | ------------------------------------------------- |
+| appName        | `String`        | 64       | Y    | Dapp name
+
+##### 返回值：
+
+| 属性            | 类型            | 最大长度 | 必填 | 说明                           |
+| -------------  | -------------   | -------- | ---- | -------------------------------- |
+| code           | `int`           | 6        | Y    | 返回码 '000000'表示成功
+| msg            | `String`        | 64       | Y    | 消息信息
+| data           | `Object`        |          | N    | 返回数据
+
+###### 返回参数样例:
+无
+
+#### Dapp 停止
+##### 接口地址：/dapp/stop/{appName}
+请求方式：GET
+##### 参数列表
+|     属性     | 类型     | 最大长度 | 必填 | 说明                                              |
+| :----------: | -------- | -------- | ---- | ------------------------------------------------- |
+| appName        | `String`        | 64       | Y    | Dapp name
+
+##### 返回值：
+
+| 属性            | 类型            | 最大长度 | 必填 | 说明                           |
+| -------------  | -------------   | -------- | ---- | -------------------------------- |
+| code           | `int`           | 6        | Y    | 返回码 '000000'表示成功
+| msg            | `String`        | 64       | Y    | 消息信息
+| data           | `Object`        |          | N    | 返回数据
+
+###### 返回参数样例:
+无
+
+#### Dapp 升级
+##### 接口地址：/dapp/upgrade/{appName}
+请求方式：GET
+##### 参数列表
+|     属性     | 类型     | 最大长度 | 必填 | 说明                                              |
+| :----------: | -------- | -------- | ---- | ------------------------------------------------- |
+| appName        | `String`        | 64       | Y    | Dapp name
+
+##### 返回值：
+
+| 属性            | 类型            | 最大长度 | 必填 | 说明                           |
+| -------------  | -------------   | -------- | ---- | -------------------------------- |
+| code           | `int`           | 6        | Y    | 返回码 '000000'表示成功
+| msg            | `String`        | 64       | Y    | 消息信息
+| data           | `Object`        |          | N    | 返回数据
+
+###### 返回参数样例:
+无
+
 
 #### Policy 信息查询
 ##### 接口地址：/drs/queryAllPolicy
