@@ -207,6 +207,63 @@ Request Method：GET
 ]
 ```
 
+#### Dapp Start
+##### API：/dapp/start/{appName}
+Request Method：GET
+##### Parameter list
+|     Attribute     | Type     | The maximum length | Required | Instructions
+| :----------: | -------- | -------- | ---- | ------------------------------------------------- |
+| appName        | `String`        | 64       | Y    | Dapp name
+
+##### 返回值：
+
+|     Attribute     | Type     | The maximum length | Required | Instructions
+| -------------  | -------------   | -------- | ---- | -------------------------------- |
+| code           | `int`           | 6        | Y    | The return code '000000' indicates success
+| msg            | `String`        | 64       | Y    | Message information
+| data           | `Object`        |          | N    | Return the data，List<AppProfileVO>
+
+###### Sample return parameters:
+NO DATA
+
+#### Dapp Stop
+##### API：/dapp/stop/{appName}
+Request Method：GET
+##### Parameter list
+|     Attribute     | Type     | The maximum length | Required | Instructions
+| :----------: | -------- | -------- | ---- | ------------------------------------------------- |
+| appName        | `String`        | 64       | Y    | Dapp name
+
+##### The return value：
+
+|     Attribute     | Type     | The maximum length | Required | Instructions
+| -------------  | -------------   | -------- | ---- | -------------------------------- |
+| code           | `int`           | 6        | Y    | The return code '000000' indicates success
+| msg            | `String`        | 64       | Y    | Message information
+| data           | `Object`        |          | N    | Return the data，List<AppProfileVO>
+
+###### Sample return parameters:
+NO DATA
+
+#### Dapp upgrade
+##### API：/dapp/upgrade/{appName}
+Request Method：GET
+##### Parameter list
+|     Attribute     | Type     | The maximum length | Required | Instructions
+| :----------: | -------- | -------- | ---- | ------------------------------------------------- |
+| appName        | `String`        | 64       | Y    | Dapp name
+
+##### The return value：
+
+|     Attribute     | Type     | The maximum length | Required | Instructions
+| -------------  | -------------   | -------- | ---- | -------------------------------- |
+| code           | `int`           | 6        | Y    | The return code '000000' indicates success
+| msg            | `String`        | 64       | Y    | Message information
+| data           | `Object`        |          | N    | Return the data，List<AppProfileVO>
+
+###### Sample return parameters:
+NO DATA
+
 #### Policy information query
 ##### API：/drs/queryAllPolicy
 Request Method：GET
