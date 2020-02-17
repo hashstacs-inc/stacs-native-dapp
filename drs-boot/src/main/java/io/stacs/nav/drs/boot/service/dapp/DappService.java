@@ -88,7 +88,7 @@ import java.util.List;
             return null;
         }
         List<Dapp> dappList = Lists.newArrayList();
-        appInfoPOList.parallelStream().forEach(v->{
+        appInfoPOList.stream().forEach(v->{
             Dapp dapp = new Dapp();
             BeanUtils.copyProperties(v, dapp);
             dapp.setStatus(DappStatus.fromCode(v.getStatus()));

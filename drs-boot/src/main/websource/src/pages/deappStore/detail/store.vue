@@ -51,12 +51,16 @@ export default {
       searchApp: '',
       configVisible: false,
       currentItem: {},
-      loading: false
+      loading: false,
+      installingTimer: null
     }
   },
   created () {
     this.getAppLists();
     this.$store.commit('changeStoreMenu', this.$route.meta.menu);
+  },
+  beforeDestroy () {
+    clearInterval(this.installingTimer);
   },
   methods: {
     searchList () {
@@ -84,6 +88,9 @@ export default {
           break;
         case 'RUNNING':
           return 'Open';
+          break;
+        case 'INSTALLING':
+          return 'Installing';
           break;
         case 'STOPPED':
           return 'Install';
@@ -166,6 +173,7 @@ export default {
     // install app
     async installApp (v) {
       this.$set(v, 'loading', true);
+      this.$set(v, 'status', 'INSTALLING');
       let params = {
         name: v.name,
         slient: true,
@@ -176,23 +184,29 @@ export default {
       this.$set(v, 'loading', false);
       if (data.code === '000000') {
         this.$set(v, 'status', 'RUNNING');
+      } else if (data.code === '210011') {
+        window.location.reload();
       } else {
         this.$set(v, 'errorText', data.msg);
       }
     },
     async handleClick (v) {
       this.$set(v, 'errorText', null);
-      if (!v.status) {
+      if (v.status === 'INSTALLING') {
+        this.getAppLists()
+        return
+      }
+      if (!v.status && !v.loading) {
         // Status not downloaded
         this.downloadApp(v);
-      } else if (v.status === 'DOWNLOADED') {
+      } else if (v.status === 'DOWNLOADED' && !v.loading) {
         // Downloaded status
         this.configVisible = true;
         this.currentItem = v;
-      } else if (v.status === 'INITIALIZED' || v.status === 'STOPPED') {
+      } else if (v.status === 'INITIALIZED' && !v.loading || v.status === 'STOPPED' && !v.loading) {
         // Configured, initialized
         this.installApp(v);
-      } else if (v.status === 'RUNNING') {
+      } else if (v.status === 'RUNNING' && !v.loading) {
         window.open(window.location.origin + '/' + v.name);
       }
     },
@@ -206,8 +220,35 @@ export default {
         });
         this.appList = JSON.parse(JSON.stringify(data.data));
         this.copyAppList = JSON.parse(JSON.stringify(data.data));
+        let filterStatus = this.appList.filter(v => v.status === 'INSTALLING');
+        filterStatus.forEach(v => {
+          v['loading'] = true;
+        });
+        clearInterval(this.installingTimer)
+        this.installingTimer = setInterval(async () => {
+          let filterStatus = this.appList.filter(v => v.status === 'INSTALLING');
+          filterStatus.forEach(v => {
+            v['loading'] = true;
+          });
+          if (filterStatus.length > 0) {
+            let res = await getAppList({ slient: true });
+            filterStatus.forEach(v => {
+              let cloneItem = res.data.filter(val => val.name === v.name);
+              filterStatus.forEach(val => {
+                if (val.name === cloneItem[0].name) {
+                  Object.assign(val, cloneItem[0])
+                  if (val.status === 'RUNNING') {
+                    val.loading = false;
+                  }
+                }
+              });
+            });
+          } else {
+            clearInterval(this.installingTimer);
+          }
+        }, 4000);
+        this.loading = false;
       }
-      this.loading = false;
     }
   }
 }
