@@ -7,6 +7,7 @@ import com.alipay.sofa.ark.loader.JarBizArchive;
 import com.alipay.sofa.ark.loader.archive.JarFileArchive;
 import com.alipay.sofa.ark.loader.jar.JarEntry;
 import com.alipay.sofa.ark.loader.jar.JarFile;
+import com.alipay.sofa.ark.spi.model.BizInfo;
 import com.google.common.collect.Lists;
 import com.google.common.io.Files;
 import io.stacs.nav.drs.api.exception.DappError;
@@ -397,10 +398,15 @@ import static io.stacs.nav.drs.service.utils.ResourceLoader.getManifest;
         }
         String runError = null;
         try {
-            ClientResponse response = ArkClient.uninstallBiz(dapp.getName(), dapp.getVersion());
-            if (ResponseCode.SUCCESS.equals(response.getCode())) {
-            } else {
-                runError = response.getMessage();
+            //check dapp is installed
+            ClientResponse hasRes = ArkClient.checkBiz(dapp.getName(), dapp.getVersion());
+            Set<BizInfo> bizInfoSet = hasRes.getBizInfos();
+            if(!CollectionUtils.isEmpty(bizInfoSet)) {
+                ClientResponse response = ArkClient.uninstallBiz(dapp.getName(), dapp.getVersion());
+                if (ResponseCode.SUCCESS.equals(response.getCode())) {
+                } else {
+                    runError = response.getMessage();
+                }
             }
         } catch (Throwable e) {
             log.error("dapp uninstall is failed", e);
