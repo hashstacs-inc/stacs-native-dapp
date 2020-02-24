@@ -25,7 +25,11 @@ public enum DappStatus {
     /**
      * stopped
      */
-    STOPPED;
+    STOPPED,
+    /**
+     * install Error
+     */
+    INSTALLERROR;
 
     /**
      *  from status code

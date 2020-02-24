@@ -92,7 +92,7 @@ import java.util.stream.Collectors;
     @GetMapping("/install/{appName}") public RespData install(@PathVariable String appName) {
         log.info("start install dapp by appName:{}", appName);
         try {
-            return RespData.success(dappLifecycleManage.install(appName));
+            return RespData.success(dappLifecycleManage.install(appName,false));
         } catch (DappException e) {
             log.error("[install]has dapp error", e);
             return RespData.fail(e.getCode(), e.getMsg());

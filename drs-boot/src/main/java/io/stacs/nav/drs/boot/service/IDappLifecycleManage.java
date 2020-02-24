@@ -33,9 +33,10 @@ public interface IDappLifecycleManage {
      * install
      *
      * @param fileName
+     * @param isStart
      * @return
      */
-    boolean install(String fileName);
+    boolean install(String fileName,boolean isStart);
 
     /**
      * uninstall
