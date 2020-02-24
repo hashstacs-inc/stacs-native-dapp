@@ -10,6 +10,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
@@ -19,7 +20,6 @@ import org.springframework.stereotype.Service;
  *
  * @author liuyu
  */
-@Lazy(value = false)
 @Service @Slf4j public class BlockCallbackProcessSchedule implements InitializingBean {
     @Autowired BlockCallbackDao txCallbackDao;
     @Autowired BlockCallbackService blockCallbackService;
