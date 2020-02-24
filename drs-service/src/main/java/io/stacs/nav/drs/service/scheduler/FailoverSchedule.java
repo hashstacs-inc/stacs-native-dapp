@@ -50,12 +50,15 @@ import static io.stacs.nav.drs.service.model.ConvertHelper.*;
             final AtomicBoolean remain = new AtomicBoolean(true);
             while (remain.get()) {
                 long nextHeight = runtimeData.getNextHeight();
+                log.info("nextHeight:{}",nextHeight);
                 long chainMaxHeight = blockChainService.queryCurrentHeight();
                 log.info("chainMaxHeight:{}",chainMaxHeight);
                 Long optCallbackHeight = txCallbackDao.initCallbackMinHeight();
+                log.info("optCallbackHeight:{}",optCallbackHeight);
                 Optional<Pair<Long, Long>>  synchronize = HeightChecker.of(nextHeight, chainMaxHeight,optCallbackHeight).countMissBlocksInterval();
 
                 synchronize.ifPresent(interval -> {
+                    log.info("left:{},right:{}",interval.getLeft(),interval.getRight());
                     Long endHeight = interval.right();
                     if (interval.getRight() - interval.getLeft() > MAX_SYNCHRONIZED_BLOCK_HEIGHT) {
                         endHeight = interval.getLeft() + MAX_SYNCHRONIZED_BLOCK_HEIGHT;
