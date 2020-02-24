@@ -7,7 +7,7 @@ export const downloadApp = async config => {
 }
 
 // Initialization deapp
-export const startDeapp = async config => {
+export const initDeapp = async config => {
   const { data } = await requestObj.request(Object.assign({ method: 'GET', url: '/dapp/init/' + config.name }, { data: config }));
   return data;
 }
@@ -15,6 +15,24 @@ export const startDeapp = async config => {
 // install deapp
 export const installDeapp = async config => {
   const { data } = await requestObj.request(Object.assign({ method: 'GET', url: '/dapp/install/' + config.name }, { data: config }));
+  return data;
+}
+
+// start deapp
+export const startDeapp = async config => {
+  const { data } = await requestObj.request(Object.assign({ method: 'GET', url: '/dapp/start/' + config.name }, { data: config }));
+  return data;
+}
+
+// stop deapp
+export const stopDeapp = async config => {
+  const { data } = await requestObj.request(Object.assign({ method: 'GET', url: '/dapp/stop/' + config.name }, { data: config }));
+  return data;
+}
+
+// update deapp
+export const upgradeDeapp = async config => {
+  const { data } = await requestObj.request(Object.assign({ method: 'GET', url: '/dapp/upgrade/' + config.name }, { data: config }));
   return data;
 }
 

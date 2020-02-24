@@ -16,9 +16,15 @@
         <p class="operation" @click="handleClick(v)" v-loading="v.loading">
           <span class="text">{{returnStaus(v.status)}}</span>
         </p>
-        <el-tooltip effect="dark" :content="v.errorText" placement="top-start" v-if="v.errorText" popper-class="store-deapp-tips" :hide-after="0">
-          <p class="error">Failed&nbsp;!</p>
-        </el-tooltip>
+        <p class="error">
+          <el-popover
+            placement="top-start"
+            trigger="hover"
+            v-if="v.errorText"
+            :content="v.errorText">
+            <span slot="reference">Failed !</span>
+          </el-popover>
+        </p>
       </li>
     </ul>
     <div v-else class="no-data">
@@ -39,7 +45,7 @@
 </template>
 <script>
 import { getAppList, downloadApp, installDeapp, 
-  startDeapp, postDeappConfig, getDeappConfig } from '@/api/storeApi';
+  initDeapp, postDeappConfig, getDeappConfig } from '@/api/storeApi';
 import { notify } from '@/common/util';
 
 export default {
@@ -93,6 +99,9 @@ export default {
           return 'Installing';
           break;
         case 'STOPPED':
+          return 'Start';
+          break;
+        case 'INSTALLERROR':
           return 'Install';
           break;
         case null:
@@ -128,7 +137,7 @@ export default {
             name: this.currentItem.name,
             slient: true
           }
-          let startData = await startDeapp(startParams);
+          let startData = await initDeapp(startParams);
           if (startData.code === '000000') {
             this.$set(this.currentItem, 'status', 'INITIALIZED');
             this.$alert('Configuration success.', 'System', {
@@ -188,6 +197,7 @@ export default {
         window.location.reload();
       } else {
         this.$set(v, 'errorText', data.msg);
+        this.$set(v, 'status', 'INITIALIZED');
       }
     },
     async handleClick (v) {
@@ -203,7 +213,7 @@ export default {
         // Downloaded status
         this.configVisible = true;
         this.currentItem = v;
-      } else if (v.status === 'INITIALIZED' && !v.loading || v.status === 'STOPPED' && !v.loading) {
+      } else if (v.status === 'INITIALIZED' && !v.loading || v.status === 'INSTALLERROR' && !v.loading) {
         // Configured, initialized
         this.installApp(v);
       } else if (v.status === 'RUNNING' && !v.loading) {
