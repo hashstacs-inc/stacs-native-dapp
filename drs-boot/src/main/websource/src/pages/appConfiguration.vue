@@ -14,7 +14,7 @@
   </div>
 </template>
 <script>
-import { getDeappConfig, postDeappConfig, startDeapp } from '@/api/storeApi';
+import { getDeappConfig, postDeappConfig, initDeapp } from '@/api/storeApi';
 import { notify } from '@/common/util';
 
 export default {
@@ -76,7 +76,7 @@ export default {
           slient: true,
           notify: notify.error
         }
-        let startData = await startDeapp(startParams);
+        let startData = await initDeapp(startParams);
         if (startData.code === '000000') {
           this.$alert('Configuration success.', 'System', {
             confirmButtonText: 'YES',

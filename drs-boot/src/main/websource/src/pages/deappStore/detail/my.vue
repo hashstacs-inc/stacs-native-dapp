@@ -14,13 +14,35 @@
           <p class="title">{{v.showName}}</p>
           <p class="detail">{{v.remark}}</p>
         </div>
+        <div class="updata" v-if="v.hasUpgrade" :class="{'disabled': v.status === 'STOPPED'}">
+          <p class="text" v-loading="v.updating" @click="updateApp(v)">{{v.updating ? 'Updating' : 'Update'}}</p>
+          <p class="error">
+            <el-popover
+              placement="top-start"
+              trigger="hover"
+              v-if="v.updateErr"
+              :content="v.updateErr">
+              <p slot="reference">Failed !</p>
+            </el-popover>
+          </p>
+        </div>
         <div class="operation">
-          <p class="text" @click="operationClick(v)" v-loading="v.loading">{{returnStatus(v.status)}}</p>
-          <el-tooltip effect="dark" :content="v.errorText" placement="top-start" 
-            popper-class="my-deapp-tips" :hide-after="0" v-if="v.errorText">
-            <p class="error">Failed !</p>
-          </el-tooltip>
-          <p class="uninstall" @click="unInstall(v)" v-if="v.status === 'RUNNING'">Uninstall</p>
+          <p class="text" @click="operationClick(v)" v-loading="v.loading" :class="{'disabled': v.status === 'STOPPED' || v.stoping}">{{returnStatus(v.status)}}</p>
+          <p class="text stop" v-if="v.status === 'RUNNING'" @click="currentItem = v;tipsVisible = true;isStart = false" v-loading="v.stoping">
+            <span>Stop</span>
+          </p>
+          <p class="text start" v-if="v.status === 'STOPPED'" @click="currentItem = v;tipsVisible = true;isStart = true" v-loading="v.starting">
+            <span>{{v.starting ? 'Starting' : 'Start'}}</span>
+          </p>
+          <el-popover
+            placement="top-start"
+            trigger="hover"
+            v-if="v.errorText"
+            :content="v.errorText">
+            <p class="error" slot="reference">Failed !</p>
+          </el-popover>
+          <p class="uninstall" @click="unInstall(v)" :class="{'disabled': v.status === 'STOPPED'}"
+            v-if="v.status === 'RUNNING' || v.status === 'STOPPED'">Uninstall</p>
         </div>
       </div>
     </template>
@@ -52,11 +74,29 @@
         <el-button @click="uninstallConfirm">Uninstall</el-button>
       </p>
     </el-dialog>
+    <el-dialog
+      title="System"
+      :visible.sync="tipsVisible"
+      width="520px">
+      <template v-if="isStart">
+        <p>DApp Services will resume back to normal.</p>
+        <p>To proceed, please confirmed.</p>
+      </template>
+      <template v-else>
+        <p>Please note that this action will suspend all Dapp Services.</p>
+        <p>To proceed, please confirmed.</p>
+      </template>
+      <p slot="footer" class="dialog-footer">
+        <el-button type="primary" @click="tipsVisible = false">Back</el-button>
+        <el-button @click="startApp" v-if="isStart">Continue</el-button>
+        <el-button @click="stopApp" v-else>Continue</el-button>
+      </p>
+    </el-dialog>
   </div>
 </template>
 <script>
-import { getMyAppList, getDeappConfig, postDeappConfig, 
-  startDeapp, installDeapp, uninstallApp } from '@/api/storeApi';
+import { getMyAppList, getDeappConfig, postDeappConfig, upgradeDeapp,
+  initDeapp, installDeapp, uninstallApp, startDeapp, stopDeapp } from '@/api/storeApi';
 import { notify } from '@/common/util';
 
 export default {
@@ -67,6 +107,8 @@ export default {
       copyAppList: [],
       configVisible: false,
       uninstallVisible: false,
+      tipsVisible: false,
+      isStart: false,
       currentItem: {},
       currentUninstall: {},
       myAppInp: '',
@@ -75,6 +117,52 @@ export default {
     }
   },
   methods: {
+    async updateApp (v) {
+      if (v.status === 'STOPPED') return;
+      v.updating = true;
+      let data = await upgradeDeapp({
+        name: v.name,
+        slient: true,
+        notify: notify.any,
+        timeout: 0
+      });
+      if (data.code === '000000') {
+        this.getList();
+      } else {
+        v.updateErr = data.msg;
+        v.updating = false;
+      }
+    },
+    async stopApp () {
+      this.tipsVisible = false;
+      this.currentItem.stoping = true;
+      let data = await stopDeapp({
+        name: this.currentItem.name,
+        slient: true,
+        notify: notify.any,
+        timeout: 0
+      });
+      if (data.code === '000000') {
+        this.getList();
+      } else {
+        this.currentItem.errorText = data.msg;
+      }
+    },
+    async startApp () {
+      this.tipsVisible = false;
+      this.currentItem.starting = true;
+      let data = await startDeapp({
+        name: this.currentItem.name,
+        notify: notify.any,
+        slient: true,
+        timeout: 0
+      });
+      if (data.code === '000000') {
+        this.getList();
+      } else {
+        this.currentItem.errorText = data.msg;
+      }
+    },
     searchList () {
       if (!this.myAppInp) {
         this.appList = this.copyAppList;
@@ -93,6 +181,13 @@ export default {
       this.loading = true;
       let data = await getMyAppList({ slient: true });
       if (data.code === '000000' && data.data) {
+        data.data.forEach(v => {
+          v['stoping'] = false;
+          v['starting'] = false;
+          v['updating'] = false;
+          v['updateErr'] = '';
+          v['errorText'] = '';
+        });
         this.appList = JSON.parse(JSON.stringify(data.data));
         this.copyAppList = JSON.parse(JSON.stringify(data.data));
         let filterStatus = this.appList.filter(v => v.status === 'INSTALLING');
@@ -146,6 +241,9 @@ export default {
           return 'Open';
           break;
         case 'STOPPED':
+          return 'Open';
+          break;
+        case 'INSTALLERROR':
           return 'Install';
           break;
       }
@@ -177,6 +275,7 @@ export default {
       this.loading = false;
     },
     unInstall (v) {
+      if (v.status === 'STOPPED') return;
       this.currentUninstall = v;
       this.uninstallVisible = true;
     },
@@ -209,7 +308,7 @@ export default {
             name: this.currentItem.name,
             slient: true
           }
-          let startData = await startDeapp(startParams);
+          let startData = await initDeapp(startParams);
           if (startData.code === '000000') {
             this.$set(this.currentItem, 'status', 'INITIALIZED');
           } else {
@@ -246,14 +345,16 @@ export default {
         window.location.reload();
       } else {
         this.$set(v, 'errorText', data.msg);
+        this.$set(v, 'status', 'INITIALIZED');
       }
     },
     operationClick (v) {
+      if (v.status === 'STOPPED') return;
       this.currentItem = v;
       this.$set(v, 'errorText', null);
       if (this.currentItem.status === 'DOWNLOADED') {
         this.configVisible = true;
-      } else if (this.currentItem.status === 'INITIALIZED' || this.currentItem.status === 'STOPPED') {
+      } else if (this.currentItem.status === 'INITIALIZED' || this.currentItem.status === 'INSTALLERROR') {
         // Configured, initialized
         this.installApp(v);
       } else if (v.status === 'RUNNING') {
@@ -315,9 +416,10 @@ export default {
     }
   }
   .my-list {
-    height: 75px;
+    height: 85px;
     width: 100%;
     margin-top: 48px;
+    position: relative;
     .logo {
       width: 75px;
       height: 75px;
@@ -343,7 +445,7 @@ export default {
         color: #666666;
         font-size: 12px;
         margin-top: 5px;
-        width: 400px;
+        width: 450px;
         overflow: hidden;
         text-overflow: ellipsis;
         white-space: nowrap;
@@ -369,24 +471,76 @@ export default {
       .text {
         padding: 0 5px;
         min-width: 85px;
-        height: 25px;
+        height: 22px;
         font-size: 12px;
         background-color: #053C8C;
         border-radius:2px;
         color: #fff;
-        line-height: 25px;
+        line-height: 21px;
         cursor: pointer;
         text-align: center;
+      }
+      .stop {
+        background-color: #D8E8FF;
+        color: #063C8C;
+      }
+      .start {
+        background-color: #EAFFE5;
+        color: #65B03F;
       }
       .error {
         color: #F17070;
         font-size: 12px;
         cursor: default;
       }
+      .disabled {
+        background-color: #D3D3D3;
+        color: #fff;
+        cursor: no-drop;
+      }
       .uninstall {
         color: #999999;
         font-size: 12px;
         cursor: pointer;
+        &.disabled {
+          cursor: no-drop;
+          color: #999999;
+          background-color: #fff;
+        }
+      }
+    }
+    .updata {
+      position: absolute;
+      right: 95px;
+      top: 3px;
+      .text {
+        background-color: #fff;
+        border: 1px solid #063C8C;
+        color: #063C8C;
+        cursor: pointer;
+        padding: 0 5px;
+        min-width: 85px;
+        height: 22px;
+        font-size: 12px;
+        border-radius:2px;
+        line-height: 21px;
+        text-align: center;
+      }
+      .error {
+        color: #F17070;
+        font-size: 12px;
+        cursor: default;
+        position: absolute;
+        top: 33px;
+        left: 50%;
+        transform: translateX(-50%);
+      }
+    }
+    .updata.disabled {
+      .text {
+        border-color: #D3D3D3;
+        color: #333333;
+        cursor: no-drop;
       }
     }
   }
