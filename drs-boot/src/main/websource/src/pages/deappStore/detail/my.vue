@@ -14,7 +14,7 @@
           <p class="title">{{v.showName}}</p>
           <p class="detail">{{v.remark}}</p>
         </div>
-        <div class="updata" v-if="v.hasUpgrade" :class="{'disabled': v.status === 'STOPPED'}">
+        <div class="updata" v-if="v.hasUpgrade" :class="{'disabled': v.status === 'STOPPED' || v.starting || v.stoping}">
           <p class="text" v-loading="v.updating" @click="updateApp(v)">{{v.updating ? 'Updating' : 'Update'}}</p>
           <p class="error">
             <el-popover
@@ -27,11 +27,15 @@
           </p>
         </div>
         <div class="operation">
-          <p class="text" @click="operationClick(v)" v-loading="v.loading" :class="{'disabled': v.status === 'STOPPED' || v.stoping}">{{returnStatus(v.status)}}</p>
-          <p class="text stop" v-if="v.status === 'RUNNING'" @click="currentItem = v;tipsVisible = true;isStart = false" v-loading="v.stoping">
+          <p class="text" @click="operationClick(v)" v-loading="v.loading"
+            :class="{'disabled': v.status === 'STOPPED' || v.stoping || v.updating || v.starting}">
+            {{returnStatus(v.status)}}
+          </p>
+          <p class="text stop" v-if="v.status === 'RUNNING'" :class="{'disabled': v.updating}"
+            @click="showStop(v)" v-loading="v.stoping">
             <span>Stop</span>
           </p>
-          <p class="text start" v-if="v.status === 'STOPPED'" @click="currentItem = v;tipsVisible = true;isStart = true" v-loading="v.starting">
+          <p class="text start" v-if="v.status === 'STOPPED'" @click="showStart(v)" v-loading="v.starting">
             <span>{{v.starting ? 'Starting' : 'Start'}}</span>
           </p>
           <el-popover
@@ -41,7 +45,7 @@
             :content="v.errorText">
             <p class="error" slot="reference">Failed !</p>
           </el-popover>
-          <p class="uninstall" @click="unInstall(v)" :class="{'disabled': v.status === 'STOPPED'}"
+          <p class="uninstall" @click="unInstall(v)" :class="{'disabled': v.status === 'STOPPED' || v.updating || v.starting || v.stoping}"
             v-if="v.status === 'RUNNING' || v.status === 'STOPPED'">Uninstall</p>
         </div>
       </div>
@@ -118,7 +122,7 @@ export default {
   },
   methods: {
     async updateApp (v) {
-      if (v.status === 'STOPPED') return;
+      if (v.status === 'STOPPED' || v.stoping || v.starting || v.updating) return;
       v.updating = true;
       let data = await upgradeDeapp({
         name: v.name,
@@ -132,6 +136,12 @@ export default {
         v.updateErr = data.msg;
         v.updating = false;
       }
+    },
+    showStop (v) {
+      if (v.updating || v.stoping) return;
+      this.currentItem = v;
+      this.tipsVisible = true;
+      this.isStart = false
     },
     async stopApp () {
       this.tipsVisible = false;
@@ -147,6 +157,12 @@ export default {
       } else {
         this.currentItem.errorText = data.msg;
       }
+    },
+    showStart (v) {
+      if (v.updating || v.starting) return;
+      this.currentItem = v;
+      this.tipsVisible = true;
+      this.isStart = true
     },
     async startApp () {
       this.tipsVisible = false;
@@ -275,7 +291,7 @@ export default {
       this.loading = false;
     },
     unInstall (v) {
-      if (v.status === 'STOPPED') return;
+      if (v.status === 'STOPPED' || v.updating || v.starting || v.stoping) return;
       this.currentUninstall = v;
       this.uninstallVisible = true;
     },
@@ -349,7 +365,7 @@ export default {
       }
     },
     operationClick (v) {
-      if (v.status === 'STOPPED') return;
+      if (v.status === 'STOPPED' || v.updating || v.starting || v.stoping) return;
       this.currentItem = v;
       this.$set(v, 'errorText', null);
       if (this.currentItem.status === 'DOWNLOADED') {
