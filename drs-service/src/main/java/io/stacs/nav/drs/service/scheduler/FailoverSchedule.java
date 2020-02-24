@@ -51,6 +51,7 @@ import static io.stacs.nav.drs.service.model.ConvertHelper.*;
             while (remain.get()) {
                 long nextHeight = runtimeData.getNextHeight();
                 long chainMaxHeight = blockChainService.queryCurrentHeight();
+                log.info("chainMaxHeight:{}",chainMaxHeight);
                 Long optCallbackHeight = txCallbackDao.initCallbackMinHeight();
                 Optional<Pair<Long, Long>>  synchronize = HeightChecker.of(nextHeight, chainMaxHeight,optCallbackHeight).countMissBlocksInterval();
 
@@ -88,7 +89,7 @@ import static io.stacs.nav.drs.service.model.ConvertHelper.*;
             }
             log.info("failover schedule executed success ");
         } catch (Throwable e) {
-            log.error("failover execute has error", e);
+            log.error("failover execute has error:{}", e);
         }
     }
 
