@@ -36,7 +36,7 @@ import org.springframework.stereotype.Service;
         } else {
             nextHeight += 1L;
         }
-        log.info("init nextHeight：{}", nextHeight);
+        log.info("add log init nextHeight：{}", nextHeight);
         runtimeData.setNextHeight(nextHeight);
     }
 
