@@ -27,6 +27,7 @@ import org.springframework.stereotype.Service;
     @Autowired private DrsRuntimeData runtimeData;
 
     @Override public void afterPropertiesSet() throws Exception {
+        log.info("BlockCallbackProcessSchedule afterPropertiesSet");
         Long nextHeight = txCallbackDao.maxHeight();
         if (nextHeight == null) {
             nextHeight = 1L;
