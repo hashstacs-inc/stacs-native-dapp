@@ -34,7 +34,7 @@ import static io.stacs.nav.drs.service.model.ConvertHelper.*;
     @Autowired private DrsRuntimeData runtimeData;
     //@Autowired private BlockCallbackProcessSchedule blockCallbackProcessSchedule;
 
-    @Scheduled(fixedDelayString = "${drs.schedule.failover:6000000}") public void schedule() {
+    @Scheduled(fixedDelayString = "${drs.schedule.failover:60000}") public void schedule() {
         exe();
     }
 

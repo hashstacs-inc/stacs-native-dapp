@@ -20,25 +20,13 @@ import org.springframework.stereotype.Service;
  *
  * @author liuyu
  */
-@Service @Slf4j public class BlockCallbackProcessSchedule implements InitializingBean {
+@Service @Slf4j public class BlockCallbackProcessSchedule  {
     @Autowired BlockCallbackDao txCallbackDao;
     @Autowired BlockCallbackService blockCallbackService;
     /**
      * next height
      */
     @Autowired private DrsRuntimeData runtimeData;
-
-    @Override public void afterPropertiesSet() throws Exception {
-        log.info("BlockCallbackProcessSchedule afterPropertiesSet");
-        Long nextHeight = txCallbackDao.maxHeight();
-        if (nextHeight == null) {
-            nextHeight = 1L;
-        } else {
-            nextHeight += 1L;
-        }
-        log.info("add log init nextHeight：{}", nextHeight);
-        runtimeData.setNextHeight(nextHeight);
-    }
 
     /**
      * Exe.
