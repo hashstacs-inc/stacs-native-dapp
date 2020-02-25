@@ -32,7 +32,6 @@ import static io.stacs.nav.drs.service.model.ConvertHelper.*;
     @Autowired BlockCallbackService txCallbackService;
     @Autowired BlockChainService blockChainService;
     @Autowired private DrsRuntimeData runtimeData;
-    @Autowired private BlockCallbackProcessSchedule blockCallbackProcessSchedule;
 
     @Scheduled(fixedDelayString = "${drs.schedule.failover:60000}") public void schedule() {
         exe();
@@ -75,7 +74,7 @@ import static io.stacs.nav.drs.service.model.ConvertHelper.*;
                             }catch (Exception ex) {
                                 log.error("save call back block error:{}",ex);
                             };
-                            });
+                        });
 
                     log.info("peer failover schedule executed success startHeight:{}, endHeight:{}",interval.getLeft(),
                         endHeight);
@@ -88,7 +87,7 @@ import static io.stacs.nav.drs.service.model.ConvertHelper.*;
             }
             log.info("failover schedule executed success ");
         } catch (Throwable e) {
-            log.error("failover execute has error", e);
+            log.error("failover execute has error:{}", e);
         }
     }
 

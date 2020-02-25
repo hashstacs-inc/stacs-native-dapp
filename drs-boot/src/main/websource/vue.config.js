@@ -1,3 +1,6 @@
+const TimeStamp = new Date().getTime();
+const MiniCssExtractPlugin = require('mini-css-extract-plugin');
+
 module.exports = {
   lintOnSave: true,
   devServer: {
@@ -21,5 +24,33 @@ module.exports = {
         }
       }
     }
+  },
+  configureWebpack: {
+    // Modify JS file name
+    output: {
+      filename: `js/[name].${TimeStamp}.js`,
+      chunkFilename: `js/[name].${TimeStamp}.js`
+    },
+    plugins: [
+      // Modify CSS file name
+      new MiniCssExtractPlugin({
+        filename: `css/[name].${TimeStamp}.css`
+      })
+    ]
+  },
+  chainWebpack: config => {
+    config.module.rule('images')
+    .use('url-loader')
+    .tap(() => {
+      return {
+        limit: 4096,
+        fallback: {
+          loader: 'file-loader',
+          options: {
+            name: `img/[name].${TimeStamp}.[ext]`
+          }
+        }
+      };
+    });
   }
 }

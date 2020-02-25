@@ -7,6 +7,7 @@ import com.alipay.sofa.ark.loader.JarBizArchive;
 import com.alipay.sofa.ark.loader.archive.JarFileArchive;
 import com.alipay.sofa.ark.loader.jar.JarEntry;
 import com.alipay.sofa.ark.loader.jar.JarFile;
+import com.alipay.sofa.ark.spi.model.BizInfo;
 import com.google.common.collect.Lists;
 import com.google.common.io.Files;
 import io.stacs.nav.drs.api.exception.DappError;
@@ -98,7 +99,7 @@ import static io.stacs.nav.drs.service.utils.ResourceLoader.getManifest;
         dappList.forEach(v -> {
             if (v.getStatus() == DappStatus.RUNNING || v.getStatus() == DappStatus.INSTALLING) {
                 v.setStatus(DappStatus.STOPPED);
-                install(v, null);
+                install(v, null,true);
             }
         });
     }
@@ -310,15 +311,16 @@ import static io.stacs.nav.drs.service.utils.ResourceLoader.getManifest;
      * install by app name
      *
      * @param appName
+     * @param isStart
      * @return
      */
-    @Override public boolean install(String appName) {
+    @Override public boolean install(String appName,boolean isStart) {
         Dapp dapp = dappService.findByAppName(appName);
         if (dapp == null) {
             log.warn("[install] app is not exists,appName:{}", appName);
             throw new DappException(DappError.DAPP_NOT_EXISTS);
         }
-        this.install(dapp, null);
+        this.install(dapp, null,isStart);
         return true;
     }
 
@@ -327,8 +329,9 @@ import static io.stacs.nav.drs.service.utils.ResourceLoader.getManifest;
      *
      * @param dapp
      * @param configName dapp config file name,allow null
+     * @param isStart
      */
-    public void install(Dapp dapp, String configName) {
+    public void install(Dapp dapp, String configName,boolean isStart) {
         if (dapp == null) {
             return;
         }
@@ -366,7 +369,7 @@ import static io.stacs.nav.drs.service.utils.ResourceLoader.getManifest;
             if (ResponseCode.SUCCESS.equals(response.getCode())) {
                 toStatus = DappStatus.RUNNING;
             } else {
-                toStatus = DappStatus.STOPPED;
+                toStatus = isStart ? DappStatus.STOPPED : DappStatus.INSTALLERROR;
                 runError = response.getMessage();
             }
         } catch (DappException ex) {
@@ -375,7 +378,7 @@ import static io.stacs.nav.drs.service.utils.ResourceLoader.getManifest;
         } catch (Throwable e) {
             log.error("dapp install is failed", e);
             runError = "install fail,unknown error";
-            toStatus = DappStatus.STOPPED;
+            toStatus = isStart ? DappStatus.STOPPED : DappStatus.INSTALLERROR;
         } finally {
             if (reentrantLock != null && flag == true) {
                 reentrantLock.unlock();
@@ -397,10 +400,15 @@ import static io.stacs.nav.drs.service.utils.ResourceLoader.getManifest;
         }
         String runError = null;
         try {
-            ClientResponse response = ArkClient.uninstallBiz(dapp.getName(), dapp.getVersion());
-            if (ResponseCode.SUCCESS.equals(response.getCode())) {
-            } else {
-                runError = response.getMessage();
+            //check dapp is installed
+            ClientResponse hasRes = ArkClient.checkBiz(dapp.getName(), dapp.getVersion());
+            Set<BizInfo> bizInfoSet = hasRes.getBizInfos();
+            if(!CollectionUtils.isEmpty(bizInfoSet)) {
+                ClientResponse response = ArkClient.uninstallBiz(dapp.getName(), dapp.getVersion());
+                if (ResponseCode.SUCCESS.equals(response.getCode())) {
+                } else {
+                    runError = response.getMessage();
+                }
             }
         } catch (Throwable e) {
             log.error("dapp uninstall is failed", e);
@@ -510,7 +518,7 @@ import static io.stacs.nav.drs.service.utils.ResourceLoader.getManifest;
     }
 
     @Override public boolean start(String appName) {
-        install(appName);
+        install(appName,true);
         return false;
     }
 
@@ -596,7 +604,7 @@ import static io.stacs.nav.drs.service.utils.ResourceLoader.getManifest;
             upgradeService.needUpgrade(appName, UpgradeVersion
                 .of(originalDapp.getVersionCode(), appProfileVO.getVersionCode(), upgradeApp.getVersion()));
             //install new dapp
-            install(upgradeApp, dappConfigFileName);
+            install(upgradeApp, dappConfigFileName,true);
             isInstalled = true;
             log.info("[upgrade]installed upgrade-dapp");
         } catch (DappException e) {
@@ -610,7 +618,7 @@ import static io.stacs.nav.drs.service.utils.ResourceLoader.getManifest;
         if (!isInstalled) {
             //recover the original dapp
             log.info("[upgrade]start recover original-dapp:{}",originalDapp);
-            install(appName);
+            install(appName,true);
             log.info("[upgrade]recovered original-dapp");
             if (dappException != null) {
                 throw dappException;

@@ -8,7 +8,6 @@ import io.stacs.nav.drs.service.model.BlockCallbackBO;
 import io.stacs.nav.drs.service.service.BlockCallbackService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
-import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
@@ -18,24 +17,13 @@ import org.springframework.stereotype.Service;
  *
  * @author liuyu
  */
-@Service @Slf4j public class BlockCallbackProcessSchedule implements InitializingBean {
+@Service @Slf4j public class BlockCallbackProcessSchedule  {
     @Autowired BlockCallbackDao txCallbackDao;
     @Autowired BlockCallbackService blockCallbackService;
     /**
      * next height
      */
     @Autowired private DrsRuntimeData runtimeData;
-
-    @Override public void afterPropertiesSet() throws Exception {
-        Long nextHeight = txCallbackDao.maxHeight();
-        if (nextHeight == null) {
-            nextHeight = 1L;
-        } else {
-            nextHeight += 1L;
-        }
-        log.info("init nextHeight：{}", nextHeight);
-        runtimeData.setNextHeight(nextHeight);
-    }
 
     /**
      * Exe.
