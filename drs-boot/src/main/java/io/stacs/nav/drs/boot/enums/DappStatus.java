@@ -29,7 +29,15 @@ public enum DappStatus {
     /**
      * install Error
      */
-    INSTALLERROR;
+    INSTALLERROR,
+    /**
+     * start processing
+     */
+    STARTING,
+    /**
+     * upgrade processing
+     */
+    UPGRADING;
 
     /**
      *  from status code

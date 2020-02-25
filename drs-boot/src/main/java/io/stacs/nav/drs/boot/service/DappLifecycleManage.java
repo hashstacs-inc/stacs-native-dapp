@@ -99,7 +99,7 @@ import static io.stacs.nav.drs.service.utils.ResourceLoader.getManifest;
         dappList.forEach(v -> {
             if (v.getStatus() == DappStatus.RUNNING || v.getStatus() == DappStatus.INSTALLING) {
                 v.setStatus(DappStatus.STOPPED);
-                install(v, null,true);
+                install(v, null, true,false);
             }
         });
     }
@@ -314,13 +314,13 @@ import static io.stacs.nav.drs.service.utils.ResourceLoader.getManifest;
      * @param isStart
      * @return
      */
-    @Override public boolean install(String appName,boolean isStart) {
+    @Override public boolean install(String appName, boolean isStart) {
         Dapp dapp = dappService.findByAppName(appName);
         if (dapp == null) {
             log.warn("[install] app is not exists,appName:{}", appName);
             throw new DappException(DappError.DAPP_NOT_EXISTS);
         }
-        this.install(dapp, null,isStart);
+        this.install(dapp, null, isStart, false);
         return true;
     }
 
@@ -330,8 +330,9 @@ import static io.stacs.nav.drs.service.utils.ResourceLoader.getManifest;
      * @param dapp
      * @param configName dapp config file name,allow null
      * @param isStart
+     * @param isUpgrade
      */
-    public void install(Dapp dapp, String configName,boolean isStart) {
+    public void install(Dapp dapp, String configName, boolean isStart, boolean isUpgrade) {
         if (dapp == null) {
             return;
         }
@@ -359,7 +360,9 @@ import static io.stacs.nav.drs.service.utils.ResourceLoader.getManifest;
             }
 
             //update state to installing
-            dappService.updateStatus(appName, DappStatus.INSTALLING, "");
+            DappStatus doingStatus =
+                isUpgrade ? DappStatus.UPGRADING : (isStart ? DappStatus.STARTING : DappStatus.INSTALLING);
+            dappService.updateStatus(appName, doingStatus, "");
 
             File dappFile = new File(drsConfig.getDownloadPath(), dapp.getFileName());
             String configPath = getConfigPath(dapp.getName(), configName);
@@ -403,7 +406,7 @@ import static io.stacs.nav.drs.service.utils.ResourceLoader.getManifest;
             //check dapp is installed
             ClientResponse hasRes = ArkClient.checkBiz(dapp.getName(), dapp.getVersion());
             Set<BizInfo> bizInfoSet = hasRes.getBizInfos();
-            if(!CollectionUtils.isEmpty(bizInfoSet)) {
+            if (!CollectionUtils.isEmpty(bizInfoSet)) {
                 ClientResponse response = ArkClient.uninstallBiz(dapp.getName(), dapp.getVersion());
                 if (ResponseCode.SUCCESS.equals(response.getCode())) {
                 } else {
@@ -518,7 +521,7 @@ import static io.stacs.nav.drs.service.utils.ResourceLoader.getManifest;
     }
 
     @Override public boolean start(String appName) {
-        install(appName,true);
+        install(appName, true);
         return false;
     }
 
@@ -604,7 +607,7 @@ import static io.stacs.nav.drs.service.utils.ResourceLoader.getManifest;
             upgradeService.needUpgrade(appName, UpgradeVersion
                 .of(originalDapp.getVersionCode(), appProfileVO.getVersionCode(), upgradeApp.getVersion()));
             //install new dapp
-            install(upgradeApp, dappConfigFileName,true);
+            install(upgradeApp, dappConfigFileName, true, true);
             isInstalled = true;
             log.info("[upgrade]installed upgrade-dapp");
         } catch (DappException e) {
@@ -617,8 +620,8 @@ import static io.stacs.nav.drs.service.utils.ResourceLoader.getManifest;
         }
         if (!isInstalled) {
             //recover the original dapp
-            log.info("[upgrade]start recover original-dapp:{}",originalDapp);
-            install(appName,true);
+            log.info("[upgrade]start recover original-dapp:{}", originalDapp);
+            install(appName, true);
             log.info("[upgrade]recovered original-dapp");
             if (dappException != null) {
                 throw dappException;
