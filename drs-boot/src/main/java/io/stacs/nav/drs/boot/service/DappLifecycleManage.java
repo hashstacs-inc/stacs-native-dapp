@@ -312,15 +312,16 @@ import static io.stacs.nav.drs.service.utils.ResourceLoader.getManifest;
      *
      * @param appName
      * @param isStart
+     * @param isUpgrade
      * @return
      */
-    @Override public boolean install(String appName, boolean isStart) {
+    @Override public boolean install(String appName, boolean isStart, boolean isUpgrade) {
         Dapp dapp = dappService.findByAppName(appName);
         if (dapp == null) {
             log.warn("[install] app is not exists,appName:{}", appName);
             throw new DappException(DappError.DAPP_NOT_EXISTS);
         }
-        this.install(dapp, null, isStart, false);
+        this.install(dapp, null, isStart, isUpgrade);
         return true;
     }
 
@@ -521,7 +522,7 @@ import static io.stacs.nav.drs.service.utils.ResourceLoader.getManifest;
     }
 
     @Override public boolean start(String appName) {
-        install(appName, true);
+        install(appName, true,false);
         return false;
     }
 
@@ -621,7 +622,7 @@ import static io.stacs.nav.drs.service.utils.ResourceLoader.getManifest;
         if (!isInstalled) {
             //recover the original dapp
             log.info("[upgrade]start recover original-dapp:{}", originalDapp);
-            install(appName, true);
+            install(appName, true,true);
             log.info("[upgrade]recovered original-dapp");
             if (dappException != null) {
                 throw dappException;
