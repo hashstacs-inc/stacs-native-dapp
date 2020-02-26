@@ -14,8 +14,8 @@
           <p class="title">{{v.showName}}</p>
           <p class="detail">{{v.remark}}</p>
         </div>
-        <div class="updata" v-if="v.hasUpgrade" :class="{'disabled': v.starting || v.stoping}">
-          <p class="text" v-loading="v.updating" @click="updateApp(v)">{{v.updating ? 'Updating' : 'Update'}}</p>
+        <div class="updata" v-if="v.hasUpgrade" :class="{'disabled': v.starting || v.stoping, 'updating': v.status === 'UPGRADING'}">
+          <p class="text" v-loading="v.updating" @click="updateApp(v)">{{v.status === 'UPGRADING' ? 'Updating' : 'Update'}}</p>
           <p class="error">
             <el-popover
               placement="top-start"
@@ -35,8 +35,8 @@
             @click="showStop(v)" v-loading="v.stoping">
             <span>Stop</span>
           </p>
-          <p class="text start" v-if="v.status === 'STOPPED'" @click="showStart(v)" v-loading="v.starting">
-            <span>{{v.starting ? 'Starting' : 'Start'}}</span>
+          <p class="text start" v-if="v.status === 'STOPPED' || v.status === 'STARTING'" @click="showStart(v)" v-loading="v.starting">
+            <span>{{v.status === 'STARTING' ? 'Starting' : 'Start'}}</span>
           </p>
           <el-popover
             placement="top-start"
@@ -46,7 +46,7 @@
             <p class="error" slot="reference">Failed !</p>
           </el-popover>
           <p class="uninstall" @click="unInstall(v)" :class="{'disabled': v.updating || v.starting || v.stoping}"
-            v-if="v.status === 'RUNNING' || v.status === 'STOPPED'">Uninstall</p>
+            v-if="v.status === 'RUNNING' || v.status === 'STOPPED' || v.status === 'STARTING' || v.status === 'UPGRADING'">Uninstall</p>
         </div>
       </div>
     </template>
@@ -124,6 +124,8 @@ export default {
     async updateApp (v) {
       if (v.stoping || v.starting || v.updating) return;
       v.updating = true;
+      v.status = 'UPGRADING';
+      v.updateErr = '';
       let data = await upgradeDeapp({
         name: v.name,
         slient: true,
@@ -134,6 +136,7 @@ export default {
         this.getList();
       } else {
         v.updateErr = data.msg;
+        v.status = 'RUNNING';
         v.updating = false;
       }
     },
@@ -141,7 +144,7 @@ export default {
       if (v.updating || v.stoping) return;
       this.currentItem = v;
       this.tipsVisible = true;
-      this.isStart = false
+      this.isStart = false;
     },
     async stopApp () {
       this.tipsVisible = false;
@@ -162,11 +165,12 @@ export default {
       if (v.updating || v.starting) return;
       this.currentItem = v;
       this.tipsVisible = true;
-      this.isStart = true
+      this.isStart = true;
     },
     async startApp () {
       this.tipsVisible = false;
       this.currentItem.starting = true;
+      this.currentItem.status = 'STARTING';
       let data = await startDeapp({
         name: this.currentItem.name,
         notify: notify.any,
@@ -207,27 +211,34 @@ export default {
         this.appList = JSON.parse(JSON.stringify(data.data));
         this.copyAppList = JSON.parse(JSON.stringify(data.data));
         let filterStatus = this.appList.filter(v => v.status === 'INSTALLING');
+        let filterStarting = this.appList.filter(v => v.status === 'STARTING');
+        let filterUpgrading = this.appList.filter(v => v.status === 'UPGRADING');
+        let arr = filterStatus.concat(filterStarting);
+        let resultArr = arr.concat(filterUpgrading);
         filterStatus.forEach(v => {
           v['loading'] = true;
         });
+        filterStarting.forEach(v => {
+          v['starting'] = true;
+        });
+        filterUpgrading.forEach(v => {
+          v['updating'] = true;
+        });
         clearInterval(this.installingTimer)
         this.installingTimer = setInterval(async () => {
-          let filterStatus = this.appList.filter(v => v.status === 'INSTALLING');
-          filterStatus.forEach(v => {
-            v['loading'] = true;
-          });
-          if (filterStatus.length > 0) {
+          if (resultArr.length > 0) {
             let res = await getMyAppList({ slient: true });
-            filterStatus.forEach(v => {
+            resultArr.forEach((v, k) => {
               let cloneItem = res.data.filter(val => val.name === v.name);
-              filterStatus.forEach(val => {
-                if (val.name === cloneItem[0].name) {
-                  Object.assign(val, cloneItem[0])
-                  if (val.status === 'RUNNING') {
-                    val.loading = false;
-                  }
+              if (v.name === cloneItem[0].name) {
+                Object.assign(v, cloneItem[0]);
+                if (v.status === 'RUNNING') {
+                  v.loading = false;
+                  v.starting = false;
+                  v.updating = false;
+                  resultArr.splice(k, 1);
                 }
-              });
+              }
             });
           } else {
             clearInterval(this.installingTimer);
@@ -257,6 +268,11 @@ export default {
           return 'Open';
           break;
         case 'STOPPED':
+          return 'Open';
+          break;
+        case 'STARTING':
+          return 'Open';
+        case 'UPGRADING':
           return 'Open';
           break;
         case 'INSTALLERROR':
@@ -491,17 +507,20 @@ export default {
         font-size: 12px;
         background-color: #053C8C;
         border-radius:2px;
+        border: 1px solid transparent;
         color: #fff;
-        line-height: 21px;
+        line-height: 20px;
         cursor: pointer;
         text-align: center;
       }
       .stop {
         background-color: #D8E8FF;
+        border-color: #D8E8FF;
         color: #063C8C;
       }
       .start {
         background-color: #EAFFE5;
+        border-color: #EAFFE5;
         color: #65B03F;
       }
       .error {
@@ -550,6 +569,12 @@ export default {
         top: 33px;
         left: 50%;
         transform: translateX(-50%);
+      }
+    }
+    .updata.updating {
+      top: 11px;
+      .text {
+        cursor: no-drop;
       }
     }
     .updata.disabled {

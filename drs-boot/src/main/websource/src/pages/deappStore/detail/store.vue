@@ -13,8 +13,11 @@
         <el-tooltip effect="dark" :content="v.showName" placement="top-start">
           <p class="name">{{v.showName}}</p>
         </el-tooltip>
-        <p class="operation" @click="handleClick(v)" v-loading="v.loading">
-          <span class="text">{{v.status === 'STOPPED' ? v.loading ? 'Starting' : returnStaus(v.status) : returnStaus(v.status)}}</span>
+        <p class="operation" @click="handleClick(v)" v-loading="v.loading" :class="{'start': v.status === 'STOPPED' || v.status === 'STARTING'}">
+          <span class="text">
+            <!-- {{v.status === 'STOPPED' ? v.loading ? 'Starting' : returnStaus(v.status) : returnStaus(v.status)}} -->
+            {{returnStaus(v.status)}}
+          </span>
         </p>
         <p class="error">
           <el-popover
@@ -103,6 +106,12 @@ export default {
           break;
         case 'INSTALLERROR':
           return 'Install';
+          break;
+        case 'STARTING':
+          return 'Starting';
+          break;
+        case 'UPGRADING':
+          return 'Updating';
           break;
         case null:
           return 'Download';
@@ -216,11 +225,12 @@ export default {
       } else if (v.status === 'RUNNING' && !v.loading) {
         window.open(window.location.origin + '/' + v.name);
       } else if (v.status === 'STOPPED') {
-        this.startApp(v)
+        this.startApp(v);
       }
     },
     async startApp (v) {
       v.loading = true;
+      v.status = 'STARTING';
       let data = await startDeapp({
         name: v.name,
         notify: notify.any,
@@ -245,27 +255,26 @@ export default {
         this.appList = JSON.parse(JSON.stringify(data.data));
         this.copyAppList = JSON.parse(JSON.stringify(data.data));
         let filterStatus = this.appList.filter(v => v.status === 'INSTALLING');
-        filterStatus.forEach(v => {
+        let filterStarting = this.appList.filter(v => v.status === 'STARTING');
+        let filterUpgrading = this.appList.filter(v => v.status === 'UPGRADING');
+        let arr = filterStatus.concat(filterStarting);
+        let resultArr = arr.concat(filterUpgrading);
+        resultArr.forEach(v => {
           v['loading'] = true;
         });
-        clearInterval(this.installingTimer)
+        clearInterval(this.installingTimer);
         this.installingTimer = setInterval(async () => {
-          let filterStatus = this.appList.filter(v => v.status === 'INSTALLING');
-          filterStatus.forEach(v => {
-            v['loading'] = true;
-          });
-          if (filterStatus.length > 0) {
+          if (resultArr.length > 0) {
             let res = await getAppList({ slient: true });
-            filterStatus.forEach(v => {
+            resultArr.forEach((v, k) => {
               let cloneItem = res.data.filter(val => val.name === v.name);
-              filterStatus.forEach(val => {
-                if (val.name === cloneItem[0].name) {
-                  Object.assign(val, cloneItem[0])
-                  if (val.status === 'RUNNING') {
-                    val.loading = false;
-                  }
+              if (v.name === cloneItem[0].name) {
+                Object.assign(v, cloneItem[0])
+                if (v.status === 'RUNNING') {
+                  v.loading = false;
+                  resultArr.splice(k, 1);
                 }
-              });
+              }
             });
           } else {
             clearInterval(this.installingTimer);
@@ -362,15 +371,23 @@ export default {
         position: relative;
         border-radius: 2px;
         text-align: center;
-        line-height: 19px;
+        line-height: 18px;
         padding: 0 5px;
         min-width: 85px;
         cursor: pointer;
+        border: 1px solid transparent;
         .text {
           position: relative;
           z-index: 10;
           font-size: 12px;
           color: #fff;
+        }
+      }
+      .start {
+        background-color: #EAFFE5;
+        border-color: #EAFFE5;
+        .text {
+          color: #65B03F;
         }
       }
       .error {
