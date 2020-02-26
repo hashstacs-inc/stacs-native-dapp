@@ -13,7 +13,8 @@
         <el-tooltip effect="dark" :content="v.showName" placement="top-start">
           <p class="name">{{v.showName}}</p>
         </el-tooltip>
-        <p class="operation" @click="handleClick(v)" v-loading="v.loading" :class="{'start': v.status === 'STOPPED' || v.status === 'STARTING'}">
+        <p class="operation" @click="handleClick(v)" v-loading="v.loading"
+          :class="{'start': v.status === 'STOPPED' || v.status === 'STARTING', 'updating': v.status === 'UPGRADING'}">
           <span class="text">
             <!-- {{v.status === 'STOPPED' ? v.loading ? 'Starting' : returnStaus(v.status) : returnStaus(v.status)}} -->
             {{returnStaus(v.status)}}
@@ -279,7 +280,7 @@ export default {
           } else {
             clearInterval(this.installingTimer);
           }
-        }, 4000);
+        }, 1000);
         this.loading = false;
       }
     }
@@ -381,6 +382,13 @@ export default {
           z-index: 10;
           font-size: 12px;
           color: #fff;
+        }
+      }
+      .operation.updating {
+        border-color: #063C8C;
+        background-color: #fff;
+        .text {
+          color: #063C8C;
         }
       }
       .start {

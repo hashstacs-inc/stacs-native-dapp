@@ -243,7 +243,7 @@ export default {
           } else {
             clearInterval(this.installingTimer);
           }
-        }, 4000);
+        }, 1000);
         this.loading = false;
       } else {
         this.appList = [];
