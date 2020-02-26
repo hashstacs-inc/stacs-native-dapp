@@ -14,7 +14,7 @@
           <p class="title">{{v.showName}}</p>
           <p class="detail">{{v.remark}}</p>
         </div>
-        <div class="updata" v-if="v.hasUpgrade" :class="{'disabled': v.status === 'STOPPED' || v.starting || v.stoping}">
+        <div class="updata" v-if="v.hasUpgrade" :class="{'disabled': v.starting || v.stoping}">
           <p class="text" v-loading="v.updating" @click="updateApp(v)">{{v.updating ? 'Updating' : 'Update'}}</p>
           <p class="error">
             <el-popover
@@ -45,7 +45,7 @@
             :content="v.errorText">
             <p class="error" slot="reference">Failed !</p>
           </el-popover>
-          <p class="uninstall" @click="unInstall(v)" :class="{'disabled': v.status === 'STOPPED' || v.updating || v.starting || v.stoping}"
+          <p class="uninstall" @click="unInstall(v)" :class="{'disabled': v.updating || v.starting || v.stoping}"
             v-if="v.status === 'RUNNING' || v.status === 'STOPPED'">Uninstall</p>
         </div>
       </div>
@@ -87,7 +87,7 @@
         <p>To proceed, please confirmed.</p>
       </template>
       <template v-else>
-        <p>Please note that this action will suspend all Dapp Services.</p>
+        <p>Please note that this action will suspend all DApp Services.</p>
         <p>To proceed, please confirmed.</p>
       </template>
       <p slot="footer" class="dialog-footer">
@@ -122,7 +122,7 @@ export default {
   },
   methods: {
     async updateApp (v) {
-      if (v.status === 'STOPPED' || v.stoping || v.starting || v.updating) return;
+      if (v.stoping || v.starting || v.updating) return;
       v.updating = true;
       let data = await upgradeDeapp({
         name: v.name,
@@ -291,7 +291,7 @@ export default {
       this.loading = false;
     },
     unInstall (v) {
-      if (v.status === 'STOPPED' || v.updating || v.starting || v.stoping) return;
+      if (v.updating || v.starting || v.stoping) return;
       this.currentUninstall = v;
       this.uninstallVisible = true;
     },

@@ -14,7 +14,7 @@
           <p class="name">{{v.showName}}</p>
         </el-tooltip>
         <p class="operation" @click="handleClick(v)" v-loading="v.loading">
-          <span class="text">{{returnStaus(v.status)}}</span>
+          <span class="text">{{v.status === 'STOPPED' ? v.loading ? 'Starting' : returnStaus(v.status) : returnStaus(v.status)}}</span>
         </p>
         <p class="error">
           <el-popover
@@ -45,7 +45,7 @@
 </template>
 <script>
 import { getAppList, downloadApp, installDeapp, 
-  initDeapp, postDeappConfig, getDeappConfig } from '@/api/storeApi';
+  initDeapp, postDeappConfig, getDeappConfig, startDeapp } from '@/api/storeApi';
 import { notify } from '@/common/util';
 
 export default {
@@ -202,10 +202,7 @@ export default {
     },
     async handleClick (v) {
       this.$set(v, 'errorText', null);
-      if (v.status === 'INSTALLING') {
-        this.getAppLists()
-        return
-      }
+      if (v.status === 'INSTALLING') return;
       if (!v.status && !v.loading) {
         // Status not downloaded
         this.downloadApp(v);
@@ -218,6 +215,23 @@ export default {
         this.installApp(v);
       } else if (v.status === 'RUNNING' && !v.loading) {
         window.open(window.location.origin + '/' + v.name);
+      } else if (v.status === 'STOPPED') {
+        this.startApp(v)
+      }
+    },
+    async startApp (v) {
+      v.loading = true;
+      let data = await startDeapp({
+        name: v.name,
+        notify: notify.any,
+        slient: true,
+        timeout: 0
+      });
+      if (data.code === '000000') {
+        this.getAppLists();
+        v.loading = false;
+      } else {
+        v.errorText = data.msg;
       }
     },
     // getList
