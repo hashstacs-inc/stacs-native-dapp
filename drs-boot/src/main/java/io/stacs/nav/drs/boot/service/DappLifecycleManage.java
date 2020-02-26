@@ -99,7 +99,7 @@ import static io.stacs.nav.drs.service.utils.ResourceLoader.getManifest;
         dappList.forEach(v -> {
             if (v.getStatus() == DappStatus.RUNNING || v.getStatus() == DappStatus.INSTALLING) {
                 v.setStatus(DappStatus.STOPPED);
-                install(v, null, true,false);
+                install(v, null, true, false);
             }
         });
     }
@@ -522,7 +522,7 @@ import static io.stacs.nav.drs.service.utils.ResourceLoader.getManifest;
     }
 
     @Override public boolean start(String appName) {
-        install(appName, true,false);
+        install(appName, true, false);
         return false;
     }
 
@@ -576,21 +576,37 @@ import static io.stacs.nav.drs.service.utils.ResourceLoader.getManifest;
                 originalDapp.getVersionCode(), appProfileVO.getVersionCode(), appName);
             throw new DappException(DappError.DAPP_NOT_NEED_UPGRADE);
         }
-        String urlPath = appProfileVO.getDownloadUrl();
-        log.info("[upgrade]urlPath:{}", urlPath);
-        String fileName = FilenameUtils.getName(urlPath);
-        fileName = "upgrade-" + appProfileVO.getVersionCode() + "-" + System.currentTimeMillis() + "-" + fileName;
-        log.info("[upgrade]the app file name:{}", fileName);
-        File destination = new File(drsConfig.getDownloadPath(), fileName);
-        //download file
-        this.downloadFile(urlPath, destination);
-        //make jar file
-        JarFile bizFile = new JarFile(destination);
-        //get info from app file
-        Dapp upgradeApp = getInfo(bizFile);
-        if (!StringUtils.equals(upgradeApp.getName(), appName)) {
-            log.warn("[upgrade] name not same upgradeApp.name:{},appName:{}", originalDapp.getName(), appName);
-            throw new DappException(DappError.DAPP_UPGRADE_NAME_NOT_SAME_ERROR);
+        String fileName;
+        File destination;
+        JarFile bizFile;
+        Dapp upgradeApp;
+        try {
+            //set status
+            dappService.updateStatus(appName, DappStatus.UPGRADING, "");
+            String urlPath = appProfileVO.getDownloadUrl();
+            log.info("[upgrade]urlPath:{}", urlPath);
+            fileName = FilenameUtils.getName(urlPath);
+            fileName = "upgrade-" + appProfileVO.getVersionCode() + "-" + System.currentTimeMillis() + "-" + fileName;
+            log.info("[upgrade]the app file name:{}", fileName);
+            destination = new File(drsConfig.getDownloadPath(), fileName);
+            //download file
+            this.downloadFile(urlPath, destination);
+            //make jar file
+            bizFile = new JarFile(destination);
+            //get info from app file
+            upgradeApp = getInfo(bizFile);
+            if (!StringUtils.equals(upgradeApp.getName(), appName)) {
+                log.warn("[upgrade] name not same upgradeApp.name:{},appName:{}", originalDapp.getName(), appName);
+                throw new DappException(DappError.DAPP_UPGRADE_NAME_NOT_SAME_ERROR);
+            }
+        } catch (DappException e) {
+            throw e;
+        } catch (Throwable e) {
+            log.error("[upgrade]has unknown error", e);
+            throw e;
+        } finally {
+            //recover status
+            dappService.updateStatus(appName, originalDapp.getStatus(), "");
         }
         //dapp config name
         String dappConfigFileName =
@@ -622,7 +638,7 @@ import static io.stacs.nav.drs.service.utils.ResourceLoader.getManifest;
         if (!isInstalled) {
             //recover the original dapp
             log.info("[upgrade]start recover original-dapp:{}", originalDapp);
-            install(appName, true,true);
+            install(appName, true, true);
             log.info("[upgrade]recovered original-dapp");
             if (dappException != null) {
                 throw dappException;
