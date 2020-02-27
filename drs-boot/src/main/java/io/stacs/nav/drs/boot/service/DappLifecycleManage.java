@@ -537,7 +537,7 @@ import static io.stacs.nav.drs.service.utils.ResourceLoader.getManifest;
             log.warn("[stop] dapp is already STOPPED,appName:{},status:{}", appName, fromStatus);
             return true;
         }
-        if (fromStatus != DappStatus.RUNNING) {
+        if (fromStatus != DappStatus.RUNNING && fromStatus != DappStatus.UPGRADING) {
             log.warn("[stop] app status is not RUNNING,appName:{},status:{}", appName, fromStatus);
             throw new DappException(DappError.DAPP_NOT_RUNNING);
         }
