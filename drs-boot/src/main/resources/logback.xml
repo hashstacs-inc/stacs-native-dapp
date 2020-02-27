@@ -12,7 +12,7 @@
               value="%d [%t] %-5p %c{0} - %m [%X{X-B3-TraceId:-},%X{X-B3-SpanId:-},%X{X-Span-Export:-}]%n%xThrowable{500, FULL, bar}"/>
 
     <property name="APP_NAME" value="stacs.drs"/>​
-    <property name="LOG_PATH" value="logs"/>​
+    <property name="LOG_PATH" value="${LOG_PATH:-/data/home/admin/stacs.drs/data/log}/${log_host}"/>​
     <property name="MAX_HISTORY" value="7"/>
 
     <appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
