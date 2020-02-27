@@ -371,7 +371,7 @@ import static io.stacs.nav.drs.service.utils.ResourceLoader.getManifest;
             ClientResponse response =
                 ArkClient.installBiz(dappFile, new String[] {"--spring.config.location=" + configPath});
             if (ResponseCode.SUCCESS.equals(response.getCode())) {
-                toStatus = DappStatus.RUNNING;
+                toStatus = isUpgrade ? DappStatus.UPGRADING : DappStatus.RUNNING;
             } else {
                 toStatus = isStart ? DappStatus.STOPPED : DappStatus.INSTALLERROR;
                 runError = response.getMessage();
@@ -642,6 +642,8 @@ import static io.stacs.nav.drs.service.utils.ResourceLoader.getManifest;
             //recover the original dapp
             log.info("[upgrade]start recover original-dapp:{}", originalDapp);
             install(appName, true, true);
+            //recover status
+            dappService.updateStatus(appName, originalDapp.getStatus(), "");
             log.info("[upgrade]recovered original-dapp");
             if (dappException != null) {
                 throw dappException;
