@@ -143,7 +143,7 @@ import java.util.stream.Collectors;
      */
     @GetMapping("/stop/{appName}") public RespData stop(@PathVariable("appName") String appName) {
         try {
-            return RespData.success(dappLifecycleManage.stop(appName));
+            return RespData.success(dappLifecycleManage.stop(appName,false));
         } catch (DappException e) {
             log.error("[stop]has dapp error", e);
             return RespData.fail(e.getCode(), e.getMsg());

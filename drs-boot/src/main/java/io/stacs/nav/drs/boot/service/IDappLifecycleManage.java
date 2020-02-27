@@ -88,9 +88,10 @@ public interface IDappLifecycleManage {
      * stop dapp
      *
      * @param appName
+     * @param isUpgrading
      * @return
      */
-    boolean stop(String appName);
+    boolean stop(String appName,boolean isUpgrading);
 
     /**
      * dapp upgrade
