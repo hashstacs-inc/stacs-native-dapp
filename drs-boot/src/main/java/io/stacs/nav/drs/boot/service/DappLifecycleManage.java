@@ -600,13 +600,14 @@ import static io.stacs.nav.drs.service.utils.ResourceLoader.getManifest;
                 throw new DappException(DappError.DAPP_UPGRADE_NAME_NOT_SAME_ERROR);
             }
         } catch (DappException e) {
+            //recover status
+            dappService.updateStatus(appName, originalDapp.getStatus(), "");
             throw e;
         } catch (Throwable e) {
             log.error("[upgrade]has unknown error", e);
-            throw e;
-        } finally {
             //recover status
             dappService.updateStatus(appName, originalDapp.getStatus(), "");
+            throw e;
         }
         //dapp config name
         String dappConfigFileName =
