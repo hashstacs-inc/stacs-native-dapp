@@ -38,6 +38,9 @@
           <p class="text start" v-if="v.status === 'STOPPED' || v.status === 'STARTING'" @click="showStart(v)" v-loading="v.starting">
             <span>{{v.status === 'STARTING' ? 'Starting' : 'Start'}}</span>
           </p>
+          <!-- <p class="text start" @click="showStart(v)" v-loading="v.starting">
+            <span>{{v.status === 'STARTING' ? 'Starting' : 'Start'}}</span>
+          </p> -->
           <el-popover
             placement="top-start"
             trigger="hover"
@@ -158,7 +161,9 @@ export default {
       if (data.code === '000000') {
         this.getList();
       } else {
-        this.currentItem.errorText = data.msg;
+        this.$set(this.currentItem, 'errorText', data.msg);
+        this.currentItem.stoping = false;
+        this.currentItem.status = 'RUNNING';
       }
     },
     showStart (v) {
@@ -180,7 +185,9 @@ export default {
       if (data.code === '000000') {
         this.getList();
       } else {
-        this.currentItem.errorText = data.msg;
+        this.$set(this.currentItem, 'errorText', data.msg);
+        this.currentItem.starting = false;
+        this.currentItem.status = 'STOPPED';
       }
     },
     searchList () {
@@ -225,15 +232,17 @@ export default {
           v['updating'] = true;
         });
         clearInterval(this.installingTimer)
-        this.installingTimer = setInterval(async () => {
-          if (resultArr.length > 0) {
+        if (resultArr.length > 0) {
+          this.installingTimer = setInterval(async () => {
+            if (resultArr.length === 0) {
+              clearInterval(this.installingTimer);
+              let res = await getMyAppList({ slient: true });
+              this.appList = JSON.parse(JSON.stringify(res.data));
+            }
             let res = await getMyAppList({ slient: true });
-            resultArr.forEach((v, k) => {
+            resultArr.forEach(async (v, k) => {
               let cloneItem = res.data.filter(val => val.name === v.name);
               if (v.name === cloneItem[0].name) {
-                if (v.status === 'UPGRADING' && cloneItem[0].status === 'RUNNING') {
-                  v.hasUpgrade = false;
-                }
                 Object.assign(v, cloneItem[0]);
                 if (v.status === 'RUNNING') {
                   v.loading = false;
@@ -243,10 +252,8 @@ export default {
                 }
               }
             });
-          } else {
-            clearInterval(this.installingTimer);
-          }
-        }, 1000);
+          }, 1000);
+        }
         this.loading = false;
       } else {
         this.appList = [];
