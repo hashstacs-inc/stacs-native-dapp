@@ -526,7 +526,7 @@ import static io.stacs.nav.drs.service.utils.ResourceLoader.getManifest;
         return false;
     }
 
-    @Override public boolean stop(String appName) {
+    @Override public boolean stop(String appName,boolean isUpgrading) {
         Dapp dapp = dappService.findByAppName(appName);
         if (dapp == null) {
             log.warn("[stop] app is not exists,appName:{}", appName);
@@ -537,7 +537,7 @@ import static io.stacs.nav.drs.service.utils.ResourceLoader.getManifest;
             log.warn("[stop] dapp is already STOPPED,appName:{},status:{}", appName, fromStatus);
             return true;
         }
-        if (fromStatus != DappStatus.RUNNING) {
+        if (!isUpgrading && fromStatus != DappStatus.RUNNING) {
             log.warn("[stop] app status is not RUNNING,appName:{},status:{}", appName, fromStatus);
             throw new DappException(DappError.DAPP_NOT_RUNNING);
         }
@@ -557,7 +557,9 @@ import static io.stacs.nav.drs.service.utils.ResourceLoader.getManifest;
             throw new DappException(runError);
         }
         //update status
-        dappService.updateStatus(appName, DappStatus.STOPPED, null);
+        if(!isUpgrading) {
+            dappService.updateStatus(appName, DappStatus.STOPPED, null);
+        }
         return true;
     }
 
@@ -615,7 +617,7 @@ import static io.stacs.nav.drs.service.utils.ResourceLoader.getManifest;
         //generator config file from Jar file
         genAppConfig(bizFile, upgradeApp.getName(), dappConfigFileName);
         //stop current dapp
-        stop(appName);
+        stop(appName,true);
         //reset status、fileName
         upgradeApp.setStatus(DappStatus.STOPPED);
         upgradeApp.setFileName(fileName);
