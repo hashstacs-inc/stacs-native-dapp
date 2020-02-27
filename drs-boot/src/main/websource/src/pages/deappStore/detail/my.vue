@@ -14,7 +14,7 @@
           <p class="title">{{v.showName}}</p>
           <p class="detail">{{v.remark}}</p>
         </div>
-        <div class="updata" v-if="v.hasUpgrade" :class="{'disabled': v.starting || v.stoping, 'updating': v.status === 'UPGRADING'}">
+        <div class="updata" v-if="v.hasUpgrade" :class="{'disabled': v.starting || v.stoping || v.status === 'STOPPED', 'updating': v.status === 'UPGRADING'}">
           <p class="text" v-loading="v.updating" @click="updateApp(v)">{{v.status === 'UPGRADING' ? 'Updating' : 'Update'}}</p>
           <p class="error">
             <el-popover
@@ -122,7 +122,7 @@ export default {
   },
   methods: {
     async updateApp (v) {
-      if (v.stoping || v.starting || v.updating) return;
+      if (v.status === 'STOPPED' || v.stoping || v.starting || v.updating) return;
       v.updating = true;
       v.status = 'UPGRADING';
       v.updateErr = '';
@@ -231,6 +231,9 @@ export default {
             resultArr.forEach((v, k) => {
               let cloneItem = res.data.filter(val => val.name === v.name);
               if (v.name === cloneItem[0].name) {
+                if (v.status === 'UPGRADING' && cloneItem[0].status === 'RUNNING') {
+                  v.hasUpgrade = false;
+                }
                 Object.assign(v, cloneItem[0]);
                 if (v.status === 'RUNNING') {
                   v.loading = false;
