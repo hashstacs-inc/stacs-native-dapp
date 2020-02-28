@@ -97,7 +97,8 @@ public interface IDappLifecycleManage {
      * dapp upgrade
      *
      * @param appName
+     * @param isInit
      * @return
      */
-    boolean upgrade(String appName) throws IOException;
+    boolean upgrade(String appName,boolean isInit) throws IOException;
 }
