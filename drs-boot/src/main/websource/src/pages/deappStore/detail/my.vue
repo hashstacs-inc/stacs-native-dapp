@@ -14,7 +14,7 @@
           <p class="title">{{v.showName}}</p>
           <p class="detail">{{v.remark}}</p>
         </div>
-        <div class="updata" v-if="v.hasUpgrade" :class="{'disabled': v.starting || v.stoping || v.status === 'STOPPED', 'updating': v.status === 'UPGRADING'}">
+        <div class="updata" v-if="v.hasUpgrade" :class="{'disabled': v.starting || v.stoping, 'updating': v.status === 'UPGRADING'}">
           <p class="text" v-loading="v.updating" @click="updateApp(v)">{{v.status === 'UPGRADING' ? 'Updating' : 'Update'}}</p>
           <p class="error">
             <el-popover
@@ -125,7 +125,7 @@ export default {
   },
   methods: {
     async updateApp (v) {
-      if (v.status === 'STOPPED' || v.stoping || v.starting || v.updating) return;
+      if (v.stoping || v.starting || v.updating) return;
       v.updating = true;
       v.status = 'UPGRADING';
       v.updateErr = '';
