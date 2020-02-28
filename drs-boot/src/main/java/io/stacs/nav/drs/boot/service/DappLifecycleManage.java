@@ -91,7 +91,8 @@ import static io.stacs.nav.drs.service.utils.ResourceLoader.getManifest;
         }
         //auto install
         dappList.parallelStream().forEach(v -> {
-            if (v.getStatus() == DappStatus.RUNNING || v.getStatus() == DappStatus.INSTALLING) {
+            if (v.getStatus() == DappStatus.RUNNING || v.getStatus() == DappStatus.INSTALLING
+                || v.getStatus() == DappStatus.STARTING) {
                 v.setStatus(DappStatus.STOPPED);
                 try {
                     log.info("auto install dapp:{}", v.getName());
