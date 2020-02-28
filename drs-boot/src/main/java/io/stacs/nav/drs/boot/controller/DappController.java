@@ -92,7 +92,7 @@ import java.util.stream.Collectors;
     @GetMapping("/install/{appName}") public RespData install(@PathVariable String appName) {
         log.info("start install dapp by appName:{}", appName);
         try {
-            return RespData.success(dappLifecycleManage.install(appName,false,false));
+            return RespData.success(dappLifecycleManage.install(appName, false, false));
         } catch (DappException e) {
             log.error("[install]has dapp error", e);
             return RespData.fail(e.getCode(), e.getMsg());
@@ -143,7 +143,7 @@ import java.util.stream.Collectors;
      */
     @GetMapping("/stop/{appName}") public RespData stop(@PathVariable("appName") String appName) {
         try {
-            return RespData.success(dappLifecycleManage.stop(appName,false));
+            return RespData.success(dappLifecycleManage.stop(appName, false));
         } catch (DappException e) {
             log.error("[stop]has dapp error", e);
             return RespData.fail(e.getCode(), e.getMsg());
@@ -152,15 +152,16 @@ import java.util.stream.Collectors;
             return RespData.fail(DappError.DAPP_COMMON_ERROR);
         }
     }
+
     /**
      * upgrade dapp
      *
      * @return
-    */
+     */
     @GetMapping("/upgrade/{appName}") public RespData upgrade(@PathVariable String appName) {
         log.info("start upgrade dapp by appName:{}", appName);
         try {
-            return RespData.success(dappLifecycleManage.upgrade(appName));
+            return RespData.success(dappLifecycleManage.upgrade(appName, false));
         } catch (DappException e) {
             log.error("[upgrade]has dapp error", e);
             return RespData.fail(e.getCode(), e.getMsg());
@@ -169,6 +170,7 @@ import java.util.stream.Collectors;
             return RespData.fail(DappError.DAPP_COMMON_ERROR);
         }
     }
+
     /**
      * query upgrade history
      *
@@ -186,6 +188,7 @@ import java.util.stream.Collectors;
             return RespData.fail(DappError.DAPP_COMMON_ERROR);
         }
     }
+
     /**
      * show all dapp
      *

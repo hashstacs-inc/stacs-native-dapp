@@ -103,7 +103,7 @@ import static io.stacs.nav.drs.service.utils.ResourceLoader.getManifest;
             } else if (v.getStatus() == DappStatus.UPGRADING) {
                 try {
                     log.info("auto upgrade dapp:{}", v.getName());
-                    upgrade(v.getName());
+                    upgrade(v.getName(), true);
                 } catch (Throwable e) {
                     log.error("auto upgrade dapp has error", e);
                 }
@@ -570,7 +570,7 @@ import static io.stacs.nav.drs.service.utils.ResourceLoader.getManifest;
         return true;
     }
 
-    @Override public boolean upgrade(String appName) throws IOException {
+    @Override public boolean upgrade(String appName, boolean isInit) throws IOException {
         log.info("[upgrade] is start,appName:{}", appName);
         Dapp originalDapp = dappService.findByAppName(appName);
         if (originalDapp == null) {
@@ -624,7 +624,9 @@ import static io.stacs.nav.drs.service.utils.ResourceLoader.getManifest;
         //generator config file from Jar file
         genAppConfig(bizFile, upgradeApp.getName(), dappConfigFileName);
         //stop current dapp
-        stop(appName, true);
+        if (!isInit) {
+            stop(appName, true);
+        }
         //reset status、fileName
         upgradeApp.setStatus(DappStatus.STOPPED);
         upgradeApp.setFileName(fileName);
