@@ -96,10 +96,22 @@ import static io.stacs.nav.drs.service.utils.ResourceLoader.getManifest;
             return;
         }
         //auto install
-        dappList.forEach(v -> {
+        dappList.parallelStream().forEach(v -> {
             if (v.getStatus() == DappStatus.RUNNING || v.getStatus() == DappStatus.INSTALLING) {
                 v.setStatus(DappStatus.STOPPED);
-                install(v, null, true, false);
+                try {
+                    log.info("auto install dapp:{}", v.getName());
+                    install(v, null, true, false);
+                } catch (Throwable e) {
+                    log.error("auto install dapp has error", e);
+                }
+            } else if (v.getStatus() == DappStatus.UPGRADING) {
+                try {
+                    log.info("auto upgrade dapp:{}", v.getName());
+                    upgrade(v.getName());
+                } catch (Throwable e) {
+                    log.error("auto upgrade dapp has error", e);
+                }
             }
         });
     }
@@ -526,7 +538,7 @@ import static io.stacs.nav.drs.service.utils.ResourceLoader.getManifest;
         return false;
     }
 
-    @Override public boolean stop(String appName,boolean isUpgrading) {
+    @Override public boolean stop(String appName, boolean isUpgrading) {
         Dapp dapp = dappService.findByAppName(appName);
         if (dapp == null) {
             log.warn("[stop] app is not exists,appName:{}", appName);
@@ -557,7 +569,7 @@ import static io.stacs.nav.drs.service.utils.ResourceLoader.getManifest;
             throw new DappException(runError);
         }
         //update status
-        if(!isUpgrading) {
+        if (!isUpgrading) {
             dappService.updateStatus(appName, DappStatus.STOPPED, null);
         }
         return true;
@@ -617,7 +629,7 @@ import static io.stacs.nav.drs.service.utils.ResourceLoader.getManifest;
         //generator config file from Jar file
         genAppConfig(bizFile, upgradeApp.getName(), dappConfigFileName);
         //stop current dapp
-        stop(appName,true);
+        stop(appName, true);
         //reset status、fileName
         upgradeApp.setStatus(DappStatus.STOPPED);
         upgradeApp.setFileName(fileName);
