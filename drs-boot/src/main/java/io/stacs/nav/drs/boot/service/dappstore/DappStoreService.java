@@ -73,7 +73,9 @@ import java.util.stream.Collectors;
 
     private List<AppProfileVO> queryFromAppStore() throws IOException {
         String storePath = drsConfig.getDappStorePath();
-        log.info("[queryFromAppStore]storePath:{}", storePath);
+        if(log.isDebugEnabled()){
+            log.debug("[queryFromAppStore]storePath:{}", storePath);
+        }
         List<AppProfileVO> appProfileVOList = DAPP_CACHE.getIfPresent(storePath);
         if (CollectionUtils.isNotEmpty(appProfileVOList)) {
             return BeanConvertor.convertList(appProfileVOList, AppProfileVO.class);
