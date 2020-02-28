@@ -66,12 +66,6 @@ import static io.stacs.nav.drs.service.utils.ResourceLoader.getManifest;
     private static final String SPRING_JMX_NAME = "spring.jmx.default-domain";
     private static final String WEB_SERVER_PORT = "server.port";
     private static final String WEB_SERVER_CONTEXT_PATH = "server.servlet.context-path";
-    private static final String UPGRADE_FOLDER = "upgrade";
-
-    /**
-     * lock for install
-     */
-    private static final Object INSTALL_LOCK = new Object();
 
     @Autowired BaseConfig baseConfig;
 
