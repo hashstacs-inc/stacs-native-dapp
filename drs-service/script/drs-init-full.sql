@@ -95,7 +95,7 @@ DROP TABLE IF EXISTS `block_callback`;
 CREATE TABLE `block_callback` (
   `id` bigint(20) NOT NULL AUTO_INCREMENT,
   `block_height` bigint(20) DEFAULT NULL COMMENT 'block height',
-  `block_data` text COMMENT 'block json data',
+  `block_data` MEDIUMTEXT COMMENT 'block json data',
   `status` varchar(16) NOT NULL COMMENT 'status,INIT、PROCESSED',
   `create_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT 'create time',
   `update_time` datetime DEFAULT CURRENT_TIMESTAMP COMMENT 'update time',
